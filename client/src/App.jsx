@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import BottomNav from './components/BottomNav';
+import FloatingPlayer from './components/FloatingPlayer';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import CategoryPage from './pages/CategoryPage';
@@ -9,6 +10,7 @@ import PlayerPage from './pages/PlayerPage';
 import FavoritesPage from './pages/FavoritesPage';
 import FeedbackPage from './pages/FeedbackPage';
 import FeedbackAdminPage from './pages/FeedbackAdminPage';
+import MusicPage from './pages/MusicPage';
 
 export default function App() {
   return (
@@ -23,9 +25,11 @@ export default function App() {
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="/feedback" element={<FeedbackPage />} />
           <Route path="/feedback/admin" element={<FeedbackAdminPage />} />
+          <Route path="/music" element={<MusicPage />} />
         </Routes>
       </main>
       <Footer />
+      <FloatingPlayer />
       <BottomNav />
     </div>
   );
