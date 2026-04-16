@@ -65,6 +65,18 @@ if (process.env.NODE_ENV === 'production') {
 // API routes
 app.use('/api/youtube', youtubeRoutes);
 
+// Visit counter (in-memory, persists while server is running)
+let visitCount = 0;
+
+app.post('/api/visits', (_req, res) => {
+  visitCount++;
+  res.json({ count: visitCount });
+});
+
+app.get('/api/visits', (_req, res) => {
+  res.json({ count: visitCount });
+});
+
 // Health check
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
