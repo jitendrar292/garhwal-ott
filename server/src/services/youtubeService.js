@@ -3,8 +3,11 @@ const NodeCache = require('node-cache');
 const YOUTUBE_API_BASE = 'https://www.googleapis.com/youtube/v3';
 const API_KEY = process.env.YOUTUBE_API_KEY;
 
-// Cache results for 30 minutes to save API quota
-const cache = new NodeCache({ stdTTL: 1800, checkperiod: 600 });
+// Cache results for 6 hours to save API quota (free tier = 10,000 units/day)
+const cache = new NodeCache({ stdTTL: 21600, checkperiod: 3600 });
+
+// Fallback cache that never expires — stores last good response
+const fallbackCache = new NodeCache({ stdTTL: 0 });
 
 const CATEGORY_QUERIES = {
   movies: 'Garhwali full movie',
@@ -39,6 +42,11 @@ async function fetchFromYouTube(query, pageToken = '', maxResults = 12) {
   if (!response.ok) {
     const errorBody = await response.text();
     console.error('YouTube API error:', response.status, errorBody);
+
+    // If quota exceeded (403), return fallback data
+    if (response.status === 403) {
+      throw new Error('QUOTA_EXCEEDED');
+    }
     throw new Error(`YouTube API returned ${response.status}`);
   }
 
@@ -64,9 +72,20 @@ async function searchVideos(query, pageToken = '', maxResults = 12) {
   const cached = cache.get(cacheKey);
   if (cached) return cached;
 
-  const result = await fetchFromYouTube(query, pageToken, maxResults);
-  cache.set(cacheKey, result);
-  return result;
+  try {
+    const result = await fetchFromYouTube(query, pageToken, maxResults);
+    cache.set(cacheKey, result);
+    fallbackCache.set(cacheKey, result);
+    return result;
+  } catch (err) {
+    // Return fallback data if quota exceeded
+    const fallback = fallbackCache.get(cacheKey);
+    if (fallback) {
+      console.log('Serving fallback cache for:', cacheKey);
+      return fallback;
+    }
+    throw err;
+  }
 }
 
 async function getVideosByCategory(category, pageToken = '', maxResults = 12) {
@@ -77,9 +96,19 @@ async function getVideosByCategory(category, pageToken = '', maxResults = 12) {
   const cached = cache.get(cacheKey);
   if (cached) return cached;
 
-  const result = await fetchFromYouTube(query, pageToken, maxResults);
-  cache.set(cacheKey, result);
-  return result;
+  try {
+    const result = await fetchFromYouTube(query, pageToken, maxResults);
+    cache.set(cacheKey, result);
+    fallbackCache.set(cacheKey, result);
+    return result;
+  } catch (err) {
+    const fallback = fallbackCache.get(cacheKey);
+    if (fallback) {
+      console.log('Serving fallback cache for:', cacheKey);
+      return fallback;
+    }
+    throw err;
+  }
 }
 
 module.exports = { searchVideos, getVideosByCategory };
