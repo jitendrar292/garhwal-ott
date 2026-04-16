@@ -1,90 +1,75 @@
-import { useEffect, useState, useCallback } from 'react';
-import HeroBanner from '../components/HeroBanner';
+import { useEffect, useState } from 'react';
 import ImageSlider from '../components/ImageSlider';
-import VideoGrid from '../components/VideoGrid';
+import GenreGrid from '../components/GenreGrid';
+import VideoRow from '../components/VideoRow';
 import { getVideosByCategory } from '../api/youtube';
 
 export default function HomePage() {
-  const [movies, setMovies] = useState({ videos: [], loading: true, error: null, nextPageToken: null });
-  const [trending, setTrending] = useState({ videos: [], loading: true, error: null, nextPageToken: null });
+  const [movies, setMovies] = useState({ videos: [], loading: true, error: null });
+  const [trending, setTrending] = useState({ videos: [], loading: true, error: null });
+  const [songs, setSongs] = useState({ videos: [], loading: true, error: null });
+  const [comedy, setComedy] = useState({ videos: [], loading: true, error: null });
 
   useEffect(() => {
-    async function loadMovies() {
+    async function load(category, setter) {
       try {
-        const data = await getVideosByCategory('movies', '', 8);
-        setMovies({ videos: data.videos, loading: false, error: null, nextPageToken: data.nextPageToken });
+        const data = await getVideosByCategory(category, '', 12);
+        setter({ videos: data.videos, loading: false, error: null });
       } catch (err) {
-        setMovies((s) => ({ ...s, loading: false, error: err.message }));
+        setter((s) => ({ ...s, loading: false, error: err.message }));
       }
     }
-    async function loadTrending() {
-      try {
-        const data = await getVideosByCategory('trending', '', 8);
-        setTrending({ videos: data.videos, loading: false, error: null, nextPageToken: data.nextPageToken });
-      } catch (err) {
-        setTrending((s) => ({ ...s, loading: false, error: err.message }));
-      }
-    }
-    loadMovies();
-    loadTrending();
+    load('movies', setMovies);
+    load('trending', setTrending);
+    load('songs', setSongs);
+    load('comedy', setComedy);
   }, []);
 
-  const loadMoreMovies = useCallback(async () => {
-    if (!movies.nextPageToken) return;
-    setMovies((s) => ({ ...s, loadingMore: true }));
-    try {
-      const data = await getVideosByCategory('movies', movies.nextPageToken, 8);
-      setMovies((s) => ({
-        ...s,
-        videos: [...s.videos, ...data.videos],
-        nextPageToken: data.nextPageToken,
-        loadingMore: false,
-      }));
-    } catch {
-      setMovies((s) => ({ ...s, loadingMore: false }));
-    }
-  }, [movies.nextPageToken]);
-
-  const loadMoreTrending = useCallback(async () => {
-    if (!trending.nextPageToken) return;
-    setTrending((s) => ({ ...s, loadingMore: true }));
-    try {
-      const data = await getVideosByCategory('trending', trending.nextPageToken, 8);
-      setTrending((s) => ({
-        ...s,
-        videos: [...s.videos, ...data.videos],
-        nextPageToken: data.nextPageToken,
-        loadingMore: false,
-      }));
-    } catch {
-      setTrending((s) => ({ ...s, loadingMore: false }));
-    }
-  }, [trending.nextPageToken]);
-
   return (
-    <>
+    <div className="pb-20 sm:pb-0">
+      {/* Full-width slider */}
       <ImageSlider />
-      <HeroBanner />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
-        <VideoGrid
-          title="🎬 Latest Garhwali Movies"
-          videos={movies.videos}
-          loading={movies.loading}
-          error={movies.error}
-          onLoadMore={loadMoreMovies}
-          hasMore={!!movies.nextPageToken}
-          loadingMore={movies.loadingMore}
-        />
-        <VideoGrid
-          title="🔥 Trending Clips"
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-8">
+        {/* Genre cards */}
+        <GenreGrid />
+
+        {/* Trending */}
+        <VideoRow
+          title="🔥 Trending Now"
           videos={trending.videos}
           loading={trending.loading}
           error={trending.error}
-          onLoadMore={loadMoreTrending}
-          hasMore={!!trending.nextPageToken}
-          loadingMore={trending.loadingMore}
+          categoryLink="/category/trending"
+        />
+
+        {/* Movies */}
+        <VideoRow
+          title="🎬 Latest Movies"
+          videos={movies.videos}
+          loading={movies.loading}
+          error={movies.error}
+          categoryLink="/category/movies"
+        />
+
+        {/* Songs */}
+        <VideoRow
+          title="🎵 Pahadi Songs"
+          videos={songs.videos}
+          loading={songs.loading}
+          error={songs.error}
+          categoryLink="/category/songs"
+        />
+
+        {/* Comedy */}
+        <VideoRow
+          title="😂 Comedy"
+          videos={comedy.videos}
+          loading={comedy.loading}
+          error={comedy.error}
+          categoryLink="/category/comedy"
         />
       </div>
-    </>
+    </div>
   );
 }

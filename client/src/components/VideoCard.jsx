@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useFavorites } from '../hooks/useFavorites';
 
-export default function VideoCard({ video }) {
+export default function VideoCard({ video, compact }) {
   const { isFavorite, addFavorite, removeFavorite } = useFavorites();
   const fav = isFavorite(video.id);
 
@@ -18,10 +18,10 @@ export default function VideoCard({ video }) {
   return (
     <Link
       to={`/watch/${video.id}`}
-      className="group block card-hover rounded-xl overflow-hidden bg-dark-700 animate-fade-in-up"
+      className="group block card-hover rounded-xl overflow-hidden bg-dark-800 animate-fade-in-up"
     >
       {/* Thumbnail */}
-      <div className="relative aspect-video overflow-hidden">
+      <div className="relative aspect-video overflow-hidden rounded-xl">
         <img
           src={video.thumbnail}
           alt={video.title}
@@ -30,10 +30,10 @@ export default function VideoCard({ video }) {
         />
         {/* Play overlay */}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
-          <div className="w-14 h-14 bg-primary-500/90 rounded-full flex items-center justify-center
+          <div className={`${compact ? 'w-10 h-10' : 'w-14 h-14'} bg-white/90 rounded-full flex items-center justify-center
                           opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100
-                          transition-all duration-300">
-            <svg className="w-7 h-7 text-white ml-1" fill="currentColor" viewBox="0 0 20 20">
+                          transition-all duration-300`}>
+            <svg className={`${compact ? 'w-4 h-4' : 'w-7 h-7'} text-dark-900 ml-0.5`} fill="currentColor" viewBox="0 0 20 20">
               <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
             </svg>
           </div>

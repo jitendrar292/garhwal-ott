@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import BottomNav from './components/BottomNav';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import CategoryPage from './pages/CategoryPage';
@@ -11,7 +12,7 @@ import FeedbackAdminPage from './pages/FeedbackAdminPage';
 
 export default function App() {
   return (
-    <div className="min-h-screen flex flex-col bg-dark-900 dark:bg-dark-900 text-white">
+    <div className="min-h-screen flex flex-col bg-dark-950 text-white">
       <Navbar />
       <main className="flex-1">
         <Routes>
@@ -25,6 +26,7 @@ export default function App() {
         </Routes>
       </main>
       <Footer />
+      <BottomNav />
     </div>
   );
 }
