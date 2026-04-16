@@ -15,9 +15,7 @@ export default function HeroBanner() {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight">
-          <span className="bg-gradient-to-r from-primary-300 via-primary-400 to-primary-500 bg-clip-text text-transparent">
-            PahadiTube
-          </span>
+            <img src="/logo.png" alt="PahadiTube" className="h-20 sm:h-28 w-auto mx-auto" />
         </h1>
         <p className="mt-4 text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto">
           Watch the latest Pahadi movies, trending songs, comedy, and devotional content — all in one place.
