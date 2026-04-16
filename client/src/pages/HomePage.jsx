@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import ImageSlider from '../components/ImageSlider';
 import GenreGrid from '../components/GenreGrid';
 import VideoRow from '../components/VideoRow';
+import AboutSection from '../components/AboutSection';
 import { getVideosByCategory } from '../api/youtube';
 
 export default function HomePage() {
@@ -69,6 +70,9 @@ export default function HomePage() {
           error={comedy.error}
           categoryLink="/category/comedy"
         />
+
+        {/* About PahadiTube */}
+        <AboutSection />
       </div>
     </div>
   );
