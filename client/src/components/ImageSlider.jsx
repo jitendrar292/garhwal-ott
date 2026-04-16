@@ -60,7 +60,7 @@ export default function ImageSlider() {
 
   return (
     <div
-      className="relative w-full rounded-2xl overflow-hidden shadow-2xl shadow-black/40 group"
+      className="relative w-full overflow-hidden shadow-2xl shadow-black/40 group"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       role="region"

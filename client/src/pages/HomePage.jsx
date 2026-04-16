@@ -63,12 +63,9 @@ export default function HomePage() {
 
   return (
     <>
+      <ImageSlider />
       <HeroBanner />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
-        {/* Image Slider */}
-        <div className="mb-12">
-          <ImageSlider />
-        </div>
         <VideoGrid
           title="🎬 Latest Garhwali Movies"
           videos={movies.videos}
