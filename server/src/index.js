@@ -19,9 +19,11 @@ app.use(helmet());
 const allowedOrigins = [
   process.env.CLIENT_URL || 'http://localhost:5173',
   'http://localhost:4173', // Vite preview
+  'https://garhwali-stream.onrender.com',
 ];
 app.use(cors({
   origin(origin, callback) {
+    // Allow same-origin requests (no origin header) or whitelisted origins
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
