@@ -34,7 +34,7 @@ const SLIDES = [
   {
     src: '/slider/IMG_4652.jpg',
     title: 'Mountain Splendour',
-    subtitle: 'Nature's beauty across the Garhwal hills',
+    subtitle: 'Nature\u2019s beauty across the Garhwal hills',
   },
 ];
 
