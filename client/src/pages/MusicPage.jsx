@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useMusic } from '../context/MusicContext';
+import { useNavigate } from 'react-router-dom';
 import { searchVideos } from '../api/youtube';
 
 const MUSIC_QUERIES = [
@@ -14,7 +14,7 @@ export default function MusicPage() {
   const [activeTab, setActiveTab] = useState(0);
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { playTrack, currentTrack, isPlaying, togglePlay } = useMusic();
+  const navigate = useNavigate();
 
   useEffect(() => {
     let cancelled = false;
@@ -33,11 +33,7 @@ export default function MusicPage() {
   }, [activeTab]);
 
   const handlePlay = (track) => {
-    if (currentTrack?.id === track.id) {
-      togglePlay();
-    } else {
-      playTrack(track, tracks);
-    }
+    navigate(`/watch/${track.id}`);
   };
 
   return (
@@ -89,60 +85,39 @@ export default function MusicPage() {
         <p className="text-gray-400 text-center py-12">No tracks found</p>
       ) : (
         <div className="space-y-2">
-          {tracks.map((track, index) => {
-            const isActive = currentTrack?.id === track.id;
-            return (
-              <button
-                key={track.id}
-                onClick={() => handlePlay(track)}
-                className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${
-                  isActive
-                    ? 'bg-primary-500/10 border border-primary-500/30'
-                    : 'bg-dark-800/50 hover:bg-dark-700/80 border border-transparent'
-                }`}
-              >
-                {/* Index / playing indicator */}
-                <div className="w-8 text-center shrink-0">
-                  {isActive && isPlaying ? (
-                    <div className="flex items-end justify-center gap-0.5 h-4">
-                      <span className="w-1 bg-primary-400 rounded-full animate-bounce" style={{ height: '60%', animationDelay: '0ms' }} />
-                      <span className="w-1 bg-primary-400 rounded-full animate-bounce" style={{ height: '100%', animationDelay: '150ms' }} />
-                      <span className="w-1 bg-primary-400 rounded-full animate-bounce" style={{ height: '40%', animationDelay: '300ms' }} />
-                    </div>
-                  ) : (
-                    <span className="text-sm text-gray-500">{index + 1}</span>
-                  )}
-                </div>
+          {tracks.map((track, index) => (
+            <button
+              key={track.id}
+              onClick={() => handlePlay(track)}
+              className="w-full flex items-center gap-3 p-3 rounded-xl transition-all bg-dark-800/50 hover:bg-dark-700/80 border border-transparent"
+            >
+              {/* Index */}
+              <div className="w-8 text-center shrink-0">
+                <span className="text-sm text-gray-500">{index + 1}</span>
+              </div>
 
-                {/* Thumbnail */}
-                <div className="relative w-14 h-14 rounded-lg overflow-hidden shrink-0">
-                  <img src={track.thumbnail} alt="" className="w-full h-full object-cover" />
-                  {isActive && isPlaying && (
-                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-                      <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-                      </svg>
-                    </div>
-                  )}
-                  {(!isActive || !isPlaying) && (
-                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                      <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
-                    </div>
-                  )}
+              {/* Thumbnail */}
+              <div className="relative w-14 h-14 rounded-lg overflow-hidden shrink-0">
+                <img src={track.thumbnail} alt="" className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
                 </div>
+              </div>
 
-                {/* Info */}
-                <div className="flex-1 min-w-0 text-left">
-                  <p className={`text-sm font-medium truncate ${isActive ? 'text-primary-400' : 'text-white'}`}>
-                    {track.title}
-                  </p>
-                  <p className="text-xs text-gray-400 truncate">{track.channelTitle}</p>
-                </div>
-              </button>
-            );
-          })}
+              {/* Info */}
+              <div className="flex-1 min-w-0 text-left">
+                <p className="text-sm font-medium truncate text-white">{track.title}</p>
+                <p className="text-xs text-gray-400 truncate">{track.channelTitle}</p>
+              </div>
+
+              {/* Play icon */}
+              <svg className="w-5 h-5 text-primary-400 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </button>
+          ))}
         </div>
       )}
     </div>

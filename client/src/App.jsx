@@ -1,7 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import BottomNav from './components/BottomNav';
-import FloatingPlayer from './components/FloatingPlayer';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import CategoryPage from './pages/CategoryPage';
@@ -29,7 +28,6 @@ export default function App() {
         </Routes>
       </main>
       <Footer />
-      <FloatingPlayer />
       <BottomNav />
     </div>
   );
