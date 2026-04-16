@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import HeroBanner from '../components/HeroBanner';
+import ImageSlider from '../components/ImageSlider';
 import VideoGrid from '../components/VideoGrid';
 import { getVideosByCategory } from '../api/youtube';
 
@@ -64,6 +65,10 @@ export default function HomePage() {
     <>
       <HeroBanner />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+        {/* Image Slider */}
+        <div className="mb-12">
+          <ImageSlider />
+        </div>
         <VideoGrid
           title="🎬 Latest Garhwali Movies"
           videos={movies.videos}
