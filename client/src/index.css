@@ -44,6 +44,23 @@
     @apply bg-dark-900/90 backdrop-blur-xl border-b border-white/5;
   }
 
+  /* Vertical snap scroll (Shorts-style) */
+  .snap-container {
+    height: 100%;
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .snap-container::-webkit-scrollbar {
+    display: none;
+  }
+  .snap-section {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    min-height: 100%;
+  }
+
   /* Horizontal scroll row */
   .scroll-row {
     @apply flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory;

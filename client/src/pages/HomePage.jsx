@@ -3,6 +3,7 @@ import ImageSlider from '../components/ImageSlider';
 import GenreGrid from '../components/GenreGrid';
 import VideoRow from '../components/VideoRow';
 import AboutSection from '../components/AboutSection';
+import Footer from '../components/Footer';
 import { getVideosByCategory } from '../api/youtube';
 
 export default function HomePage() {
@@ -27,53 +28,80 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="pb-20 sm:pb-0">
+    <div className="snap-container pb-20 sm:pb-0">
       {/* Full-width slider */}
-      <ImageSlider />
+      <section className="snap-section">
+        <ImageSlider />
+      </section>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-8">
-        {/* Genre cards */}
-        <GenreGrid />
+      {/* Genre cards */}
+      <section className="snap-section flex items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full">
+          <GenreGrid />
+        </div>
+      </section>
 
-        {/* Trending */}
-        <VideoRow
-          title="🔥 Trending Now"
-          videos={trending.videos}
-          loading={trending.loading}
-          error={trending.error}
-          categoryLink="/category/trending"
-        />
+      {/* Trending */}
+      <section className="snap-section flex items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full">
+          <VideoRow
+            title="🔥 Trending Now"
+            videos={trending.videos}
+            loading={trending.loading}
+            error={trending.error}
+            categoryLink="/category/trending"
+          />
+        </div>
+      </section>
 
-        {/* Movies */}
-        <VideoRow
-          title="🎬 Latest Movies"
-          videos={movies.videos}
-          loading={movies.loading}
-          error={movies.error}
-          categoryLink="/category/movies"
-        />
+      {/* Movies */}
+      <section className="snap-section flex items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full">
+          <VideoRow
+            title="🎬 Latest Movies"
+            videos={movies.videos}
+            loading={movies.loading}
+            error={movies.error}
+            categoryLink="/category/movies"
+          />
+        </div>
+      </section>
 
-        {/* Songs */}
-        <VideoRow
-          title="🎵 Pahadi Songs"
-          videos={songs.videos}
-          loading={songs.loading}
-          error={songs.error}
-          categoryLink="/category/songs"
-        />
+      {/* Songs */}
+      <section className="snap-section flex items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full">
+          <VideoRow
+            title="🎵 Pahadi Songs"
+            videos={songs.videos}
+            loading={songs.loading}
+            error={songs.error}
+            categoryLink="/category/songs"
+          />
+        </div>
+      </section>
 
-        {/* Comedy */}
-        <VideoRow
-          title="😂 Comedy"
-          videos={comedy.videos}
-          loading={comedy.loading}
-          error={comedy.error}
-          categoryLink="/category/comedy"
-        />
+      {/* Comedy */}
+      <section className="snap-section flex items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full">
+          <VideoRow
+            title="😂 Comedy"
+            videos={comedy.videos}
+            loading={comedy.loading}
+            error={comedy.error}
+            categoryLink="/category/comedy"
+          />
+        </div>
+      </section>
 
-        {/* About PahadiTube */}
-        <AboutSection />
-      </div>
+      {/* About PahadiTube */}
+      <section className="snap-section flex flex-col items-center justify-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full flex-1 flex items-center">
+          <div className="w-full">
+            <AboutSection />
+          </div>
+        </div>
+        <Footer />
+      </section>
     </div>
   );
 }

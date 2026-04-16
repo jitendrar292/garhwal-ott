@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import BottomNav from './components/BottomNav';
 import Footer from './components/Footer';
@@ -10,11 +10,14 @@ import FavoritesPage from './pages/FavoritesPage';
 import FeedbackPage from './pages/FeedbackPage';
 import FeedbackAdminPage from './pages/FeedbackAdminPage';
 
-export default function App() {
+function AppContent() {
+  const location = useLocation();
+  const isHome = location.pathname === '/';
+
   return (
-    <div className="min-h-screen flex flex-col bg-dark-950 text-white">
+    <div className="h-[100dvh] flex flex-col bg-dark-950 text-white overflow-hidden">
       <Navbar />
-      <main className="flex-1">
+      <main className="flex-1 overflow-y-auto overflow-x-hidden">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/category/:category" element={<CategoryPage />} />
@@ -24,9 +27,13 @@ export default function App() {
           <Route path="/feedback" element={<FeedbackPage />} />
           <Route path="/feedback/admin" element={<FeedbackAdminPage />} />
         </Routes>
+        {!isHome && <Footer />}
       </main>
-      <Footer />
       <BottomNav />
     </div>
   );
+}
+
+export default function App() {
+  return <AppContent />;
 }
