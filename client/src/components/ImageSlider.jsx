@@ -36,6 +36,16 @@ const SLIDES = [
     title: 'Mountain Splendour',
     subtitle: 'Nature\u2019s beauty across the Garhwal hills',
   },
+  {
+    src: '/slider/IMG_0221.jpg',
+    title: 'Himalayan Vista',
+    subtitle: 'Breathtaking views from the Garhwal highlands',
+  },
+  {
+    src: '/slider/IMG_0285.jpg',
+    title: 'Pahadi Charm',
+    subtitle: 'Capturing the essence of mountain life',
+  },
 ];
 
 export default function ImageSlider() {
