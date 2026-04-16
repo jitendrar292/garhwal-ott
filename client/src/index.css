@@ -56,6 +56,12 @@
   animation: shimmer 1.5s infinite;
 }
 
+/* Slider progress bar */
+@keyframes progress {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
 /* Fade-in animation */
 @keyframes fadeInUp {
   from {
