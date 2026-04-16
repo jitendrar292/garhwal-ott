@@ -37,7 +37,7 @@ export default function Navbar() {
               </svg>
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-primary-400 to-primary-300 bg-clip-text text-transparent">
-              Garhwali Stream
+              PahadiTube
             </span>
           </Link>
 
@@ -67,7 +67,7 @@ export default function Navbar() {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search Garhwali videos..."
+                placeholder="Search Pahadi videos..."
                 className="w-64 bg-dark-700 border border-dark-500 rounded-full px-4 py-2 text-sm
                            text-white placeholder-gray-500 focus:outline-none focus:border-primary-500
                            focus:ring-1 focus:ring-primary-500 transition-all"
@@ -124,7 +124,7 @@ export default function Navbar() {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search Garhwali videos..."
+                placeholder="Search Pahadi videos..."
                 className="w-full bg-dark-700 border border-dark-500 rounded-full px-4 py-2 text-sm
                            text-white placeholder-gray-500 focus:outline-none focus:border-primary-500"
                 maxLength={200}

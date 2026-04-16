@@ -84,5 +84,5 @@ app.use((err, _req, res, _next) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🎬 Garhwali Stream server running on port ${PORT}`);
+  console.log(`🎬 PahadiTube server running on port ${PORT}`);
 });

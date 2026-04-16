@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 
-const STORAGE_KEY = 'garhwali_stream_favorites';
+const STORAGE_KEY = 'pahadi_tube_favorites';
 
 function loadFavorites() {
   try {

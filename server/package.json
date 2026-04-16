@@ -1,7 +1,7 @@
 {
-  "name": "garhwali-stream-server",
+  "name": "pahadi-tube-server",
   "version": "1.0.0",
-  "description": "Backend API for Garhwali Stream",
+  "description": "Backend API for PahadiTube",
   "main": "src/index.js",
   "scripts": {
     "dev": "node --watch src/index.js",

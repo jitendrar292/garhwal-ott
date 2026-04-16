@@ -1,7 +1,7 @@
 {
-  "name": "garhwali-stream",
+  "name": "pahadi-tube",
   "version": "1.0.0",
-  "description": "Garhwali Stream - Aggregates latest Garhwali movies and trending clips via YouTube",
+  "description": "PahadiTube - Aggregates latest Garhwali movies and trending clips via YouTube",
   "private": true,
   "scripts": {
     "install:all": "npm install && cd client && npm install && cd ../server && npm install",

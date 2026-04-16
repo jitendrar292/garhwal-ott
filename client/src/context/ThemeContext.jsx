@@ -5,7 +5,7 @@ const ThemeContext = createContext();
 export function ThemeProvider({ children }) {
   const [darkMode, setDarkMode] = useState(() => {
     if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('garhwali_dark_mode');
+      const stored = localStorage.getItem('pahadi_tube_dark_mode');
       if (stored !== null) return stored === 'true';
     }
     return true; // default dark
@@ -18,7 +18,7 @@ export function ThemeProvider({ children }) {
     } else {
       root.classList.remove('dark');
     }
-    localStorage.setItem('garhwali_dark_mode', String(darkMode));
+    localStorage.setItem('pahadi_tube_dark_mode', String(darkMode));
   }, [darkMode]);
 
   const toggleDarkMode = () => setDarkMode((prev) => !prev);
