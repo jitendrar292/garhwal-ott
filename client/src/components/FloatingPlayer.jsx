@@ -3,11 +3,12 @@ import { useMusic } from '../context/MusicContext';
 
 export default function FloatingPlayer() {
   const { currentTrack, isPlaying, togglePlay, nextTrack, prevTrack, stop } = useMusic();
+  const containerRef = useRef(null);
   const playerRef = useRef(null);
   const [minimized, setMinimized] = useState(false);
   const [ready, setReady] = useState(false);
 
-  // Load/reload YouTube IFrame API
+  // Load YouTube IFrame API once
   useEffect(() => {
     if (window.YT && window.YT.Player) return;
     const tag = document.createElement('script');
@@ -15,26 +16,45 @@ export default function FloatingPlayer() {
     document.head.appendChild(tag);
   }, []);
 
-  // Create / update player
+  // Create / update player when track changes
   useEffect(() => {
     if (!currentTrack) return;
 
     const createPlayer = () => {
+      // Destroy previous player
       if (playerRef.current) {
-        playerRef.current.destroy();
+        try { playerRef.current.destroy(); } catch {}
+        playerRef.current = null;
       }
+
+      // Recreate the target div
+      if (containerRef.current) {
+        containerRef.current.innerHTML = '<div id="yt-audio-player"></div>';
+      }
+
       playerRef.current = new window.YT.Player('yt-audio-player', {
-        height: '0',
-        width: '0',
+        height: '1',
+        width: '1',
         videoId: currentTrack.id,
-        playerVars: { autoplay: 1, controls: 0, disablekb: 1, fs: 0, modestbranding: 1 },
+        playerVars: {
+          autoplay: 1,
+          controls: 0,
+          disablekb: 1,
+          fs: 0,
+          modestbranding: 1,
+          playsinline: 1,
+          origin: window.location.origin,
+        },
         events: {
           onReady: () => setReady(true),
           onStateChange: (e) => {
-            // Auto-next when track ends
             if (e.data === window.YT.PlayerState.ENDED) {
               nextTrack();
             }
+          },
+          onError: () => {
+            // Skip to next on error
+            nextTrack();
           },
         },
       });
@@ -47,13 +67,19 @@ export default function FloatingPlayer() {
     }
 
     return () => {
-      if (playerRef.current) {
-        playerRef.current.destroy();
-        playerRef.current = null;
-      }
       setReady(false);
     };
   }, [currentTrack?.id]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (playerRef.current) {
+        try { playerRef.current.destroy(); } catch {}
+        playerRef.current = null;
+      }
+    };
+  }, []);
 
   // Play/Pause sync
   useEffect(() => {
@@ -73,8 +99,11 @@ export default function FloatingPlayer() {
 
   return (
     <>
-      {/* Hidden YouTube player */}
-      <div className="hidden">
+      {/* YouTube player - tiny but visible (not display:none) so playback works */}
+      <div
+        ref={containerRef}
+        style={{ position: 'fixed', top: '-100px', left: '-100px', width: '1px', height: '1px', overflow: 'hidden', opacity: 0.01 }}
+      >
         <div id="yt-audio-player" />
       </div>
 
