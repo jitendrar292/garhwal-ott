@@ -27,16 +27,6 @@ const SLIDES = [
     subtitle: 'Heritage Garhwali architecture with stone-slate roofs',
   },
   {
-    src: '/slider/IMG_4129.jpg',
-    title: 'Pahadi Serenity',
-    subtitle: 'Peaceful moments in the heart of Uttarakhand',
-  },
-  {
-    src: '/slider/IMG_4652.jpg',
-    title: 'Mountain Splendour',
-    subtitle: 'Nature\u2019s beauty across the Garhwal hills',
-  },
-  {
     src: '/slider/IMG_0221.jpg',
     title: 'Himalayan Vista',
     subtitle: 'Breathtaking views from the Garhwal highlands',
