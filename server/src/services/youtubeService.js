@@ -9,6 +9,67 @@ const cache = new NodeCache({ stdTTL: 21600, checkperiod: 3600 });
 // Fallback cache that never expires — stores last good response
 const fallbackCache = new NodeCache({ stdTTL: 0 });
 
+// Static fallback data when API quota is exhausted and no cache exists
+const STATIC_FALLBACK = {
+  movies: {
+    videos: [
+      { id: 'QY3LsR_B5rM', title: 'Garhwali Full Movie - Chakrachal', thumbnail: 'https://i.ytimg.com/vi/QY3LsR_B5rM/hqdefault.jpg', channelTitle: 'Garhwali Movies', publishedAt: '2024-01-01', description: '' },
+      { id: 'xkJZSKO2x_E', title: 'Pahadi Movie - Meri Bassai', thumbnail: 'https://i.ytimg.com/vi/xkJZSKO2x_E/hqdefault.jpg', channelTitle: 'Pahadi Films', publishedAt: '2024-01-01', description: '' },
+      { id: 'dK9G5xPtgTk', title: 'Garhwali Film - Gajya Gooru', thumbnail: 'https://i.ytimg.com/vi/dK9G5xPtgTk/hqdefault.jpg', channelTitle: 'Garhwali Cinema', publishedAt: '2024-01-01', description: '' },
+      { id: 'LWJzMsYyR-0', title: 'Uttarakhandi Movie - Jagar', thumbnail: 'https://i.ytimg.com/vi/LWJzMsYyR-0/hqdefault.jpg', channelTitle: 'UK Films', publishedAt: '2024-01-01', description: '' },
+      { id: 'y8E85M-_mCU', title: 'New Garhwali Movie 2024', thumbnail: 'https://i.ytimg.com/vi/y8E85M-_mCU/hqdefault.jpg', channelTitle: 'Garhwali Movies', publishedAt: '2024-01-01', description: '' },
+      { id: 'kLKtJlqxLHE', title: 'Garhwali Film - Sauras', thumbnail: 'https://i.ytimg.com/vi/kLKtJlqxLHE/hqdefault.jpg', channelTitle: 'Pahadi Cinema', publishedAt: '2024-01-01', description: '' },
+    ],
+    nextPageToken: null, prevPageToken: null, totalResults: 6,
+  },
+  songs: {
+    videos: [
+      { id: 'eWL8gLW-6gE', title: 'Latest Garhwali Song 2024', thumbnail: 'https://i.ytimg.com/vi/eWL8gLW-6gE/hqdefault.jpg', channelTitle: 'Pahadi Songs', publishedAt: '2024-01-01', description: '' },
+      { id: 'KfJd1T5SQhc', title: 'Superhit Garhwali DJ Song', thumbnail: 'https://i.ytimg.com/vi/KfJd1T5SQhc/hqdefault.jpg', channelTitle: 'Garhwali Hits', publishedAt: '2024-01-01', description: '' },
+      { id: 'ZzQx0k2jFCA', title: 'Pahadi Love Song - Meri Maya', thumbnail: 'https://i.ytimg.com/vi/ZzQx0k2jFCA/hqdefault.jpg', channelTitle: 'Pahadi Music', publishedAt: '2024-01-01', description: '' },
+      { id: '5bKHCVjpaGE', title: 'Garhwali Folk Song - Chaita Ki Chaitwal', thumbnail: 'https://i.ytimg.com/vi/5bKHCVjpaGE/hqdefault.jpg', channelTitle: 'Folk Music UK', publishedAt: '2024-01-01', description: '' },
+      { id: 'v3hNm-mTpPQ', title: 'Trending Pahadi Song 2024', thumbnail: 'https://i.ytimg.com/vi/v3hNm-mTpPQ/hqdefault.jpg', channelTitle: 'Pahadi Hits', publishedAt: '2024-01-01', description: '' },
+      { id: 'aE2j-FMQH5I', title: 'New Kumaoni Garhwali Song', thumbnail: 'https://i.ytimg.com/vi/aE2j-FMQH5I/hqdefault.jpg', channelTitle: 'UK Music', publishedAt: '2024-01-01', description: '' },
+    ],
+    nextPageToken: null, prevPageToken: null, totalResults: 6,
+  },
+  comedy: {
+    videos: [
+      { id: 'pBOxTjb-sRA', title: 'Garhwali Comedy - Funny Pahadi', thumbnail: 'https://i.ytimg.com/vi/pBOxTjb-sRA/hqdefault.jpg', channelTitle: 'Pahadi Comedy', publishedAt: '2024-01-01', description: '' },
+      { id: 'LiGEb-2K3iY', title: 'Best Uttarakhandi Comedy', thumbnail: 'https://i.ytimg.com/vi/LiGEb-2K3iY/hqdefault.jpg', channelTitle: 'UK Comedy', publishedAt: '2024-01-01', description: '' },
+      { id: 'J9VBM4rZBWA', title: 'Garhwali Hasya - Village Comedy', thumbnail: 'https://i.ytimg.com/vi/J9VBM4rZBWA/hqdefault.jpg', channelTitle: 'Garhwali Fun', publishedAt: '2024-01-01', description: '' },
+      { id: 'W6bDVDFpN24', title: 'Pahadi Comedy Show 2024', thumbnail: 'https://i.ytimg.com/vi/W6bDVDFpN24/hqdefault.jpg', channelTitle: 'Pahadi Laughs', publishedAt: '2024-01-01', description: '' },
+      { id: 'TS-SIkFNuVA', title: 'Funny Garhwali Skit', thumbnail: 'https://i.ytimg.com/vi/TS-SIkFNuVA/hqdefault.jpg', channelTitle: 'UK Comedy', publishedAt: '2024-01-01', description: '' },
+      { id: 'gh-S7F2bBOg', title: 'Hilarious Pahadi Video', thumbnail: 'https://i.ytimg.com/vi/gh-S7F2bBOg/hqdefault.jpg', channelTitle: 'Pahadi Fun', publishedAt: '2024-01-01', description: '' },
+    ],
+    nextPageToken: null, prevPageToken: null, totalResults: 6,
+  },
+  devotional: {
+    videos: [
+      { id: '1x0-E2F8AnE', title: 'Garhwali Bhajan - Jai Badrinath', thumbnail: 'https://i.ytimg.com/vi/1x0-E2F8AnE/hqdefault.jpg', channelTitle: 'Pahadi Bhajan', publishedAt: '2024-01-01', description: '' },
+      { id: 'q3DfWFkHJRk', title: 'Kedarnath Bhajan - Bhole Baba', thumbnail: 'https://i.ytimg.com/vi/q3DfWFkHJRk/hqdefault.jpg', channelTitle: 'Devotional UK', publishedAt: '2024-01-01', description: '' },
+      { id: 'F-HE7VQk7eU', title: 'Nanda Devi Bhajan', thumbnail: 'https://i.ytimg.com/vi/F-HE7VQk7eU/hqdefault.jpg', channelTitle: 'Garhwali Bhajan', publishedAt: '2024-01-01', description: '' },
+      { id: 'RYV-EN5cXU0', title: 'Uttarakhandi Devotional Song', thumbnail: 'https://i.ytimg.com/vi/RYV-EN5cXU0/hqdefault.jpg', channelTitle: 'UK Bhajan', publishedAt: '2024-01-01', description: '' },
+    ],
+    nextPageToken: null, prevPageToken: null, totalResults: 4,
+  },
+  trending: {
+    videos: [
+      { id: 'eWL8gLW-6gE', title: 'Trending Garhwali Hit 2024', thumbnail: 'https://i.ytimg.com/vi/eWL8gLW-6gE/hqdefault.jpg', channelTitle: 'Pahadi Hits', publishedAt: '2024-01-01', description: '' },
+      { id: 'pBOxTjb-sRA', title: 'Viral Pahadi Comedy', thumbnail: 'https://i.ytimg.com/vi/pBOxTjb-sRA/hqdefault.jpg', channelTitle: 'Pahadi Comedy', publishedAt: '2024-01-01', description: '' },
+      { id: 'KfJd1T5SQhc', title: 'Garhwali DJ Song - Trending', thumbnail: 'https://i.ytimg.com/vi/KfJd1T5SQhc/hqdefault.jpg', channelTitle: 'Garhwali Hits', publishedAt: '2024-01-01', description: '' },
+      { id: 'QY3LsR_B5rM', title: 'Most Watched Garhwali Movie', thumbnail: 'https://i.ytimg.com/vi/QY3LsR_B5rM/hqdefault.jpg', channelTitle: 'Garhwali Movies', publishedAt: '2024-01-01', description: '' },
+      { id: 'ZzQx0k2jFCA', title: 'Hit Pahadi Love Song', thumbnail: 'https://i.ytimg.com/vi/ZzQx0k2jFCA/hqdefault.jpg', channelTitle: 'Pahadi Music', publishedAt: '2024-01-01', description: '' },
+      { id: 'LiGEb-2K3iY', title: 'Trending Uttarakhandi Video', thumbnail: 'https://i.ytimg.com/vi/LiGEb-2K3iY/hqdefault.jpg', channelTitle: 'UK Trending', publishedAt: '2024-01-01', description: '' },
+    ],
+    nextPageToken: null, prevPageToken: null, totalResults: 6,
+  },
+};
+
+function getStaticFallback(category) {
+  return STATIC_FALLBACK[category] || { videos: [], nextPageToken: null, prevPageToken: null, totalResults: 0 };
+}
+
 const CATEGORY_QUERIES = {
   movies: 'Garhwali full movie',
   songs: 'Garhwali latest songs',
@@ -84,6 +145,11 @@ async function searchVideos(query, pageToken = '', maxResults = 12) {
       console.log('Serving fallback cache for:', cacheKey);
       return fallback;
     }
+    // Return static fallback for songs-related search queries
+    if (err.message === 'QUOTA_EXCEEDED') {
+      console.log('Serving static fallback for search:', query);
+      return getStaticFallback('songs');
+    }
     throw err;
   }
 }
@@ -106,6 +172,11 @@ async function getVideosByCategory(category, pageToken = '', maxResults = 12) {
     if (fallback) {
       console.log('Serving fallback cache for:', cacheKey);
       return fallback;
+    }
+    // Use static fallback data when quota is exceeded
+    if (err.message === 'QUOTA_EXCEEDED') {
+      console.log('Serving static fallback for category:', category);
+      return getStaticFallback(category);
     }
     throw err;
   }
