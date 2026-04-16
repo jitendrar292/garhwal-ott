@@ -8,6 +8,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const youtubeRoutes = require('./routes/youtube');
+const { getVisits, incrementVisits, getFeedback, addFeedback, deleteFeedback } = require('./services/store');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -65,16 +66,55 @@ if (process.env.NODE_ENV === 'production') {
 // API routes
 app.use('/api/youtube', youtubeRoutes);
 
-// Visit counter (in-memory, persists while server is running)
-let visitCount = 0;
-
+// Visit counter (persistent file-based)
 app.post('/api/visits', (_req, res) => {
-  visitCount++;
-  res.json({ count: visitCount });
+  const count = incrementVisits();
+  res.json({ count });
 });
 
 app.get('/api/visits', (_req, res) => {
-  res.json({ count: visitCount });
+  res.json({ count: getVisits() });
+});
+
+// Feedback endpoints
+app.post('/api/feedback', (req, res) => {
+  const { name, message, email } = req.body;
+  if (!name || typeof name !== 'string' || name.trim().length === 0) {
+    return res.status(400).json({ error: 'Name is required' });
+  }
+  if (!message || typeof message !== 'string' || message.trim().length === 0) {
+    return res.status(400).json({ error: 'Message is required' });
+  }
+  if (name.length > 100 || message.length > 2000 || (email && email.length > 200)) {
+    return res.status(400).json({ error: 'Input too long' });
+  }
+  const feedback = addFeedback({
+    name: name.trim(),
+    email: email ? email.trim() : '',
+    message: message.trim(),
+  });
+  res.status(201).json({ success: true, total: feedback.length });
+});
+
+app.get('/api/feedback', (req, res) => {
+  const adminKey = process.env.FEEDBACK_ADMIN_KEY || 'pahadi2026';
+  const providedKey = req.query.key;
+  if (providedKey !== adminKey) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  res.json({ feedback: getFeedback() });
+});
+
+app.delete('/api/feedback/:id', (req, res) => {
+  const adminKey = process.env.FEEDBACK_ADMIN_KEY || 'pahadi2026';
+  const providedKey = req.query.key;
+  if (providedKey !== adminKey) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  const id = parseInt(req.params.id, 10);
+  if (isNaN(id)) return res.status(400).json({ error: 'Invalid ID' });
+  const feedback = deleteFeedback(id);
+  res.json({ success: true, total: feedback.length });
 });
 
 // Health check

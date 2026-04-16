@@ -6,6 +6,8 @@ import CategoryPage from './pages/CategoryPage';
 import SearchPage from './pages/SearchPage';
 import PlayerPage from './pages/PlayerPage';
 import FavoritesPage from './pages/FavoritesPage';
+import FeedbackPage from './pages/FeedbackPage';
+import FeedbackAdminPage from './pages/FeedbackAdminPage';
 
 export default function App() {
   return (
@@ -18,6 +20,8 @@ export default function App() {
           <Route path="/search" element={<SearchPage />} />
           <Route path="/watch/:videoId" element={<PlayerPage />} />
           <Route path="/favorites" element={<FavoritesPage />} />
+          <Route path="/feedback" element={<FeedbackPage />} />
+          <Route path="/feedback/admin" element={<FeedbackAdminPage />} />
         </Routes>
       </main>
       <Footer />

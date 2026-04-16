@@ -41,6 +41,7 @@ export default function Footer() {
             <Link to="/category/movies" className="hover:text-gray-300 transition-colors">Movies</Link>
             <Link to="/category/songs" className="hover:text-gray-300 transition-colors">Songs</Link>
             <Link to="/favorites" className="hover:text-gray-300 transition-colors">Favorites</Link>
+            <Link to="/feedback" className="hover:text-gray-300 transition-colors">Feedback</Link>
           </div>
           <div className="flex flex-col items-center md:items-end gap-1">
             {visits !== null && (
