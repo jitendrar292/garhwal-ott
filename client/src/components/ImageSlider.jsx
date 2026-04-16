@@ -67,7 +67,7 @@ export default function ImageSlider() {
       aria-label="Image slideshow"
     >
       {/* Slides with crossfade + Ken Burns */}
-      <div className="relative aspect-[21/9] sm:aspect-[2.8/1] bg-dark-800">
+      <div className="relative aspect-[16/7] sm:aspect-[3.5/1] bg-dark-800">
         {SLIDES.map((slide, index) => (
           <div
             key={index}
