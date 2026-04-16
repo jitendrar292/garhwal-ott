@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: garhwali-stream
+    runtime: node
+    buildCommand: cd client && npm install && npm run build && cd ../server && npm install
+    startCommand: cd server && NODE_ENV=production node src/index.js
+    envVars:
+      - key: YOUTUBE_API_KEY
+        sync: false
+      - key: NODE_ENV
+        value: production
+      - key: CLIENT_URL
+        value: https://garhwali-stream.onrender.com
