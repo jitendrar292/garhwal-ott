@@ -57,6 +57,22 @@ export default function Footer() {
             </p>
           </div>
         </div>
+
+        {/* Disclaimer + Copyright notice */}
+        <div className="mt-6 pt-4 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-2 text-center">
+          <p className="text-xs text-gray-600">
+            PahadiTube does not host or control third-party embedded content.
+          </p>
+          <p className="text-xs text-gray-600">
+            Copyright owner?{' '}
+            <a
+              href="mailto:jitendrar292@gmail.com"
+              className="text-primary-400 hover:text-primary-300 transition-colors"
+            >
+              jitendrar292@gmail.com
+            </a>
+          </p>
+        </div>
       </div>
     </footer>
   );
