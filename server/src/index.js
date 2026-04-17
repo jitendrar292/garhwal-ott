@@ -8,7 +8,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const youtubeRoutes = require('./routes/youtube');
-const { getVisits, incrementVisits, logVisitor, getVisitors, getFeedback, addFeedback, deleteFeedback } = require('./services/store');
+const { getVisits, incrementVisits, isNewIp, logVisitor, getVisitors, getFeedback, addFeedback, deleteFeedback } = require('./services/store');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -96,12 +96,12 @@ app.get('/api/captions/:videoId', async (req, res) => {
   }
 });
 
-// Visit counter (Upstash Redis or in-memory fallback)
+// Visit counter — unique IPs only
 app.post('/api/visits', async (req, res) => {
-  const count = await incrementVisits();
   const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
-  // Log geo in background — don't block the response
-  logVisitor(ip).catch(() => {});
+  const fresh = await isNewIp(ip);
+  const count = fresh ? await incrementVisits() : await getVisits();
+  if (fresh) logVisitor(ip).catch(() => {});
   res.json({ count });
 });
 

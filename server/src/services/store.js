@@ -9,11 +9,28 @@ const VISIT_SEED = parseInt(process.env.VISIT_SEED || '0', 10);
 const UPSTASH_ENABLED = !!(UPSTASH_URL && UPSTASH_TOKEN);
 const REDIS_KEY = 'pahadi_visits';
 const VISITORS_KEY = 'pahadi_visitors';
+const SEEN_IPS_KEY = 'pahadi_seen_ips';
 const MAX_VISITORS = 500; // keep last 500 visitor records
 
 let memVisits = VISIT_SEED;
 let memFeedback = [];
 let memVisitors = [];
+let memSeenIps = new Set();
+
+// Returns true if this IP has never been seen before
+async function isNewIp(ip) {
+  if (UPSTASH_ENABLED) {
+    try {
+      const added = await redisCmd('SADD', SEEN_IPS_KEY, ip);
+      return parseInt(added, 10) === 1;
+    } catch (err) {
+      console.error('Upstash isNewIp error:', err.message);
+    }
+  }
+  if (memSeenIps.has(ip)) return false;
+  memSeenIps.add(ip);
+  return true;
+}
 
 async function redisCmd(...args) {
   const path = args.map((a) => encodeURIComponent(String(a))).join('/');
@@ -162,5 +179,5 @@ async function deleteFeedback(id) {
   return [...memFeedback];
 }
 
-module.exports = { getVisits, incrementVisits, logVisitor, getVisitors, getFeedback, addFeedback, deleteFeedback };
+module.exports = { getVisits, incrementVisits, isNewIp, logVisitor, getVisitors, getFeedback, addFeedback, deleteFeedback };
 
