@@ -66,6 +66,36 @@ if (process.env.NODE_ENV === 'production') {
 // API routes
 app.use('/api/youtube', youtubeRoutes);
 
+// Captions endpoint — tries hi, a.hi (auto Hindi), en, a.en in order
+app.get('/api/captions/:videoId', async (req, res) => {
+  const { videoId } = req.params;
+  if (!videoId || !/^[a-zA-Z0-9_-]{11}$/.test(videoId)) {
+    return res.status(400).json({ error: 'Invalid video ID' });
+  }
+  try {
+    const { getSubtitles } = require('youtube-captions-scraper');
+    const langs = ['hi', 'a.hi', 'en', 'a.en'];
+    let captions = null;
+    let usedLang = null;
+    for (const lang of langs) {
+      try {
+        captions = await getSubtitles({ videoID: videoId, lang });
+        usedLang = lang;
+        break;
+      } catch {
+        // try next language
+      }
+    }
+    if (!captions || captions.length === 0) {
+      return res.status(404).json({ error: 'No captions available' });
+    }
+    res.json({ lang: usedLang, captions });
+  } catch (err) {
+    console.error('Captions error:', err.message);
+    res.status(502).json({ error: 'Failed to fetch captions' });
+  }
+});
+
 // Visit counter (Upstash Redis or in-memory fallback)
 app.post('/api/visits', async (_req, res) => {
   const count = await incrementVisits();
