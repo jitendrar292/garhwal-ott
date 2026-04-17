@@ -1,75 +1,71 @@
-const fs = require('fs');
-const path = require('path');
+// Persistent counter via Upstash Redis REST API.
+// Falls back to in-memory when Upstash isn't configured.
+// Set UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN in Render env vars.
+// Set VISIT_SEED to preserve a previous count after switching strategies.
 
-const DATA_DIR = path.resolve(__dirname, '../../data');
-const DATA_FILE = path.join(DATA_DIR, 'store.json');
+const UPSTASH_URL = process.env.UPSTASH_REDIS_REST_URL;
+const UPSTASH_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+const VISIT_SEED = parseInt(process.env.VISIT_SEED || '0', 10);
+const UPSTASH_ENABLED = !!(UPSTASH_URL && UPSTASH_TOKEN);
+const REDIS_KEY = 'pahadi_visits';
 
-const DEFAULT_DATA = {
-  visits: 0,
-  feedback: [],
-};
+let memVisits = VISIT_SEED;
+let memFeedback = [];
 
-function ensureDataDir() {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
+async function redisCmd(...args) {
+  const path = args.map((a) => encodeURIComponent(String(a))).join('/');
+  const res = await fetch(`${UPSTASH_URL}/${path}`, {
+    headers: { Authorization: `Bearer ${UPSTASH_TOKEN}` },
+  });
+  if (!res.ok) throw new Error(`Upstash error ${res.status}`);
+  const json = await res.json();
+  return json.result;
 }
 
-function readStore() {
-  ensureDataDir();
-  try {
-    if (fs.existsSync(DATA_FILE)) {
-      const raw = fs.readFileSync(DATA_FILE, 'utf-8');
-      return { ...DEFAULT_DATA, ...JSON.parse(raw) };
+async function getVisits() {
+  if (UPSTASH_ENABLED) {
+    try {
+      const val = await redisCmd('GET', REDIS_KEY);
+      return parseInt(val || '0', 10);
+    } catch (err) {
+      console.error('Upstash getVisits error:', err.message);
     }
-  } catch (err) {
-    console.error('Error reading store:', err.message);
   }
-  return { ...DEFAULT_DATA };
+  return memVisits;
 }
 
-function writeStore(data) {
-  ensureDataDir();
-  try {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf-8');
-  } catch (err) {
-    console.error('Error writing store:', err.message);
+async function incrementVisits() {
+  if (UPSTASH_ENABLED) {
+    try {
+      const val = await redisCmd('INCR', REDIS_KEY);
+      return parseInt(val, 10);
+    } catch (err) {
+      console.error('Upstash incrementVisits error:', err.message);
+    }
   }
-}
-
-function getVisits() {
-  return readStore().visits;
-}
-
-function incrementVisits() {
-  const store = readStore();
-  store.visits++;
-  writeStore(store);
-  return store.visits;
+  memVisits++;
+  return memVisits;
 }
 
 function getFeedback() {
-  return readStore().feedback;
+  return [...memFeedback];
 }
 
 function addFeedback(entry) {
-  const store = readStore();
-  store.feedback.push({
+  memFeedback.push({
     id: Date.now(),
     name: entry.name,
     email: entry.email || '',
     message: entry.message,
     createdAt: new Date().toISOString(),
   });
-  writeStore(store);
-  return store.feedback;
+  return [...memFeedback];
 }
 
 function deleteFeedback(id) {
-  const store = readStore();
-  store.feedback = store.feedback.filter((f) => f.id !== id);
-  writeStore(store);
-  return store.feedback;
+  memFeedback = memFeedback.filter((f) => f.id !== id);
+  return [...memFeedback];
 }
 
 module.exports = { getVisits, incrementVisits, getFeedback, addFeedback, deleteFeedback };
+

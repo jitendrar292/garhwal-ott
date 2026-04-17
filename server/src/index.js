@@ -66,14 +66,15 @@ if (process.env.NODE_ENV === 'production') {
 // API routes
 app.use('/api/youtube', youtubeRoutes);
 
-// Visit counter (persistent file-based)
-app.post('/api/visits', (_req, res) => {
-  const count = incrementVisits();
+// Visit counter (Upstash Redis or in-memory fallback)
+app.post('/api/visits', async (_req, res) => {
+  const count = await incrementVisits();
   res.json({ count });
 });
 
-app.get('/api/visits', (_req, res) => {
-  res.json({ count: getVisits() });
+app.get('/api/visits', async (_req, res) => {
+  const count = await getVisits();
+  res.json({ count });
 });
 
 // Feedback endpoints
