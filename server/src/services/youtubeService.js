@@ -96,7 +96,7 @@ const STATIC_FALLBACK = {
     ],
     nextPageToken: null, prevPageToken: null, totalResults: 12,
   },
-  blogs: {
+  vlogs: {
     videos: [
       { id: 'qzN7UY4D8VQ', title: 'Most Beautiful Villages of Uttarakhand - Harsil Valley', thumbnail: 'https://i.ytimg.com/vi/qzN7UY4D8VQ/hqdefault.jpg', channelTitle: 'Kanishk Gupta', publishedAt: '2024-01-01', description: '' },
       { id: 'WFBhML-rb3o', title: 'Pahadi Shadi Mein Dance - Sourav Joshi', thumbnail: 'https://i.ytimg.com/vi/WFBhML-rb3o/hqdefault.jpg', channelTitle: 'Sourav Joshi Vlogs', publishedAt: '2022-01-01', description: '' },
@@ -125,7 +125,7 @@ const CATEGORY_QUERIES = {
   comedy: 'Garhwali comedy',
   devotional: 'Garhwali devotional bhajan',
   trending: 'Garhwali trending songs OR comedy',
-  blogs: 'Pahadi vlogger uttarakhand village life OR pahadi lifestyle vlog',
+  vlogs: 'Pahadi vlogger uttarakhand village life OR pahadi lifestyle vlog',
 };
 
 async function fetchFromYouTube(query, pageToken = '', maxResults = 12) {

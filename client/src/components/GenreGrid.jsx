@@ -5,7 +5,7 @@ const GENRES = [
   { name: 'Comedy', path: '/category/comedy', emoji: '😂', gradient: 'from-amber-500 to-orange-600' },
   { name: 'Songs', path: '/category/songs', emoji: '🎵', gradient: 'from-pink-500 to-rose-600' },
   { name: 'Devotional', path: '/category/devotional', emoji: '🙏', gradient: 'from-emerald-500 to-teal-600' },
-  { name: 'Blogs', path: '/category/blogs', emoji: '📹', gradient: 'from-cyan-500 to-blue-600' },
+  { name: 'Vlogs', path: '/category/vlogs', emoji: '📹', gradient: 'from-cyan-500 to-blue-600' },
 ];
 
 export default function GenreGrid() {

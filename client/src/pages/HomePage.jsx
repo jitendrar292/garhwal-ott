@@ -25,7 +25,7 @@ export default function HomePage() {
     load('trending', setTrending);
     load('songs', setSongs);
     load('comedy', setComedy);
-    load('blogs', setBlogs);
+    load('vlogs', setBlogs);
   }, []);
 
   return (
@@ -75,11 +75,11 @@ export default function HomePage() {
 
         {/* Trending Blogs */}
         <VideoRow
-          title="📹 Trending Pahadi Blogs"
+          title="📹 Trending Pahadi Vlogs"
           videos={blogs.videos}
           loading={blogs.loading}
           error={blogs.error}
-          categoryLink="/category/blogs"
+          categoryLink="/category/vlogs"
         />
 
         {/* About PahadiTube */}
