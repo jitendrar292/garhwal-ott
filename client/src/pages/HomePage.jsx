@@ -29,7 +29,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="pb-20 sm:pb-0">
+    <div>
       {/* Full-width slider */}
       <ImageSlider />
 

@@ -15,7 +15,7 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col bg-dark-950 text-white">
       <Navbar />
-      <main className="flex-1">
+      <main className="flex-1 pb-24 sm:pb-8">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/category/:category" element={<CategoryPage />} />
