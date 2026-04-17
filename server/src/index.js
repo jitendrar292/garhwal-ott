@@ -8,7 +8,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const youtubeRoutes = require('./routes/youtube');
-const { getVisits, incrementVisits, getFeedback, addFeedback, deleteFeedback } = require('./services/store');
+const { getVisits, incrementVisits, logVisitor, getVisitors, getFeedback, addFeedback, deleteFeedback } = require('./services/store');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -97,8 +97,11 @@ app.get('/api/captions/:videoId', async (req, res) => {
 });
 
 // Visit counter (Upstash Redis or in-memory fallback)
-app.post('/api/visits', async (_req, res) => {
+app.post('/api/visits', async (req, res) => {
   const count = await incrementVisits();
+  const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+  // Log geo in background — don't block the response
+  logVisitor(ip).catch(() => {});
   res.json({ count });
 });
 
@@ -146,6 +149,16 @@ app.delete('/api/feedback/:id', async (req, res) => {
   if (isNaN(id)) return res.status(400).json({ error: 'Invalid ID' });
   const feedback = await deleteFeedback(id);
   res.json({ success: true, total: feedback.length });
+});
+
+// Admin: visitor location tracking
+app.get('/api/visitors', async (req, res) => {
+  const adminKey = process.env.FEEDBACK_ADMIN_KEY || 'pahadi2026';
+  if (req.query.key !== adminKey) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  const visitors = await getVisitors();
+  res.json({ total: visitors.length, visitors });
 });
 
 // Health check
