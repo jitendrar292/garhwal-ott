@@ -8,10 +8,9 @@ const UPSTASH_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
 const VISIT_SEED = parseInt(process.env.VISIT_SEED || '0', 10);
 const UPSTASH_ENABLED = !!(UPSTASH_URL && UPSTASH_TOKEN);
 const REDIS_KEY = 'pahadi_visits';
-const SEEN_IPS_KEY = 'pahadi_seen_ips';
 
 let memVisits = VISIT_SEED;
-let memSeenIps = new Set();
+let memFeedback = [];
 
 async function redisCmd(...args) {
   const path = args.map((a) => encodeURIComponent(String(a))).join('/');
@@ -63,23 +62,7 @@ async function incrementVisits() {
   return memVisits;
 }
 
-// Returns true if this IP is new (first visit ever)
-async function isNewVisitor(ip) {
-  if (UPSTASH_ENABLED) {
-    try {
-      const added = await redisCmd('SADD', SEEN_IPS_KEY, ip);
-      return parseInt(added, 10) === 1;
-    } catch (err) {
-      console.error('Upstash isNewVisitor error:', err.message);
-    }
-  }
-  if (memSeenIps.has(ip)) return false;
-  memSeenIps.add(ip);
-  return true;
-}
-
 const FEEDBACK_KEY = 'pahadi_feedback';
-let memFeedback = [];
 
 async function getFeedback() {
   if (UPSTASH_ENABLED) {
@@ -130,5 +113,5 @@ async function deleteFeedback(id) {
   return [...memFeedback];
 }
 
-module.exports = { getVisits, incrementVisits, isNewVisitor, getFeedback, addFeedback, deleteFeedback };
+module.exports = { getVisits, incrementVisits, getFeedback, addFeedback, deleteFeedback };
 

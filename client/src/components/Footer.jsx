@@ -5,11 +5,23 @@ export default function Footer() {
   const [visits, setVisits] = useState(null);
 
   useEffect(() => {
-    // Always POST — server deduplicates by IP, returns current unique count
-    fetch('/api/visits', { method: 'POST' })
-      .then((r) => r.json())
-      .then((data) => setVisits(data.count))
-      .catch(() => {});
+    const visited = sessionStorage.getItem('pahadi_tube_visited');
+    if (!visited) {
+      // First visit this session — increment
+      fetch('/api/visits', { method: 'POST' })
+        .then((r) => r.json())
+        .then((data) => {
+          setVisits(data.count);
+          sessionStorage.setItem('pahadi_tube_visited', '1');
+        })
+        .catch(() => {});
+    } else {
+      // Already counted — just fetch current count
+      fetch('/api/visits')
+        .then((r) => r.json())
+        .then((data) => setVisits(data.count))
+        .catch(() => {});
+    }
   }, []);
 
   return (
