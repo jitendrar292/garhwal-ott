@@ -5,6 +5,7 @@ const GENRES = [
   { name: 'Comedy', path: '/category/comedy', emoji: '😂', gradient: 'from-amber-500 to-orange-600' },
   { name: 'Songs', path: '/category/songs', emoji: '🎵', gradient: 'from-pink-500 to-rose-600' },
   { name: 'Devotional', path: '/category/devotional', emoji: '🙏', gradient: 'from-emerald-500 to-teal-600' },
+  { name: 'Blogs', path: '/category/blogs', emoji: '📹', gradient: 'from-cyan-500 to-blue-600' },
 ];
 
 export default function GenreGrid() {
@@ -16,7 +17,7 @@ export default function GenreGrid() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
       </h2>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
         {GENRES.map((genre) => (
           <Link
             key={genre.path}

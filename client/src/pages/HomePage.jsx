@@ -10,6 +10,7 @@ export default function HomePage() {
   const [trending, setTrending] = useState({ videos: [], loading: true, error: null });
   const [songs, setSongs] = useState({ videos: [], loading: true, error: null });
   const [comedy, setComedy] = useState({ videos: [], loading: true, error: null });
+  const [blogs, setBlogs] = useState({ videos: [], loading: true, error: null });
 
   useEffect(() => {
     async function load(category, setter) {
@@ -24,6 +25,7 @@ export default function HomePage() {
     load('trending', setTrending);
     load('songs', setSongs);
     load('comedy', setComedy);
+    load('blogs', setBlogs);
   }, []);
 
   return (
@@ -69,6 +71,15 @@ export default function HomePage() {
           loading={comedy.loading}
           error={comedy.error}
           categoryLink="/category/comedy"
+        />
+
+        {/* Trending Blogs */}
+        <VideoRow
+          title="📹 Trending Pahadi Blogs"
+          videos={blogs.videos}
+          loading={blogs.loading}
+          error={blogs.error}
+          categoryLink="/category/blogs"
         />
 
         {/* About PahadiTube */}

@@ -96,6 +96,23 @@ const STATIC_FALLBACK = {
     ],
     nextPageToken: null, prevPageToken: null, totalResults: 12,
   },
+  blogs: {
+    videos: [
+      { id: 'qzN7UY4D8VQ', title: 'Most Beautiful Villages of Uttarakhand - Harsil Valley', thumbnail: 'https://i.ytimg.com/vi/qzN7UY4D8VQ/hqdefault.jpg', channelTitle: 'Kanishk Gupta', publishedAt: '2024-01-01', description: '' },
+      { id: 'WFBhML-rb3o', title: 'Pahadi Shadi Mein Dance - Sourav Joshi', thumbnail: 'https://i.ytimg.com/vi/WFBhML-rb3o/hqdefault.jpg', channelTitle: 'Sourav Joshi Vlogs', publishedAt: '2022-01-01', description: '' },
+      { id: 'sGGp-wsrCcs', title: 'Swala Village - No Entry After Sunset', thumbnail: 'https://i.ytimg.com/vi/sGGp-wsrCcs/hqdefault.jpg', channelTitle: 'Avin Yaduvanshi', publishedAt: '2022-01-01', description: '' },
+      { id: 'nxqQQna7vC4', title: 'Last Village of Kedarghati - Toshi Village', thumbnail: 'https://i.ytimg.com/vi/nxqQQna7vC4/hqdefault.jpg', channelTitle: 'Priyanka Yogi Tiwari', publishedAt: '2023-01-01', description: '' },
+      { id: 'Ngl-mSXCTEA', title: 'Pahadi Special Lunch - Chaunsa Bhat', thumbnail: 'https://i.ytimg.com/vi/Ngl-mSXCTEA/hqdefault.jpg', channelTitle: 'Priyanka Yogi Tiwari', publishedAt: '2023-01-01', description: '' },
+      { id: '_vTqm43jS50', title: 'Pahadi Khane Ke Maze - Village Food', thumbnail: 'https://i.ytimg.com/vi/_vTqm43jS50/hqdefault.jpg', channelTitle: 'Sourav Joshi Vlogs', publishedAt: '2021-01-01', description: '' },
+      { id: 'cCZqFAU9wDc', title: 'Uttarakhand Forest Village Life Vlog', thumbnail: 'https://i.ytimg.com/vi/cCZqFAU9wDc/hqdefault.jpg', channelTitle: 'Vipin Gusain Vlogs', publishedAt: '2022-01-01', description: '' },
+      { id: '-tENpE6BRZo', title: 'Pahadi Hara Saag - Village Food Recipe', thumbnail: 'https://i.ytimg.com/vi/-tENpE6BRZo/hqdefault.jpg', channelTitle: 'R.T.K Vlogs', publishedAt: '2025-01-01', description: '' },
+      { id: '8IXXmrkNLbQ', title: 'Snowfall In My Village - Cool Pahadi', thumbnail: 'https://i.ytimg.com/vi/8IXXmrkNLbQ/hqdefault.jpg', channelTitle: 'Cool Pahadi', publishedAt: '2022-01-01', description: '' },
+      { id: 'aZniIqvpGPs', title: 'Rainy Season Life In Pahad - Cool Pahadi', thumbnail: 'https://i.ytimg.com/vi/aZniIqvpGPs/hqdefault.jpg', channelTitle: 'Cool Pahadi', publishedAt: '2025-07-01', description: '' },
+      { id: 'D_unLfP2tkQ', title: 'Harsil Valley Bagori Village Tour', thumbnail: 'https://i.ytimg.com/vi/D_unLfP2tkQ/hqdefault.jpg', channelTitle: 'Nomadic Bird Uk07', publishedAt: '2025-08-01', description: '' },
+      { id: 'KWULnIPM5XM', title: 'New Hotel Yogi Kitchen & Dining Tour', thumbnail: 'https://i.ytimg.com/vi/KWULnIPM5XM/hqdefault.jpg', channelTitle: 'Priyanka Yogi Tiwari', publishedAt: '2025-10-01', description: '' },
+    ],
+    nextPageToken: null, prevPageToken: null, totalResults: 12,
+  },
 };
 
 function getStaticFallback(category) {
@@ -108,6 +125,7 @@ const CATEGORY_QUERIES = {
   comedy: 'Garhwali comedy',
   devotional: 'Garhwali devotional bhajan',
   trending: 'Garhwali trending songs OR comedy',
+  blogs: 'Pahadi vlogger uttarakhand village life OR pahadi lifestyle vlog',
 };
 
 async function fetchFromYouTube(query, pageToken = '', maxResults = 12) {
