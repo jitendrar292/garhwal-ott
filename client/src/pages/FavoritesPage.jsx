@@ -19,11 +19,19 @@ export default function FavoritesPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-          {favorites.map((video, index) => (
-            <div key={video.id} style={{ animationDelay: `${index * 50}ms` }}>
-              <VideoCard video={video} />
-            </div>
-          ))}
+          {favorites.map((video, index) => {
+            // Patch missing thumbnails from old favorites saved with empty strings
+            const patched = {
+              ...video,
+              thumbnail: video.thumbnail || `https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`,
+              title: video.title || 'Pahadi Video',
+            };
+            return (
+              <div key={video.id} style={{ animationDelay: `${index * 50}ms` }}>
+                <VideoCard video={patched} />
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

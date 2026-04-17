@@ -9,10 +9,18 @@ export default function PlayerPage() {
   const { videoId } = useParams();
   const [related, setRelated] = useState([]);
   const [relatedLoading, setRelatedLoading] = useState(true);
+  const [videoMeta, setVideoMeta] = useState({ title: '', channelTitle: '' });
   const { isFavorite, addFavorite, removeFavorite } = useFavorites();
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    // Fetch title via YouTube oEmbed (no API key needed)
+    fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}&format=json`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data) setVideoMeta({ title: data.title || '', channelTitle: data.author_name || '' });
+      })
+      .catch(() => {});
   }, [videoId]);
 
   useEffect(() => {
@@ -66,7 +74,15 @@ export default function PlayerPage() {
           {/* Actions */}
           <div className="mt-4 flex items-center gap-4">
             <button
-              onClick={() => fav ? removeFavorite(videoId) : addFavorite({ id: videoId, title: '', thumbnail: '', channelTitle: '' })}
+              onClick={() => fav
+                ? removeFavorite(videoId)
+                : addFavorite({
+                    id: videoId,
+                    title: videoMeta.title,
+                    thumbnail: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+                    channelTitle: videoMeta.channelTitle,
+                  })
+              }
               className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors text-sm font-medium
                          ${fav ? 'bg-red-500 text-white' : 'bg-dark-600 text-gray-300 hover:bg-dark-500'}`}
             >
