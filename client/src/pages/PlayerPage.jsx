@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { searchVideos } from '../api/youtube';
 import VideoCard from '../components/VideoCard';
 import { useFavorites } from '../hooks/useFavorites';
+import LyricsSection from '../components/LyricsSection';
 
 export default function PlayerPage() {
   const { videoId } = useParams();
@@ -90,6 +91,9 @@ export default function PlayerPage() {
               Watch on YouTube
             </a>
           </div>
+
+          {/* Song lyrics in Garhwali */}
+          <LyricsSection videoId={videoId} />
         </div>
 
         {/* Related videos sidebar */}
