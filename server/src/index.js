@@ -108,7 +108,7 @@ app.get('/api/visits', async (_req, res) => {
 });
 
 // Feedback endpoints
-app.post('/api/feedback', (req, res) => {
+app.post('/api/feedback', async (req, res) => {
   const { name, message, email } = req.body;
   if (!name || typeof name !== 'string' || name.trim().length === 0) {
     return res.status(400).json({ error: 'Name is required' });
@@ -119,7 +119,7 @@ app.post('/api/feedback', (req, res) => {
   if (name.length > 100 || message.length > 2000 || (email && email.length > 200)) {
     return res.status(400).json({ error: 'Input too long' });
   }
-  const feedback = addFeedback({
+  const feedback = await addFeedback({
     name: name.trim(),
     email: email ? email.trim() : '',
     message: message.trim(),
@@ -127,16 +127,16 @@ app.post('/api/feedback', (req, res) => {
   res.status(201).json({ success: true, total: feedback.length });
 });
 
-app.get('/api/feedback', (req, res) => {
+app.get('/api/feedback', async (req, res) => {
   const adminKey = process.env.FEEDBACK_ADMIN_KEY || 'pahadi2026';
   const providedKey = req.query.key;
   if (providedKey !== adminKey) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
-  res.json({ feedback: getFeedback() });
+  res.json({ feedback: await getFeedback() });
 });
 
-app.delete('/api/feedback/:id', (req, res) => {
+app.delete('/api/feedback/:id', async (req, res) => {
   const adminKey = process.env.FEEDBACK_ADMIN_KEY || 'pahadi2026';
   const providedKey = req.query.key;
   if (providedKey !== adminKey) {
@@ -144,7 +144,7 @@ app.delete('/api/feedback/:id', (req, res) => {
   }
   const id = parseInt(req.params.id, 10);
   if (isNaN(id)) return res.status(400).json({ error: 'Invalid ID' });
-  const feedback = deleteFeedback(id);
+  const feedback = await deleteFeedback(id);
   res.json({ success: true, total: feedback.length });
 });
 

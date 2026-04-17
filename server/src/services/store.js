@@ -22,6 +22,21 @@ async function redisCmd(...args) {
   return json.result;
 }
 
+// POST-based SET for large values (feedback JSON can exceed URL length limits)
+async function redisCmdPost(cmd, key, value) {
+  const res = await fetch(`${UPSTASH_URL}`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${UPSTASH_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify([cmd, key, value]),
+  });
+  if (!res.ok) throw new Error(`Upstash POST error ${res.status}`);
+  const json = await res.json();
+  return json.result;
+}
+
 async function getVisits() {
   if (UPSTASH_ENABLED) {
     try {
@@ -47,22 +62,53 @@ async function incrementVisits() {
   return memVisits;
 }
 
-function getFeedback() {
+const FEEDBACK_KEY = 'pahadi_feedback';
+
+async function getFeedback() {
+  if (UPSTASH_ENABLED) {
+    try {
+      const raw = await redisCmd('GET', FEEDBACK_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch (err) {
+      console.error('Upstash getFeedback error:', err.message);
+    }
+  }
   return [...memFeedback];
 }
 
-function addFeedback(entry) {
-  memFeedback.push({
+async function addFeedback(entry) {
+  const newEntry = {
     id: Date.now(),
     name: entry.name,
     email: entry.email || '',
     message: entry.message,
     createdAt: new Date().toISOString(),
-  });
+  };
+  if (UPSTASH_ENABLED) {
+    try {
+      const existing = await getFeedback();
+      existing.push(newEntry);
+      await redisCmdPost('SET', FEEDBACK_KEY, JSON.stringify(existing));
+      return existing;
+    } catch (err) {
+      console.error('Upstash addFeedback error:', err.message);
+    }
+  }
+  memFeedback.push(newEntry);
   return [...memFeedback];
 }
 
-function deleteFeedback(id) {
+async function deleteFeedback(id) {
+  if (UPSTASH_ENABLED) {
+    try {
+      const existing = await getFeedback();
+      const filtered = existing.filter((f) => f.id !== id);
+      await redisCmdPost('SET', FEEDBACK_KEY, JSON.stringify(filtered));
+      return filtered;
+    } catch (err) {
+      console.error('Upstash deleteFeedback error:', err.message);
+    }
+  }
   memFeedback = memFeedback.filter((f) => f.id !== id);
   return [...memFeedback];
 }
