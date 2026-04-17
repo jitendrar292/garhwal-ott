@@ -113,6 +113,23 @@ const STATIC_FALLBACK = {
     ],
     nextPageToken: null, prevPageToken: null, totalResults: 12,
   },
+  shorts: {
+    videos: [
+      { id: 'spsGFAdr194', title: 'Swami Pardesh - Suraj Tratak | Trending Pahadi Song', thumbnail: 'https://i.ytimg.com/vi/spsGFAdr194/hqdefault.jpg', channelTitle: 'Suraj Tratak', publishedAt: '2025-09-01', description: '' },
+      { id: 'epnU1SVc1eI', title: 'Jiya Kori Kori Khando - Dance Short', thumbnail: 'https://i.ytimg.com/vi/epnU1SVc1eI/hqdefault.jpg', channelTitle: 'Yatika Thapa', publishedAt: '2025-12-01', description: '' },
+      { id: 'ZBgtkOPZ6Aw', title: 'Garhwali Song 2026 - DJ Mervin Rajan', thumbnail: 'https://i.ytimg.com/vi/ZBgtkOPZ6Aw/hqdefault.jpg', channelTitle: 'Mervin Rajan', publishedAt: '2026-03-01', description: '' },
+      { id: 'DyLPbQTXqrg', title: 'Haye Heel - New Garhwali DJ Song 2026', thumbnail: 'https://i.ytimg.com/vi/DyLPbQTXqrg/hqdefault.jpg', channelTitle: 'Suryapal Shriwan', publishedAt: '2026-03-01', description: '' },
+      { id: '41e1LWcx05Q', title: 'Byau Hamru Hoonu Ni - Garhwali 2026', thumbnail: 'https://i.ytimg.com/vi/41e1LWcx05Q/hqdefault.jpg', channelTitle: 'Unique Pahadi Official', publishedAt: '2025-12-01', description: '' },
+      { id: 'oByLfo2eK_E', title: 'Pahadi Culture Short - Viral', thumbnail: 'https://i.ytimg.com/vi/oByLfo2eK_E/hqdefault.jpg', channelTitle: 'Rajat Kaprawan Official', publishedAt: '2024-01-01', description: '' },
+      { id: '_VP56PvlX5A', title: 'Pahadi Dhol Short - Viral', thumbnail: 'https://i.ytimg.com/vi/_VP56PvlX5A/hqdefault.jpg', channelTitle: 'Oshin Bhandari Vlogs', publishedAt: '2023-01-01', description: '' },
+      { id: 'BIV8BTgmVuc', title: 'Reel VS Real Life Pahadi - Neha Bisht', thumbnail: 'https://i.ytimg.com/vi/BIV8BTgmVuc/hqdefault.jpg', channelTitle: 'Neha Bisht', publishedAt: '2024-01-01', description: '' },
+      { id: '0gtZkyEt-XA', title: 'Raadhaa - Pandavaas | Dance Performance', thumbnail: 'https://i.ytimg.com/vi/0gtZkyEt-XA/hqdefault.jpg', channelTitle: 'Himanshu Bahuguna', publishedAt: '2024-01-01', description: '' },
+      { id: 'oECLUxQK-C0', title: 'Shokyani Kumaoni Dance Cover 2026', thumbnail: 'https://i.ytimg.com/vi/oECLUxQK-C0/hqdefault.jpg', channelTitle: 'Ashish Bora Pahadi Dance', publishedAt: '2026-03-01', description: '' },
+      { id: 'GRdwrfJQ9wQ', title: 'Hariya Ghas Katli Kumaoni Song 2026', thumbnail: 'https://i.ytimg.com/vi/GRdwrfJQ9wQ/hqdefault.jpg', channelTitle: 'Prakash Kumar PK', publishedAt: '2026-03-01', description: '' },
+      { id: 'xTJ5QCHC5sM', title: 'Surma Ki Dabbi - Arvind Raj Sunwal', thumbnail: 'https://i.ytimg.com/vi/xTJ5QCHC5sM/hqdefault.jpg', channelTitle: 'Pahadi Music Junction', publishedAt: '2026-04-01', description: '' },
+    ],
+    nextPageToken: null, prevPageToken: null, totalResults: 12,
+  },
 };
 
 function getStaticFallback(category) {
@@ -126,6 +143,7 @@ const CATEGORY_QUERIES = {
   devotional: 'Garhwali devotional bhajan',
   trending: 'Garhwali trending songs OR comedy',
   vlogs: 'Pahadi vlogger uttarakhand village life OR pahadi lifestyle vlog',
+  shorts: 'Pahadi garhwali shorts trending #shorts',
 };
 
 async function fetchFromYouTube(query, pageToken = '', maxResults = 12) {

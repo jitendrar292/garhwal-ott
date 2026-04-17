@@ -11,6 +11,7 @@ import FavoritesPage from './pages/FavoritesPage';
 import FeedbackPage from './pages/FeedbackPage';
 import FeedbackAdminPage from './pages/FeedbackAdminPage';
 import MusicPage from './pages/MusicPage';
+import ShortsPage from './pages/ShortsPage';
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
           <Route path="/feedback" element={<FeedbackPage />} />
           <Route path="/feedback/admin" element={<FeedbackAdminPage />} />
           <Route path="/music" element={<MusicPage />} />
+          <Route path="/shorts" element={<ShortsPage />} />
         </Routes>
       </main>
       <Footer />

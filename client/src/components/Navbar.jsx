@@ -8,6 +8,7 @@ const TABS = [
   { name: 'Comedy', path: '/category/comedy' },
   { name: 'Devotional', path: '/category/devotional' },
   { name: 'Vlogs', path: '/category/vlogs' },
+  { name: 'Shorts', path: '/shorts' },
 ];
 
 export default function Navbar() {
