@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import BottomNav from './components/BottomNav';
 import Footer from './components/Footer';
+import InstallBanner from './components/InstallBanner';
 import HomePage from './pages/HomePage';
 import CategoryPage from './pages/CategoryPage';
 import SearchPage from './pages/SearchPage';
@@ -29,6 +30,7 @@ export default function App() {
       </main>
       <Footer />
       <BottomNav />
+      <InstallBanner />
     </div>
   );
 }
