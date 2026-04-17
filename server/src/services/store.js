@@ -179,5 +179,45 @@ async function deleteFeedback(id) {
   return [...memFeedback];
 }
 
-module.exports = { getVisits, incrementVisits, isNewIp, logVisitor, getVisitors, getFeedback, addFeedback, deleteFeedback };
+// On startup: deduplicate existing visitor list and seed pahadi_seen_ips set.
+// Safe to run multiple times — SADD is idempotent.
+async function seedAndDeduplicateVisitors() {
+  if (!UPSTASH_ENABLED) return;
+  try {
+    const raw = await redisCmd('LRANGE', VISITORS_KEY, 0, MAX_VISITORS - 1);
+    const all = (raw || []).map((r) => JSON.parse(r));
+
+    // List is newest-first (LPUSH order); keep first (most recent) per IP
+    const seenIps = new Set();
+    const deduped = [];
+    for (const entry of all) {
+      if (!seenIps.has(entry.ip)) {
+        seenIps.add(entry.ip);
+        deduped.push(entry);
+      }
+    }
+
+    // Rewrite list only if duplicates were found
+    if (deduped.length < all.length) {
+      await redisCmd('DEL', VISITORS_KEY);
+      // Push oldest-first so newest ends up at index 0 (LPUSH semantics)
+      for (let i = deduped.length - 1; i >= 0; i--) {
+        await redisCmdPost('LPUSH', VISITORS_KEY, JSON.stringify(deduped[i]));
+      }
+      console.log(`[store] removed ${all.length - deduped.length} duplicate visitor record(s)`);
+    }
+
+    // Seed pahadi_seen_ips with every IP already in the list
+    for (const ip of seenIps) {
+      await redisCmd('SADD', SEEN_IPS_KEY, ip);
+    }
+    if (seenIps.size > 0) {
+      console.log(`[store] seeded ${seenIps.size} unique IP(s) into seen-set`);
+    }
+  } catch (err) {
+    console.error('[store] seedAndDeduplicateVisitors error:', err.message);
+  }
+}
+
+module.exports = { getVisits, incrementVisits, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback };
 

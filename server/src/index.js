@@ -8,7 +8,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const youtubeRoutes = require('./routes/youtube');
-const { getVisits, incrementVisits, isNewIp, logVisitor, getVisitors, getFeedback, addFeedback, deleteFeedback } = require('./services/store');
+const { getVisits, incrementVisits, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback } = require('./services/store');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -181,4 +181,6 @@ app.use((err, _req, res, _next) => {
 
 app.listen(PORT, () => {
   console.log(`🎬 PahadiTube server running on port ${PORT}`);
+  // One-time startup: clean duplicate visitor records + seed seen-IPs set
+  seedAndDeduplicateVisitors().catch(() => {});
 });
