@@ -46,28 +46,21 @@ app.use(cors({
   },
 }));
 
-// Rate limiting — tiered by route sensitivity
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 300,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: 'Too many requests, please try again later.' },
-});
+// Trust the first proxy (Render/Railway sets x-forwarded-for)
+app.set('trust proxy', 1);
 
-// YouTube API calls are expensive (quota) — keep tighter
+// Rate limiting — per real client IP, scoped by route
 const youtubeLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 120,
+  max: 200,                     // 200 YouTube API calls per IP per 15 min
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'Too many requests, please try again later.' },
 });
 
-// Visits & feedback are cheap reads — very generous limit
 const visitLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 1000,
+  max: 500,                     // generous for visit counter & feedback
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'Too many requests, please try again later.' },
@@ -76,7 +69,6 @@ const visitLimiter = rateLimit({
 app.use('/api/youtube', youtubeLimiter);
 app.use('/api/visits', visitLimiter);
 app.use('/api/feedback', visitLimiter);
-app.use('/api/', apiLimiter);
 
 app.use(express.json());
 
