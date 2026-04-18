@@ -41,12 +41,93 @@ export default function FloatingPlayer() {
   const playerRef = useRef(null);
   const skipTimer = useRef(null);
   const pollTimer = useRef(null);
+  const wakeLockRef = useRef(null);
 
   // Refs so YT callbacks always see latest values
   const repeatRef = useRef(repeat);
   useEffect(() => { repeatRef.current = repeat; }, [repeat]);
   const nextTrackRef = useRef(nextTrack);
   useEffect(() => { nextTrackRef.current = nextTrack; }, [nextTrack]);
+  const prevTrackRef = useRef(prevTrack);
+  useEffect(() => { prevTrackRef.current = prevTrack; }, [prevTrack]);
+
+  /* ── Wake Lock: keep screen on while playing so audio doesn't suspend ── */
+  const acquireWakeLock = useCallback(async () => {
+    try {
+      if ('wakeLock' in navigator && !wakeLockRef.current) {
+        wakeLockRef.current = await navigator.wakeLock.request('screen');
+        wakeLockRef.current.addEventListener?.('release', () => {
+          wakeLockRef.current = null;
+        });
+      }
+    } catch { /* user denied or unsupported */ }
+  }, []);
+
+  const releaseWakeLock = useCallback(async () => {
+    try { await wakeLockRef.current?.release?.(); } catch {}
+    wakeLockRef.current = null;
+  }, []);
+
+  // Re-acquire wake lock if page becomes visible again while playing
+  useEffect(() => {
+    const onVis = () => {
+      if (document.visibilityState === 'visible' && isPlaying && !wakeLockRef.current) {
+        acquireWakeLock();
+      }
+    };
+    document.addEventListener('visibilitychange', onVis);
+    return () => document.removeEventListener('visibilitychange', onVis);
+  }, [isPlaying, acquireWakeLock]);
+
+  /* ── Media Session API: lock-screen controls + metadata ── */
+  useEffect(() => {
+    if (!('mediaSession' in navigator) || !currentTrack) return;
+    try {
+      navigator.mediaSession.metadata = new window.MediaMetadata({
+        title: currentTrack.title,
+        artist: currentTrack.channelTitle || 'PahadiTube',
+        album: 'PahadiTube Music',
+        artwork: [
+          { src: currentTrack.thumbnail, sizes: '480x360', type: 'image/jpeg' },
+          { src: `https://i.ytimg.com/vi/${currentTrack.id}/hqdefault.jpg`, sizes: '480x360', type: 'image/jpeg' },
+          { src: `https://i.ytimg.com/vi/${currentTrack.id}/maxresdefault.jpg`, sizes: '1280x720', type: 'image/jpeg' },
+        ],
+      });
+    } catch {}
+
+    const setHandler = (action, fn) => {
+      try { navigator.mediaSession.setActionHandler(action, fn); } catch {}
+    };
+    setHandler('play', () => { playerRef.current?.playVideo?.(); });
+    setHandler('pause', () => { playerRef.current?.pauseVideo?.(); });
+    setHandler('previoustrack', () => prevTrackRef.current?.());
+    setHandler('nexttrack', () => nextTrackRef.current?.());
+    setHandler('seekto', (details) => {
+      if (details.seekTime != null) playerRef.current?.seekTo?.(details.seekTime, true);
+    });
+  }, [currentTrack?.id]);
+
+  // Update playback state for the OS
+  useEffect(() => {
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
+    }
+    if (isPlaying) acquireWakeLock(); else releaseWakeLock();
+  }, [isPlaying, acquireWakeLock, releaseWakeLock]);
+
+  // Update position state continuously
+  useEffect(() => {
+    if (!('mediaSession' in navigator) || !navigator.mediaSession.setPositionState) return;
+    if (duration > 0) {
+      try {
+        navigator.mediaSession.setPositionState({
+          duration,
+          position: Math.min(currentTime, duration),
+          playbackRate: 1,
+        });
+      } catch {}
+    }
+  }, [currentTime, duration]);
 
   /* ── create / recreate YT player on track change ── */
   useEffect(() => {
