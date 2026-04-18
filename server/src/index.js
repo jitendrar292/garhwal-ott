@@ -8,6 +8,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const youtubeRoutes = require('./routes/youtube');
+const chatRoutes = require('./routes/chat');
 const { getVisits, incrementVisits, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback } = require('./services/store');
 
 const app = express();
@@ -71,6 +72,16 @@ app.use('/api/youtube', youtubeLimiter);
 app.use('/api/visits', visitLimiter);
 app.use('/api/feedback', visitLimiter);
 
+// Tighter limit for AI chat (paid upstream)
+const chatLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 60,                      // 60 chat messages per IP per 15 min
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many chat requests, please slow down.' },
+});
+app.use('/api/chat', chatLimiter);
+
 app.use(express.json());
 
 // Serve static files from React build in production
@@ -80,6 +91,7 @@ if (process.env.NODE_ENV === 'production') {
 
 // API routes
 app.use('/api/youtube', youtubeRoutes);
+app.use('/api/chat', chatRoutes);
 
 // Captions endpoint — tries hi, a.hi (auto Hindi), en, a.en in order
 app.get('/api/captions/:videoId', async (req, res) => {
