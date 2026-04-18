@@ -46,15 +46,37 @@ app.use(cors({
   },
 }));
 
-// Rate limiting
-const limiter = rateLimit({
+// Rate limiting — tiered by route sensitivity
+const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
+  max: 300,
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'Too many requests, please try again later.' },
 });
-app.use('/api/', limiter);
+
+// YouTube API calls are expensive (quota) — keep tighter
+const youtubeLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 120,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests, please try again later.' },
+});
+
+// Visits & feedback are cheap reads — very generous limit
+const visitLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 1000,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests, please try again later.' },
+});
+
+app.use('/api/youtube', youtubeLimiter);
+app.use('/api/visits', visitLimiter);
+app.use('/api/feedback', visitLimiter);
+app.use('/api/', apiLimiter);
 
 app.use(express.json());
 
