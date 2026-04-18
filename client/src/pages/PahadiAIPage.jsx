@@ -46,7 +46,17 @@ export default function PahadiAIPage() {
   // Web Speech API capability checks
   const SpeechRecognition = typeof window !== 'undefined' &&
     (window.SpeechRecognition || window.webkitSpeechRecognition);
-  const speechSupported = !!SpeechRecognition;
+
+  // iOS Safari + iOS PWA do not implement SpeechRecognition reliably.
+  // It exists on the prototype but throws or never resolves. Detect & disable.
+  const isIOS = typeof navigator !== 'undefined' &&
+    (/iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
+  const isStandalonePWA = typeof window !== 'undefined' &&
+    (window.matchMedia?.('(display-mode: standalone)').matches ||
+      window.navigator.standalone === true);
+
+  const speechSupported = !!SpeechRecognition && !isIOS;
   const ttsSupported = typeof window !== 'undefined' && 'speechSynthesis' in window;
 
   // Cleanup speech on unmount
@@ -181,8 +191,15 @@ export default function PahadiAIPage() {
       setInput((finalText + interim).trim());
     };
     rec.onerror = (e) => {
+      const errMap = {
+        'not-allowed': 'Mic permission denied. Enable it in your browser settings.',
+        'service-not-allowed': 'Voice input is not available on this device/browser.',
+        'audio-capture': 'No microphone found.',
+        'network': 'Voice input needs internet — check your connection.',
+        'language-not-supported': 'Hindi voice input is not installed on this device.',
+      };
       if (e.error !== 'no-speech' && e.error !== 'aborted') {
-        setError(`Mic error: ${e.error}`);
+        setError(errMap[e.error] || `Mic error: ${e.error}`);
       }
       setListening(false);
     };
@@ -369,6 +386,14 @@ export default function PahadiAIPage() {
         </div>
         <p className="text-[10px] text-gray-500 mt-2 text-center">
           AI जवाब हमेशा सटीक नि होंदा — महत्वपूर्ण जानकारी सत्यापित कर्या।
+          {isIOS && (
+            <>
+              <br />
+              <span className="text-gray-600">
+                Voice input isn't supported on iOS{isStandalonePWA ? ' (installed app)' : ''}. Type your question instead.
+              </span>
+            </>
+          )}
         </p>
       </div>
     </div>
