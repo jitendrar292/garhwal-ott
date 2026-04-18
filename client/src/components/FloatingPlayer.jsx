@@ -63,15 +63,19 @@ export default function FloatingPlayer() {
 
   return (
     <>
-      {/* Hidden audio iframe — YouTube plays audio in background */}
-      <iframe
-        key={currentTrack.id}
-        ref={iframeRef}
-        src={ytUrl}
-        allow="autoplay; encrypted-media"
-        title="audio"
-        style={{ position: 'fixed', width: '1px', height: '1px', bottom: '-200px', opacity: 0, pointerEvents: 'none' }}
-      />
+      {/* Hidden audio iframe — must stay on-screen & non-zero opacity for autoplay policy */}
+      <div style={{ position: 'fixed', bottom: '64px', right: 0, width: '1px', height: '1px', overflow: 'hidden', zIndex: -1 }}>
+        <iframe
+          key={currentTrack.id}
+          ref={iframeRef}
+          src={ytUrl}
+          allow="autoplay; encrypted-media"
+          title="audio"
+          width="1"
+          height="1"
+          style={{ border: 'none' }}
+        />
+      </div>
 
       <div className="fixed bottom-16 sm:bottom-0 left-0 right-0 z-50">
         {/* Auto-skip toast */}
