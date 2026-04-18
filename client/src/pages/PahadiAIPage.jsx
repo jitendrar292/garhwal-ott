@@ -36,9 +36,28 @@ export default function PahadiAIPage() {
   const [input, setInput] = useState('');
   const [streaming, setStreaming] = useState(false);
   const [error, setError] = useState('');
+  const [listening, setListening] = useState(false);
+  const [speakingIdx, setSpeakingIdx] = useState(-1);
   const abortRef = useRef(null);
   const scrollRef = useRef(null);
   const textareaRef = useRef(null);
+  const recognitionRef = useRef(null);
+
+  // Web Speech API capability checks
+  const SpeechRecognition = typeof window !== 'undefined' &&
+    (window.SpeechRecognition || window.webkitSpeechRecognition);
+  const speechSupported = !!SpeechRecognition;
+  const ttsSupported = typeof window !== 'undefined' && 'speechSynthesis' in window;
+
+  // Cleanup speech on unmount
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        try { recognitionRef.current.stop(); } catch { /* noop */ }
+      }
+      if (ttsSupported) window.speechSynthesis.cancel();
+    };
+  }, [ttsSupported]);
 
   // Persist on every change
   useEffect(() => {
@@ -142,8 +161,73 @@ export default function PahadiAIPage() {
     if (abortRef.current) abortRef.current.abort();
   };
 
+  const startListening = () => {
+    if (!speechSupported || listening || streaming) return;
+    setError('');
+    const rec = new SpeechRecognition();
+    rec.lang = 'hi-IN'; // Hindi — closest match for Garhwali
+    rec.interimResults = true;
+    rec.continuous = false;
+    rec.maxAlternatives = 1;
+
+    let finalText = '';
+    rec.onresult = (e) => {
+      let interim = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const transcript = e.results[i][0].transcript;
+        if (e.results[i].isFinal) finalText += transcript;
+        else interim += transcript;
+      }
+      setInput((finalText + interim).trim());
+    };
+    rec.onerror = (e) => {
+      if (e.error !== 'no-speech' && e.error !== 'aborted') {
+        setError(`Mic error: ${e.error}`);
+      }
+      setListening(false);
+    };
+    rec.onend = () => {
+      setListening(false);
+      recognitionRef.current = null;
+    };
+
+    try {
+      rec.start();
+      recognitionRef.current = rec;
+      setListening(true);
+    } catch (err) {
+      setError(err.message || 'Could not start microphone');
+    }
+  };
+
+  const stopListening = () => {
+    if (recognitionRef.current) {
+      try { recognitionRef.current.stop(); } catch { /* noop */ }
+    }
+    setListening(false);
+  };
+
+  const speak = (text, idx) => {
+    if (!ttsSupported || !text) return;
+    window.speechSynthesis.cancel();
+    if (speakingIdx === idx) {
+      setSpeakingIdx(-1);
+      return;
+    }
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'hi-IN';
+    utter.rate = 0.95;
+    utter.pitch = 1;
+    utter.onend = () => setSpeakingIdx((cur) => (cur === idx ? -1 : cur));
+    utter.onerror = () => setSpeakingIdx(-1);
+    setSpeakingIdx(idx);
+    window.speechSynthesis.speak(utter);
+  };
+
   const clearChat = () => {
     if (streaming) stop();
+    if (ttsSupported) window.speechSynthesis.cancel();
+    setSpeakingIdx(-1);
     setMessages([]);
     localStorage.removeItem(STORAGE_KEY);
   };
@@ -214,6 +298,8 @@ export default function PahadiAIPage() {
               role={m.role}
               content={m.content}
               isStreaming={streaming && i === messages.length - 1 && m.role === 'assistant'}
+              onSpeak={ttsSupported && m.role === 'assistant' && m.content ? () => speak(m.content, i) : null}
+              isSpeaking={speakingIdx === i}
             />
           ))
         )}
@@ -233,13 +319,31 @@ export default function PahadiAIPage() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="यखा गढ़वळि मा लिखा... (Shift+Enter for new line)"
+            placeholder={listening ? '🎙️ Listening… बोला' : 'यखा गढ़वळि मा लिखा... (Shift+Enter for new line)'}
             rows={1}
             maxLength={4000}
             disabled={streaming}
             className="flex-1 bg-transparent text-white placeholder-gray-500 px-3 py-2 text-sm resize-none outline-none disabled:opacity-60"
             style={{ maxHeight: '160px' }}
           />
+          {speechSupported && (
+            <button
+              onClick={listening ? stopListening : startListening}
+              disabled={streaming}
+              className={`shrink-0 w-10 h-10 flex items-center justify-center rounded-full transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
+                listening
+                  ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse'
+                  : 'bg-white/10 hover:bg-white/20 text-gray-300'
+              }`}
+              aria-label={listening ? 'Stop listening' : 'Speak'}
+              title={listening ? 'Stop' : 'Tap to speak (Hindi/Garhwali)'}
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 14a3 3 0 003-3V5a3 3 0 00-6 0v6a3 3 0 003 3z" />
+                <path d="M19 11a1 1 0 10-2 0 5 5 0 01-10 0 1 1 0 10-2 0 7 7 0 006 6.92V20H8a1 1 0 100 2h8a1 1 0 100-2h-3v-2.08A7 7 0 0019 11z" />
+              </svg>
+            </button>
+          )}
           {streaming ? (
             <button
               onClick={stop}
@@ -271,7 +375,7 @@ export default function PahadiAIPage() {
   );
 }
 
-function MessageBubble({ role, content, isStreaming }) {
+function MessageBubble({ role, content, isStreaming, onSpeak, isSpeaking }) {
   const isUser = role === 'user';
   return (
     <div className={`flex gap-3 ${isUser ? 'flex-row-reverse' : ''}`}>
@@ -282,16 +386,45 @@ function MessageBubble({ role, content, isStreaming }) {
       >
         {isUser ? '🙋' : '🏔️'}
       </div>
-      <div
-        className={`max-w-[80%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${
-          isUser
-            ? 'bg-primary-500 text-white rounded-br-sm'
-            : 'bg-white/5 text-gray-100 rounded-bl-sm'
-        }`}
-      >
-        {content || (isStreaming ? <TypingDots /> : '')}
-        {isStreaming && content && (
-          <span className="inline-block w-1.5 h-4 ml-0.5 bg-primary-300 animate-pulse align-middle" />
+      <div className={`flex flex-col gap-1 max-w-[80%] ${isUser ? 'items-end' : 'items-start'}`}>
+        <div
+          className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${
+            isUser
+              ? 'bg-primary-500 text-white rounded-br-sm'
+              : 'bg-white/5 text-gray-100 rounded-bl-sm'
+          }`}
+        >
+          {content || (isStreaming ? <TypingDots /> : '')}
+          {isStreaming && content && (
+            <span className="inline-block w-1.5 h-4 ml-0.5 bg-primary-300 animate-pulse align-middle" />
+          )}
+        </div>
+        {onSpeak && !isStreaming && (
+          <button
+            onClick={onSpeak}
+            className={`flex items-center gap-1 px-2 py-0.5 text-[10px] rounded-full transition-colors ${
+              isSpeaking
+                ? 'text-primary-300 bg-primary-500/15'
+                : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'
+            }`}
+            aria-label={isSpeaking ? 'Stop speaking' : 'Speak this reply'}
+          >
+            {isSpeaking ? (
+              <>
+                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                  <rect x="5" y="5" width="10" height="10" rx="1" />
+                </svg>
+                Stop
+              </>
+            ) : (
+              <>
+                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 00-2.5-4.03v8.05A4.5 4.5 0 0016.5 12zM14 3.23v2.06a7 7 0 010 13.42v2.06A9 9 0 0023 12 9 9 0 0014 3.23z" />
+                </svg>
+                Listen
+              </>
+            )}
+          </button>
         )}
       </div>
     </div>
