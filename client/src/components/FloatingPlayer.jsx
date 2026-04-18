@@ -14,6 +14,7 @@ export default function FloatingPlayer() {
   const iframeRef = useRef(null);
   const skipTimer = useRef(null);
   const ios = typeof navigator !== 'undefined' && isIOS();
+  const playStartTimer = useRef(null);
 
   // Reset state on track change; auto-expand on iOS so user can tap the player
   useEffect(() => {
@@ -21,7 +22,18 @@ export default function FloatingPlayer() {
     setSkipMsg(false);
     setIsPlaying(true);
     clearTimeout(skipTimer.current);
-    if (ios) setExpanded(true);
+    clearTimeout(playStartTimer.current);
+    if (ios) {
+      setExpanded(true);
+      // On iOS, if no playback starts within 5s, assume embedding is blocked → auto-skip
+      if (playlist.length > 1) {
+        playStartTimer.current = setTimeout(() => {
+          setEmbedError(true);
+          setSkipMsg(true);
+          skipTimer.current = setTimeout(() => nextTrack(), 1500);
+        }, 5000);
+      }
+    }
   }, [currentTrack?.id]);
 
   // Listen for YouTube IFrame API postMessage events
@@ -31,7 +43,11 @@ export default function FloatingPlayer() {
         const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
         if (data?.event === 'onStateChange') {
           const s = Number(data.info);
-          if (s === 1) setIsPlaying(true);
+          if (s === 1) {
+            setIsPlaying(true);
+            // Playback confirmed — cancel the iOS error-detection timeout
+            clearTimeout(playStartTimer.current);
+          }
           if (s === 2) setIsPlaying(false);
           if (s === 0) nextTrack();
         }
@@ -48,6 +64,7 @@ export default function FloatingPlayer() {
     return () => {
       window.removeEventListener('message', onMessage);
       clearTimeout(skipTimer.current);
+      clearTimeout(playStartTimer.current);
     };
   }, [nextTrack, playlist.length]);
 
