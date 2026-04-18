@@ -12,6 +12,9 @@ export default function HomePage() {
   const [comedy, setComedy] = useState({ videos: [], loading: true, error: null });
   const [blogs, setBlogs] = useState({ videos: [], loading: true, error: null });
   const [podcasts, setPodcasts] = useState({ videos: [], loading: true, error: null });
+  const [folkdance, setFolkdance] = useState({ videos: [], loading: true, error: null });
+  const [jaagar, setJaagar] = useState({ videos: [], loading: true, error: null });
+  const [mela, setMela] = useState({ videos: [], loading: true, error: null });
 
   useEffect(() => {
     async function load(category, setter) {
@@ -28,6 +31,9 @@ export default function HomePage() {
     load('comedy', setComedy);
     load('vlogs', setBlogs);
     load('podcast', setPodcasts);
+    load('folkdance', setFolkdance);
+    load('jaagar', setJaagar);
+    load('mela', setMela);
   }, []);
 
   return (
@@ -91,6 +97,33 @@ export default function HomePage() {
           loading={podcasts.loading}
           error={podcasts.error}
           categoryLink="/podcast"
+        />
+
+        {/* Folk Dances */}
+        <VideoRow
+          title="💃 Folk Dances"
+          videos={folkdance.videos}
+          loading={folkdance.loading}
+          error={folkdance.error}
+          categoryLink="/category/folkdance"
+        />
+
+        {/* Jaagar */}
+        <VideoRow
+          title="🔱 Jaagar"
+          videos={jaagar.videos}
+          loading={jaagar.loading}
+          error={jaagar.error}
+          categoryLink="/category/jaagar"
+        />
+
+        {/* Mela & Festivals */}
+        <VideoRow
+          title="🎪 Mela & Festivals"
+          videos={mela.videos}
+          loading={mela.loading}
+          error={mela.error}
+          categoryLink="/category/mela"
         />
 
         {/* About PahadiTube */}

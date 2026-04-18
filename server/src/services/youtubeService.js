@@ -147,6 +147,33 @@ const STATIC_FALLBACK = {
     ],
     nextPageToken: null, prevPageToken: null, totalResults: 12,
   },
+  folkdance: {
+    videos: [
+      { id: '0gtZkyEt-XA', title: 'Raadhaa - Pandavaas Folk Dance', thumbnail: 'https://i.ytimg.com/vi/0gtZkyEt-XA/hqdefault.jpg', channelTitle: 'Himanshu Bahuguna', publishedAt: '2024-01-01', description: '' },
+      { id: 'oECLUxQK-C0', title: 'Shokyani Kumaoni Dance Cover', thumbnail: 'https://i.ytimg.com/vi/oECLUxQK-C0/hqdefault.jpg', channelTitle: 'Ashish Bora Pahadi Dance', publishedAt: '2026-03-01', description: '' },
+      { id: '_VP56PvlX5A', title: 'Pahadi Dhol Tandi Dance', thumbnail: 'https://i.ytimg.com/vi/_VP56PvlX5A/hqdefault.jpg', channelTitle: 'Oshin Bhandari Vlogs', publishedAt: '2023-01-01', description: '' },
+      { id: 'WFBhML-rb3o', title: 'Pahadi Shadi Mein Dance - Chholiya', thumbnail: 'https://i.ytimg.com/vi/WFBhML-rb3o/hqdefault.jpg', channelTitle: 'Sourav Joshi Vlogs', publishedAt: '2022-01-01', description: '' },
+    ],
+    nextPageToken: null, prevPageToken: null, totalResults: 4,
+  },
+  jaagar: {
+    videos: [
+      { id: 'IqxxQTrOX34', title: 'Nonstop Garhwali Bhajan Jagar Stuti', thumbnail: 'https://i.ytimg.com/vi/IqxxQTrOX34/hqdefault.jpg', channelTitle: 'Music On Beats', publishedAt: '2020-01-01', description: '' },
+      { id: 'YKAMHc98SEg', title: 'Hey Mohana - Krishna Jagar', thumbnail: 'https://i.ytimg.com/vi/YKAMHc98SEg/hqdefault.jpg', channelTitle: 'Darshan Farswan Official', publishedAt: '2025-08-01', description: '' },
+      { id: 'TK8uvD-MDkE', title: 'Hey Nanda - Darshan Farswan Jagar', thumbnail: 'https://i.ytimg.com/vi/TK8uvD-MDkE/hqdefault.jpg', channelTitle: 'Darshan Farswan Official', publishedAt: '2022-01-01', description: '' },
+      { id: 'bvAde-FeS-I', title: 'Nanda Bhawani - Jagar', thumbnail: 'https://i.ytimg.com/vi/bvAde-FeS-I/hqdefault.jpg', channelTitle: 'Darshan Farswan Official', publishedAt: '2025-01-01', description: '' },
+    ],
+    nextPageToken: null, prevPageToken: null, totalResults: 4,
+  },
+  mela: {
+    videos: [
+      { id: 'SU_Mad6KRTY', title: 'पहाड़ की सबसे भावुक परंपरा भिटौली | Uttarakhand Culture', thumbnail: 'https://i.ytimg.com/vi/SU_Mad6KRTY/hqdefault.jpg', channelTitle: 'Ghughuti', publishedAt: '2026-03-20', description: '' },
+      { id: 'VLcUVlBlbAM', title: 'धारी देवी बैंड | Dhari Devi Band', thumbnail: 'https://i.ytimg.com/vi/VLcUVlBlbAM/hqdefault.jpg', channelTitle: 'Baramasa', publishedAt: '2026-04-11', description: '' },
+      { id: 'nIhzDJGUL1o', title: 'Trijugi Narayan - Festival Celebration', thumbnail: 'https://i.ytimg.com/vi/nIhzDJGUL1o/hqdefault.jpg', channelTitle: 'Himalayan Films', publishedAt: '2017-01-01', description: '' },
+      { id: 'gZwu3Bt1qcw', title: 'Hey Bhagwati Nanda - Nanda Devi Mela', thumbnail: 'https://i.ytimg.com/vi/gZwu3Bt1qcw/hqdefault.jpg', channelTitle: 'T-Series Bhakti Sagar', publishedAt: '2018-01-01', description: '' },
+    ],
+    nextPageToken: null, prevPageToken: null, totalResults: 4,
+  },
 };
 
 function getStaticFallback(category) {
@@ -162,6 +189,9 @@ const CATEGORY_QUERIES = {
   vlogs: 'Pahadi vlogger uttarakhand village life OR pahadi lifestyle vlog',
   shorts: 'Pahadi garhwali shorts trending #shorts',
   podcast: 'Baramasa podcast Uttarakhand OR Ghughuti Uttarakhand documentary pahadi',
+  folkdance: 'Garhwali folk dance tandi chholiya langvir nritya pandav nritya uttarakhand',
+  jaagar: 'Garhwali jaagar jagar uttarakhand devbhoomi ritual',
+  mela: 'Uttarakhand mela fair festival garhwali kumaoni',
 };
 
 async function fetchFromYouTube(query, pageToken = '', maxResults = 12) {

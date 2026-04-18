@@ -30,7 +30,7 @@ router.get('/category/:category', async (req, res) => {
   try {
     const { category } = req.params;
     const { pageToken, maxResults } = req.query;
-    const validCategories = ['movies', 'songs', 'comedy', 'devotional', 'trending', 'vlogs', 'shorts', 'podcast'];
+    const validCategories = ['movies', 'songs', 'comedy', 'devotional', 'trending', 'vlogs', 'shorts', 'podcast', 'folkdance', 'jaagar', 'mela'];
     if (!validCategories.includes(category)) {
       return res.status(400).json({ error: 'Invalid category' });
     }

@@ -8,6 +8,9 @@ const CATEGORY_LABELS = {
   songs: '🎵 Garhwali Songs',
   comedy: '😂 Garhwali Comedy',
   devotional: '🙏 Garhwali Devotional',
+  folkdance: '💃 Folk Dances',
+  jaagar: '🔱 Jaagar',
+  mela: '🎪 Mela & Festivals',
 };
 
 export default function CategoryPage() {

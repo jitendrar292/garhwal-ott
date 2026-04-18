@@ -1,13 +1,24 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
+const FOOTER_LINKS = [
+  { label: 'Home', path: '/' },
+  { label: 'Movies', path: '/category/movies' },
+  { label: 'Songs', path: '/category/songs' },
+  { label: 'Comedy', path: '/category/comedy' },
+  { label: 'Folk Dance', path: '/category/folkdance' },
+  { label: 'Jaagar', path: '/category/jaagar' },
+  { label: 'Mela', path: '/category/mela' },
+  { label: 'Favorites', path: '/favorites' },
+  { label: 'Feedback', path: '/feedback' },
+];
+
 export default function Footer() {
   const [visits, setVisits] = useState(null);
 
   useEffect(() => {
     const visited = sessionStorage.getItem('pahadi_tube_visited');
     if (!visited) {
-      // First visit this session — increment
       fetch('/api/visits', { method: 'POST' })
         .then((r) => r.json())
         .then((data) => {
@@ -16,7 +27,6 @@ export default function Footer() {
         })
         .catch(() => {});
     } else {
-      // Already counted — just fetch current count
       fetch('/api/visits')
         .then((r) => r.json())
         .then((data) => setVisits(data.count))
@@ -25,52 +35,85 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="border-t border-white/10 bg-dark-800/50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <Link to="/" className="shrink-0">
-            <img src="/logo.png" alt="PahadiTube" className="h-8 w-auto opacity-70 hover:opacity-100 transition-opacity" />
-          </Link>
-          <div className="flex items-center gap-6 text-xs text-gray-500">
-            <Link to="/" className="hover:text-gray-300 transition-colors">Home</Link>
-            <Link to="/category/movies" className="hover:text-gray-300 transition-colors">Movies</Link>
-            <Link to="/category/songs" className="hover:text-gray-300 transition-colors">Songs</Link>
-            <Link to="/favorites" className="hover:text-gray-300 transition-colors">Favorites</Link>
-            <Link to="/feedback" className="hover:text-gray-300 transition-colors">Feedback</Link>
-          </div>
-          <div className="flex flex-col items-center md:items-end gap-1">
+    <footer className="relative overflow-hidden border-t border-white/[0.06] bg-gradient-to-b from-dark-900/80 to-dark-950">
+      {/* Decorative gradient blur */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-32 bg-primary-500/5 blur-3xl rounded-full pointer-events-none" />
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-10 pb-8">
+        {/* Main footer grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+          {/* Brand column */}
+          <div className="flex flex-col items-center md:items-start gap-4">
+            <Link to="/" className="group">
+              <img
+                src="/logo.png"
+                alt="PahadiTube"
+                className="h-10 w-auto opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+              />
+            </Link>
+            <p className="text-sm text-gray-500 leading-relaxed text-center md:text-left max-w-xs">
+              Your home for Garhwali & Kumaoni entertainment — movies, songs, comedy, folk culture, and more from Devbhoomi Uttarakhand.
+            </p>
+            {/* Visit counter */}
             {visits !== null && (
-              <div className="flex items-center gap-1.5 bg-dark-700 border border-white/10 rounded-full px-3 py-1">
-                <svg className="w-3.5 h-3.5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-                <span className="text-xs font-medium text-gray-300">
-                  {visits.toLocaleString()} visit{visits !== 1 ? 's' : ''}
+              <div className="flex items-center gap-2 bg-dark-800/60 border border-white/[0.06] rounded-full px-4 py-1.5 mt-1">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-500" />
+                </span>
+                <span className="text-xs font-medium text-gray-400">
+                  {visits.toLocaleString()} visitor{visits !== 1 ? 's' : ''}
                 </span>
               </div>
             )}
-            <p className="text-xs text-gray-600">
-              &copy; {new Date().getFullYear()} PahadiTube. All videos are from YouTube.
+          </div>
+
+          {/* Quick links */}
+          <div className="flex flex-col items-center md:items-start gap-3">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+              Quick Links
+            </h3>
+            <div className="flex flex-wrap justify-center md:justify-start gap-x-4 gap-y-2">
+              {FOOTER_LINKS.map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className="text-sm text-gray-500 hover:text-primary-400 transition-colors duration-200"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Contact & Social */}
+          <div className="flex flex-col items-center md:items-start gap-3">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+              Get in Touch
+            </h3>
+            <a
+              href="mailto:jitendrar292@gmail.com"
+              className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-primary-400 transition-colors duration-200"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
+                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              jitendrar292@gmail.com
+            </a>
+            <p className="text-xs text-gray-600 leading-relaxed text-center md:text-left">
+              Copyright concerns? Content removal requests? Reach out any time.
             </p>
           </div>
         </div>
 
-        {/* Disclaimer + Copyright notice */}
-        <div className="mt-6 pt-4 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-2 text-center">
+        {/* Bottom bar */}
+        <div className="mt-8 pt-6 border-t border-white/[0.04] flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-gray-600">
-            PahadiTube does not host or control third-party embedded content.
+            &copy; {new Date().getFullYear()} PahadiTube. All videos are from YouTube.
           </p>
-          <p className="text-xs text-gray-600">
-            Copyright owner?{' '}
-            <a
-              href="mailto:jitendrar292@gmail.com"
-              className="text-primary-400 hover:text-primary-300 transition-colors"
-            >
-              jitendrar292@gmail.com
-            </a>
+          <p className="text-[11px] text-gray-700">
+            PahadiTube does not host or control third-party embedded content.
           </p>
         </div>
       </div>

@@ -51,6 +51,30 @@ const GENRES = [
     glow: 'hover:shadow-violet-500/50',
     hint: 'Pahadi Stories',
   },
+  {
+    name: 'Folk Dances',
+    path: '/category/folkdance',
+    emoji: '💃',
+    gradient: 'from-rose-500 via-red-500 to-orange-500',
+    glow: 'hover:shadow-rose-500/50',
+    hint: 'तांदी, छोलिया & more',
+  },
+  {
+    name: 'Jaagar',
+    path: '/category/jaagar',
+    emoji: '🔱',
+    gradient: 'from-yellow-500 via-amber-600 to-orange-700',
+    glow: 'hover:shadow-amber-500/50',
+    hint: 'देवभूमि की जागर',
+  },
+  {
+    name: 'Mela',
+    path: '/category/mela',
+    emoji: '🎪',
+    gradient: 'from-lime-500 via-green-500 to-emerald-600',
+    glow: 'hover:shadow-green-500/50',
+    hint: 'Fairs & Festivals',
+  },
 ];
 
 export default function GenreGrid() {
@@ -62,7 +86,7 @@ export default function GenreGrid() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
       </h2>
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+      <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-9 gap-3 sm:gap-4">
         {GENRES.map((genre) => (
           <Link
             key={genre.path}
