@@ -2,10 +2,6 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useMusic } from '../context/MusicContext';
 
 /* ── helpers ────────────────────────────────────────── */
-const isMobile = () =>
-  /iPad|iPhone|iPod|Android/i.test(navigator.userAgent) ||
-  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-
 const fmt = (s) => {
   if (!s || s < 0) return '0:00';
   const m = Math.floor(s / 60);
@@ -22,7 +18,11 @@ function loadYTApi() {
     const tag = document.createElement('script');
     tag.src = 'https://www.youtube.com/iframe_api';
     document.head.appendChild(tag);
-    window.onYouTubeIframeAPIReady = resolve;
+    const prev = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => {
+      if (typeof prev === 'function') prev();
+      resolve();
+    };
   });
   return ytApiPromise;
 }
@@ -32,6 +32,7 @@ export default function FloatingPlayer() {
   const { currentTrack, nextTrack, prevTrack, stop, playlist, currentIndex } = useMusic();
   const [expanded, setExpanded] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const [embedError, setEmbedError] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -40,7 +41,6 @@ export default function FloatingPlayer() {
   const playerRef = useRef(null);
   const skipTimer = useRef(null);
   const pollTimer = useRef(null);
-  const mobile = typeof navigator !== 'undefined' && isMobile();
 
   // Refs so YT callbacks always see latest values
   const repeatRef = useRef(repeat);
@@ -50,12 +50,13 @@ export default function FloatingPlayer() {
 
   /* ── create / recreate YT player on track change ── */
   useEffect(() => {
-    if (!currentTrack || mobile) return;
+    if (!currentTrack) return;
 
     setEmbedError(false);
     setCurrentTime(0);
     setDuration(0);
     setIsPlaying(false);
+    setIsReady(false);
     clearTimeout(skipTimer.current);
     clearInterval(pollTimer.current);
 
@@ -64,11 +65,9 @@ export default function FloatingPlayer() {
     loadYTApi().then(() => {
       if (destroyed) return;
 
-      // Destroy previous player
       try { playerRef.current?.destroy(); } catch {}
       playerRef.current = null;
 
-      // Ensure host div exists; create fresh child for player
       const host = document.getElementById('yt-audio-host');
       if (!host) return;
       host.innerHTML = '';
@@ -93,8 +92,12 @@ export default function FloatingPlayer() {
         events: {
           onReady(e) {
             if (destroyed) return;
-            e.target.playVideo();
-            setIsPlaying(true);
+            setIsReady(true);
+            try {
+              e.target.unMute();
+              e.target.setVolume(100);
+              e.target.playVideo();
+            } catch {}
             const d = e.target.getDuration();
             if (d > 0) setDuration(d);
           },
@@ -116,7 +119,7 @@ export default function FloatingPlayer() {
               }
             }
           },
-          onError(e) {
+          onError() {
             if (destroyed) return;
             setEmbedError(true);
             setIsPlaying(false);
@@ -137,12 +140,12 @@ export default function FloatingPlayer() {
       try { playerRef.current?.destroy(); } catch {}
       playerRef.current = null;
     };
-  }, [currentTrack?.id, mobile, playlist.length]);
+  }, [currentTrack?.id, playlist.length]);
 
   /* ── poll current time while playing ── */
   useEffect(() => {
     clearInterval(pollTimer.current);
-    if (!isPlaying || mobile) return;
+    if (!isPlaying) return;
     pollTimer.current = setInterval(() => {
       const p = playerRef.current;
       if (p?.getCurrentTime) {
@@ -152,27 +155,27 @@ export default function FloatingPlayer() {
       }
     }, 400);
     return () => clearInterval(pollTimer.current);
-  }, [isPlaying, mobile]);
+  }, [isPlaying]);
 
   /* ── controls ── */
   const togglePlay = useCallback(() => {
-    if (mobile) {
-      window.open(`https://www.youtube.com/watch?v=${currentTrack?.id}`, '_blank');
-      return;
-    }
     const p = playerRef.current;
     if (!p) return;
-    if (isPlaying) { p.pauseVideo(); } else { p.playVideo(); }
-  }, [mobile, isPlaying, currentTrack?.id]);
+    try {
+      p.unMute();
+      p.setVolume(100);
+      if (isPlaying) { p.pauseVideo(); } else { p.playVideo(); }
+    } catch {}
+  }, [isPlaying]);
 
   const handleSeek = useCallback((e) => {
-    if (!duration || mobile) return;
+    if (!duration) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
     const t = ratio * duration;
     setCurrentTime(t);
     playerRef.current?.seekTo(t, true);
-  }, [duration, mobile]);
+  }, [duration]);
 
   if (!currentTrack) return null;
 
@@ -181,32 +184,31 @@ export default function FloatingPlayer() {
 
   return (
     <>
-      {/* ── Invisible YT Player host (never visible, audio only) ── */}
+      {/* ── Invisible YT Player host (audio only) ── */}
       <div
         id="yt-audio-host"
         aria-hidden="true"
         style={{
           position: 'fixed',
-          top: '-9999px',
-          left: '-9999px',
+          top: 0,
+          left: 0,
           width: '1px',
           height: '1px',
           overflow: 'hidden',
-          opacity: 0,
+          opacity: 0.001,
           pointerEvents: 'none',
+          zIndex: -1,
         }}
       />
 
       {/* ═══════ FULL-SCREEN PLAYER (JioSaavn style) ═══════ */}
       {expanded && (
         <div className="fixed inset-0 z-[60] bg-dark-950 flex flex-col select-none overflow-hidden">
-          {/* Blurred background */}
           <div className="absolute inset-0 pointer-events-none">
             <img src={currentTrack.thumbnail} alt="" className="w-full h-full object-cover scale-150 blur-[80px] opacity-30" />
             <div className="absolute inset-0 bg-gradient-to-b from-dark-950/40 via-dark-950/60 to-dark-950" />
           </div>
 
-          {/* Top bar */}
           <div className="relative z-10 flex items-center justify-between px-5 pt-5 pb-2">
             <button onClick={() => setExpanded(false)} className="p-2 -ml-2 text-white/60 hover:text-white active:scale-90 transition-all">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
@@ -224,19 +226,16 @@ export default function FloatingPlayer() {
             </a>
           </div>
 
-          {/* Album art — large, rounded, with pulse animation */}
           <div className="relative z-10 flex-1 flex items-center justify-center px-10 sm:px-16">
             <div className="relative">
-              {/* Glow ring behind art */}
-              {isPlaying && !mobile && (
+              {isPlaying && (
                 <div className="absolute -inset-3 rounded-[2rem] bg-primary-500/20 blur-xl animate-pulse" />
               )}
               <div className={`relative w-72 sm:w-80 aspect-square rounded-3xl overflow-hidden shadow-2xl transition-all duration-700 ${
                 isPlaying ? 'scale-100' : 'scale-[0.9] opacity-70'
               }`}>
                 <img src={currentTrack.thumbnail} alt={currentTrack.title} className="w-full h-full object-cover" />
-                {/* Vinyl/equalizer overlay when playing */}
-                {isPlaying && !mobile && (
+                {isPlaying && (
                   <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-end gap-[3px] bg-black/50 px-3 py-1.5 rounded-full">
                     {[0, 0.15, 0.3, 0.1, 0.25].map((d, i) => (
                       <span key={i} className="w-[3px] bg-primary-400 rounded-full" style={{ animation: `musicBar 0.55s ease-in-out ${d}s infinite alternate`, height: `${6 + (i % 3) * 5}px` }} />
@@ -247,29 +246,23 @@ export default function FloatingPlayer() {
             </div>
           </div>
 
-          {/* Bottom: info + progress + controls */}
           <div className="relative z-10 px-7 sm:px-10 pb-8 sm:pb-10">
-            {/* Track info */}
             <div className="mb-4">
               <h2 className="text-lg sm:text-xl font-bold text-white leading-tight line-clamp-2">{currentTrack.title}</h2>
               <p className="text-sm text-white/45 mt-1 truncate">{currentTrack.channelTitle}</p>
             </div>
 
-            {/* Progress bar */}
-            {!mobile && (
-              <div className="mb-6">
-                <div onClick={handleSeek} className="group relative h-[5px] bg-white/10 rounded-full cursor-pointer transition-all hover:h-[7px]">
-                  <div className="absolute inset-y-0 left-0 bg-primary-400 rounded-full transition-all" style={{ width: `${progress}%` }} />
-                  <div className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity" style={{ left: `calc(${progress}% - 8px)` }} />
-                </div>
-                <div className="flex justify-between mt-2 text-[11px] text-white/30 font-mono tabular-nums">
-                  <span>{fmt(currentTime)}</span>
-                  <span>{duration > 0 ? fmt(duration) : '--:--'}</span>
-                </div>
+            <div className="mb-6">
+              <div onClick={handleSeek} className="group relative h-[5px] bg-white/10 rounded-full cursor-pointer transition-all hover:h-[7px]">
+                <div className="absolute inset-y-0 left-0 bg-primary-400 rounded-full transition-all" style={{ width: `${progress}%` }} />
+                <div className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity" style={{ left: `calc(${progress}% - 8px)` }} />
               </div>
-            )}
+              <div className="flex justify-between mt-2 text-[11px] text-white/30 font-mono tabular-nums">
+                <span>{fmt(currentTime)}</span>
+                <span>{duration > 0 ? fmt(duration) : '--:--'}</span>
+              </div>
+            </div>
 
-            {/* Controls */}
             <div className="flex items-center justify-between max-w-xs mx-auto">
               <button onClick={() => setShuffle((s) => !s)} className={`p-2 transition-colors ${shuffle ? 'text-primary-400' : 'text-white/25 hover:text-white/50'}`} aria-label="Shuffle">
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z" /></svg>
@@ -277,10 +270,12 @@ export default function FloatingPlayer() {
               <button onClick={prevTrack} className="p-2 text-white/70 hover:text-white active:scale-90 transition-all" aria-label="Previous">
                 <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" /></svg>
               </button>
-              <button onClick={togglePlay} className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-xl shadow-white/10 hover:scale-105 active:scale-95 transition-transform" aria-label={isPlaying ? 'Pause' : 'Play'}>
-                {isPlaying && !mobile
-                  ? <svg className="w-7 h-7 text-black" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" /></svg>
-                  : <svg className="w-7 h-7 text-black ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+              <button onClick={togglePlay} disabled={!isReady} className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-xl shadow-white/10 hover:scale-105 active:scale-95 transition-transform disabled:opacity-50" aria-label={isPlaying ? 'Pause' : 'Play'}>
+                {!isReady
+                  ? <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                  : isPlaying
+                    ? <svg className="w-7 h-7 text-black" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" /></svg>
+                    : <svg className="w-7 h-7 text-black ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
                 }
               </button>
               <button onClick={nextTrack} className="p-2 text-white/70 hover:text-white active:scale-90 transition-all" aria-label="Next">
@@ -291,8 +286,7 @@ export default function FloatingPlayer() {
               </button>
             </div>
 
-            {mobile && <p className="text-[11px] text-white/25 text-center mt-5">Tap play to open in YouTube app</p>}
-            {embedError && !mobile && (
+            {embedError && (
               <p className="text-[11px] text-yellow-400/60 text-center mt-4">
                 {playlist.length > 1 ? "Skipping \u2014 this track can't be embedded..." : "This track can't play here"}
               </p>
@@ -304,17 +298,15 @@ export default function FloatingPlayer() {
       {/* ═══════ MINI PLAYER BAR ═══════ */}
       {!expanded && (
         <div className="fixed bottom-16 sm:bottom-0 left-0 right-0 z-50">
-          {/* Thin progress */}
-          {!mobile && duration > 0 && (
+          {duration > 0 && (
             <div className="h-[2px] bg-white/5">
               <div className="h-full bg-primary-500 transition-[width] duration-500 ease-linear" style={{ width: `${progress}%` }} />
             </div>
           )}
           <div className="bg-dark-900/95 backdrop-blur-2xl border-t border-white/[0.06] px-3 py-2.5 flex items-center gap-3">
-            {/* Thumbnail */}
             <button onClick={() => setExpanded(true)} className="shrink-0 relative group">
               <img src={currentTrack.thumbnail} alt="" className="w-12 h-12 rounded-xl object-cover" />
-              {isPlaying && !mobile && (
+              {isPlaying && (
                 <div className="absolute inset-0 rounded-xl flex items-center justify-center bg-black/40">
                   <div className="flex items-end gap-[2px] h-3">
                     {[0, 0.15, 0.3].map((d, i) => (
@@ -324,17 +316,17 @@ export default function FloatingPlayer() {
                 </div>
               )}
             </button>
-            {/* Title */}
             <button onClick={() => setExpanded(true)} className="flex-1 min-w-0 text-left">
               <p className="text-[13px] font-semibold text-white truncate">{currentTrack.title}</p>
               <p className="text-[11px] text-white/40 truncate">{currentTrack.channelTitle}</p>
             </button>
-            {/* Controls */}
             <div className="flex items-center gap-0.5 shrink-0">
-              <button onClick={togglePlay} className="p-2.5 bg-white rounded-full text-black hover:scale-105 active:scale-95 transition-transform" aria-label={isPlaying ? 'Pause' : 'Play'}>
-                {isPlaying && !mobile
-                  ? <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" /></svg>
-                  : <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+              <button onClick={togglePlay} disabled={!isReady} className="p-2.5 bg-white rounded-full text-black hover:scale-105 active:scale-95 transition-transform disabled:opacity-50" aria-label={isPlaying ? 'Pause' : 'Play'}>
+                {!isReady
+                  ? <div className="w-3 h-3 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                  : isPlaying
+                    ? <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" /></svg>
+                    : <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
                 }
               </button>
               <button onClick={nextTrack} className="p-2 text-white/50 hover:text-white transition-colors" aria-label="Next">
