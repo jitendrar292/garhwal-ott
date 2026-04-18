@@ -113,6 +113,23 @@ const STATIC_FALLBACK = {
     ],
     nextPageToken: null, prevPageToken: null, totalResults: 12,
   },
+  podcast: {
+    videos: [
+      { id: 'VLcUVlBlbAM', title: 'धारी देवी बैंड | Dhari Devi Band | Baramasa', thumbnail: 'https://i.ytimg.com/vi/VLcUVlBlbAM/hqdefault.jpg', channelTitle: 'Baramasa', publishedAt: '2026-04-11', description: '' },
+      { id: 'm6SU7fnLD5A', title: 'Bindukhatta - Story of Invisible Village | बिंदुखत्ता | Baramasa Documentary', thumbnail: 'https://i.ytimg.com/vi/m6SU7fnLD5A/hqdefault.jpg', channelTitle: 'Baramasa', publishedAt: '2026-03-25', description: '' },
+      { id: 'lwoFXlrMLv4', title: 'एक बजट, एक रपट, बाक़ी चपट | Uttarakhand | Extra Cover | Baramasa', thumbnail: 'https://i.ytimg.com/vi/lwoFXlrMLv4/hqdefault.jpg', channelTitle: 'Baramasa', publishedAt: '2026-03-18', description: '' },
+      { id: '44ow04YavTU', title: 'कुमाऊँ के इतिहास में छिपे दिग्गजों की कहानी | Dr. Ajay Rawat | Baramasa Podcast', thumbnail: 'https://i.ytimg.com/vi/44ow04YavTU/hqdefault.jpg', channelTitle: 'Baramasa', publishedAt: '2026-03-15', description: '' },
+      { id: 'fNcQxaGwGPE', title: 'Reels में दिखने वाले इस खेल में कितना पैसा और रिस्क? | Baramasa', thumbnail: 'https://i.ytimg.com/vi/fNcQxaGwGPE/hqdefault.jpg', channelTitle: 'Baramasa', publishedAt: '2026-03-10', description: '' },
+      { id: '9luD5DYf5hY', title: 'गैस की कमी से जूझ रहे Hotel-Dhaba संचालक | Ground Report | Baramasa', thumbnail: 'https://i.ytimg.com/vi/9luD5DYf5hY/hqdefault.jpg', channelTitle: 'Baramasa', publishedAt: '2026-04-08', description: '' },
+      { id: 'C_mDE3R4sj8', title: 'उत्तराखंड के इस हिल स्टेशन पर विदेशी एंट्री बैन क्यों – SFF Connection | Ghughuti', thumbnail: 'https://i.ytimg.com/vi/C_mDE3R4sj8/hqdefault.jpg', channelTitle: 'Ghughuti', publishedAt: '2026-04-09', description: '' },
+      { id: 'LplITEHOkp4', title: 'उत्तराखंड में एक सिक्के पर गीत क्यों बना? छेदु डबल की पूरी कहानी | Ghughuti', thumbnail: 'https://i.ytimg.com/vi/LplITEHOkp4/hqdefault.jpg', channelTitle: 'Ghughuti', publishedAt: '2026-03-26', description: '' },
+      { id: 'SU_Mad6KRTY', title: 'पहाड़ की सबसे भावुक परंपरा भिटौली | Uttarakhand Culture | Ghughuti', thumbnail: 'https://i.ytimg.com/vi/SU_Mad6KRTY/hqdefault.jpg', channelTitle: 'Ghughuti', publishedAt: '2026-03-20', description: '' },
+      { id: 'okuEX3xw0jc', title: 'पहाड़ का अनसंग हीरो - तिब्बत से हिमालय की नदियों तक | Ghughuti', thumbnail: 'https://i.ytimg.com/vi/okuEX3xw0jc/hqdefault.jpg', channelTitle: 'Ghughuti', publishedAt: '2026-03-18', description: '' },
+      { id: '-ohyILEyBn0', title: 'किसने बनाया हिमालय का सबसे खतरनाक रास्ता? | Gartang Gali Uttarakhand | Ghughuti', thumbnail: 'https://i.ytimg.com/vi/-ohyILEyBn0/hqdefault.jpg', channelTitle: 'Ghughuti', publishedAt: '2026-03-12', description: '' },
+      { id: 'rWXhAytVsDc', title: 'Nobel Puraskar, Gitanjali, Rabindranath Tagore और Uttarakhand | Ghughuti', thumbnail: 'https://i.ytimg.com/vi/rWXhAytVsDc/hqdefault.jpg', channelTitle: 'Ghughuti', publishedAt: '2025-11-17', description: '' },
+    ],
+    nextPageToken: null, prevPageToken: null, totalResults: 12,
+  },
   shorts: {
     videos: [
       { id: 'spsGFAdr194', title: 'Swami Pardesh - Suraj Tratak | Trending Pahadi Song', thumbnail: 'https://i.ytimg.com/vi/spsGFAdr194/hqdefault.jpg', channelTitle: 'Suraj Tratak', publishedAt: '2025-09-01', description: '' },
@@ -144,6 +161,7 @@ const CATEGORY_QUERIES = {
   trending: 'Garhwali trending songs OR comedy',
   vlogs: 'Pahadi vlogger uttarakhand village life OR pahadi lifestyle vlog',
   shorts: 'Pahadi garhwali shorts trending #shorts',
+  podcast: 'Baramasa podcast Uttarakhand OR Ghughuti Uttarakhand documentary pahadi',
 };
 
 async function fetchFromYouTube(query, pageToken = '', maxResults = 12) {

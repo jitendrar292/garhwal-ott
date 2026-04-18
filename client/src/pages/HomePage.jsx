@@ -11,6 +11,7 @@ export default function HomePage() {
   const [songs, setSongs] = useState({ videos: [], loading: true, error: null });
   const [comedy, setComedy] = useState({ videos: [], loading: true, error: null });
   const [blogs, setBlogs] = useState({ videos: [], loading: true, error: null });
+  const [podcasts, setPodcasts] = useState({ videos: [], loading: true, error: null });
 
   useEffect(() => {
     async function load(category, setter) {
@@ -26,6 +27,7 @@ export default function HomePage() {
     load('songs', setSongs);
     load('comedy', setComedy);
     load('vlogs', setBlogs);
+    load('podcast', setPodcasts);
   }, []);
 
   return (
@@ -80,6 +82,15 @@ export default function HomePage() {
           loading={blogs.loading}
           error={blogs.error}
           categoryLink="/category/vlogs"
+        />
+
+        {/* Podcasts */}
+        <VideoRow
+          title="🎙️ Pahadi Podcasts – Baramasa & Ghughuti"
+          videos={podcasts.videos}
+          loading={podcasts.loading}
+          error={podcasts.error}
+          categoryLink="/podcast"
         />
 
         {/* About PahadiTube */}

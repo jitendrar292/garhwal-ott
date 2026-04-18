@@ -6,6 +6,7 @@ const GENRES = [
   { name: 'Songs', path: '/category/songs', emoji: '🎵', gradient: 'from-pink-500 to-rose-600' },
   { name: 'Devotional', path: '/category/devotional', emoji: '🙏', gradient: 'from-emerald-500 to-teal-600' },
   { name: 'Vlogs', path: '/category/vlogs', emoji: '📹', gradient: 'from-cyan-500 to-blue-600' },
+  { name: 'Podcast', path: '/podcast', emoji: '🎙️', gradient: 'from-violet-500 to-purple-700' },
 ];
 
 export default function GenreGrid() {
