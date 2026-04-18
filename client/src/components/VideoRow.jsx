@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import VideoCard from './VideoCard';
 
-export default function VideoRow({ title, videos, loading, error, categoryLink }) {
+export default function VideoRow({ title, subtitle, videos, loading, error, categoryLink }) {
   const scrollRef = useRef(null);
 
   const scroll = (direction) => {
@@ -16,16 +16,27 @@ export default function VideoRow({ title, videos, loading, error, categoryLink }
     <section className="mb-10 group/section">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-bold flex items-center gap-2">
-          {title}
-          {categoryLink && (
-            <Link to={categoryLink} className="text-gray-500 hover:text-primary-400 transition-colors">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        <div>
+          <h2 className="text-lg font-bold flex items-center gap-2">
+            {title}
+            {categoryLink && (
+              <Link to={categoryLink} className="text-gray-500 hover:text-primary-400 transition-colors">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            )}
+          </h2>
+          {subtitle && (
+            <p className="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
-            </Link>
+              {subtitle}
+            </p>
           )}
-        </h2>
+        </div>
         {/* Desktop scroll arrows */}
         {!loading && videos.length > 3 && (
           <div className="hidden sm:flex items-center gap-1 opacity-0 group-hover/section:opacity-100 transition-opacity">

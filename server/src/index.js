@@ -23,7 +23,7 @@ app.use(helmet({
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
       imgSrc: ["'self'", "https://i.ytimg.com", "https://*.ytimg.com", "data:"],
       frameSrc: ["'self'", "https://www.youtube.com", "https://youtube.com"],
-      connectSrc: ["'self'", "https://www.youtube.com"],
+      connectSrc: ["'self'", "https://www.youtube.com", "https://ipapi.co"],
     },
   },
   crossOriginEmbedderPolicy: false,

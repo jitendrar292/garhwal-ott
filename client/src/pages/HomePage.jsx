@@ -15,6 +15,7 @@ export default function HomePage() {
   const [folkdance, setFolkdance] = useState({ videos: [], loading: true, error: null });
   const [jaagar, setJaagar] = useState({ videos: [], loading: true, error: null });
   const [mela, setMela] = useState({ videos: [], loading: true, error: null });
+  const [userLocation, setUserLocation] = useState(null);
 
   useEffect(() => {
     async function load(category, setter) {
@@ -34,7 +35,21 @@ export default function HomePage() {
     load('folkdance', setFolkdance);
     load('jaagar', setJaagar);
     load('mela', setMela);
+
+    // Detect user location via IP
+    fetch('https://ipapi.co/json/')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data && data.city) {
+          setUserLocation({ city: data.city, region: data.region || '' });
+        }
+      })
+      .catch(() => {});
   }, []);
+
+  const trendingTitle = userLocation
+    ? `🔥 Trending near ${userLocation.city}`
+    : '🔥 Trending Now';
 
   return (
     <div>
@@ -47,7 +62,8 @@ export default function HomePage() {
 
         {/* Trending */}
         <VideoRow
-          title="🔥 Trending Now"
+          title={trendingTitle}
+          subtitle={userLocation ? `${userLocation.city}, ${userLocation.region}` : null}
           videos={trending.videos}
           loading={trending.loading}
           error={trending.error}

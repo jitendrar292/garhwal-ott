@@ -2,7 +2,9 @@ import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import BottomNav from './components/BottomNav';
 import Footer from './components/Footer';
+import FloatingPlayer from './components/FloatingPlayer';
 import InstallBanner from './components/InstallBanner';
+import { MusicProvider } from './context/MusicContext';
 import HomePage from './pages/HomePage';
 import CategoryPage from './pages/CategoryPage';
 import SearchPage from './pages/SearchPage';
@@ -16,25 +18,28 @@ import PodcastPage from './pages/PodcastPage';
 
 export default function App() {
   return (
-    <div className="min-h-screen flex flex-col bg-dark-950 text-white">
-      <Navbar />
-      <main className="flex-1 pb-24 sm:pb-8">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/category/:category" element={<CategoryPage />} />
-          <Route path="/search" element={<SearchPage />} />
-          <Route path="/watch/:videoId" element={<PlayerPage />} />
-          <Route path="/favorites" element={<FavoritesPage />} />
-          <Route path="/feedback" element={<FeedbackPage />} />
-          <Route path="/feedback/admin" element={<FeedbackAdminPage />} />
-          <Route path="/music" element={<MusicPage />} />
-          <Route path="/shorts" element={<ShortsPage />} />
-          <Route path="/podcast" element={<PodcastPage />} />
-        </Routes>
-      </main>
-      <Footer />
-      <BottomNav />
-      <InstallBanner />
-    </div>
+    <MusicProvider>
+      <div className="min-h-screen flex flex-col bg-dark-950 text-white">
+        <Navbar />
+        <main className="flex-1 pb-24 sm:pb-8">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/category/:category" element={<CategoryPage />} />
+            <Route path="/search" element={<SearchPage />} />
+            <Route path="/watch/:videoId" element={<PlayerPage />} />
+            <Route path="/favorites" element={<FavoritesPage />} />
+            <Route path="/feedback" element={<FeedbackPage />} />
+            <Route path="/feedback/admin" element={<FeedbackAdminPage />} />
+            <Route path="/music" element={<MusicPage />} />
+            <Route path="/shorts" element={<ShortsPage />} />
+            <Route path="/podcast" element={<PodcastPage />} />
+          </Routes>
+        </main>
+        <Footer />
+        <FloatingPlayer />
+        <BottomNav />
+        <InstallBanner />
+      </div>
+    </MusicProvider>
   );
 }
