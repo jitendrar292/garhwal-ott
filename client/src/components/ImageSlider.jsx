@@ -1,40 +1,60 @@
 import { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 
 const SLIDES = [
   {
     src: '/slider/20210711_114700.jpg',
     title: 'पहाड़ की गोद',
     subtitle: 'Misty terraced fields — the timeless beauty of Garhwal',
+    link: '/category/vlogs',
   },
   {
     src: '/slider/ramman.png',
     title: 'रम्माण महोत्सव',
     subtitle: 'UNESCO-listed Ramman festival — living heritage of Garhwal',
+    link: '/category/devotional',
   },
   {
     src: '/slider/nandadevi.jpeg',
     title: 'नंदा देवी राज जात',
     subtitle: 'Sacred Nanda Devi pilgrimage — a journey of faith in the Himalayas',
+    link: '/category/devotional',
   },
   {
     src: '/slider/20170516_073914.jpg',
     title: 'देवता की डोली',
     subtitle: 'A vibrant doli procession celebrating Garhwali traditions',
+    link: '/category/devotional',
   },
   {
     src: '/slider/aanaj-kootna.jpeg',
     title: 'आनाज कूटना',
     subtitle: 'Traditional grain threshing — a timeless Pahadi practice',
+    link: '/category/vlogs',
   },
   {
-    src: '/slider/kaafal.jpeg',
+    src: '/slider/kaafal.png',
     title: 'काफल',
     subtitle: 'The wild mountain berry — pride of Uttarakhand\'s forests',
+    link: '/category/vlogs',
   },
   {
     src: '/slider/ghughti.jpg',
     title: 'घुघुती',
     subtitle: 'The beloved Pahadi bird — symbol of longing and home',
+    link: '/category/songs',
+  },
+  {
+    src: '/slider/hisalu.png',
+    title: 'हिसालू',
+    subtitle: 'Golden wild raspberry of the Himalayas — a taste of childhood',
+    link: '/category/vlogs',
+  },
+  {
+    src: '/slider/maalta.png',
+    title: 'माल्टा',
+    subtitle: 'Pahadi malta — the sweet citrus jewel of Uttarakhand',
+    link: '/category/vlogs',
   },
 ];
 
@@ -114,6 +134,24 @@ export default function ImageSlider() {
           >
             {SLIDES[current].subtitle}
           </p>
+          {SLIDES[current].link && (
+            <Link
+              key={`cta-${current}`}
+              to={SLIDES[current].link}
+              className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 rounded-full
+                         bg-white/15 hover:bg-white/25 active:bg-white/10
+                         backdrop-blur-sm border border-white/20 hover:border-white/40
+                         text-white text-sm font-semibold
+                         transition-all duration-200 hover:scale-105 active:scale-95
+                         animate-fade-in-up shadow-lg"
+              style={{ animationDelay: '280ms' }}
+            >
+              Explore
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          )}
         </div>
 
         {/* Slide counter badge */}
