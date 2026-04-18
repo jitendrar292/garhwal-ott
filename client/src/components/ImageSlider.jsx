@@ -3,38 +3,38 @@ import { useState, useEffect, useCallback } from 'react';
 const SLIDES = [
   {
     src: '/slider/20210711_114700.jpg',
-    title: 'Misty Green Valleys',
-    subtitle: 'The breathtaking terraced hills of Garhwal',
+    title: 'पहाड़ की गोद',
+    subtitle: 'Misty terraced fields — the timeless beauty of Garhwal',
+  },
+  {
+    src: '/slider/ramman.png',
+    title: 'रम्माण महोत्सव',
+    subtitle: 'UNESCO-listed Ramman festival — living heritage of Garhwal',
+  },
+  {
+    src: '/slider/nandadevi.jpeg',
+    title: 'नंदा देवी राज जात',
+    subtitle: 'Sacred Nanda Devi pilgrimage — a journey of faith in the Himalayas',
   },
   {
     src: '/slider/20170516_073914.jpg',
-    title: 'Garhwali Festival',
-    subtitle: 'A vibrant doli procession celebrating local traditions',
+    title: 'देवता की डोली',
+    subtitle: 'A vibrant doli procession celebrating Garhwali traditions',
   },
   {
-    src: '/slider/20191228_094933.jpg',
-    title: 'Life in the Mountains',
-    subtitle: 'Snow-capped peaks and warm village moments',
+    src: '/slider/aanaj-kootna.jpeg',
+    title: 'आनाज कूटना',
+    subtitle: 'Traditional grain threshing — a timeless Pahadi practice',
   },
   {
-    src: '/slider/20191228_094951.jpg',
-    title: 'Village Bonds',
-    subtitle: 'Simple joys amidst the Himalayan landscape',
+    src: '/slider/kaafal.jpeg',
+    title: 'काफल',
+    subtitle: 'The wild mountain berry — pride of Uttarakhand\'s forests',
   },
   {
-    src: '/slider/20200711_162530.jpg',
-    title: 'Traditional Stone House',
-    subtitle: 'Heritage Garhwali architecture with stone-slate roofs',
-  },
-  {
-    src: '/slider/IMG_0221.jpg',
-    title: 'Himalayan Vista',
-    subtitle: 'Breathtaking views from the Garhwal highlands',
-  },
-  {
-    src: '/slider/IMG_0285.jpg',
-    title: 'Pahadi Charm',
-    subtitle: 'Capturing the essence of mountain life',
+    src: '/slider/ghughti.jpg',
+    title: 'घुघुती',
+    subtitle: 'The beloved Pahadi bird — symbol of longing and home',
   },
 ];
 
