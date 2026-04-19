@@ -99,11 +99,13 @@ const OPENROUTER = {
 };
 
 // Google Gemini — speaks its own wire format, handled by tryStreamGemini.
-// Free tier (gemini-1.5-flash): 15 req/min, 1500 req/day, 1M tokens/min.
+// Free tier (gemini-2.0-flash): 15 req/min, 1500 req/day, 1M tokens/min.
 // Get key at https://aistudio.google.com/apikey (free).
+// NOTE: gemini-1.5-* was retired in 2025. Use gemini-2.0-flash or
+// gemini-2.5-flash. Model name can be overridden via GEMINI_MODEL env var.
 const GEMINI = {
   name: 'gemini',
-  model: process.env.GEMINI_MODEL || 'gemini-1.5-flash',
+  model: process.env.GEMINI_MODEL || 'gemini-2.0-flash',
   getKey: () => process.env.GEMINI_API_KEY,
 };
 
