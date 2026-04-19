@@ -199,4 +199,28 @@ module.exports = [
   // ===== Garhwali film / cinema =====
   { gw: 'जग्वाळ', hi: '"जग्वाळ" (1983) — पहली गढ़वाली फ़िल्म, निर्देशक पारेश्वर गौड़', en: 'Jagwal (1983) — first Garhwali feature film, directed by Pareshwar Gaur', tags: ['जग्वाळ', 'jagwal', 'first film', 'पहली फिल्म', 'cinema'] },
   { gw: 'पाइनफ्लिक्स', hi: 'पाइनफ्लिक्स (2017) — रचित पोखरियाल द्वारा शुरू गढ़वाली कंटेंट प्लेटफॉर्म', en: 'Pineflix (2017) — Garhwali content platform launched by Rachit Pokhriyal', tags: ['पाइनफ्लिक्स', 'pineflix', 'platform', 'films'] },
+
+  // ===== Everyday household nouns (user-corrected, authoritative) =====
+  { gw: 'द्वार / किवाड़', hi: 'दरवाज़ा', en: 'door', tags: ['दरवाजा', 'दरवाज़ा', 'darwaza', 'door', 'kiwad', 'किवाड'] },
+  { gw: 'पाथर', hi: 'पत्थर', en: 'stone', tags: ['पत्थर', 'patthar', 'stone', 'pathar'] },
+  { gw: 'घर / घेर', hi: 'घर', en: 'house / home', tags: ['घर', 'घेर', 'ghar', 'gher', 'house', 'home'] },
+  { gw: 'सिंघाड़ो', hi: 'सिंघाड़ा', en: 'water chestnut', tags: ['सिंघाड़ा', 'singhara', 'water chestnut', 'singhado'] },
+  { gw: 'छान / छप्पर', hi: 'छत', en: 'roof', tags: ['छत', 'chhat', 'chat', 'roof', 'chhan', 'chhappar', 'छान', 'छप्पर'] },
+  { gw: 'भांडु / बर्तन', hi: 'बर्तन', en: 'utensil', tags: ['बर्तन', 'bartan', 'utensil', 'bhandu'] },
+  { gw: 'चूलो', hi: 'चूल्हा', en: 'stove / hearth', tags: ['चूल्हा', 'chulha', 'stove', 'hearth', 'chulo'] },
+  { gw: 'पाणी', hi: 'पानी', en: 'water', tags: ['पानी', 'pani', 'water'] },
+  { gw: 'दूध', hi: 'दूध', en: 'milk', tags: ['दूध', 'doodh', 'milk', 'dudh'] },
+  { gw: 'गोरु / ग्वैरु', hi: 'गाय', en: 'cow', tags: ['गाय', 'gaay', 'cow', 'goru'] },
+  { gw: 'बखरु', hi: 'बकरी', en: 'goat', tags: ['बकरी', 'bakri', 'goat', 'bakhru'] },
+  { gw: 'खिड़की', hi: 'खिड़की', en: 'window', tags: ['खिड़की', 'khidki', 'window'] },
+  { gw: 'चौक / आँगन', hi: 'आँगन / चौक', en: 'courtyard', tags: ['आँगन', 'angan', 'aangan', 'courtyard', 'chowk'] },
+  { gw: 'खाणु', hi: 'भोजन / खाना', en: 'food / meal', tags: ['खाना', 'khana', 'food', 'meal', 'bhojan'] },
+  { gw: 'रोटी', hi: 'रोटी', en: 'flatbread', tags: ['रोटी', 'roti', 'flatbread'] },
+  { gw: 'दाळ', hi: 'दाल', en: 'lentils', tags: ['दाल', 'dal', 'daal', 'lentils'] },
+  { gw: 'भात', hi: 'चावल / भात', en: 'rice', tags: ['चावल', 'chawal', 'rice', 'bhat', 'भात'] },
+  { gw: 'धार', hi: 'पहाड़ की चोटी', en: 'mountain ridge / peak', tags: ['पहाड़', 'pahad', 'ridge', 'dhar', 'peak'] },
+  { gw: 'गाड़', hi: 'नदी', en: 'river', tags: ['नदी', 'nadi', 'river', 'gad'] },
+  { gw: 'बांज', hi: 'बांज (ओक का पेड़)', en: 'oak tree', tags: ['बांज', 'banj', 'oak'] },
+  { gw: 'बुरांश', hi: 'बुरांश (राज्य पुष्प)', en: 'rhododendron (state flower)', tags: ['बुरांश', 'burans', 'rhododendron', 'state flower'] },
+  { gw: 'काफळ', hi: 'काफल (पहाड़ी फल)', en: 'kaphal (Himalayan bayberry)', tags: ['काफल', 'kafal', 'kaphal', 'bayberry'] },
 ];
