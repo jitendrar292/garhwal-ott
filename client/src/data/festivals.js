@@ -17,7 +17,7 @@ const FESTIVALS = [
     emoji: '🌱',
     bg: 'from-emerald-600 to-green-800',
     description:
-      'Sawan sankranti — sowing of seven grains and worship of greenery. A symbol of harvest, prosperity and respect for nature.',
+      'सौंण संक्रान्ति — सात अनाज बौंदा छां औ हरियाली कि पूजा करदा छां। यो फसल, सम्पन्नता औ धरती मैया कु आदर कु प्रतीक छ।',
   },
   {
     id: 'olgia-2026',
@@ -28,7 +28,7 @@ const FESTIVALS = [
     emoji: '🧈',
     bg: 'from-amber-500 to-orange-700',
     description:
-      'Bhado sankranti — first day of consuming pure ghee. Farmers and craftsmen gift their patrons (olgia).',
+      'भादौं संक्रान्ति — पैलु दिन घ्यू खाणा कु। किसान औ कारीगर अपणा मालिकु तैं ओल्गिया (भेंट) दिन्दा छन।',
   },
   {
     id: 'nandadevi-2026',
@@ -39,7 +39,7 @@ const FESTIVALS = [
     emoji: '🛕',
     bg: 'from-rose-600 to-red-800',
     description:
-      'Centuries-old fair honouring goddess Nanda — the patron deity of Kumaon and Garhwal hills.',
+      'सदियूं पुराणु मेला — माँ नन्दा देवी कु सम्मान म लग्द छ। नन्दा देवी कुमाऊँ औ गढ़वाळ का पहाड़ुं कि कुलदेवी छ।',
   },
   {
     id: 'khatarua-2026',
@@ -50,7 +50,7 @@ const FESTIVALS = [
     emoji: '🔥',
     bg: 'from-orange-600 to-red-700',
     description:
-      'Ashwin sankranti — bonfires lit in fields to mark the change of season and victory of the Kumaoni Chand king over Garhwal.',
+      'आश्विन संक्रान्ति — खेतुं म आग जळैक ऋतु बदळणा कु संदेश दिन्दा छां। यो दिन कुमाऊँ का चन्द राजा कि गढ़वाळ पर जीत कु भि पर्व छ।',
   },
   {
     id: 'diwali-2026',
@@ -61,7 +61,7 @@ const FESTIVALS = [
     emoji: '🪔',
     bg: 'from-yellow-500 to-amber-700',
     description:
-      'Festival of lights — celebrated across all hills with diyas, rangoli and family feasts.',
+      'दीयों कु त्योहार — पूरा पहाड़ म दीया जळैक, रंगोली बणैक औ परिवार सँग पकवान खैक मनौंदा छां।',
   },
   {
     id: 'igas-2026',
@@ -72,7 +72,7 @@ const FESTIVALS = [
     emoji: '🎆',
     bg: 'from-purple-600 to-fuchsia-800',
     description:
-      'Garhwal\'s "second Diwali" — celebrated 11 days after Diwali with bhailo (fire-rope swinging), folk dance and traditional food.',
+      'गढ़वाळ कि "दूसरी दीवाली" — दीवाली का ग्यारह दिन बाद भैलो (आग कि रस्सी घुमौणु), लोक नृत्य औ पारम्परिक खाणा सँग मनौंदा छां।',
   },
 
   // ===== 2027 =====
@@ -85,7 +85,7 @@ const FESTIVALS = [
     emoji: '🥩',
     bg: 'from-red-700 to-rose-900',
     description:
-      'Month-long winter feast of the Jaunsari community starting from Magh — meat dishes, folk songs and community gatherings.',
+      'जौनसारी समाज कु म्हैना भर चलणु वाळु जाड़ा कु पर्व — माघ बटि शुरू होंद। मांस का पकवान, लोक गीत औ समाज कु मेळ जुळ।',
   },
   {
     id: 'uttarayani-2027',
@@ -96,7 +96,7 @@ const FESTIVALS = [
     emoji: '☀️',
     bg: 'from-amber-400 to-orange-600',
     description:
-      'Sun enters Capricorn — holy dip at Bagnath (Bageshwar), Uttarayani Mela, and tilkut sweets across the hills.',
+      'सुर्ज मकर राशि म औंद — बागनाथ (बागेश्वर) म पवित्र स्नान, उत्तरायणी मेला औ पूरा पहाड़ म तिळकुट कु प्रसाद बंट्द छ।',
   },
   {
     id: 'basant-2027',
@@ -107,7 +107,7 @@ const FESTIVALS = [
     emoji: '🌼',
     bg: 'from-yellow-400 to-yellow-600',
     description:
-      'Arrival of spring — children start learning, and yellow mustard flowers bloom across the hills.',
+      'बसन्त ऋतु कु आगमन — नौना-नौनी पढ़णु शुरू करदा छन औ पहाड़ुं म पीळी सरसुं का फूल खिलदा छन।',
   },
   {
     id: 'shivratri-2027',
@@ -118,7 +118,7 @@ const FESTIVALS = [
     emoji: '🔱',
     bg: 'from-indigo-700 to-blue-900',
     description:
-      'Night of Lord Shiva — deep significance at Kedarnath, Jageshwar and the dev-bhumi shrines.',
+      'भगवान शिव कि महा रात्रि — केदारनाथ, जागेश्वर औ देवभूमि का सब्बि शिव मन्दिरुं म बहुत महिमा कु दिन।',
   },
   {
     id: 'phooldei-2027',
@@ -129,7 +129,7 @@ const FESTIVALS = [
     emoji: '🌸',
     bg: 'from-pink-500 to-rose-700',
     description:
-      'Chaitra sankranti — children scatter spring flowers on doorsteps, blessing every home with prosperity.',
+      'चैत्र संक्रान्ति — नौना-नौनी हर घौर कि देहरी म बसन्त का फूल चढ़ौंदा छन औ हर परिवार तैं सम्पन्नता कु आशीर्वाद दिन्दा छन।',
   },
   {
     id: 'bikhauti-2027',
@@ -140,7 +140,7 @@ const FESTIVALS = [
     emoji: '🎉',
     bg: 'from-teal-500 to-emerald-700',
     description:
-      'Baisakhi sankranti — Bikhauti fair at Dwarahat (Kumaon) and Bissu festival of Jaunsar with Tandi & Harul folk dance.',
+      'बैसाखी संक्रान्ति — द्वाराहाट (कुमाऊँ) म बिखौती मेला औ जौनसार म तांदी-हारुल नृत्य सँग बिस्सू पर्व मनौंदा छां।',
   },
 ];
 
