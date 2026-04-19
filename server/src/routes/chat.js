@@ -12,6 +12,12 @@ const {
   noteConversationLocally,
 } = require('../services/aiCache');
 const { logChatExchange, getChatHistory } = require('../services/store');
+const {
+  isVectorEnabled,
+  upsertExchange,
+  querySimilar,
+  vectorInfo,
+} = require('../services/vectorStore');
 
 // Garhwali system prompt — instructs the LLM how to respond
 const SYSTEM_PROMPT = `तू एक पहाड़ी AI सहायक छै जु गढ़वळि (Garhwali) भाषा मा बात कर्दा।
@@ -72,9 +78,15 @@ function streamCachedReply(res, text) {
 function persistExchange(userMsg, assistantMsg) {
   if (!userMsg || !assistantMsg) return;
   noteConversationLocally(userMsg, assistantMsg);
+  const id = Date.now();
   logChatExchange(userMsg, assistantMsg).catch((err) => {
     console.error('[chat] logChatExchange failed:', err.message);
   });
+  if (isVectorEnabled()) {
+    upsertExchange(id, userMsg, assistantMsg).catch((err) => {
+      console.error('[chat] upsertExchange failed:', err.message);
+    });
+  }
 }
 
 router.post('/', async (req, res) => {
@@ -114,18 +126,28 @@ router.post('/', async (req, res) => {
   const lastUser = [...safeMessages].reverse().find((m) => m.role === 'user');
   const ragContext = lastUser ? formatGlossaryContext(retrieveGlossary(lastUser.content, 6)) : '';
 
-  // Long-term memory: load conversation mirror (lazy, throttled to 5min)
-  // then pull most-similar past Q→A pairs for the current question.
+  // Long-term memory: prefer semantic (Upstash Vector) recall;
+  // fall back to keyword overlap on the in-memory mirror.
   let memoryContext = '';
+  let memorySource = 'none';
   if (lastUser) {
     try {
-      await ensureConversationMirror(() => getChatHistory(300));
-      const similar = retrieveSimilarConversations(lastUser.content, 3);
+      let similar = [];
+      if (isVectorEnabled()) {
+        similar = await querySimilar(lastUser.content, { topK: 3, minScore: 0.72 });
+        if (similar.length > 0) memorySource = 'vector';
+      }
+      if (similar.length === 0) {
+        await ensureConversationMirror(() => getChatHistory(300));
+        similar = retrieveSimilarConversations(lastUser.content, 3);
+        if (similar.length > 0) memorySource = 'keyword';
+      }
       memoryContext = formatConversationContext(similar);
     } catch (err) {
       console.error('[chat] memory retrieval error:', err.message);
     }
   }
+  res.setHeader('X-Memory-Source', memorySource);
 
   const systemContent = SYSTEM_PROMPT
     + (ragContext ? `\n\n${ragContext}` : '')
@@ -237,9 +259,13 @@ router.get('/stats', (_req, res) => {
 // Useful for debugging the Redis-backed conversation store.
 router.get('/memory', async (_req, res) => {
   try {
-    const history = await getChatHistory(50);
+    const [history, vector] = await Promise.all([
+      getChatHistory(50),
+      vectorInfo(),
+    ]);
     res.json({
       total: history.length,
+      vector,
       latest: history.slice(0, 5).map((h) => ({
         at: h.at,
         q: h.q?.slice(0, 120),
