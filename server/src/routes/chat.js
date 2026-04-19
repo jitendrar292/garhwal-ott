@@ -140,6 +140,59 @@ function persistExchange(userMsg, assistantMsg) {
   }
 }
 
+// Friendly Garhwali fallback when AI is down AND no similar past answer exists.
+const OFFLINE_REPLY =
+  'अभी पहाड़ी AI व्यस्त छ — थोड़ा रुकिक फिर पुछ्या। ' +
+  'इत्तना मा तुम PahadiTube मा गढ़वळि गीत/पॉडकास्ट सुणि सक्दा छां। 🙏';
+
+/**
+ * When upstream Groq fails, try to serve a relevant past answer from memory.
+ * Returns the assistant text or null if nothing relevant found.
+ * Uses a *lower* similarity threshold than the normal recall path because
+ * any reasonable past answer is better than an error message.
+ */
+async function findFallbackReply(userText) {
+  if (!userText) return null;
+  // 1. Try semantic vector search first (lower bar — 0.55 cosine)
+  if (isVectorEnabled()) {
+    try {
+      const hits = await querySimilar(userText, { topK: 1, minScore: 0.55 });
+      if (hits[0]?.a) return { text: hits[0].a, source: 'vector' };
+    } catch (err) {
+      console.error('[chat] fallback vector error:', err.message);
+    }
+  }
+  // 2. Keyword overlap on in-memory mirror
+  try {
+    await ensureConversationMirror(() => getChatHistory(300));
+    const hits = retrieveSimilarConversations(userText, 1);
+    if (hits[0]?.a) return { text: hits[0].a, source: 'keyword' };
+  } catch (err) {
+    console.error('[chat] fallback keyword error:', err.message);
+  }
+  return null;
+}
+
+// Stream a degraded fallback reply to the client as SSE so the UI shows it
+// like a normal answer. Adds X-Fallback header for debugging.
+function streamFallbackReply(res, text, source) {
+  if (res.headersSent) return false;
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache, no-transform');
+  res.setHeader('Connection', 'keep-alive');
+  res.setHeader('X-Accel-Buffering', 'no');
+  res.setHeader('X-Cache', 'FALLBACK');
+  res.setHeader('X-Fallback-Source', source);
+  res.flushHeaders?.();
+  const CHUNK = 40;
+  for (let i = 0; i < text.length; i += CHUNK) {
+    res.write(`data: ${JSON.stringify({ delta: text.slice(i, i + CHUNK) })}\n\n`);
+  }
+  res.write('data: [DONE]\n\n');
+  res.end();
+  return true;
+}
+
 router.post('/', async (req, res) => {
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
@@ -227,6 +280,10 @@ router.post('/', async (req, res) => {
     if (!upstream.ok || !upstream.body) {
       const errText = await upstream.text().catch(() => '');
       console.error('Groq error:', upstream.status, errText);
+      // Try to recover from memory before surfacing an error to the user
+      const fb = await findFallbackReply(lastUser?.content);
+      if (fb && streamFallbackReply(res, fb.text, fb.source)) return;
+      if (streamFallbackReply(res, OFFLINE_REPLY, 'offline')) return;
       return res.status(502).json({ error: 'AI service unavailable' });
     }
 
@@ -296,6 +353,10 @@ router.post('/', async (req, res) => {
   } catch (err) {
     console.error('Chat handler error:', err.message);
     if (!res.headersSent) {
+      // Network/timeout failure reaching Groq — serve from memory if we can
+      const fb = await findFallbackReply(lastUser?.content);
+      if (fb && streamFallbackReply(res, fb.text, fb.source)) return;
+      if (streamFallbackReply(res, OFFLINE_REPLY, 'offline')) return;
       res.status(500).json({ error: 'Failed to reach AI service' });
     } else {
       try { res.end(); } catch { /* noop */ }
