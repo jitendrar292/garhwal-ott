@@ -3,7 +3,8 @@
 const BUILD_ID = '__BUILD_ID__';
 const CACHE_NAME = `pahaditube-${BUILD_ID}`;
 const STATIC_ASSETS = [
-  '/',
+  // Note: '/' intentionally NOT precached. Index.html must always come from
+  // the network so users get current bundle hashes (see fetch handler).
   '/manifest.json',
   '/logo.png',
   '/icons/icon-192-v2.png',
@@ -27,17 +28,29 @@ self.addEventListener('message', (event) => {
   }
 });
 
-// Activate — clean old caches
+// Activate — clean old caches, and purge any pre-existing cached '/'
+// so users with the old (cache-first HTML) SW recover on first activation.
 self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
-    )
-  );
-  self.clients.claim();
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)));
+    // Purge stale index.html that the old SW may have cached.
+    try {
+      const cache = await caches.open(CACHE_NAME);
+      await cache.delete('/');
+      await cache.delete(new Request('/'));
+    } catch { /* noop */ }
+    await self.clients.claim();
+  })());
 });
 
-// Fetch — network-first for API, cache-first for static assets
+// Fetch — network-first for API & navigation, cache-first for hashed assets.
+//
+// CRITICAL: HTML must be network-first. Vite emits hashed JS bundle names
+// (/assets/index-ABC123.js) that change every build. If we serve a stale
+// index.html from cache, it references deleted hashes → 404 → blank screen.
+// Network-first for HTML guarantees the user always loads bundle names that
+// actually exist on the server.
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
@@ -55,7 +68,32 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Static assets: stale-while-revalidate
+  // Navigation / HTML requests: network-first, cache as offline fallback only.
+  // mode === 'navigate' covers top-level page loads; the Accept-text/html test
+  // catches client-side route fetches in some browsers.
+  const isNavigation = request.mode === 'navigate'
+    || (request.headers.get('accept') || '').includes('text/html');
+  if (isNavigation) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (response && response.status === 200) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put('/', clone));
+          }
+          return response;
+        })
+        .catch(() => caches.match('/').then((cached) => cached || new Response(
+          '<!doctype html><meta charset=utf-8><title>Offline</title><p>Offline — please reconnect.',
+          { headers: { 'Content-Type': 'text/html' } }
+        )))
+    );
+    return;
+  }
+
+  // Hashed static assets (/assets/*, icons, fonts, etc.): stale-while-revalidate.
+  // Safe because their filenames change on every build, so a cache hit always
+  // matches the deployed file.
   event.respondWith(
     caches.match(request).then((cached) => {
       const fetched = fetch(request).then((response) => {
