@@ -403,6 +403,7 @@ async function tryStreamProvider(provider, basePayload, res, safeMessages, lastU
   const decoder = new TextDecoder();
   let buffer = '';
   let fullReply = '';
+  let truncated = false;
   let clientClosed = false;
   res.on('close', () => { clientClosed = true; });
 
@@ -422,9 +423,15 @@ async function tryStreamProvider(provider, basePayload, res, safeMessages, lastU
         if (!trimmed.startsWith('data:')) continue;
         const data = trimmed.slice(5).trim();
         if (data === '[DONE]') {
-          if (!clientClosed && fullReply.length > 5) {
+          // Only cache + persist replies that finished naturally. If the
+          // model hit max_tokens (truncated), skip both so the user gets
+          // a fresh attempt next time instead of replaying the cut-off text.
+          if (!clientClosed && fullReply.length > 5 && !truncated) {
             setCached(safeMessages, fullReply);
             persistExchange(lastUser?.content, fullReply);
+          }
+          if (truncated) {
+            console.warn(`[chat] ${provider.name} truncated reply (${fullReply.length} chars) — not cached`);
           }
           res.write('data: [DONE]\n\n');
           res.end();
@@ -433,6 +440,11 @@ async function tryStreamProvider(provider, basePayload, res, safeMessages, lastU
         try {
           const json = JSON.parse(data);
           const delta = json.choices?.[0]?.delta?.content;
+          const finish = json.choices?.[0]?.finish_reason;
+          if (finish && finish !== 'stop') {
+            // 'length' = max_tokens hit; 'content_filter' / others also bad.
+            truncated = true;
+          }
           if (delta) {
             fullReply += delta;
             res.write(`data: ${JSON.stringify({ delta })}\n\n`);
@@ -519,6 +531,7 @@ async function tryStreamGemini(basePayload, res, safeMessages, lastUser) {
   const decoder = new TextDecoder();
   let buffer = '';
   let fullReply = '';
+  let truncated = false;
   let clientClosed = false;
   res.on('close', () => { clientClosed = true; });
 
@@ -538,6 +551,9 @@ async function tryStreamGemini(basePayload, res, safeMessages, lastUser) {
         try {
           const json = JSON.parse(data);
           const parts = json.candidates?.[0]?.content?.parts || [];
+          // Gemini's finish reason: 'STOP' = natural end, 'MAX_TOKENS' = cut off.
+          const finish = json.candidates?.[0]?.finishReason;
+          if (finish && finish !== 'STOP') truncated = true;
           for (const p of parts) {
             if (p.text) {
               fullReply += p.text;
@@ -549,9 +565,12 @@ async function tryStreamGemini(basePayload, res, safeMessages, lastUser) {
         }
       }
     }
-    if (!clientClosed && fullReply.length > 5) {
+    if (!clientClosed && fullReply.length > 5 && !truncated) {
       setCached(safeMessages, fullReply);
       persistExchange(lastUser?.content, fullReply);
+    }
+    if (truncated) {
+      console.warn(`[chat] gemini truncated reply (${fullReply.length} chars) — not cached`);
     }
     res.write('data: [DONE]\n\n');
     res.end();
@@ -755,11 +774,11 @@ router.post('/', async (req, res) => {
     model: 'llama-3.3-70b-versatile',
     messages: [{ role: 'system', content: systemContent }, ...safeMessages],
     temperature: 0.5,
-    // Reduced from 800 to conserve daily TPD budget across all providers.
-    // Garhwali responses are typically 2–4 short paragraphs; 500 tokens is
-    // ample. Bumping this back up will burn through Groq's 100k TPD limit
-    // ~60% faster.
-    max_tokens: 500,
+    // Devanagari is token-heavy (~2–3 tokens per character) and the system
+    // prompt requires Hindi + Garhwali sections for Hindi/English inputs,
+    // which roughly doubles output. 1200 leaves headroom so the model can
+    // finish both sections instead of getting cut off mid-header.
+    max_tokens: 1200,
     stream: true,
   };
 
