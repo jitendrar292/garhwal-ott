@@ -14,6 +14,26 @@ const fallbackCache = new NodeCache({ stdTTL: 0 });
 // on Render's free tier. TTL matches the 6h refresh cycle.
 const REDIS_TTL_SECONDS = 6 * 60 * 60;
 
+// Long-term Redis mirror — kept for 30 days so we always have *something*
+// fresh-ish to serve even after quota exhaustion + Redis 6h TTL expiry +
+// server cold-start (where in-memory fallbackCache is empty).
+const REDIS_LONGTERM_TTL_SECONDS = 30 * 24 * 60 * 60;
+const longtermKey = (k) => `yt:lt:${k}`;
+
+// Quota circuit breaker — once YouTube returns 403 quotaExceeded, skip the API
+// entirely until the configured cooldown elapses. YouTube quota resets daily
+// at midnight Pacific Time. We use a simpler 1-hour cooldown so the breaker
+// self-heals in case it was a transient 403.
+const QUOTA_COOLDOWN_MS = 60 * 60 * 1000; // 1 hour
+let quotaCooldownUntil = 0;
+const isQuotaCoolingDown = () => Date.now() < quotaCooldownUntil;
+const tripQuotaBreaker = () => {
+  quotaCooldownUntil = Date.now() + QUOTA_COOLDOWN_MS;
+  console.warn(
+    `[youtube] quota breaker tripped — skipping API until ${new Date(quotaCooldownUntil).toISOString()}`
+  );
+};
+
 // Static fallback data when API quota is exhausted and no cache exists (real YouTube video IDs)
 const STATIC_FALLBACK = {
   movies: {
@@ -263,8 +283,9 @@ async function fetchFromYouTube(query, pageToken = '', maxResults = 12) {
     const errorBody = await response.text();
     console.error('YouTube API error:', response.status, errorBody);
 
-    // If quota exceeded (403), return fallback data
+    // If quota exceeded (403), trip the breaker and return fallback data
     if (response.status === 403) {
+      tripQuotaBreaker();
       throw new Error('QUOTA_EXCEEDED');
     }
     throw new Error(`YouTube API returned ${response.status}`);
@@ -300,20 +321,34 @@ async function searchVideos(query, pageToken = '', maxResults = 12) {
     return fromRedis;
   }
 
+  // If quota breaker is tripped, skip the API call entirely.
+  if (isQuotaCoolingDown()) {
+    const lt = await redisGetJSON(longtermKey(cacheKey));
+    if (lt) return lt;
+    const fb = fallbackCache.get(cacheKey);
+    if (fb) return fb;
+    return pickFallbackForQuery(query);
+  }
+
   try {
     const result = await fetchFromYouTube(query, pageToken, maxResults);
     cache.set(cacheKey, result);
     fallbackCache.set(cacheKey, result);
     redisSetJSON(`yt:${cacheKey}`, result, REDIS_TTL_SECONDS).catch(() => {});
+    redisSetJSON(longtermKey(cacheKey), result, REDIS_LONGTERM_TTL_SECONDS).catch(() => {});
     return result;
   } catch (err) {
-    // Return fallback data if quota exceeded
+    // Long-term Redis mirror first (survives cold starts).
+    const lt = await redisGetJSON(longtermKey(cacheKey));
+    if (lt) {
+      console.log('Serving long-term Redis fallback for:', cacheKey);
+      return lt;
+    }
     const fallback = fallbackCache.get(cacheKey);
     if (fallback) {
-      console.log('Serving fallback cache for:', cacheKey);
+      console.log('Serving in-memory fallback for:', cacheKey);
       return fallback;
     }
-    // Return static fallback for songs-related search queries
     if (err.message === 'QUOTA_EXCEEDED') {
       console.log('Serving keyword-matched static fallback for search:', query);
       return pickFallbackForQuery(query);
@@ -338,19 +373,33 @@ async function getVideosByCategory(category, pageToken = '', maxResults = 12) {
     return fromRedis;
   }
 
+  // Quota breaker: skip API; serve any older copy we have.
+  if (isQuotaCoolingDown()) {
+    const lt = await redisGetJSON(longtermKey(cacheKey));
+    if (lt) return lt;
+    const fb = fallbackCache.get(cacheKey);
+    if (fb) return fb;
+    return getStaticFallback(category);
+  }
+
   try {
     const result = await fetchFromYouTube(query, pageToken, maxResults);
     cache.set(cacheKey, result);
     fallbackCache.set(cacheKey, result);
     redisSetJSON(`yt:${cacheKey}`, result, REDIS_TTL_SECONDS).catch(() => {});
+    redisSetJSON(longtermKey(cacheKey), result, REDIS_LONGTERM_TTL_SECONDS).catch(() => {});
     return result;
   } catch (err) {
+    const lt = await redisGetJSON(longtermKey(cacheKey));
+    if (lt) {
+      console.log('Serving long-term Redis fallback for:', cacheKey);
+      return lt;
+    }
     const fallback = fallbackCache.get(cacheKey);
     if (fallback) {
-      console.log('Serving fallback cache for:', cacheKey);
+      console.log('Serving in-memory fallback for:', cacheKey);
       return fallback;
     }
-    // Use static fallback data when quota is exceeded
     if (err.message === 'QUOTA_EXCEEDED') {
       console.log('Serving static fallback for category:', category);
       return getStaticFallback(category);
@@ -388,6 +437,10 @@ async function refreshTrending() {
     console.log('[trending] skipping refresh — YOUTUBE_API_KEY not configured');
     return;
   }
+  if (isQuotaCoolingDown()) {
+    console.log('[trending] skipping refresh — quota breaker active until', new Date(quotaCooldownUntil).toISOString());
+    return;
+  }
   const started = Date.now();
   let okCount = 0;
   let skipCount = 0;
@@ -400,6 +453,7 @@ async function refreshTrending() {
       cache.set(cacheKey, result);
       fallbackCache.set(cacheKey, result);
       await redisSetJSON(`yt:${cacheKey}`, result, REDIS_TTL_SECONDS);
+      await redisSetJSON(longtermKey(cacheKey), result, REDIS_LONGTERM_TTL_SECONDS);
       okCount++;
     } catch (err) {
       skipCount++;
@@ -420,6 +474,7 @@ async function refreshTrending() {
       cache.set(cacheKey, result);
       fallbackCache.set(cacheKey, result);
       await redisSetJSON(`yt:${cacheKey}`, result, REDIS_TTL_SECONDS);
+      await redisSetJSON(longtermKey(cacheKey), result, REDIS_LONGTERM_TTL_SECONDS);
       okCount++;
     } catch (err) {
       skipCount++;
@@ -451,4 +506,4 @@ function startTrendingRefresh() {
   }, TRENDING_REFRESH_MS);
 }
 
-module.exports = { searchVideos, getVideosByCategory, refreshTrending, startTrendingRefresh };
+module.exports = { searchVideos, getVideosByCategory, refreshTrending, startTrendingRefresh, isQuotaCoolingDown };
