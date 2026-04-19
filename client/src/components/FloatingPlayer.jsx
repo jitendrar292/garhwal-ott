@@ -42,6 +42,7 @@ export default function FloatingPlayer() {
   const skipTimer = useRef(null);
   const pollTimer = useRef(null);
   const wakeLockRef = useRef(null);
+  const endedFiredRef = useRef(false);
 
   // Refs so YT callbacks always see latest values
   const repeatRef = useRef(repeat);
@@ -138,6 +139,7 @@ export default function FloatingPlayer() {
     setDuration(0);
     setIsPlaying(false);
     setIsReady(false);
+    endedFiredRef.current = false;
     clearTimeout(skipTimer.current);
     clearInterval(pollTimer.current);
 
@@ -192,7 +194,10 @@ export default function FloatingPlayer() {
             }
             if (s === window.YT.PlayerState.PAUSED) setIsPlaying(false);
             if (s === window.YT.PlayerState.ENDED) {
+              if (endedFiredRef.current) return;
+              endedFiredRef.current = true;
               if (repeatRef.current) {
+                endedFiredRef.current = false;
                 e.target.seekTo(0);
                 e.target.playVideo();
               } else {
@@ -229,10 +234,21 @@ export default function FloatingPlayer() {
     if (!isPlaying) return;
     pollTimer.current = setInterval(() => {
       const p = playerRef.current;
-      if (p?.getCurrentTime) {
-        setCurrentTime(p.getCurrentTime());
-        const d = p.getDuration();
-        if (d > 0) setDuration(d);
+      if (!p?.getCurrentTime) return;
+      const t = p.getCurrentTime();
+      const d = p.getDuration();
+      setCurrentTime(t);
+      if (d > 0) setDuration(d);
+      // Fallback: some browsers/videos never fire YT's ENDED event reliably.
+      // If we're at (or past) the end of the track, advance manually.
+      if (d > 0 && t >= d - 0.4 && !endedFiredRef.current) {
+        endedFiredRef.current = true;
+        if (repeatRef.current) {
+          endedFiredRef.current = false;
+          try { p.seekTo(0); p.playVideo(); } catch {}
+        } else {
+          try { nextTrackRef.current?.(); } catch {}
+        }
       }
     }, 400);
     return () => clearInterval(pollTimer.current);
