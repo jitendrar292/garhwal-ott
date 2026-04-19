@@ -13,7 +13,7 @@
 const SUBJECTS = [
   // pronoun, hi, gw, hi_aux_present_continuous, gw_aux_present_continuous
   { hi: 'मैं',  gw: 'मै',  hiCont: 'रहा हूँ',  gwCont: 'रौ छूं', hiSimple: 'हूँ', gwSimple: 'छूं' },
-  { hi: 'तुम',  gw: 'तु',  hiCont: 'रहे हो',   gwCont: 'रौ छ',  hiSimple: 'हो',  gwSimple: 'छ'   },
+  { hi: 'तुम',  gw: 'तु',  hiCont: 'रहे हो',   gwCont: 'रौ छा', hiSimple: 'हो',  gwSimple: 'छा'  },
   { hi: 'वह',   gw: 'उ',   hiCont: 'रहा है',   gwCont: 'रौ छ',  hiSimple: 'है',  gwSimple: 'छ'   },
   { hi: 'हम',   gw: 'हम',  hiCont: 'रहे हैं',  gwCont: 'रौं छां',gwSimple: 'छां', hiSimple: 'हैं' },
 ];
