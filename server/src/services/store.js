@@ -268,6 +268,48 @@ async function deleteFeedback(id) {
   return [...memFeedback];
 }
 
+// ===== Chat history (long-term conversation memory) =====
+// Stores anonymized Q→A pairs in a capped Redis list so the AI can recall
+// past exchanges and learn from them across sessions/restarts.
+const CHAT_HISTORY_KEY = 'pahadi_chat_history';
+const MAX_CHAT_HISTORY = 500;
+let memChatHistory = [];
+
+async function logChatExchange(userMsg, assistantMsg) {
+  if (!userMsg || !assistantMsg) return;
+  const entry = {
+    id: Date.now() + Math.floor(Math.random() * 1000),
+    q: String(userMsg).slice(0, 1000),
+    a: String(assistantMsg).slice(0, 2000),
+    at: new Date().toISOString(),
+  };
+  if (UPSTASH_ENABLED) {
+    try {
+      await redisCmdPost('LPUSH', CHAT_HISTORY_KEY, JSON.stringify(entry));
+      await redisCmd('LTRIM', CHAT_HISTORY_KEY, 0, MAX_CHAT_HISTORY - 1);
+      return;
+    } catch (err) {
+      console.error('[store] logChatExchange error:', err.message);
+    }
+  }
+  memChatHistory.unshift(entry);
+  if (memChatHistory.length > MAX_CHAT_HISTORY) memChatHistory.length = MAX_CHAT_HISTORY;
+}
+
+async function getChatHistory(limit = MAX_CHAT_HISTORY) {
+  if (UPSTASH_ENABLED) {
+    try {
+      const raw = await redisCmd('LRANGE', CHAT_HISTORY_KEY, 0, Math.max(0, limit - 1));
+      return (raw || []).map((r) => {
+        try { return JSON.parse(r); } catch { return null; }
+      }).filter(Boolean);
+    } catch (err) {
+      console.error('[store] getChatHistory error:', err.message);
+    }
+  }
+  return memChatHistory.slice(0, limit);
+}
+
 // On startup: deduplicate existing visitor list and seed pahadi_seen_ips set.
 // Safe to run multiple times — SADD is idempotent.
 async function seedAndDeduplicateVisitors() {
@@ -308,5 +350,5 @@ async function seedAndDeduplicateVisitors() {
   }
 }
 
-module.exports = { getVisits, incrementVisits, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback, redisGetJSON, redisSetJSON, isRedisEnabled };
+module.exports = { getVisits, incrementVisits, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback, redisGetJSON, redisSetJSON, isRedisEnabled, logChatExchange, getChatHistory };
 

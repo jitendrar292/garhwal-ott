@@ -6,7 +6,12 @@ const {
   retrieveGlossary,
   formatGlossaryContext,
   getCacheStats,
+  ensureConversationMirror,
+  retrieveSimilarConversations,
+  formatConversationContext,
+  noteConversationLocally,
 } = require('../services/aiCache');
+const { logChatExchange, getChatHistory } = require('../services/store');
 
 // Garhwali system prompt — instructs the LLM how to respond
 const SYSTEM_PROMPT = `तू एक पहाड़ी AI सहायक छै जु गढ़वळि (Garhwali) भाषा मा बात कर्दा।
@@ -62,6 +67,16 @@ function streamCachedReply(res, text) {
   res.end();
 }
 
+// Save a Q→A pair to Redis (long-term memory) and to the in-memory mirror
+// so it's instantly retrievable for the next request. Fire-and-forget.
+function persistExchange(userMsg, assistantMsg) {
+  if (!userMsg || !assistantMsg) return;
+  noteConversationLocally(userMsg, assistantMsg);
+  logChatExchange(userMsg, assistantMsg).catch((err) => {
+    console.error('[chat] logChatExchange failed:', err.message);
+  });
+}
+
 router.post('/', async (req, res) => {
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
@@ -95,10 +110,26 @@ router.post('/', async (req, res) => {
     return streamCachedReply(res, cached);
   }
 
-  // ===== 2. RAG: retrieve glossary entries for the latest user query =====
+  // ===== 2. RAG: retrieve glossary entries + similar past conversations =====
   const lastUser = [...safeMessages].reverse().find((m) => m.role === 'user');
   const ragContext = lastUser ? formatGlossaryContext(retrieveGlossary(lastUser.content, 6)) : '';
-  const systemContent = SYSTEM_PROMPT + (ragContext ? `\n\n${ragContext}` : '');
+
+  // Long-term memory: load conversation mirror (lazy, throttled to 5min)
+  // then pull most-similar past Q→A pairs for the current question.
+  let memoryContext = '';
+  if (lastUser) {
+    try {
+      await ensureConversationMirror(() => getChatHistory(300));
+      const similar = retrieveSimilarConversations(lastUser.content, 3);
+      memoryContext = formatConversationContext(similar);
+    } catch (err) {
+      console.error('[chat] memory retrieval error:', err.message);
+    }
+  }
+
+  const systemContent = SYSTEM_PROMPT
+    + (ragContext ? `\n\n${ragContext}` : '')
+    + (memoryContext ? `\n\n${memoryContext}` : '');
 
   const payload = {
     model: 'llama-3.3-70b-versatile',
@@ -155,9 +186,10 @@ router.post('/', async (req, res) => {
           if (!trimmed.startsWith('data:')) continue;
           const data = trimmed.slice(5).trim();
           if (data === '[DONE]') {
-            // Persist to cache only on a complete, non-aborted response
+            // Persist to cache + long-term memory only on complete, non-aborted responses
             if (!clientClosed && fullReply.length > 5) {
               setCached(safeMessages, fullReply);
+              persistExchange(lastUser?.content, fullReply);
             }
             res.write('data: [DONE]\n\n');
             res.end();
@@ -178,6 +210,7 @@ router.post('/', async (req, res) => {
       // Stream ended without explicit [DONE] — still cache if we got a reply
       if (!clientClosed && fullReply.length > 5) {
         setCached(safeMessages, fullReply);
+        persistExchange(lastUser?.content, fullReply);
       }
       res.write('data: [DONE]\n\n');
       res.end();
@@ -198,6 +231,24 @@ router.post('/', async (req, res) => {
 // Lightweight cache stats (handy for monitoring)
 router.get('/stats', (_req, res) => {
   res.json(getCacheStats());
+});
+
+// Long-term memory inspection (count + most recent exchange).
+// Useful for debugging the Redis-backed conversation store.
+router.get('/memory', async (_req, res) => {
+  try {
+    const history = await getChatHistory(50);
+    res.json({
+      total: history.length,
+      latest: history.slice(0, 5).map((h) => ({
+        at: h.at,
+        q: h.q?.slice(0, 120),
+        aPreview: h.a?.slice(0, 120),
+      })),
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 module.exports = router;
