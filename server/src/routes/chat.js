@@ -67,6 +67,37 @@ const tripGroqBreaker = () => {
   console.warn(`[chat] Groq breaker tripped — skipping API until ${new Date(groqCooldownUntil).toISOString()}`);
 };
 
+// =====================================================================
+// Upstream providers — Groq is primary, OpenRouter is the LLM fallback
+// =====================================================================
+// Both speak the OpenAI Chat Completions wire format, so a single helper
+// can stream from either one. OpenRouter is only attempted when Groq fails
+// (cooldown active, network error, 4xx/5xx, or empty body).
+
+const GROQ = {
+  name: 'groq',
+  url: 'https://api.groq.com/openai/v1/chat/completions',
+  model: 'llama-3.3-70b-versatile',
+  getKey: () => process.env.GROQ_API_KEY,
+  extraHeaders: () => ({}),
+  onFailure: (status) => {
+    if (status === 429 || status === 402) tripGroqBreaker();
+  },
+};
+
+const OPENROUTER = {
+  name: 'openrouter',
+  url: 'https://openrouter.ai/api/v1/chat/completions',
+  model: process.env.OPENROUTER_MODEL || 'meta-llama/llama-3.3-70b-instruct:free',
+  getKey: () => process.env.OPENROUTER_API_KEY,
+  extraHeaders: () => ({
+    // OpenRouter recommends these for analytics + free-tier eligibility.
+    'HTTP-Referer': process.env.OPENROUTER_REFERER || 'https://garhwali-stream.onrender.com',
+    'X-Title': 'PahadiTube AI',
+  }),
+  onFailure: () => {},
+};
+
 // Garhwali system prompt — instructs the LLM how to respond
 const SYSTEM_PROMPT = `तू एक पहाड़ी AI सहायक छै जु गढ़वळि (Garhwali) भाषा मा बात कर्दा।
 तेरु नाम "पहाड़ी AI" च। तू PahadiTube (गढ़वळि-OTT) प्लेटफॉर्म मा रौंदी छै, जख गढ़वळि गीत, फिल्म, पॉडकास्ट और लोक संस्कृति लोग देखदा/सुणदा छन।
@@ -181,6 +212,111 @@ function streamCachedReply(res, text) {
   }
   res.write('data: [DONE]\n\n');
   res.end();
+}
+
+/**
+ * Try to stream a chat completion from the given provider (Groq or OpenRouter).
+ * Returns true if we successfully began streaming a response (even if it later
+ * errored mid-stream — at that point we can't switch providers because headers
+ * are already sent). Returns false if the provider couldn't even start, so the
+ * caller can attempt the next provider.
+ */
+async function tryStreamProvider(provider, basePayload, res, safeMessages, lastUser) {
+  const apiKey = provider.getKey();
+  if (!apiKey) {
+    console.log(`[chat] skipping ${provider.name} — no API key`);
+    return false;
+  }
+
+  const payload = { ...basePayload, model: provider.model };
+
+  let upstream;
+  try {
+    upstream = await fetch(provider.url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        ...provider.extraHeaders(),
+      },
+      body: JSON.stringify(payload),
+    });
+  } catch (err) {
+    console.error(`[chat] ${provider.name} network error:`, err.message);
+    return false;
+  }
+
+  if (!upstream.ok || !upstream.body) {
+    const errText = await upstream.text().catch(() => '');
+    console.error(`[chat] ${provider.name} error:`, upstream.status, errText.slice(0, 300));
+    provider.onFailure(upstream.status);
+    return false;
+  }
+
+  // Begin SSE stream to client. From here on, we can't switch providers.
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache, no-transform');
+  res.setHeader('Connection', 'keep-alive');
+  res.setHeader('X-Accel-Buffering', 'no');
+  res.setHeader('X-Cache', 'MISS');
+  res.setHeader('X-Provider', provider.name);
+  res.flushHeaders?.();
+
+  const reader = upstream.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+  let fullReply = '';
+  let clientClosed = false;
+  res.on('close', () => { clientClosed = true; });
+
+  try {
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      if (clientClosed) break;
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed.startsWith('data:')) continue;
+        const data = trimmed.slice(5).trim();
+        if (data === '[DONE]') {
+          if (!clientClosed && fullReply.length > 5) {
+            setCached(safeMessages, fullReply);
+            persistExchange(lastUser?.content, fullReply);
+          }
+          res.write('data: [DONE]\n\n');
+          res.end();
+          return true;
+        }
+        try {
+          const json = JSON.parse(data);
+          const delta = json.choices?.[0]?.delta?.content;
+          if (delta) {
+            fullReply += delta;
+            res.write(`data: ${JSON.stringify({ delta })}\n\n`);
+          }
+        } catch {
+          // ignore malformed chunks
+        }
+      }
+    }
+    if (!clientClosed && fullReply.length > 5) {
+      setCached(safeMessages, fullReply);
+      persistExchange(lastUser?.content, fullReply);
+    }
+    res.write('data: [DONE]\n\n');
+    res.end();
+    return true;
+  } catch (streamErr) {
+    console.error(`[chat] ${provider.name} stream error:`, streamErr.message);
+    try { res.end(); } catch { /* noop */ }
+    return true; // headers sent; caller can't retry
+  }
 }
 
 // Save a Q→A pair to Redis (long-term memory) and to the in-memory mirror
@@ -381,107 +517,27 @@ router.post('/', async (req, res) => {
 
   // If breaker is tripped, skip Groq and serve from memory/offline immediately.
   if (isGroqCoolingDown()) {
+    // Still try OpenRouter as a backup before falling back to memory.
+    const orOk = await tryStreamProvider(OPENROUTER, payload, res, safeMessages, lastUser);
+    if (orOk) return;
     const fb = await findFallbackReply(lastUser?.content);
     if (fb && streamFallbackReply(res, fb.text, `breaker:${fb.source}`)) return;
     return streamFallbackReply(res, OFFLINE_REPLY, 'breaker:offline') || res.status(503).end();
   }
 
-  try {
-    const upstream = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
+  // Try Groq first.
+  const groqOk = await tryStreamProvider(GROQ, payload, res, safeMessages, lastUser);
+  if (groqOk) return;
 
-    if (!upstream.ok || !upstream.body) {
-      const errText = await upstream.text().catch(() => '');
-      console.error('Groq error:', upstream.status, errText);
-      // Trip the breaker on rate-limit / quota errors so we stop hammering the API.
-      if (upstream.status === 429 || upstream.status === 402) tripGroqBreaker();
-      // Try to recover from memory before surfacing an error to the user
-      const fb = await findFallbackReply(lastUser?.content);
-      if (fb && streamFallbackReply(res, fb.text, fb.source)) return;
-      if (streamFallbackReply(res, OFFLINE_REPLY, 'offline')) return;
-      return res.status(502).json({ error: 'AI service unavailable' });
-    }
+  // Groq failed (network, 5xx, 429, etc.) — try OpenRouter before giving up.
+  if (!res.headersSent) {
+    const orOk = await tryStreamProvider(OPENROUTER, payload, res, safeMessages, lastUser);
+    if (orOk) return;
 
-    // Stream Server-Sent Events back to the client
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache, no-transform');
-    res.setHeader('Connection', 'keep-alive');
-    res.setHeader('X-Accel-Buffering', 'no');
-    res.setHeader('X-Cache', 'MISS');
-    res.flushHeaders?.();
-
-    const reader = upstream.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = '';
-    let fullReply = '';
-    let clientClosed = false;
-    res.on('close', () => { clientClosed = true; });
-
-    try {
-      // eslint-disable-next-line no-constant-condition
-      while (true) {
-        if (clientClosed) break;
-        const { done, value } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
-
-        for (const line of lines) {
-          const trimmed = line.trim();
-          if (!trimmed.startsWith('data:')) continue;
-          const data = trimmed.slice(5).trim();
-          if (data === '[DONE]') {
-            // Persist to cache + long-term memory only on complete, non-aborted responses
-            if (!clientClosed && fullReply.length > 5) {
-              setCached(safeMessages, fullReply);
-              persistExchange(lastUser?.content, fullReply);
-            }
-            res.write('data: [DONE]\n\n');
-            res.end();
-            return;
-          }
-          try {
-            const json = JSON.parse(data);
-            const delta = json.choices?.[0]?.delta?.content;
-            if (delta) {
-              fullReply += delta;
-              res.write(`data: ${JSON.stringify({ delta })}\n\n`);
-            }
-          } catch {
-            // ignore malformed chunks
-          }
-        }
-      }
-      // Stream ended without explicit [DONE] — still cache if we got a reply
-      if (!clientClosed && fullReply.length > 5) {
-        setCached(safeMessages, fullReply);
-        persistExchange(lastUser?.content, fullReply);
-      }
-      res.write('data: [DONE]\n\n');
-      res.end();
-    } catch (streamErr) {
-      console.error('Stream error:', streamErr.message);
-      try { res.end(); } catch { /* noop */ }
-    }
-  } catch (err) {
-    console.error('Chat handler error:', err.message);
-    if (!res.headersSent) {
-      // Network/timeout failure reaching Groq — serve from memory if we can
-      const fb = await findFallbackReply(lastUser?.content);
-      if (fb && streamFallbackReply(res, fb.text, fb.source)) return;
-      if (streamFallbackReply(res, OFFLINE_REPLY, 'offline')) return;
-      res.status(500).json({ error: 'Failed to reach AI service' });
-    } else {
-      try { res.end(); } catch { /* noop */ }
-    }
+    const fb = await findFallbackReply(lastUser?.content);
+    if (fb && streamFallbackReply(res, fb.text, fb.source)) return;
+    if (streamFallbackReply(res, OFFLINE_REPLY, 'offline')) return;
+    return res.status(502).json({ error: 'AI service unavailable' });
   }
 });
 
