@@ -172,6 +172,23 @@ const STATIC_FALLBACK = {
     ],
     nextPageToken: null, prevPageToken: null, totalResults: 12,
   },
+  reels: {
+    videos: [
+      { id: 'BIV8BTgmVuc', title: 'Reel VS Real Life Pahadi - Neha Bisht', thumbnail: 'https://i.ytimg.com/vi/BIV8BTgmVuc/hqdefault.jpg', channelTitle: 'Neha Bisht', publishedAt: '2024-01-01', description: '' },
+      { id: 'oByLfo2eK_E', title: 'Pahadi Culture Reel - Viral 2026', thumbnail: 'https://i.ytimg.com/vi/oByLfo2eK_E/hqdefault.jpg', channelTitle: 'Rajat Kaprawan Official', publishedAt: '2024-01-01', description: '' },
+      { id: 'spsGFAdr194', title: 'Swami Pardesh Reel - Suraj Tratak', thumbnail: 'https://i.ytimg.com/vi/spsGFAdr194/hqdefault.jpg', channelTitle: 'Suraj Tratak', publishedAt: '2025-09-01', description: '' },
+      { id: 'epnU1SVc1eI', title: 'Jiya Kori Kori Khando - Trending Reel', thumbnail: 'https://i.ytimg.com/vi/epnU1SVc1eI/hqdefault.jpg', channelTitle: 'Yatika Thapa', publishedAt: '2025-12-01', description: '' },
+      { id: 'oECLUxQK-C0', title: 'Shokyani Dance Reel - Trending', thumbnail: 'https://i.ytimg.com/vi/oECLUxQK-C0/hqdefault.jpg', channelTitle: 'Ashish Bora Pahadi Dance', publishedAt: '2026-03-01', description: '' },
+      { id: 'GRdwrfJQ9wQ', title: 'Hariya Ghas Katli - Kumaoni Reel 2026', thumbnail: 'https://i.ytimg.com/vi/GRdwrfJQ9wQ/hqdefault.jpg', channelTitle: 'Prakash Kumar PK', publishedAt: '2026-03-01', description: '' },
+      { id: 'DyLPbQTXqrg', title: 'Haye Heel - Garhwali DJ Reel 2026', thumbnail: 'https://i.ytimg.com/vi/DyLPbQTXqrg/hqdefault.jpg', channelTitle: 'Suryapal Shriwan', publishedAt: '2026-03-01', description: '' },
+      { id: 'ZBgtkOPZ6Aw', title: 'DJ Mervin Rajan - Garhwali Reel 2026', thumbnail: 'https://i.ytimg.com/vi/ZBgtkOPZ6Aw/hqdefault.jpg', channelTitle: 'Mervin Rajan', publishedAt: '2026-03-01', description: '' },
+      { id: '41e1LWcx05Q', title: 'Byau Hamru Hoonu Ni - Trending Reel', thumbnail: 'https://i.ytimg.com/vi/41e1LWcx05Q/hqdefault.jpg', channelTitle: 'Unique Pahadi Official', publishedAt: '2025-12-01', description: '' },
+      { id: '_VP56PvlX5A', title: 'Pahadi Dhol Reel - Viral', thumbnail: 'https://i.ytimg.com/vi/_VP56PvlX5A/hqdefault.jpg', channelTitle: 'Oshin Bhandari Vlogs', publishedAt: '2023-01-01', description: '' },
+      { id: 'xTJ5QCHC5sM', title: 'Surma Ki Dabbi - Reel Edit', thumbnail: 'https://i.ytimg.com/vi/xTJ5QCHC5sM/hqdefault.jpg', channelTitle: 'Pahadi Music Junction', publishedAt: '2026-04-01', description: '' },
+      { id: '0gtZkyEt-XA', title: 'Raadhaa Pandavaas - Dance Reel', thumbnail: 'https://i.ytimg.com/vi/0gtZkyEt-XA/hqdefault.jpg', channelTitle: 'Himanshu Bahuguna', publishedAt: '2024-01-01', description: '' },
+    ],
+    nextPageToken: null, prevPageToken: null, totalResults: 12,
+  },
   folkdance: {
     videos: [
       { id: '0gtZkyEt-XA', title: 'Raadhaa - Pandavaas Folk Dance', thumbnail: 'https://i.ytimg.com/vi/0gtZkyEt-XA/hqdefault.jpg', channelTitle: 'Himanshu Bahuguna', publishedAt: '2024-01-01', description: '' },
@@ -251,6 +268,7 @@ const CATEGORY_QUERIES = {
   trending: 'Garhwali trending songs OR comedy',
   vlogs: 'Pahadi vlogger uttarakhand village life OR pahadi lifestyle vlog',
   shorts: 'Pahadi garhwali shorts trending #shorts',
+  reels: 'Garhwali pahadi trending reels uttarakhand viral pahadi reels kumaoni',
   podcast: 'Baramasa podcast Uttarakhand OR Ghughuti Uttarakhand documentary pahadi',
   folkdance: 'Garhwali folk dance tandi chholiya langvir nritya pandav nritya uttarakhand',
   jaagar: 'Garhwali jaagar jagar uttarakhand devbhoomi ritual',

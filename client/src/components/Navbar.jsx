@@ -11,7 +11,7 @@ const TABS = [
   { name: 'Jaagar', path: '/category/jaagar', emoji: '🔱' },
   { name: 'Mela', path: '/category/mela', emoji: '🎪' },
   { name: 'Vlogs', path: '/category/vlogs', emoji: '📹' },
-  { name: 'Shorts', path: '/shorts', emoji: '⚡' },
+  { name: 'Reels', path: '/shorts', emoji: '⚡' },
   { name: 'Podcast', path: '/podcast', emoji: '🎙️' },
   { name: 'Pahadi AI', path: '/pahadi-ai', emoji: '🤖' },
 ];
