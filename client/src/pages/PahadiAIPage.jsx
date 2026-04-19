@@ -12,6 +12,18 @@ const SUGGESTIONS = [
   'एक छोटी गढ़वाली कविता लिख',
 ];
 
+// Topic cards shown on the empty/landing state. Each card is a colored tile
+// with an emoji illustration, a Garhwali label, and a "Start Conversation"
+// button that seeds the chat with the matching SUGGESTIONS prompt.
+const TOPIC_CARDS = [
+  { emoji: '🙏',  label: 'नमस्कार!\nतुम कन छन?',     bg: 'bg-sky-600',     prompt: SUGGESTIONS[0] },
+  { emoji: '🍛',  label: 'गढ़वाली\nखाना',           bg: 'bg-amber-600',   prompt: SUGGESTIONS[1] },
+  { emoji: '🪔',  label: 'हरेला\nत्योहार',          bg: 'bg-red-700',     prompt: SUGGESTIONS[2] },
+  { emoji: '🥁',  label: 'नरेन्द्र\nसिंह नेगी',     bg: 'bg-amber-800',   prompt: SUGGESTIONS[3] },
+  { emoji: '🛕',  label: 'केदारनाथ',                bg: 'bg-teal-600',    prompt: SUGGESTIONS[4] },
+  { emoji: '📖',  label: 'गढ़वाली\nकविता',         bg: 'bg-emerald-700', prompt: SUGGESTIONS[5] },
+];
+
 function loadHistory() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -260,130 +272,206 @@ export default function PahadiAIPage() {
   const showHero = isEmpty && !streaming;
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      {/* ===== Background: pahadi sunset + mountains ===== */}
-      <div className="absolute inset-0 -z-10">
-        {/* warm sunset gradient */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              'radial-gradient(ellipse at 50% 0%, #ffb347 0%, #ff8c42 18%, #d96f3a 32%, #5d8a6b 60%, #1f3a2e 100%)',
-          }}
-        />
-        {/* sun glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] -translate-y-1/3 rounded-full bg-yellow-300/40 blur-3xl" />
-        {/* far mountain silhouette */}
+    <div className="relative min-h-screen overflow-hidden text-white">
+      {/* ===== Background: deep navy + mandala ===== */}
+      <div className="absolute inset-0 -z-10 bg-[#0a1228]">
+        {/* radial accent glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[700px] -translate-y-1/3 rounded-full bg-amber-500/10 blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] translate-x-1/3 translate-y-1/3 rounded-full bg-emerald-500/10 blur-3xl" />
+        {/* mandala SVG pattern */}
         <svg
-          className="absolute bottom-0 w-full h-[55%] opacity-90"
-          viewBox="0 0 1440 600"
-          preserveAspectRatio="none"
+          className="absolute top-10 left-1/2 -translate-x-1/2 w-[600px] h-[600px] opacity-[0.06]"
+          viewBox="0 0 200 200"
           aria-hidden="true"
         >
-          <defs>
-            <linearGradient id="mt-far" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#3d6855" />
-              <stop offset="100%" stopColor="#1d3528" />
-            </linearGradient>
-            <linearGradient id="mt-near" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#2a4d3a" />
-              <stop offset="100%" stopColor="#0d1f17" />
-            </linearGradient>
-          </defs>
-          <path
-            d="M0,400 L120,300 L240,360 L360,240 L520,340 L680,200 L840,320 L980,260 L1140,360 L1280,280 L1440,360 L1440,600 L0,600 Z"
-            fill="url(#mt-far)"
-          />
-          <path
-            d="M0,500 L160,420 L320,470 L480,380 L640,460 L800,400 L960,470 L1120,410 L1280,470 L1440,420 L1440,600 L0,600 Z"
-            fill="url(#mt-near)"
-          />
+          <g fill="none" stroke="#fbbf24" strokeWidth="0.4">
+            {[20, 40, 60, 80, 95].map((r) => (
+              <circle key={r} cx="100" cy="100" r={r} />
+            ))}
+            {Array.from({ length: 24 }).map((_, i) => {
+              const a = (i * 360) / 24;
+              const rad = (a * Math.PI) / 180;
+              return (
+                <line
+                  key={i}
+                  x1="100"
+                  y1="100"
+                  x2={100 + 95 * Math.cos(rad)}
+                  y2={100 + 95 * Math.sin(rad)}
+                />
+              );
+            })}
+            {Array.from({ length: 12 }).map((_, i) => {
+              const a = (i * 360) / 12;
+              const rad = (a * Math.PI) / 180;
+              return (
+                <circle
+                  key={`p-${i}`}
+                  cx={100 + 60 * Math.cos(rad)}
+                  cy={100 + 60 * Math.sin(rad)}
+                  r="6"
+                />
+              );
+            })}
+          </g>
         </svg>
-        {/* subtle dot pattern overlay */}
         <div
-          className="absolute inset-0 opacity-[0.06]"
+          className="absolute inset-0 opacity-[0.04]"
           style={{
             backgroundImage:
-              'radial-gradient(circle, #fff 1px, transparent 1px)',
-            backgroundSize: '24px 24px',
+              'radial-gradient(circle, #fbbf24 1px, transparent 1px)',
+            backgroundSize: '28px 28px',
           }}
         />
       </div>
 
       {/* ===== Content ===== */}
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-6 pb-32 flex flex-col" style={{ minHeight: '100vh' }}>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-6 pb-40 flex flex-col" style={{ minHeight: '100vh' }}>
         {/* Brand header */}
-        <div className="flex flex-col items-center mb-5">
-          <div className="relative">
+        <div className="flex flex-col items-center mb-4">
+          <div className="bg-white rounded-2xl p-2 shadow-2xl shadow-black/40 ring-1 ring-amber-300/30">
             <img
               src="/logo.png"
               alt="PahadiTube"
-              className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl shadow-2xl shadow-orange-900/40 ring-4 ring-white/20"
+              className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl object-contain"
             />
-            <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-0.5 text-[10px] uppercase tracking-widest font-bold text-orange-900 bg-yellow-300/90 rounded-full shadow">
-              पहाड़ी AI
-            </span>
           </div>
-          <p className="mt-5 text-xs sm:text-sm text-white/85 font-medium drop-shadow">
+          <h1 className="mt-4 text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+            पहाड़ी <span className="text-amber-400">AI</span>
+          </h1>
+          <p className="mt-1 text-xs sm:text-sm text-white/70 font-medium">
             गढ़वळि भाषा मा बच्या · Powered by Llama 3.3
           </p>
         </div>
 
-        {/* Glass chat panel */}
-        <div
-          className="relative flex-1 rounded-[28px] border border-white/30 bg-white/15 backdrop-blur-xl shadow-2xl shadow-emerald-950/40 overflow-hidden"
-          style={{
-            boxShadow:
-              '0 20px 60px -20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.25)',
-          }}
-        >
-          {/* Decorative top border pattern */}
+        {/* Greeting (only when chat empty) */}
+        {showHero && (
+          <div className="mt-2 mb-5 text-center">
+            <div className="text-5xl mb-2">🙏</div>
+            <h2 className="text-xl sm:text-2xl font-bold text-white">
+              नमस्ते, ज्यू रौ ज्यू बचि रौ
+            </h2>
+            <p className="mt-1 text-sm text-white/70">
+              गढ़वळि मा कुछ भि पुछा — खाना, गीत, त्योहार, यात्रा या कविता।
+            </p>
+          </div>
+        )}
+
+        {/* Ornate input bar */}
+        <div className="relative mx-auto w-full max-w-2xl">
           <div
-            className="h-2 w-full"
+            className="rounded-2xl p-[2px]"
             style={{
               background:
-                'repeating-linear-gradient(90deg, transparent 0 6px, rgba(255,255,255,0.25) 6px 10px)',
+                'linear-gradient(135deg, #fbbf24 0%, #b45309 25%, #fbbf24 50%, #b45309 75%, #fbbf24 100%)',
             }}
-          />
-
-          {/* Clear button — floating top-right */}
-          {messages.length > 0 && (
-            <button
-              onClick={clearChat}
-              className="absolute top-3 right-3 z-10 px-3 py-1 text-[11px] font-medium text-white/90 hover:text-white bg-black/20 hover:bg-red-500/40 rounded-full backdrop-blur transition-colors"
-            >
-              ✕ Clear
-            </button>
-          )}
-
-          <div
-            ref={scrollRef}
-            className="overflow-y-auto px-4 sm:px-6 py-5 space-y-4"
-            style={{ maxHeight: '55vh', minHeight: '320px' }}
           >
-            {showHero ? (
-              <div className="flex flex-col items-center justify-center text-center py-8">
-                <div className="text-4xl mb-2">🙏</div>
-                <h2 className="text-lg font-bold text-white drop-shadow mb-1">
-                  ज्यू रौ, ज्यू बचि रौ
-                </h2>
-                <p className="text-[13px] text-white/85 max-w-md mb-5 drop-shadow">
-                  गढ़वळि मा कुछ भि पुछा — खाना, गीत, त्योहार, यात्रा या कविता।
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full max-w-lg">
-                  {SUGGESTIONS.map((s) => (
-                    <button
-                      key={s}
-                      onClick={() => sendMessage(s)}
-                      className="text-left px-3 py-2.5 text-[13px] text-white bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl backdrop-blur transition-colors"
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              messages.map((m, i) => (
+            <div className="rounded-[14px] bg-[#0f1a36] border border-amber-300/20 flex items-end gap-2 p-2">
+              <textarea
+                ref={textareaRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder={listening ? '🎙️ बोला…' : 'गढ़वळि मा यखा लिख्या या बोला…'}
+                rows={1}
+                maxLength={4000}
+                disabled={streaming}
+                className="flex-1 bg-transparent text-white placeholder-white/50 px-3 py-2 text-sm resize-none outline-none disabled:opacity-60"
+                style={{ maxHeight: '160px' }}
+              />
+              <button
+                onClick={() => {
+                  if (listening) return stopListening();
+                  if (speechSupported) return startListening();
+                  textareaRef.current?.focus();
+                }}
+                className={`shrink-0 w-10 h-10 flex items-center justify-center rounded-xl transition-colors ${
+                  listening
+                    ? 'bg-red-500/30 text-red-200 ring-1 ring-red-300/50'
+                    : 'text-amber-300 hover:bg-amber-300/10'
+                }`}
+                aria-label="Voice input"
+                title="Tap to speak"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 14a3 3 0 003-3V5a3 3 0 00-6 0v6a3 3 0 003 3z" />
+                  <path d="M19 11a1 1 0 10-2 0 5 5 0 01-10 0 1 1 0 10-2 0 7 7 0 006 6.92V20H8a1 1 0 100 2h8a1 1 0 100-2h-3v-2.08A7 7 0 0019 11z" />
+                </svg>
+              </button>
+              <button
+                onClick={() => sendMessage(input)}
+                disabled={!input.trim() || streaming}
+                className="shrink-0 w-10 h-10 flex items-center justify-center rounded-xl bg-amber-400 text-amber-950 hover:bg-amber-300 disabled:bg-white/15 disabled:text-white/40 transition-colors shadow"
+                aria-label="Send"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* === Topic cards (when empty) OR Chat panel === */}
+        {showHero ? (
+          <div className="mt-7">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {TOPIC_CARDS.map((card) => (
+                <button
+                  key={card.label}
+                  onClick={() => sendMessage(card.prompt)}
+                  className={`group relative ${card.bg} rounded-2xl p-4 text-left shadow-lg shadow-black/30 ring-1 ring-white/10 hover:scale-[1.02] hover:ring-white/30 transition-all overflow-hidden`}
+                >
+                  {/* subtle pattern overlay */}
+                  <div
+                    className="absolute inset-0 opacity-10 pointer-events-none"
+                    style={{
+                      backgroundImage:
+                        'radial-gradient(circle at 30% 20%, #fff 1px, transparent 1px)',
+                      backgroundSize: '14px 14px',
+                    }}
+                  />
+                  <div className="relative flex flex-col h-full min-h-[150px] justify-between">
+                    <div className="text-4xl mb-2 drop-shadow">{card.emoji}</div>
+                    <div>
+                      <div className="text-white font-bold text-sm sm:text-base leading-snug whitespace-pre-line drop-shadow">
+                        {card.label}
+                      </div>
+                      <div className="mt-3 inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-semibold text-white border border-white/40 rounded-full backdrop-blur-sm group-hover:bg-white/15 transition-colors">
+                        Start Conversation
+                        <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="mt-6 relative rounded-3xl border border-amber-300/20 bg-[#0f1a36]/80 backdrop-blur shadow-2xl shadow-black/40 overflow-hidden">
+            <div
+              className="h-1.5 w-full"
+              style={{
+                background:
+                  'repeating-linear-gradient(90deg, transparent 0 6px, rgba(251,191,36,0.5) 6px 10px)',
+              }}
+            />
+            {messages.length > 0 && (
+              <button
+                onClick={clearChat}
+                className="absolute top-3 right-3 z-10 px-3 py-1 text-[11px] font-medium text-white/80 hover:text-white bg-white/5 hover:bg-red-500/40 rounded-full transition-colors"
+              >
+                ✕ Clear
+              </button>
+            )}
+            <div
+              ref={scrollRef}
+              className="overflow-y-auto px-4 sm:px-6 py-5 space-y-4"
+              style={{ maxHeight: '60vh', minHeight: '320px' }}
+            >
+              {messages.map((m, i) => (
                 <MessageBubble
                   key={i}
                   role={m.role}
@@ -393,128 +481,91 @@ export default function PahadiAIPage() {
                   isSpeaking={speakingIdx === i}
                   timeLabel={formatTime(i, messages.length)}
                 />
-              ))
-            )}
-
-            {/* "Thinking" bubble while waiting for first token */}
-            {streaming && messages.length > 0 &&
-              messages[messages.length - 1].role === 'assistant' &&
-              !messages[messages.length - 1].content && (
-                <div className="flex gap-3">
-                  <Avatar isUser={false} />
-                  <div className="px-4 py-2.5 rounded-2xl bg-white/15 border border-white/25 backdrop-blur text-white/90 text-sm flex items-center gap-2">
-                    <span className="text-base">✨</span>
-                    <span>सोचणु रा छ…</span>
-                    <TypingDots />
+              ))}
+              {streaming && messages.length > 0 &&
+                messages[messages.length - 1].role === 'assistant' &&
+                !messages[messages.length - 1].content && (
+                  <div className="flex gap-3">
+                    <Avatar isUser={false} />
+                    <div className="px-4 py-2.5 rounded-2xl bg-white/10 border border-white/15 text-white/90 text-sm flex items-center gap-2">
+                      <span className="text-base">✨</span>
+                      <span>सोचणु रा छ…</span>
+                      <TypingDots />
+                    </div>
                   </div>
+              )}
+              {error && (
+                <div className="p-3 text-sm text-white bg-red-500/30 border border-red-300/30 rounded-xl">
+                  ⚠️ {error}
                 </div>
-            )}
-
-            {error && (
-              <div className="p-3 text-sm text-white bg-red-500/40 border border-red-300/40 rounded-xl backdrop-blur">
-                ⚠️ {error}
-              </div>
-            )}
-          </div>
-
-          {/* Bottom decorative pattern */}
-          <div
-            className="h-2 w-full"
-            style={{
-              background:
-                'repeating-linear-gradient(90deg, transparent 0 6px, rgba(255,255,255,0.2) 6px 10px)',
-            }}
-          />
-        </div>
-
-        {/* ===== Big mic + input ===== */}
-        <div className="mt-6 flex flex-col items-center">
-          {/* Big mic button (or stop button while streaming) */}
-          <button
-            onClick={() => {
-              if (streaming) return stop();
-              if (listening) return stopListening();
-              if (speechSupported) return startListening();
-              textareaRef.current?.focus();
-            }}
-            className={`group relative w-20 h-20 rounded-full flex items-center justify-center text-white shadow-2xl transition-all ${
-              listening
-                ? 'bg-gradient-to-br from-red-500 to-red-700 scale-110'
-                : streaming
-                  ? 'bg-gradient-to-br from-orange-500 to-red-600'
-                  : 'bg-gradient-to-br from-teal-500 to-emerald-700 hover:scale-105'
-            }`}
-            style={{ boxShadow: '0 10px 30px -5px rgba(0,0,0,0.5), 0 0 40px rgba(45, 212, 191, 0.4)' }}
-            aria-label={listening ? 'Stop' : streaming ? 'Stop generating' : 'Tap to speak'}
-          >
-            {/* Pulse rings */}
-            {listening && (
-              <>
-                <span className="absolute inset-0 rounded-full border-2 border-white/60 animate-ping" />
-                <span className="absolute -inset-3 rounded-full border-2 border-white/30 animate-ping" style={{ animationDelay: '0.4s' }} />
-              </>
-            )}
-            {streaming ? (
-              <svg className="w-7 h-7 relative" fill="currentColor" viewBox="0 0 20 20">
-                <rect x="5" y="5" width="10" height="10" rx="2" />
-              </svg>
-            ) : (
-              <svg className="w-9 h-9 relative" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 14a3 3 0 003-3V5a3 3 0 00-6 0v6a3 3 0 003 3z" />
-                <path d="M19 11a1 1 0 10-2 0 5 5 0 01-10 0 1 1 0 10-2 0 7 7 0 006 6.92V20H8a1 1 0 100 2h8a1 1 0 100-2h-3v-2.08A7 7 0 0019 11z" />
-              </svg>
-            )}
-          </button>
-          <p className="mt-3 text-base sm:text-lg font-semibold text-white drop-shadow tracking-wide">
-            {listening ? 'सुणणु छां…' : streaming ? 'रुक्या तनिक…' : 'बोल पहाड़ी में'}
-          </p>
-
-          {/* Text input row (collapsed by default — opens on focus) */}
-          <div className="mt-4 w-full max-w-2xl">
-            <div className="flex items-end gap-2 p-2 bg-white/15 border border-white/30 rounded-2xl backdrop-blur-xl focus-within:border-white/60 transition-all">
-              <textarea
-                ref={textareaRef}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder={listening ? '🎙️ बोला…' : 'या यखा लिख्या…'}
-                rows={1}
-                maxLength={4000}
-                disabled={streaming}
-                className="flex-1 bg-transparent text-white placeholder-white/60 px-3 py-2 text-sm resize-none outline-none disabled:opacity-60"
-                style={{ maxHeight: '160px' }}
-              />
-              <button
-                onClick={() => sendMessage(input)}
-                disabled={!input.trim() || streaming}
-                className="shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-white text-emerald-700 hover:bg-yellow-300 disabled:bg-white/30 disabled:text-white/50 transition-colors shadow"
-                aria-label="Send"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 6l6 6-6 6" />
-                </svg>
-              </button>
+              )}
             </div>
           </div>
+        )}
 
-          {/* No Ads pill */}
-          <div className="mt-5 inline-flex items-center gap-2 px-4 py-1.5 bg-black/30 border border-white/20 rounded-full text-white text-sm font-medium backdrop-blur">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-              <circle cx="12" cy="12" r="9" />
-              <path d="M5 5l14 14" strokeLinecap="round" />
-            </svg>
-            No Ads
+        {/* Disclaimer */}
+        <p className="mt-6 text-[10px] text-white/50 text-center max-w-md mx-auto">
+          AI जवाब हमेशा सटीक नि होंदा — महत्वपूर्ण जानकारी सत्यापित कर्या।
+          {isIOS && (
+            <>
+              <br />
+              Voice input isn't supported on iOS{isStandalonePWA ? ' (installed app)' : ''}. Type instead.
+            </>
+          )}
+        </p>
+      </div>
+
+      {/* ===== Bottom action dock (sticky above BottomNav) ===== */}
+      <div className="fixed left-0 right-0 bottom-16 sm:bottom-20 z-30 pointer-events-none">
+        <div className="max-w-md mx-auto px-4">
+          <div className="pointer-events-auto flex items-center justify-between gap-3 px-3 py-2.5 rounded-full bg-[#0f1a36]/95 border border-amber-300/25 shadow-2xl shadow-black/60 backdrop-blur-xl">
+            <button
+              onClick={() => sendMessage('मीं कुछ नया गढ़वळि शब्द सिखाओ — रोजमर्रा का प्रयोग वाला 5 शब्द हिन्दी अर्थ का साथ।')}
+              className="shrink-0 px-3 py-2 text-[11px] sm:text-xs font-semibold text-white bg-white/5 hover:bg-amber-300/15 border border-white/10 hover:border-amber-300/40 rounded-full transition-colors"
+            >
+              📚 Learn New Words
+            </button>
+            <button
+              onClick={() => {
+                if (streaming) return stop();
+                if (listening) return stopListening();
+                if (speechSupported) return startListening();
+                textareaRef.current?.focus();
+              }}
+              className={`relative shrink-0 w-14 h-14 sm:w-16 sm:h-16 -mt-6 rounded-full flex items-center justify-center text-white shadow-2xl transition-all ${
+                listening
+                  ? 'bg-gradient-to-br from-red-500 to-red-700 scale-110'
+                  : streaming
+                    ? 'bg-gradient-to-br from-orange-500 to-red-600'
+                    : 'bg-gradient-to-br from-emerald-400 to-teal-600 hover:scale-105'
+              }`}
+              style={{ boxShadow: '0 10px 30px -5px rgba(0,0,0,0.6), 0 0 30px rgba(45, 212, 191, 0.5)' }}
+              aria-label={listening ? 'Stop' : streaming ? 'Stop generating' : 'Tap to speak'}
+            >
+              {listening && (
+                <>
+                  <span className="absolute inset-0 rounded-full border-2 border-white/60 animate-ping" />
+                  <span className="absolute -inset-2 rounded-full border-2 border-white/30 animate-ping" style={{ animationDelay: '0.4s' }} />
+                </>
+              )}
+              {streaming ? (
+                <svg className="w-5 h-5 relative" fill="currentColor" viewBox="0 0 20 20">
+                  <rect x="5" y="5" width="10" height="10" rx="2" />
+                </svg>
+              ) : (
+                <svg className="w-7 h-7 relative" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 14a3 3 0 003-3V5a3 3 0 00-6 0v6a3 3 0 003 3z" />
+                  <path d="M19 11a1 1 0 10-2 0 5 5 0 01-10 0 1 1 0 10-2 0 7 7 0 006 6.92V20H8a1 1 0 100 2h8a1 1 0 100-2h-3v-2.08A7 7 0 0019 11z" />
+                </svg>
+              )}
+            </button>
+            <button
+              onClick={() => sendMessage('गढ़वाली संस्कृति का बारा मा एक मजेदार सवाल पूछा — चार विकल्प सहित।')}
+              className="shrink-0 px-3 py-2 text-[11px] sm:text-xs font-semibold text-white bg-white/5 hover:bg-amber-300/15 border border-white/10 hover:border-amber-300/40 rounded-full transition-colors"
+            >
+              🎯 Cultural Quiz
+            </button>
           </div>
-
-          <p className="mt-4 text-[10px] text-white/70 text-center max-w-md drop-shadow">
-            AI जवाब हमेशा सटीक नि होंदा — महत्वपूर्ण जानकारी सत्यापित कर्या।
-            {isIOS && (
-              <>
-                <br />
-                Voice input isn't supported on iOS{isStandalonePWA ? ' (installed app)' : ''}. Type your question instead.
-              </>
-            )}
-          </p>
         </div>
       </div>
     </div>
