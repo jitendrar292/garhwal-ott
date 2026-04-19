@@ -20,15 +20,42 @@ export default function Navbar() {
   const [query, setQuery] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [listening, setListening] = useState(false);
+  const [micError, setMicError] = useState('');
   const inputRef = useRef(null);
+  const recognitionRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Speech recognition support (skip iOS — webkit impl is unreliable)
+  const SpeechRecognition = typeof window !== 'undefined' &&
+    (window.SpeechRecognition || window.webkitSpeechRecognition);
+  const isIOS = typeof navigator !== 'undefined' &&
+    (/iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
+  const speechSupported = !!SpeechRecognition && !isIOS;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  // Cleanup recognition on unmount
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        try { recognitionRef.current.stop(); } catch { /* noop */ }
+      }
+    };
+  }, []);
+
+  // Auto-clear mic errors after a short delay
+  useEffect(() => {
+    if (!micError) return undefined;
+    const t = setTimeout(() => setMicError(''), 3500);
+    return () => clearTimeout(t);
+  }, [micError]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -38,6 +65,65 @@ export default function Navbar() {
       setQuery('');
       setSearchOpen(false);
     }
+  };
+
+  const startVoiceSearch = () => {
+    if (!speechSupported || listening) return;
+    setMicError('');
+    const rec = new SpeechRecognition();
+    rec.lang = 'hi-IN'; // Hindi — closest to Garhwali
+    rec.interimResults = true;
+    rec.continuous = false;
+    rec.maxAlternatives = 1;
+
+    let finalText = '';
+    rec.onresult = (e) => {
+      let interim = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const t = e.results[i][0].transcript;
+        if (e.results[i].isFinal) finalText += t;
+        else interim += t;
+      }
+      setQuery((finalText + interim).trim());
+    };
+    rec.onerror = (ev) => {
+      const errMap = {
+        'not-allowed': 'Mic permission denied.',
+        'service-not-allowed': 'Voice search not available on this device.',
+        'audio-capture': 'No microphone found.',
+        'network': 'Voice search needs internet.',
+      };
+      if (ev.error !== 'no-speech' && ev.error !== 'aborted') {
+        setMicError(errMap[ev.error] || `Mic error: ${ev.error}`);
+      }
+      setListening(false);
+    };
+    rec.onend = () => {
+      setListening(false);
+      recognitionRef.current = null;
+      // Auto-submit when we got a final transcript
+      const submitted = finalText.trim();
+      if (submitted) {
+        navigate(`/search?q=${encodeURIComponent(submitted)}`);
+        setQuery('');
+        setSearchOpen(false);
+      }
+    };
+
+    try {
+      rec.start();
+      recognitionRef.current = rec;
+      setListening(true);
+    } catch (err) {
+      setMicError(err.message || 'Could not start microphone');
+    }
+  };
+
+  const stopVoiceSearch = () => {
+    if (recognitionRef.current) {
+      try { recognitionRef.current.stop(); } catch { /* noop */ }
+    }
+    setListening(false);
   };
 
   const isActive = (path) => {
@@ -77,12 +163,28 @@ export default function Navbar() {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search Garhwali videos..."
-                className="w-full bg-dark-800/80 border border-white/10 rounded-full pl-10 pr-4 py-2 text-sm
-                           text-white placeholder-gray-500 focus:outline-none focus:border-primary-500/50
-                           focus:bg-dark-700/80 focus:ring-1 focus:ring-primary-500/25 transition-all duration-200"
+                placeholder={listening ? '🎙️ Listening… बोला' : 'Search Garhwali videos…'}
+                className={`w-full bg-dark-800/80 border rounded-full pl-10 ${speechSupported ? 'pr-11' : 'pr-4'} py-2 text-sm
+                           text-white placeholder-gray-500 focus:outline-none focus:bg-dark-700/80 focus:ring-1 transition-all duration-200
+                           ${listening ? 'border-red-500/60 ring-1 ring-red-500/30' : 'border-white/10 focus:border-primary-500/50 focus:ring-primary-500/25'}`}
                 maxLength={200}
               />
+              {speechSupported && (
+                <button
+                  type="button"
+                  onClick={listening ? stopVoiceSearch : startVoiceSearch}
+                  className={`absolute right-1.5 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center rounded-full transition-colors ${
+                    listening ? 'bg-red-500 text-white animate-pulse' : 'text-gray-400 hover:text-primary-300 hover:bg-white/5'
+                  }`}
+                  aria-label={listening ? 'Stop voice search' : 'Voice search'}
+                  title={listening ? 'Stop' : 'Voice search (Hindi/Garhwali)'}
+                >
+                  <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 14a3 3 0 003-3V5a3 3 0 00-6 0v6a3 3 0 003 3z" />
+                    <path d="M19 11a1 1 0 10-2 0 5 5 0 01-10 0 1 1 0 10-2 0 7 7 0 006 6.92V20H8a1 1 0 100 2h8a1 1 0 100-2h-3v-2.08A7 7 0 0019 11z" />
+                  </svg>
+                </button>
+              )}
             </div>
           </form>
 
@@ -90,19 +192,36 @@ export default function Navbar() {
           <div className="flex items-center gap-1">
             {/* Mobile search toggle */}
             {searchOpen ? (
-              <form onSubmit={handleSearch} className="flex items-center sm:hidden">
+              <form onSubmit={handleSearch} className="flex items-center gap-1 sm:hidden">
                 <input
                   ref={inputRef}
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search..."
+                  placeholder={listening ? '🎙️ बोला…' : 'Search…'}
                   autoFocus
-                  onBlur={() => { if (!query) setSearchOpen(false); }}
-                  className="w-44 bg-dark-700 border border-dark-500 rounded-full px-3 py-1.5 text-sm
-                             text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 transition-all"
+                  onBlur={() => { if (!query && !listening) setSearchOpen(false); }}
+                  className={`w-40 bg-dark-700 border rounded-full px-3 py-1.5 text-sm
+                             text-white placeholder-gray-500 focus:outline-none transition-all
+                             ${listening ? 'border-red-500/60' : 'border-dark-500 focus:border-primary-500'}`}
                   maxLength={200}
                 />
+                {speechSupported && (
+                  <button
+                    type="button"
+                    onClick={listening ? stopVoiceSearch : startVoiceSearch}
+                    onMouseDown={(e) => e.preventDefault()} // keep input focus
+                    className={`shrink-0 w-8 h-8 flex items-center justify-center rounded-full transition-colors ${
+                      listening ? 'bg-red-500 text-white animate-pulse' : 'text-gray-400 hover:text-primary-300 bg-white/5 hover:bg-white/10'
+                    }`}
+                    aria-label={listening ? 'Stop voice search' : 'Voice search'}
+                  >
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 14a3 3 0 003-3V5a3 3 0 00-6 0v6a3 3 0 003 3z" />
+                      <path d="M19 11a1 1 0 10-2 0 5 5 0 01-10 0 1 1 0 10-2 0 7 7 0 006 6.92V20H8a1 1 0 100 2h8a1 1 0 100-2h-3v-2.08A7 7 0 0019 11z" />
+                    </svg>
+                  </button>
+                )}
               </form>
             ) : (
               <button
@@ -160,6 +279,13 @@ export default function Navbar() {
           ))}
         </div>
       </div>
+
+      {/* Mic error toast */}
+      {micError && (
+        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-4 py-2 bg-red-500/90 text-white text-xs font-medium rounded-full shadow-lg backdrop-blur-sm z-50 whitespace-nowrap">
+          ⚠️ {micError}
+        </div>
+      )}
     </nav>
   );
 }

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pahaditube-v5';
+const CACHE_NAME = 'pahaditube-v6';
 const STATIC_ASSETS = [
   '/',
   '/manifest.json',
