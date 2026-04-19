@@ -1,30 +1,35 @@
-// Per-device favorites — anonymous, no auth.
-// The client sends a UUID as ?deviceId=... ; we use it as the Redis key.
+// Per-IP favorites — anonymous, no auth.
 //
 // Endpoints:
-//   GET    /api/favorites?deviceId=<uuid>           → list
-//   POST   /api/favorites?deviceId=<uuid>           → add { video } OR replace { videos: [...] }
-//   DELETE /api/favorites/:videoId?deviceId=<uuid>  → remove one
+//   GET    /api/favorites           → list (key = caller IP)
+//   POST   /api/favorites           → add { video } OR replace { videos: [...] }
+//   DELETE /api/favorites/:videoId  → remove one
+//
+// NOTE: IP-based identity has known caveats:
+//   - Users behind the same NAT/router share one list.
+//   - The same user on different networks (wifi vs cellular) sees different lists.
+// We accept these tradeoffs in exchange for zero-friction sync (no UUID stored
+// on the client, survives storage clearing on the same network).
 
 const express = require('express');
 const router = express.Router();
 const { getFavorites, addFavorite, removeFavorite, saveFavorites } = require('../services/store');
 
-// Reject malformed device IDs early. Accepts any v1–v5 UUID-ish string
-// (32 hex digits with optional dashes), 16–64 chars.
-const DEVICE_ID_RE = /^[a-zA-Z0-9_-]{8,64}$/;
-
-function getDeviceId(req) {
-  const id = (req.query.deviceId || req.headers['x-device-id'] || '').toString().trim();
-  if (!id || !DEVICE_ID_RE.test(id)) return null;
-  return id;
+// Normalize req.ip — strip IPv6 ::ffff: prefix and reject obviously bad values.
+function getKey(req) {
+  let ip = (req.ip || req.headers['x-forwarded-for'] || '').toString().split(',')[0].trim();
+  if (!ip) return null;
+  if (ip.startsWith('::ffff:')) ip = ip.slice(7);
+  // Sanity check — must look like an IPv4 or IPv6 address
+  if (!/^[0-9a-fA-F:.]{3,45}$/.test(ip)) return null;
+  return `ip:${ip}`;
 }
 
 router.get('/', async (req, res) => {
-  const deviceId = getDeviceId(req);
-  if (!deviceId) return res.status(400).json({ error: 'Missing or invalid deviceId' });
+  const key = getKey(req);
+  if (!key) return res.status(400).json({ error: 'Unable to identify client' });
   try {
-    const list = await getFavorites(deviceId);
+    const list = await getFavorites(key);
     res.json({ favorites: list });
   } catch (err) {
     console.error('[favorites] GET error:', err.message);
@@ -33,16 +38,16 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-  const deviceId = getDeviceId(req);
-  if (!deviceId) return res.status(400).json({ error: 'Missing or invalid deviceId' });
+  const key = getKey(req);
+  if (!key) return res.status(400).json({ error: 'Unable to identify client' });
   try {
     const { video, videos } = req.body || {};
     let list;
     if (Array.isArray(videos)) {
       // Bulk replace — used for first-sync of pre-existing localStorage favs
-      list = await saveFavorites(deviceId, videos);
+      list = await saveFavorites(key, videos);
     } else if (video && video.id) {
-      list = await addFavorite(deviceId, video);
+      list = await addFavorite(key, video);
     } else {
       return res.status(400).json({ error: 'Provide { video } or { videos: [...] }' });
     }
@@ -54,12 +59,12 @@ router.post('/', async (req, res) => {
 });
 
 router.delete('/:videoId', async (req, res) => {
-  const deviceId = getDeviceId(req);
-  if (!deviceId) return res.status(400).json({ error: 'Missing or invalid deviceId' });
+  const key = getKey(req);
+  if (!key) return res.status(400).json({ error: 'Unable to identify client' });
   const videoId = (req.params.videoId || '').toString().trim();
   if (!videoId) return res.status(400).json({ error: 'Missing videoId' });
   try {
-    const list = await removeFavorite(deviceId, videoId);
+    const list = await removeFavorite(key, videoId);
     res.json({ favorites: list });
   } catch (err) {
     console.error('[favorites] DELETE error:', err.message);

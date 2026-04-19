@@ -1,31 +1,7 @@
-// Client wrapper for /api/favorites — Redis-backed per-device favorites.
-// Each browser/install has its own deviceId persisted in localStorage.
+// Client wrapper for /api/favorites — Redis-backed favorites keyed by caller IP
+// (server reads req.ip; no client-side identity needed).
 
 const API_BASE = '/api/favorites';
-const DEVICE_ID_KEY = 'pahadi_tube_device_id';
-
-function generateDeviceId() {
-  // crypto.randomUUID is available in all modern browsers + Node 19+
-  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
-    return crypto.randomUUID();
-  }
-  // Fallback (older Safari, etc.)
-  return 'dev-' + Math.random().toString(36).slice(2) + Date.now().toString(36);
-}
-
-export function getDeviceId() {
-  try {
-    let id = localStorage.getItem(DEVICE_ID_KEY);
-    if (!id) {
-      id = generateDeviceId();
-      localStorage.setItem(DEVICE_ID_KEY, id);
-    }
-    return id;
-  } catch {
-    // Private mode / storage disabled — fall back to ephemeral id
-    return generateDeviceId();
-  }
-}
 
 async function fetchJSON(url, init) {
   const res = await fetch(url, init);
@@ -37,14 +13,12 @@ async function fetchJSON(url, init) {
 }
 
 export async function fetchRemoteFavorites() {
-  const deviceId = getDeviceId();
-  const data = await fetchJSON(`${API_BASE}?deviceId=${encodeURIComponent(deviceId)}`);
+  const data = await fetchJSON(API_BASE);
   return data.favorites || [];
 }
 
 export async function pushFavoriteToServer(video) {
-  const deviceId = getDeviceId();
-  const data = await fetchJSON(`${API_BASE}?deviceId=${encodeURIComponent(deviceId)}`, {
+  const data = await fetchJSON(API_BASE, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ video }),
@@ -53,8 +27,7 @@ export async function pushFavoriteToServer(video) {
 }
 
 export async function bulkReplaceFavoritesOnServer(videos) {
-  const deviceId = getDeviceId();
-  const data = await fetchJSON(`${API_BASE}?deviceId=${encodeURIComponent(deviceId)}`, {
+  const data = await fetchJSON(API_BASE, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ videos }),
@@ -63,10 +36,8 @@ export async function bulkReplaceFavoritesOnServer(videos) {
 }
 
 export async function deleteFavoriteOnServer(videoId) {
-  const deviceId = getDeviceId();
-  const data = await fetchJSON(
-    `${API_BASE}/${encodeURIComponent(videoId)}?deviceId=${encodeURIComponent(deviceId)}`,
-    { method: 'DELETE' }
-  );
+  const data = await fetchJSON(`${API_BASE}/${encodeURIComponent(videoId)}`, {
+    method: 'DELETE',
+  });
   return data.favorites || [];
 }
