@@ -24,7 +24,7 @@ app.use(helmet({
       scriptSrc: ["'self'", "'unsafe-inline'", "https://www.youtube.com", "https://www.youtube-nocookie.com", "https://s.ytimg.com", "https://www.instagram.com", "https://platform.instagram.com"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://www.instagram.com", "https://platform.instagram.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      imgSrc: ["'self'", "https://i.ytimg.com", "https://*.ytimg.com", "https://*.cdninstagram.com", "https://*.fbcdn.net", "https://www.instagram.com", "data:"],
+      imgSrc: ["'self'", "https://i.ytimg.com", "https://*.ytimg.com", "https://*.cdninstagram.com", "https://*.fbcdn.net", "https://www.instagram.com", "https://upload.wikimedia.org", "https://commons.wikimedia.org", "data:"],
       frameSrc: ["'self'", "https://www.youtube.com", "https://youtube.com", "https://www.youtube-nocookie.com", "https://www.instagram.com"],
       connectSrc: ["'self'", "https://www.youtube.com", "https://www.youtube-nocookie.com", "https://*.googlevideo.com", "https://ipapi.co", "https://www.instagram.com", "https://graph.instagram.com"],
       mediaSrc: ["'self'", "https://*.googlevideo.com", "https://www.youtube.com", "https://www.youtube-nocookie.com", "https://*.cdninstagram.com", "blob:"],

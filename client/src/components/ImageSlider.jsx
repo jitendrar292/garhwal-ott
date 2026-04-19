@@ -1,7 +1,14 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
+// Wikimedia Commons "Special:FilePath" auto-redirects to the latest upload.
+// We pass `?width=1600` so Commons returns a resized JPEG instead of the
+// original (often 5+ MB). If any slide 404s the onError handler hides it.
+const wmc = (file, width = 1600) =>
+  `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(file)}?width=${width}`;
+
 const SLIDES = [
+  // ===== Local curated photos =====
   {
     src: '/slider/20210711_114700.jpg',
     title: 'पहाड़ की गोद',
@@ -56,12 +63,70 @@ const SLIDES = [
     subtitle: 'Pahadi malta — the sweet citrus jewel of Uttarakhand',
     link: '/category/vlogs',
   },
+
+  // ===== Online cultural / heritage images (Wikimedia Commons, CC) =====
+  {
+    src: wmc('Kedarnath_Temple.jpg'),
+    title: 'केदारनाथ',
+    subtitle: 'Kedarnath — ancient Shiva shrine in the Garhwal Himalayas',
+    link: '/category/devotional',
+    credit: 'Wikimedia Commons',
+  },
+  {
+    src: wmc('Badrinath_Temple.jpg'),
+    title: 'बद्रीनाथ',
+    subtitle: 'Badrinath Dham — sacred Vishnu temple of the Char Dham',
+    link: '/category/devotional',
+    credit: 'Wikimedia Commons',
+  },
+  {
+    src: wmc('Valley_of_flowers_uttaranchal_full_view.JPG'),
+    title: 'फूलों की घाटी',
+    subtitle: 'Valley of Flowers — UNESCO World Heritage in Chamoli',
+    link: '/category/vlogs',
+    credit: 'Wikimedia Commons',
+  },
+  {
+    src: wmc('Hemkund_Sahib.jpg'),
+    title: 'हेमकुंड साहिब',
+    subtitle: 'Hemkund Sahib — Sikh pilgrimage shrine at 4,632 m',
+    link: '/category/devotional',
+    credit: 'Wikimedia Commons',
+  },
+  {
+    src: wmc('Auli_in_Uttarakhand.jpg'),
+    title: 'औली',
+    subtitle: 'Auli — alpine meadows and snow-capped peaks of Garhwal',
+    link: '/category/vlogs',
+    credit: 'Wikimedia Commons',
+  },
+  {
+    src: wmc('Nainital_Lake_002.jpg'),
+    title: 'नैनी ताल',
+    subtitle: 'Naini Lake — the emerald heart of Kumaon',
+    link: '/category/vlogs',
+    credit: 'Wikimedia Commons',
+  },
+  {
+    src: wmc('Jageshwar_Temple_complex.jpg'),
+    title: 'जागेश्वर',
+    subtitle: 'Jageshwar — cluster of 124 stone temples in Almora',
+    link: '/category/devotional',
+    credit: 'Wikimedia Commons',
+  },
 ];
 
 export default function ImageSlider() {
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
-  const total = SLIDES.length;
+  const [failed, setFailed] = useState(() => new Set());
+
+  // Drop slides whose images failed to load (e.g. 404 from Commons).
+  const slides = useMemo(
+    () => SLIDES.filter((s) => !failed.has(s.src)),
+    [failed]
+  );
+  const total = slides.length;
 
   const next = useCallback(() => {
     setCurrent((prev) => (prev + 1) % total);
@@ -70,6 +135,10 @@ export default function ImageSlider() {
   const prev = useCallback(() => {
     setCurrent((prev) => (prev - 1 + total) % total);
   }, [total]);
+
+  useEffect(() => {
+    if (current >= total && total > 0) setCurrent(0);
+  }, [current, total]);
 
   useEffect(() => {
     if (paused || total <= 1) return;
@@ -98,9 +167,9 @@ export default function ImageSlider() {
     >
       {/* Slides with crossfade + Ken Burns */}
       <div className="relative aspect-[16/7] sm:aspect-[3.5/1] bg-dark-800">
-        {SLIDES.map((slide, index) => (
+        {slides.map((slide, index) => (
           <div
-            key={index}
+            key={slide.src}
             className={`absolute inset-0 transition-opacity duration-1000 ease-in-out
                        ${index === current ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
           >
@@ -110,6 +179,14 @@ export default function ImageSlider() {
               className={`w-full h-full object-cover transition-transform duration-[8000ms] ease-out
                          ${index === current ? 'scale-110' : 'scale-100'}`}
               loading={index === 0 ? 'eager' : 'lazy'}
+              onError={() => {
+                setFailed((prev) => {
+                  if (prev.has(slide.src)) return prev;
+                  const next = new Set(prev);
+                  next.add(slide.src);
+                  return next;
+                });
+              }}
             />
           </div>
         ))}
@@ -125,19 +202,19 @@ export default function ImageSlider() {
             className="text-white text-2xl sm:text-4xl font-extrabold drop-shadow-lg
                        animate-fade-in-up"
           >
-            {SLIDES[current].title}
+            {slides[current]?.title}
           </p>
           <p
             key={`sub-${current}`}
             className="text-gray-300 text-sm sm:text-lg mt-2 drop-shadow animate-fade-in-up"
             style={{ animationDelay: '150ms' }}
           >
-            {SLIDES[current].subtitle}
+            {slides[current]?.subtitle}
           </p>
-          {SLIDES[current].link && (
+          {slides[current]?.link && (
             <Link
               key={`cta-${current}`}
-              to={SLIDES[current].link}
+              to={slides[current].link}
               className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 rounded-full
                          bg-white/15 hover:bg-white/25 active:bg-white/10
                          backdrop-blur-sm border border-white/20 hover:border-white/40
