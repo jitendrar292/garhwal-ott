@@ -5,6 +5,8 @@ const {
   setCached,
   retrieveGlossary,
   formatGlossaryContext,
+  retrieveFewShot,
+  formatFewShotContext,
   getCacheStats,
   flushResponseCache,
   ensureConversationMirror,
@@ -174,6 +176,7 @@ router.post('/', async (req, res) => {
   // ===== 2. RAG: retrieve glossary entries + similar past conversations =====
   const lastUser = [...safeMessages].reverse().find((m) => m.role === 'user');
   const ragContext = lastUser ? formatGlossaryContext(retrieveGlossary(lastUser.content, 6)) : '';
+  const fewShotContext = lastUser ? formatFewShotContext(retrieveFewShot(lastUser.content, 6)) : '';
 
   // Long-term memory: prefer semantic (Upstash Vector) recall;
   // fall back to keyword overlap on the in-memory mirror.
@@ -199,6 +202,7 @@ router.post('/', async (req, res) => {
   res.setHeader('X-Memory-Source', memorySource);
 
   const systemContent = SYSTEM_PROMPT
+    + (fewShotContext ? `\n\n${fewShotContext}` : '')
     + (ragContext ? `\n\n${ragContext}` : '')
     + (memoryContext ? `\n\n${memoryContext}` : '');
 

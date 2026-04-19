@@ -1,6 +1,7 @@
 const NodeCache = require('node-cache');
 const crypto = require('crypto');
 const glossary = require('../data/garhwali-glossary');
+const fewshot = require('../data/garhwali-fewshot');
 
 // ===== Response cache =====
 // Caches assistant replies keyed by a hash of the conversation tail.
@@ -89,6 +90,64 @@ function formatGlossaryContext(entries) {
 
 function getCacheStats() {
   return responseCache.getStats();
+}
+
+// ===== Few-shot translation examples =====
+// Pre-index Hindi side for keyword search; pick the most relevant pairs
+// for the current query so the LLM sees concrete Hindi→Garhwali mappings.
+const FEWSHOT_INDEX = fewshot.map((p) => ({
+  ...p,
+  hiNorm: normalize(p.hi),
+}));
+
+function retrieveFewShot(query, limit = 6) {
+  const q = normalize(query);
+  if (!q) return pickRandomFewShot(limit);
+  const tokens = Array.from(new Set(
+    q.split(/[\s,.!?;:()"'\-—–\/]+/).filter((t) => t.length >= 2)
+  ));
+  if (tokens.length === 0) return pickRandomFewShot(limit);
+
+  const scored = [];
+  for (const p of FEWSHOT_INDEX) {
+    let score = 0;
+    for (const tok of tokens) {
+      if (p.hiNorm.includes(tok)) score += 1;
+    }
+    if (score > 0) scored.push({ p, score });
+  }
+  scored.sort((a, b) => b.score - a.score);
+  const top = scored.slice(0, limit).map((s) => s.p);
+  // Pad with a few diverse random samples if we don't have enough matches
+  if (top.length < limit) {
+    const need = limit - top.length;
+    const seen = new Set(top.map((p) => p.hi));
+    const extras = pickRandomFewShot(need + 4).filter((p) => !seen.has(p.hi)).slice(0, need);
+    top.push(...extras);
+  }
+  return top;
+}
+
+function pickRandomFewShot(n) {
+  const pool = [...FEWSHOT_INDEX];
+  const out = [];
+  for (let i = 0; i < n && pool.length; i++) {
+    const idx = Math.floor(Math.random() * pool.length);
+    out.push(pool.splice(idx, 1)[0]);
+  }
+  return out;
+}
+
+function formatFewShotContext(pairs) {
+  if (!pairs || pairs.length === 0) return '';
+  const lines = pairs.map((p) => `हिंदी: ${p.hi}\nगढ़वळि: ${p.gw}`);
+  return [
+    '',
+    '=== Hindi → Garhwali अनुवाद उदाहरण (इन्हीं शैली मा जवाब लिख — सरल, शुद्ध गढ़वळि) ===',
+    lines.join('\n\n'),
+    '=== अंत ===',
+    '',
+  ].join('\n');
 }
 
 function flushResponseCache() {
@@ -198,6 +257,8 @@ module.exports = {
   setCached,
   retrieveGlossary,
   formatGlossaryContext,
+  retrieveFewShot,
+  formatFewShotContext,
   getCacheStats,
   flushResponseCache,
   ensureConversationMirror,
