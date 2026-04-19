@@ -144,9 +144,23 @@ const OPENROUTER = {
 // Get key at https://aistudio.google.com/apikey (free).
 // NOTE: gemini-1.5-* was retired in 2025. Use gemini-2.0-flash or
 // gemini-2.5-flash. Model name can be overridden via GEMINI_MODEL env var.
+//
+// The API requires the model id in canonical form: lowercase, hyphenated,
+// no spaces, no "models/" prefix (e.g. "gemini-2.5-flash"). Users sometimes
+// paste display names like "Gemini 2.5 Flash" into env vars — normalize so
+// the request doesn't 400 with "unexpected model name format".
+function normalizeGeminiModel(raw) {
+  const cleaned = String(raw || '').trim().toLowerCase()
+    .replace(/^models\//, '')   // strip API path prefix if pasted
+    .replace(/\s+/g, '-')       // "gemini 2.5 flash" -> "gemini-2.5-flash"
+    .replace(/-+/g, '-')        // collapse repeats
+    .replace(/^-|-$/g, '');     // trim leading/trailing dashes
+  return cleaned || 'gemini-2.0-flash';
+}
+
 const GEMINI = {
   name: 'gemini',
-  model: process.env.GEMINI_MODEL || 'gemini-2.0-flash',
+  model: normalizeGeminiModel(process.env.GEMINI_MODEL || 'gemini-2.0-flash'),
   getKey: () => process.env.GEMINI_API_KEY,
 };
 
