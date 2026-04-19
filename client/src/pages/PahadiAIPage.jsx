@@ -349,7 +349,7 @@ export default function PahadiAIPage() {
           <div className="mt-2 mb-5 text-center">
             <div className="text-5xl mb-2">🙏</div>
             <h2 className="text-xl sm:text-2xl font-bold text-white">
-              नमस्ते, ज्यू रौ ज्यू बचि रौ
+              नमस्कार, ज्यूँ रै, जियाण रै, खुश रै।
             </h2>
             <p className="mt-1 text-sm text-white/70">
               गढ़वळि मा कुछ भि पुछा — खाना, गीत, त्योहार, यात्रा या कविता।

@@ -25,7 +25,7 @@ module.exports = [
 
   // ===== Greetings & courtesy =====
   { gw: 'जय भारत माता / नमस्कार', hi: 'नमस्ते', en: 'hello', tags: ['नमस्ते', 'namaste', 'hello', 'hi'] },
-  { gw: 'ज्यू रौ, ज्यू बचि रौ', hi: 'जीते रहो, जीते बचे रहो (आशीर्वाद)', en: 'live long (blessing)', tags: ['blessing', 'jiyo', 'aashirwad', 'आशीर्वाद'] },
+  { gw: 'ज्यूँ रै, जियाण रै, खुश रै', hi: 'जीते रहो, लंबी उम्र पाओ, खुश रहो (आशीर्वाद)', en: 'live long, prosper, be happy (blessing)', tags: ['blessing', 'jiyo', 'aashirwad', 'आशीर्वाद'] },
   { gw: 'धन्यवाद / थैंक्यू', hi: 'धन्यवाद', en: 'thank you', tags: ['धन्यवाद', 'thanks', 'thank you', 'shukriya'] },
   { gw: 'कन छन?', hi: 'कैसे हो?', en: 'how are you', tags: ['कैसे हो', 'how are you', 'kaise ho'] },
   { gw: 'भलि च', hi: 'अच्छा है / ठीक है', en: 'good / fine', tags: ['अच्छा', 'ठीक', 'good', 'fine', 'accha'] },
