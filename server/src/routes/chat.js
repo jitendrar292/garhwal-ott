@@ -272,7 +272,7 @@ router.post('/', async (req, res) => {
     return res.status(400).json({ error: e.message });
   }
 
-  // ===== 1. Cache lookup =====
+  // ===== 1. Exact-match cache lookup =====
   const cached = getCached(safeMessages);
   if (cached) {
     return streamCachedReply(res, cached);
@@ -280,6 +280,27 @@ router.post('/', async (req, res) => {
 
   // ===== 2. RAG: retrieve glossary entries + similar past conversations =====
   const lastUser = [...safeMessages].reverse().find((m) => m.role === 'user');
+
+  // 2a. Semantic cache: if a past question is *very* similar (>=0.92), reuse its answer.
+  //     This catches paraphrases like "हरेला कब च?" vs "हरेला कब आँदु?" without an LLM call.
+  const SEMANTIC_CACHE_THRESHOLD = 0.92;
+  let memoryHits = [];
+  if (lastUser && isVectorEnabled()) {
+    try {
+      memoryHits = await querySimilar(lastUser.content, { topK: 4, minScore: 0.72 });
+    } catch (err) {
+      console.error('[chat] vector query error:', err.message);
+    }
+  }
+  const semanticHit = memoryHits.find((h) => h.score >= SEMANTIC_CACHE_THRESHOLD && h.a);
+  if (semanticHit) {
+    res.setHeader('X-Cache', 'SEMANTIC');
+    res.setHeader('X-Cache-Score', semanticHit.score.toFixed(3));
+    // Also write to exact-match cache so the next identical request is even faster.
+    setCached(safeMessages, semanticHit.a);
+    return streamCachedReply(res, semanticHit.a);
+  }
+
   const ragContext = lastUser ? formatGlossaryContext(retrieveGlossary(lastUser.content, 6)) : '';
   const fewShotContext = lastUser ? formatFewShotContext(retrieveFewShot(lastUser.content, 6)) : '';
 
@@ -289,11 +310,9 @@ router.post('/', async (req, res) => {
   let memorySource = 'none';
   if (lastUser) {
     try {
-      let similar = [];
-      if (isVectorEnabled()) {
-        similar = await querySimilar(lastUser.content, { topK: 3, minScore: 0.72 });
-        if (similar.length > 0) memorySource = 'vector';
-      }
+      // Use the (sub-cache-threshold) hits we already fetched above.
+      let similar = memoryHits.slice(0, 3);
+      if (similar.length > 0) memorySource = 'vector';
       if (similar.length === 0) {
         await ensureConversationMirror(() => getChatHistory(300));
         similar = retrieveSimilarConversations(lastUser.content, 3);
