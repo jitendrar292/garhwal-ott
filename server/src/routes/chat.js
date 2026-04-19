@@ -699,8 +699,17 @@ router.post('/', async (req, res) => {
   //     score AND a Jaccard overlap of meaningful tokens — pure embedding
   //     similarity often matches by stylistic words ("गढ़वाली ... बता") even
   //     when the actual topic differs (food vs. singer vs. festival).
-  const SEMANTIC_CACHE_THRESHOLD = 0.96;
-  const SEMANTIC_MIN_OVERLAP = 0.5; // 50% of content tokens must overlap
+  //
+  // Threshold notes (tune via env):
+  //   - Multilingual embedders (mxbai, bge-m3) on Devanagari rarely exceed
+  //     ~0.92 even for semantically identical queries. 0.96 was unreachable
+  //     in practice — vector hits existed but were always rejected, causing
+  //     every "same question" to hit the LLM again. 0.88 is the sweet spot.
+  //   - The token-overlap gate prevents false positives at this lower bar
+  //     (e.g. "गढ़वाली खाना बता" vs "गढ़वाली नेगी जी बता" both score ~0.90
+  //     on stylistic words alone).
+  const SEMANTIC_CACHE_THRESHOLD = parseFloat(process.env.SEMANTIC_CACHE_THRESHOLD) || 0.88;
+  const SEMANTIC_MIN_OVERLAP = parseFloat(process.env.SEMANTIC_MIN_OVERLAP) || 0.5;
 
   // Garhwali/Hindi stop-words + filler that often dominate similarity.
   const STOPWORDS = new Set([
@@ -730,11 +739,36 @@ router.post('/', async (req, res) => {
       console.error('[chat] vector query error:', err.message);
     }
   }
+
+  // Surface vector retrieval stats as response headers — invaluable for
+  // diagnosing "why didn't my cached answer get served?" issues. Inspect
+  // with: curl -i ... | grep -i x-vector
+  if (memoryHits.length > 0) {
+    const top = memoryHits[0];
+    res.setHeader('X-Vector-Top-Score', top.score.toFixed(3));
+    res.setHeader('X-Vector-Hits', String(memoryHits.length));
+  }
+
   const semanticHit = memoryHits.find((h) => {
     if (!h.a || h.score < SEMANTIC_CACHE_THRESHOLD) return false;
     return overlapRatio(lastUser.content, h.q) >= SEMANTIC_MIN_OVERLAP;
   });
+
+  // Log near-misses — helps tune the threshold if real cache hits are being
+  // rejected by a sliver. Only logs when there's a strong vector match that
+  // failed either gate.
+  if (!semanticHit && memoryHits[0] && memoryHits[0].score >= 0.80) {
+    const top = memoryHits[0];
+    const overlap = overlapRatio(lastUser.content, top.q);
+    console.log(
+      `[chat] semantic cache MISS (score=${top.score.toFixed(3)} need=${SEMANTIC_CACHE_THRESHOLD}, ` +
+      `overlap=${overlap.toFixed(2)} need=${SEMANTIC_MIN_OVERLAP}) ` +
+      `q="${lastUser.content.slice(0, 60)}" ~ past="${top.q.slice(0, 60)}"`
+    );
+  }
+
   if (semanticHit) {
+    console.log(`[chat] semantic cache HIT (score=${semanticHit.score.toFixed(3)})`);
     res.setHeader('X-Cache', 'SEMANTIC');
     res.setHeader('X-Cache-Score', semanticHit.score.toFixed(3));
     setCached(safeMessages, semanticHit.a);
