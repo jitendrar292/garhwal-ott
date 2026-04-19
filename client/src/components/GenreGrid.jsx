@@ -86,7 +86,7 @@ export default function GenreGrid() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
       </h2>
-      <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-9 gap-3 sm:gap-4">
+      <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-9 gap-2 sm:gap-3">
         {GENRES.map((genre) => (
           <Link
             key={genre.path}
@@ -107,13 +107,13 @@ export default function GenreGrid() {
               </div>
             )}
 
-            <div className="relative z-10 p-4 pb-3 flex flex-col items-start gap-0.5">
+            <div className="relative z-10 p-3 pb-2.5 flex flex-col items-start gap-0.5">
               {/* Large emoji */}
-              <span className="text-4xl mb-1.5 drop-shadow-lg group-hover:scale-110 transition-transform duration-300 inline-block">
+              <span className="text-2xl sm:text-3xl mb-1 drop-shadow-lg group-hover:scale-110 transition-transform duration-300 inline-block">
                 {genre.emoji}
               </span>
-              <p className="text-white font-extrabold text-base leading-tight">{genre.name}</p>
-              <p className="text-white/60 text-[11px] leading-snug">{genre.hint}</p>
+              <p className="text-white font-extrabold text-sm leading-tight">{genre.name}</p>
+              <p className="text-white/60 text-[10px] leading-snug">{genre.hint}</p>
               {/* Browse arrow — fades in on hover */}
               <span className="mt-1.5 text-white/0 group-hover:text-white/90 text-xs font-semibold
                                transition-colors duration-300 flex items-center gap-0.5">
