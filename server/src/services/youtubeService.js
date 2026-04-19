@@ -180,6 +180,44 @@ function getStaticFallback(category) {
   return STATIC_FALLBACK[category] || { videos: [], nextPageToken: null, prevPageToken: null, totalResults: 0 };
 }
 
+// Deterministic shuffle: same seed string → same order. Keeps cache stable
+// while making different tabs/queries yield visibly different orderings.
+function seededShuffle(arr, seed) {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) | 0;
+  const out = arr.slice();
+  for (let i = out.length - 1; i > 0; i--) {
+    h = (h * 1103515245 + 12345) & 0x7fffffff;
+    const j = h % (i + 1);
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
+// Map a free-text query to the most relevant fallback bucket so each music
+// tab (DJ, Bhajan, Kumaoni, etc.) shows different content when API quota is
+// exhausted instead of all returning the same "songs" list.
+function pickFallbackForQuery(query) {
+  const q = String(query || '').toLowerCase();
+  let bucket = 'songs';
+  if (/bhajan|devotional|jagar|jaagar|bhakti|stuti|aarti|mandir|temple/.test(q)) bucket = 'devotional';
+  else if (/comedy|funny|hasi|hasna|kajyaan|polya|ghanna/.test(q)) bucket = 'comedy';
+  else if (/movie|film|chakrachal|gharjawain/.test(q)) bucket = 'movies';
+  else if (/vlog|village|gaon|life|lifestyle|tour|trek/.test(q)) bucket = 'vlogs';
+  else if (/podcast|baramasa|ghughuti|interview|documentary/.test(q)) bucket = 'podcast';
+  else if (/jaagar|folk dance|chholiya|tandi|pandav/.test(q)) bucket = 'folkdance';
+  else if (/mela|fair|festival|harela|igas|phool dei|bikhoti/.test(q)) bucket = 'mela';
+  else if (/trend|trending|hit|popular|viral|top/.test(q)) bucket = 'trending';
+  // Music sub-genres all draw from the songs pool but get a query-seeded
+  // shuffle so each tab's order is unique.
+  const base = getStaticFallback(bucket);
+  if (!base.videos || base.videos.length === 0) return base;
+  return {
+    ...base,
+    videos: seededShuffle(base.videos, q),
+  };
+}
+
 const CATEGORY_QUERIES = {
   movies: 'Garhwali full movie',
   songs: 'Garhwali latest songs',
@@ -263,8 +301,8 @@ async function searchVideos(query, pageToken = '', maxResults = 12) {
     }
     // Return static fallback for songs-related search queries
     if (err.message === 'QUOTA_EXCEEDED') {
-      console.log('Serving static fallback for search:', query);
-      return getStaticFallback('songs');
+      console.log('Serving keyword-matched static fallback for search:', query);
+      return pickFallbackForQuery(query);
     }
     throw err;
   }

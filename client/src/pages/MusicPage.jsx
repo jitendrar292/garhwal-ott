@@ -3,11 +3,14 @@ import { searchVideos } from '../api/youtube';
 import { useMusic } from '../context/MusicContext';
 
 const MUSIC_QUERIES = [
-  { label: '🔥 Trending', query: 'latest garhwali songs 2026' },
-  { label: '🎶 Classic', query: 'old garhwali songs evergreen' },
-  { label: '🏔️ Kumaoni', query: 'kumaoni hit songs' },
-  { label: '🎧 DJ Mix', query: 'garhwali DJ remix songs' },
-  { label: '🙏 Bhajans', query: 'garhwali bhajan devotional' },
+  { label: '🔥 Trending', query: 'garhwali trending hit songs 2026' },
+  { label: '🎶 Classic', query: 'old garhwali evergreen songs Narendra Singh Negi' },
+  { label: '🏔️ Kumaoni', query: 'kumaoni hit songs uttarakhand' },
+  { label: '🎧 DJ Mix', query: 'garhwali DJ remix nonstop dance' },
+  { label: '🙏 Bhajan', query: 'garhwali bhajan devotional aarti' },
+  { label: '🪘 Jaagar', query: 'garhwali jaagar Pritam Bhartwan ritual' },
+  { label: '💃 Folk Dance', query: 'garhwali folk dance chaunphula thadya' },
+  { label: '👩 Female Voices', query: 'garhwali female singer Meena Rana Priyanka Meher' },
 ];
 
 export default function MusicPage() {
