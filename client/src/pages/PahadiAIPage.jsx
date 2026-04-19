@@ -414,13 +414,13 @@ export default function PahadiAIPage() {
 
         {/* === Topic cards (when empty) OR Chat panel === */}
         {showHero ? (
-          <div className="mt-7">
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <div className="mt-6">
+            <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-2.5">
               {TOPIC_CARDS.map((card) => (
                 <button
                   key={card.label}
                   onClick={() => sendMessage(card.prompt)}
-                  className={`group relative ${card.bg} rounded-2xl p-4 text-left shadow-lg shadow-black/30 ring-1 ring-white/10 hover:scale-[1.02] hover:ring-white/30 transition-all overflow-hidden`}
+                  className={`group relative ${card.bg} rounded-xl p-2 text-center shadow-md shadow-black/30 ring-1 ring-white/10 hover:scale-[1.03] hover:ring-white/30 transition-all overflow-hidden`}
                 >
                   {/* subtle pattern overlay */}
                   <div
@@ -428,21 +428,13 @@ export default function PahadiAIPage() {
                     style={{
                       backgroundImage:
                         'radial-gradient(circle at 30% 20%, #fff 1px, transparent 1px)',
-                      backgroundSize: '14px 14px',
+                      backgroundSize: '10px 10px',
                     }}
                   />
-                  <div className="relative flex flex-col h-full min-h-[150px] justify-between">
-                    <div className="text-4xl mb-2 drop-shadow">{card.emoji}</div>
-                    <div>
-                      <div className="text-white font-bold text-sm sm:text-base leading-snug whitespace-pre-line drop-shadow">
-                        {card.label}
-                      </div>
-                      <div className="mt-3 inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-semibold text-white border border-white/40 rounded-full backdrop-blur-sm group-hover:bg-white/15 transition-colors">
-                        Start Conversation
-                        <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                        </svg>
-                      </div>
+                  <div className="relative flex flex-col items-center justify-center gap-1 min-h-[88px]">
+                    <div className="text-2xl drop-shadow">{card.emoji}</div>
+                    <div className="text-white font-semibold text-[10px] sm:text-[11px] leading-tight whitespace-pre-line drop-shadow">
+                      {card.label}
                     </div>
                   </div>
                 </button>
