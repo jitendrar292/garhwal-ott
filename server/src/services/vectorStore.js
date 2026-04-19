@@ -61,7 +61,13 @@ async function upsertExchange(id, question, answer, extraMeta = {}) {
 /**
  * Semantic retrieval — finds past exchanges most similar to `query`.
  * Returns [{ id, score, q, a, at }] ordered by descending similarity.
- * `minScore` filters out weak matches (Upstash returns cosine-similarity-like floats 0..1).
+ *
+ * Score interpretation depends on the Upstash index type:
+ *   DENSE-only  → cosine similarity (0–1), 1 = identical.
+ *   HYBRID      → by default uses RRF (Reciprocal Rank Fusion) where scores
+ *                  are tiny (~0.01–0.03) regardless of match quality. We force
+ *                  DBSF (Distribution-Based Score Fusion) which normalises
+ *                  back to 0–1, making threshold logic meaningful again.
  */
 async function querySimilar(query, { topK = 3, minScore = 0.72 } = {}) {
   if (!VECTOR_ENABLED || !query) return [];
@@ -70,6 +76,10 @@ async function querySimilar(query, { topK = 3, minScore = 0.72 } = {}) {
       data: String(query).slice(0, 1500),
       topK,
       includeMetadata: true,
+      // DBSF normalises hybrid (dense + sparse) scores to 0–1 so the
+      // caller's thresholds (0.72, 0.88, etc.) work as expected.
+      // Only effective on HYBRID indexes; ignored on DENSE-only indexes.
+      fusionAlgorithm: 'DBSF',
     });
     const matches = json.result || [];
     return matches
