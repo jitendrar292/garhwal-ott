@@ -91,6 +91,12 @@ function getCacheStats() {
   return responseCache.getStats();
 }
 
+function flushResponseCache() {
+  const before = responseCache.keys().length;
+  responseCache.flushAll();
+  return { cleared: before };
+}
+
 // ===== Conversation memory (long-term) =====
 // Holds an in-memory mirror of recent chat history (loaded from Redis once
 // per CONV_REFRESH_MS) and provides keyword-based similarity retrieval.
@@ -193,6 +199,7 @@ module.exports = {
   retrieveGlossary,
   formatGlossaryContext,
   getCacheStats,
+  flushResponseCache,
   ensureConversationMirror,
   refreshConversationMirror,
   noteConversationLocally,
