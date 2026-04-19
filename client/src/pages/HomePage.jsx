@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import ImageSlider from '../components/ImageSlider';
 import GenreGrid from '../components/GenreGrid';
 import VideoRow from '../components/VideoRow';
+import UpcomingFestivals from '../components/UpcomingFestivals';
 import AboutSection from '../components/AboutSection';
 import { getVideosByCategory } from '../api/youtube';
 
@@ -59,6 +60,9 @@ export default function HomePage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-8">
         {/* Genre cards */}
         <GenreGrid />
+
+        {/* Upcoming Festivals (Garhwal · Kumaon · Jaunsar) */}
+        <UpcomingFestivals />
 
         {/* Trending */}
         <VideoRow
