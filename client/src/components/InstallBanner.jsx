@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react';
 
+// Module-level flag — survives client-side route changes within the same
+// page session, but resets on full reload. We deliberately avoid localStorage
+// (Redis is the only store, and a per-device dismiss flag isn't worth a
+// server round-trip).
+let dismissedThisSession = false;
+
 export default function InstallBanner() {
   const [visible, setVisible] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
@@ -7,8 +13,8 @@ export default function InstallBanner() {
   useEffect(() => {
     // Don't show if already installed as standalone PWA
     if (window.matchMedia('(display-mode: standalone)').matches) return;
-    // Don't show if user dismissed before
-    if (localStorage.getItem('pahadi_install_dismissed')) return;
+    // Don't show if dismissed in this page session
+    if (dismissedThisSession) return;
 
     const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
     setIsIOS(ios);
@@ -16,7 +22,7 @@ export default function InstallBanner() {
   }, []);
 
   function dismiss() {
-    localStorage.setItem('pahadi_install_dismissed', '1');
+    dismissedThisSession = true;
     setVisible(false);
   }
 

@@ -10,10 +10,17 @@ export default function PlayerPage() {
   const [related, setRelated] = useState([]);
   const [relatedLoading, setRelatedLoading] = useState(true);
   const [videoMeta, setVideoMeta] = useState({ title: '', channelTitle: '' });
+  // Click-to-play: don't mount the YouTube iframe until the user explicitly
+  // taps the poster. This avoids loading the full ~1MB+ player bundle (and
+  // burning a YouTube quota unit) just because a route was opened — important
+  // for users who navigated by mistake or hit Back. Each /watch/:id mount
+  // resets the gate so navigating between videos requires another tap.
+  const [playerStarted, setPlayerStarted] = useState(false);
   const { isFavorite, addFavorite, removeFavorite } = useFavorites();
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    setPlayerStarted(false);
     // Fetch title via YouTube oEmbed (no API key needed)
     fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}&format=json`)
       .then((r) => r.ok ? r.json() : null)
@@ -28,7 +35,8 @@ export default function PlayerPage() {
     async function loadRelated() {
       setRelatedLoading(true);
       try {
-        const data = await searchVideos('Garhwali', '', 8);
+        // 10 results, then we filter the current video out before rendering.
+        const data = await searchVideos('Garhwali', '', 10);
         if (!cancelled) {
           setRelated(data.videos.filter((v) => v.id !== videoId));
         }
@@ -61,14 +69,48 @@ export default function PlayerPage() {
         {/* Player */}
         <div className="lg:col-span-2">
           <div className="relative aspect-video rounded-2xl overflow-hidden bg-dark-700 shadow-2xl">
-            <iframe
-              src={`https://www.youtube.com/embed/${encodeURIComponent(videoId)}?autoplay=1&rel=0`}
-              title="Video Player"
-              className="absolute inset-0 w-full h-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              referrerPolicy="strict-origin-when-cross-origin"
-            />
+            {playerStarted ? (
+              <iframe
+                src={`https://www.youtube.com/embed/${encodeURIComponent(videoId)}?autoplay=1&rel=0`}
+                title="Video Player"
+                className="absolute inset-0 w-full h-full"
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                referrerPolicy="strict-origin-when-cross-origin"
+              />
+            ) : (
+              // Click-to-play poster. Uses the YouTube hqdefault thumbnail
+              // (free, CDN-cached) instead of mounting the embed iframe.
+              // Tapping the play button mounts the iframe with autoplay=1
+              // so playback starts immediately on user gesture.
+              <button
+                type="button"
+                onClick={() => setPlayerStarted(true)}
+                className="absolute inset-0 w-full h-full group/poster"
+                aria-label="Play video"
+              >
+                <img
+                  src={`https://i.ytimg.com/vi/${encodeURIComponent(videoId)}/hqdefault.jpg`}
+                  alt={videoMeta.title || 'Video thumbnail'}
+                  className="absolute inset-0 w-full h-full object-cover"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-black/30 group-hover/poster:bg-black/50 transition-colors" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-red-600/90 group-hover/poster:bg-red-500
+                                  flex items-center justify-center shadow-2xl
+                                  transition-transform duration-200 group-hover/poster:scale-110">
+                    <svg className="w-10 h-10 sm:w-12 sm:h-12 text-white ml-1.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                    </svg>
+                  </div>
+                </div>
+                <span className="absolute bottom-3 left-3 right-3 text-left text-white text-sm font-medium drop-shadow line-clamp-2">
+                  {videoMeta.title}
+                </span>
+              </button>
+            )}
           </div>
 
           {/* Actions */}

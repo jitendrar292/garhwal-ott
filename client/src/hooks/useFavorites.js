@@ -3,25 +3,11 @@ import {
   fetchRemoteFavorites,
   pushFavoriteToServer,
   deleteFavoriteOnServer,
-  bulkReplaceFavoritesOnServer,
 } from '../api/favorites';
 
-const STORAGE_KEY = 'pahadi_tube_favorites';
-
-function loadFavorites() {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : [];
-  } catch {
-    return [];
-  }
-}
-
-function persistLocal(list) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-  } catch { /* storage full / disabled */ }
-}
+// Redis is the only source of truth — no browser storage (localStorage /
+// sessionStorage) is used. Per-IP favorites live in Upstash via /api/favorites
+// (see server/src/routes/favorites.js + server/src/services/store.js).
 
 function dedupeById(list) {
   const seen = new Set();
@@ -35,56 +21,37 @@ function dedupeById(list) {
 }
 
 export function useFavorites() {
-  // localStorage is the instant cache so the UI renders immediately on mount,
-  // even before the Redis fetch resolves (or if the network is offline).
-  const [favorites, setFavorites] = useState(loadFavorites);
-  const syncedOnce = useRef(false);
+  const [favorites, setFavorites] = useState([]);
+  const fetchedOnce = useRef(false);
 
-  // Keep localStorage mirror in sync on every change
+  // Fetch from Redis on mount (once per hook instance).
   useEffect(() => {
-    persistLocal(favorites);
-  }, [favorites]);
-
-  // One-time sync with server on mount: fetch remote, merge with local,
-  // and if local had entries the server didn't, push them up.
-  useEffect(() => {
-    if (syncedOnce.current) return;
-    syncedOnce.current = true;
+    if (fetchedOnce.current) return;
+    fetchedOnce.current = true;
     (async () => {
       try {
         const remote = await fetchRemoteFavorites();
-        const local = loadFavorites();
-        // Merge — local entries win on conflict (newer device interactions),
-        // but remote entries fill in cross-device favorites.
-        const merged = dedupeById([...local, ...remote]);
-        setFavorites(merged);
-
-        // If merging changed the server view, push the merged list back so
-        // the device's local additions are persisted in Redis.
-        const remoteIds = new Set(remote.map((v) => v.id));
-        const hasNewLocal = merged.some((v) => !remoteIds.has(v.id));
-        const hasFewerRemote = remote.length !== merged.length;
-        if (hasNewLocal || hasFewerRemote) {
-          await bulkReplaceFavoritesOnServer(merged).catch(() => {});
-        }
+        setFavorites(dedupeById(remote));
       } catch {
-        // Server unreachable — keep local-only mode silently
+        // Server unreachable — start empty; next add/remove will retry.
       }
     })();
   }, []);
 
   const addFavorite = useCallback((video) => {
-    setFavorites((prev) => {
-      if (prev.some((v) => v.id === video.id)) return prev;
-      return [video, ...prev];
-    });
-    // Fire-and-forget; localStorage already has it
-    pushFavoriteToServer(video).catch(() => {});
+    if (!video || !video.id) return;
+    // Optimistic update — server response is the canonical list.
+    setFavorites((prev) => (prev.some((v) => v.id === video.id) ? prev : [video, ...prev]));
+    pushFavoriteToServer(video)
+      .then((list) => { if (Array.isArray(list)) setFavorites(dedupeById(list)); })
+      .catch(() => {});
   }, []);
 
   const removeFavorite = useCallback((videoId) => {
     setFavorites((prev) => prev.filter((v) => v.id !== videoId));
-    deleteFavoriteOnServer(videoId).catch(() => {});
+    deleteFavoriteOnServer(videoId)
+      .then((list) => { if (Array.isArray(list)) setFavorites(dedupeById(list)); })
+      .catch(() => {});
   }, []);
 
   const isFavorite = useCallback(

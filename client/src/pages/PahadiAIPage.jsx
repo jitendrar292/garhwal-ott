@@ -1,7 +1,10 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 
-const STORAGE_KEY = 'pahadi-ai-chat-history';
-const MAX_HISTORY = 30; // keep last 30 messages
+// Chat history is intentionally NOT persisted in the browser — Redis is the
+// only store and the server already logs Q→A pairs server-side
+// (logChatExchange in server/src/services/store.js). The visible chat in this
+// page resets on full reload by design.
+const MAX_HISTORY = 30; // keep last 30 messages in memory
 
 const SUGGESTIONS = [
   'नमस्कार! तुम कन छन?',
@@ -24,27 +27,8 @@ const TOPIC_CARDS = [
   { emoji: '📖',  label: 'गढ़वाली\nकविता',         bg: 'bg-emerald-700', prompt: SUGGESTIONS[5] },
 ];
 
-function loadHistory() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed.slice(-MAX_HISTORY) : [];
-  } catch {
-    return [];
-  }
-}
-
-function saveHistory(messages) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(messages.slice(-MAX_HISTORY)));
-  } catch {
-    /* storage full / disabled */
-  }
-}
-
 export default function PahadiAIPage() {
-  const [messages, setMessages] = useState(() => loadHistory());
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [streaming, setStreaming] = useState(false);
   const [error, setError] = useState('');
@@ -81,9 +65,12 @@ export default function PahadiAIPage() {
     };
   }, [ttsSupported]);
 
-  // Persist on every change
+  // Cap in-memory history so the UI doesn't grow unbounded across long
+  // conversations. No persistence \u2014 see header comment.
   useEffect(() => {
-    saveHistory(messages);
+    if (messages.length > MAX_HISTORY) {
+      setMessages((prev) => prev.slice(-MAX_HISTORY));
+    }
   }, [messages]);
 
   // Auto-scroll on new content
@@ -258,7 +245,6 @@ export default function PahadiAIPage() {
     if (ttsSupported) window.speechSynthesis.cancel();
     setSpeakingIdx(-1);
     setMessages([]);
-    localStorage.removeItem(STORAGE_KEY);
   };
 
   const handleKeyDown = (e) => {
@@ -565,7 +551,7 @@ export default function PahadiAIPage() {
 }
 
 // Render a HH:MM time label for each message based on its index/recency.
-// Uses local time. We don't store timestamps in localStorage (yet) so this
+// Uses local time. Timestamps aren't persisted (no browser storage), so this
 // is best-effort: only the most recent few get times; older are blank.
 function formatTime(idx, total) {
   if (idx < total - 4) return '';

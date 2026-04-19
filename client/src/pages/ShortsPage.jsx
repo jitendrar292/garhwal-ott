@@ -72,6 +72,12 @@ export default function ShortsPage() {
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState('all');
   const [activeIndex, setActiveIndex] = useState(0);
+  // Click-to-play: tracks which card indices the user has tapped to start.
+  // Without this, scrolling the snap-feed would mount one YouTube iframe per
+  // visible card — each loading the ~1MB embed bundle and burning quota.
+  // We mount the iframe only for tapped indices; everything else stays a
+  // lightweight thumbnail poster.
+  const [startedSet, setStartedSet] = useState(() => new Set());
   const containerRef = useRef(null);
 
   // Tag Instagram entries so we can render the correct embed
@@ -92,8 +98,10 @@ export default function ShortsPage() {
   useEffect(() => {
     let alive = true;
     Promise.allSettled([
-      getVideosByCategory('shorts', '', 12),
-      getVideosByCategory('reels', '', 12),
+      // 10 per tab — keeps each YouTube quota call cheap and matches the
+      // 5–10 max per-page policy used elsewhere in the app.
+      getVideosByCategory('shorts', '', 10),
+      getVideosByCategory('reels', '', 10),
     ]).then(([s, r]) => {
       if (!alive) return;
       if (s.status === 'fulfilled') setShorts((s.value.videos || []).map((v) => ({ ...v, source: 'youtube' })));
@@ -125,6 +133,9 @@ export default function ShortsPage() {
   // Reset to top when switching tabs
   useEffect(() => {
     setActiveIndex(0);
+    // Drop any "started" iframes from the previous tab so we don't keep
+    // off-screen YouTube players running in the background.
+    setStartedSet(new Set());
     containerRef.current?.scrollTo({ top: 0, behavior: 'auto' });
   }, [tab]);
 
@@ -167,7 +178,7 @@ export default function ShortsPage() {
       <div className="w-full max-w-md px-4 pt-4 pb-2 flex items-center gap-3">
         <div className="w-1 h-6 bg-gradient-to-b from-pink-400 to-red-500 rounded-full" />
         <h1 className="text-lg font-bold">📱 Pahadi Reels</h1>
-        <span className="text-xs text-gray-500 ml-auto">Scroll to explore</span>
+        <span className="text-xs text-gray-500 ml-auto">Tap to play</span>
       </div>
 
       {/* Tab switcher */}
@@ -221,18 +232,50 @@ export default function ShortsPage() {
                 </div>
               </div>
             ) : (
-              // YouTube short / reel
+              // YouTube short / reel — click-to-play poster.
+              // The iframe is mounted only after the user taps the card.
               <>
                 <div className="relative w-full rounded-2xl overflow-hidden shadow-2xl bg-dark-800"
                   style={{ aspectRatio: '9/16', maxHeight: 'calc(100dvh - 225px)' }}>
-                  <iframe
-                    src={`https://www.youtube.com/embed/${encodeURIComponent(video.id)}?rel=0&modestbranding=1${activeIndex === i ? '&autoplay=1' : ''}`}
-                    title={video.title}
-                    className="absolute inset-0 w-full h-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    referrerPolicy="strict-origin-when-cross-origin"
-                  />
+                  {startedSet.has(i) ? (
+                    <iframe
+                      src={`https://www.youtube.com/embed/${encodeURIComponent(video.id)}?rel=0&modestbranding=1&autoplay=1&playsinline=1`}
+                      title={video.title}
+                      className="absolute inset-0 w-full h-full"
+                      loading="lazy"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      referrerPolicy="strict-origin-when-cross-origin"
+                    />
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setStartedSet((prev) => {
+                        const next = new Set(prev);
+                        next.add(i);
+                        return next;
+                      })}
+                      className="absolute inset-0 w-full h-full group/poster"
+                      aria-label={`Play ${video.title}`}
+                    >
+                      <img
+                        src={video.thumbnail || `https://i.ytimg.com/vi/${encodeURIComponent(video.id)}/hqdefault.jpg`}
+                        alt={video.title}
+                        className="absolute inset-0 w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-black/40 group-hover/poster:bg-black/55 transition-colors" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-16 h-16 rounded-full bg-red-600/90 group-hover/poster:bg-red-500
+                                        flex items-center justify-center shadow-2xl
+                                        transition-transform duration-200 group-hover/poster:scale-110">
+                          <svg className="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                          </svg>
+                        </div>
+                      </div>
+                    </button>
+                  )}
                 </div>
 
                 <div className="w-full mt-2 px-1 flex items-center justify-between gap-2">

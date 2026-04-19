@@ -17,7 +17,7 @@ export default function SearchPage() {
     async function load() {
       setState({ videos: [], loading: true, error: null, nextPageToken: null, loadingMore: false });
       try {
-        const data = await searchVideos(query, '', 12);
+        const data = await searchVideos(query, '', 10);
         if (!cancelled) {
           setState({ videos: data.videos, loading: false, error: null, nextPageToken: data.nextPageToken, loadingMore: false });
         }
@@ -35,7 +35,7 @@ export default function SearchPage() {
     if (!state.nextPageToken || state.loadingMore) return;
     setState((s) => ({ ...s, loadingMore: true }));
     try {
-      const data = await searchVideos(query, state.nextPageToken, 12);
+      const data = await searchVideos(query, state.nextPageToken, 10);
       setState((s) => ({
         ...s,
         videos: [...s.videos, ...data.videos],

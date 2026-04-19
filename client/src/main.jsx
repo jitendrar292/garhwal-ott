@@ -18,6 +18,14 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 // Register service worker + auto-reload when a new build is deployed.
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
+    // Give the page a moment to render before we allow a SW-driven reload.
+    // Without this guard, on mobile (especially when reopening the PWA from
+    // the home screen) a waiting SW can activate mid-boot, fire
+    // `controllerchange`, and reload the page before first paint — the user
+    // perceives this as the app hanging on a blank screen.
+    let bootSettled = false;
+    setTimeout(() => { bootSettled = true; }, 4000);
+
     navigator.serviceWorker
       .register('/sw.js')
       .then((registration) => {
@@ -42,9 +50,13 @@ if ('serviceWorker' in navigator) {
       .catch(() => {});
 
     // After the new SW takes control, reload once so the user sees the latest build.
+    // Skip the reload during initial boot (prevents blank-screen hangs on mobile)
+    // and when the tab is hidden (avoids interrupting background playback).
     let reloaded = false;
     navigator.serviceWorker.addEventListener('controllerchange', () => {
       if (reloaded) return;
+      if (!bootSettled) return;
+      if (document.visibilityState !== 'visible') return;
       reloaded = true;
       window.location.reload();
     });

@@ -22,7 +22,8 @@ export default function MusicPage() {
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    searchVideos(MUSIC_QUERIES[activeTab].query, '', 20)
+    // 10 tracks per tab — fits the 5–10 max page-size policy.
+    searchVideos(MUSIC_QUERIES[activeTab].query, '', 10)
       .then((data) => {
         if (!cancelled) {
           setTracks(data.videos || []);

@@ -17,21 +17,13 @@ export default function Footer() {
   const [visits, setVisits] = useState(null);
 
   useEffect(() => {
-    const visited = sessionStorage.getItem('pahadi_tube_visited');
-    if (!visited) {
-      fetch('/api/visits', { method: 'POST' })
-        .then((r) => r.json())
-        .then((data) => {
-          setVisits(data.count);
-          sessionStorage.setItem('pahadi_tube_visited', '1');
-        })
-        .catch(() => {});
-    } else {
-      fetch('/api/visits')
-        .then((r) => r.json())
-        .then((data) => setVisits(data.count))
-        .catch(() => {});
-    }
+    // No sessionStorage dedupe — the server already deduplicates by IP via
+    // Redis SADD (see isNewIp in server/src/services/store.js), so a fresh
+    // POST on every mount is idempotent and Redis stays the source of truth.
+    fetch('/api/visits', { method: 'POST' })
+      .then((r) => r.json())
+      .then((data) => setVisits(data.count))
+      .catch(() => {});
   }, []);
 
   return (

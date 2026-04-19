@@ -68,26 +68,47 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Navigation / HTML requests: network-first, cache as offline fallback only.
+  // Navigation / HTML requests: network-first with a hard timeout, cache fallback.
   // mode === 'navigate' covers top-level page loads; the Accept-text/html test
   // catches client-side route fetches in some browsers.
+  //
+  // CRITICAL on mobile: without a timeout, reopening the PWA on a slow/flaky
+  // network can hang forever waiting for the HTML response — user sees a frozen
+  // blank screen. We race the network against a 3s timer and fall back to the
+  // cached shell so the app can boot, then the in-page SW updater will refresh
+  // once connectivity recovers.
   const isNavigation = request.mode === 'navigate'
     || (request.headers.get('accept') || '').includes('text/html');
   if (isNavigation) {
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
-          if (response && response.status === 200) {
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put('/', clone));
-          }
-          return response;
-        })
-        .catch(() => caches.match('/').then((cached) => cached || new Response(
+    const NAV_TIMEOUT_MS = 3000;
+    const networkFetch = fetch(request)
+      .then((response) => {
+        if (response && response.status === 200) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put('/', clone));
+        }
+        return response;
+      });
+
+    event.respondWith((async () => {
+      try {
+        const response = await Promise.race([
+          networkFetch,
+          new Promise((_, reject) => setTimeout(() => reject(new Error('nav-timeout')), NAV_TIMEOUT_MS)),
+        ]);
+        return response;
+      } catch {
+        const cached = await caches.match('/');
+        if (cached) return cached;
+        // Last-resort: wait out the original network request (no timeout) so we
+        // don't return a fake offline page when the user actually has slow data.
+        try { return await networkFetch; } catch { /* fallthrough */ }
+        return new Response(
           '<!doctype html><meta charset=utf-8><title>Offline</title><p>Offline — please reconnect.',
           { headers: { 'Content-Type': 'text/html' } }
-        )))
-    );
+        );
+      }
+    })());
     return;
   }
 

@@ -2,14 +2,11 @@ import { createContext, useContext, useState, useEffect } from 'react';
 
 const ThemeContext = createContext();
 
+// No browser storage — theme defaults to dark on every load. Per-device UI
+// preferences are intentionally not persisted (Redis is the only store and
+// theme isn't worth a server round-trip).
 export function ThemeProvider({ children }) {
-  const [darkMode, setDarkMode] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('pahadi_tube_dark_mode');
-      if (stored !== null) return stored === 'true';
-    }
-    return true; // default dark
-  });
+  const [darkMode, setDarkMode] = useState(true);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -18,7 +15,6 @@ export function ThemeProvider({ children }) {
     } else {
       root.classList.remove('dark');
     }
-    localStorage.setItem('pahadi_tube_dark_mode', String(darkMode));
   }, [darkMode]);
 
   const toggleDarkMode = () => setDarkMode((prev) => !prev);
