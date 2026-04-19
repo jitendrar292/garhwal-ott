@@ -295,9 +295,34 @@ router.post('/', async (req, res) => {
   // ===== 2. RAG: retrieve glossary entries + similar past conversations =====
   const lastUser = [...safeMessages].reverse().find((m) => m.role === 'user');
 
-  // 2a. Semantic cache: if a past question is *very* similar (>=0.92), reuse its answer.
-  //     This catches paraphrases like "हरेला कब च?" vs "हरेला कब आँदु?" without an LLM call.
-  const SEMANTIC_CACHE_THRESHOLD = 0.92;
+  // 2a. Semantic cache: if a past question is *very* similar AND shares
+  //     real content words, reuse its answer. We require both a high vector
+  //     score AND a Jaccard overlap of meaningful tokens — pure embedding
+  //     similarity often matches by stylistic words ("गढ़वाली ... बता") even
+  //     when the actual topic differs (food vs. singer vs. festival).
+  const SEMANTIC_CACHE_THRESHOLD = 0.96;
+  const SEMANTIC_MIN_OVERLAP = 0.5; // 50% of content tokens must overlap
+
+  // Garhwali/Hindi stop-words + filler that often dominate similarity.
+  const STOPWORDS = new Set([
+    'गढ़वाली', 'गढ़वळि', 'पहाड़ी', 'पहाड़', 'उत्तराखंड', 'मा', 'का', 'की', 'के',
+    'और', 'या', 'बता', 'बतावा', 'बारा', 'बारे', 'मे', 'में', 'है', 'हैं', 'च', 'छ', 'छन',
+    'क्या', 'कैसे', 'कन', 'कख', 'कब', 'क्यों', 'who', 'what', 'how', 'when', 'where',
+    'tell', 'me', 'about', 'is', 'are', 'the', 'a', 'an', 'of', 'in', 'on',
+  ]);
+  const tokenize = (s) => String(s || '')
+    .toLowerCase()
+    .split(/[\s,.!?;:()"'\-—–\/।]+/)
+    .filter((t) => t.length >= 2 && !STOPWORDS.has(t));
+  const overlapRatio = (qa, qb) => {
+    const a = new Set(tokenize(qa));
+    const b = new Set(tokenize(qb));
+    if (a.size === 0 || b.size === 0) return 0;
+    let inter = 0;
+    for (const t of a) if (b.has(t)) inter++;
+    return inter / Math.min(a.size, b.size);
+  };
+
   let memoryHits = [];
   if (lastUser && isVectorEnabled()) {
     try {
@@ -306,11 +331,13 @@ router.post('/', async (req, res) => {
       console.error('[chat] vector query error:', err.message);
     }
   }
-  const semanticHit = memoryHits.find((h) => h.score >= SEMANTIC_CACHE_THRESHOLD && h.a);
+  const semanticHit = memoryHits.find((h) => {
+    if (!h.a || h.score < SEMANTIC_CACHE_THRESHOLD) return false;
+    return overlapRatio(lastUser.content, h.q) >= SEMANTIC_MIN_OVERLAP;
+  });
   if (semanticHit) {
     res.setHeader('X-Cache', 'SEMANTIC');
     res.setHeader('X-Cache-Score', semanticHit.score.toFixed(3));
-    // Also write to exact-match cache so the next identical request is even faster.
     setCached(safeMessages, semanticHit.a);
     return streamCachedReply(res, semanticHit.a);
   }
