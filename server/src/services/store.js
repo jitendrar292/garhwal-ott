@@ -122,7 +122,7 @@ async function incrementVisits() {
   return memVisits;
 }
 
-async function logVisitor(ip) {
+async function logVisitor(ip, userAgent = '') {
   // Fetch geo from ip-api.com (free, no key needed, 45 req/min)
   let geo = { country: 'Unknown', regionName: 'Unknown', city: 'Unknown', isp: '' };
   try {
@@ -133,12 +133,19 @@ async function logVisitor(ip) {
     }
   } catch { /* geo lookup is best-effort */ }
 
+  const device = parseDevice(userAgent);
+
   const entry = {
     ip,
     country: geo.country,
     region: geo.regionName,
     city: geo.city,
     isp: geo.isp,
+    device: device.type,         // 'mobile' | 'tablet' | 'desktop' | 'bot' | 'unknown'
+    os: device.os,               // 'iOS' | 'Android' | 'Windows' | 'macOS' | 'Linux' | 'unknown'
+    browser: device.browser,     // 'Chrome' | 'Safari' | 'Firefox' | 'Edge' | 'Samsung Internet' | 'unknown'
+    pwa: device.pwa,             // boolean — true if launched as PWA (best-effort)
+    userAgent: userAgent ? userAgent.slice(0, 300) : '',
     visitedAt: new Date().toISOString(),
   };
 
@@ -154,6 +161,48 @@ async function logVisitor(ip) {
   }
   memVisitors.unshift(entry);
   if (memVisitors.length > MAX_VISITORS) memVisitors.length = MAX_VISITORS;
+}
+
+// Lightweight User-Agent parser. No external dependency — covers the
+// browsers/OS combos that actually visit the site.
+function parseDevice(ua) {
+  const out = { type: 'unknown', os: 'unknown', browser: 'unknown', pwa: false };
+  if (!ua || typeof ua !== 'string') return out;
+  const s = ua;
+
+  // Bots first (some pretend to be mobile)
+  if (/bot|crawler|spider|crawling|facebookexternalhit|preview|HeadlessChrome/i.test(s)) {
+    out.type = 'bot';
+  }
+
+  // OS
+  if (/iPhone|iPad|iPod/.test(s)) out.os = 'iOS';
+  else if (/Android/.test(s)) out.os = 'Android';
+  else if (/Windows NT/.test(s)) out.os = 'Windows';
+  else if (/Mac OS X|Macintosh/.test(s)) out.os = 'macOS';
+  else if (/Linux/.test(s)) out.os = 'Linux';
+  else if (/CrOS/.test(s)) out.os = 'ChromeOS';
+
+  // Browser (order matters — Edge/Samsung pretend to be Chrome)
+  if (/Edg\//.test(s)) out.browser = 'Edge';
+  else if (/SamsungBrowser/.test(s)) out.browser = 'Samsung Internet';
+  else if (/OPR\/|Opera/.test(s)) out.browser = 'Opera';
+  else if (/Firefox/.test(s)) out.browser = 'Firefox';
+  else if (/Chrome\//.test(s)) out.browser = 'Chrome';
+  else if (/Safari/.test(s)) out.browser = 'Safari';
+
+  // Device type
+  if (out.type !== 'bot') {
+    if (/iPad|Tablet/i.test(s) || (/Android/.test(s) && !/Mobile/.test(s))) out.type = 'tablet';
+    else if (/Mobi|Android.+Mobile|iPhone|iPod|Mobile Safari/i.test(s)) out.type = 'mobile';
+    else out.type = 'desktop';
+  }
+
+  // PWA hint — Chrome/Android sometimes appends "; wv" (WebView) or
+  // standalone-launched WebKit may strip "Safari" from UA.
+  out.pwa = /; wv\)/.test(s) || (/iPhone|iPad/.test(s) && !/Safari/.test(s));
+
+  return out;
 }
 
 async function getVisitors() {

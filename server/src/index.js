@@ -127,9 +127,10 @@ app.get('/api/captions/:videoId', async (req, res) => {
 // Visit counter — unique IPs only
 app.post('/api/visits', async (req, res) => {
   const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+  const userAgent = req.headers['user-agent'] || '';
   const fresh = await isNewIp(ip);
   const count = fresh ? await incrementVisits() : await getVisits();
-  if (fresh) logVisitor(ip).catch(() => {});
+  if (fresh) logVisitor(ip, userAgent).catch(() => {});
   res.json({ count });
 });
 
