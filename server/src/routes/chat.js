@@ -22,6 +22,51 @@ const {
   vectorInfo,
 } = require('../services/vectorStore');
 
+// =====================================================================
+// Quota protection: per-IP rate limit + global circuit breaker
+// =====================================================================
+// Groq free tier (Llama 3.3 70B): ~30 req/min, ~1000 req/day. With public
+// traffic, one chatty client or bot can exhaust the daily budget. We add
+// two safeguards:
+//   1. Per-IP token bucket: burst 8, refill 1 req / 6s (~10 req/min/IP).
+//   2. Global circuit breaker: trip on Groq 429 for 15 min — every request
+//      during the window serves a memory/offline reply instead of the API.
+
+const IP_BURST = 8;
+const IP_REFILL_MS = 6000; // 1 token / 6s
+const ipBuckets = new Map(); // ip -> { tokens, last }
+
+function takeIpToken(ip) {
+  const now = Date.now();
+  let b = ipBuckets.get(ip);
+  if (!b) { b = { tokens: IP_BURST, last: now }; ipBuckets.set(ip, b); }
+  // Refill
+  const refill = Math.floor((now - b.last) / IP_REFILL_MS);
+  if (refill > 0) {
+    b.tokens = Math.min(IP_BURST, b.tokens + refill);
+    b.last = now;
+  }
+  if (b.tokens <= 0) return false;
+  b.tokens -= 1;
+  return true;
+}
+
+// Periodic cleanup so the map doesn't grow unbounded
+setInterval(() => {
+  const cutoff = Date.now() - 30 * 60 * 1000;
+  for (const [ip, b] of ipBuckets) {
+    if (b.last < cutoff) ipBuckets.delete(ip);
+  }
+}, 10 * 60 * 1000).unref?.();
+
+const GROQ_COOLDOWN_MS = 15 * 60 * 1000; // 15 min
+let groqCooldownUntil = 0;
+const isGroqCoolingDown = () => Date.now() < groqCooldownUntil;
+const tripGroqBreaker = () => {
+  groqCooldownUntil = Date.now() + GROQ_COOLDOWN_MS;
+  console.warn(`[chat] Groq breaker tripped — skipping API until ${new Date(groqCooldownUntil).toISOString()}`);
+};
+
 // Garhwali system prompt — instructs the LLM how to respond
 const SYSTEM_PROMPT = `तू एक पहाड़ी AI सहायक छै जु गढ़वळि (Garhwali) भाषा मा बात कर्दा।
 तेरु नाम "पहाड़ी AI" च। तू PahadiTube (गढ़वळि-OTT) प्लेटफॉर्म मा रौंदी छै, जख गढ़वळि गीत, फिल्म, पॉडकास्ट और लोक संस्कृति लोग देखदा/सुणदा छन।
@@ -204,6 +249,13 @@ router.post('/', async (req, res) => {
     return res.status(400).json({ error: 'messages array is required' });
   }
 
+  // Per-IP rate limit
+  const ip = (req.headers['x-forwarded-for']?.split(',')[0] || req.ip || 'unknown').trim();
+  if (!takeIpToken(ip)) {
+    res.setHeader('Retry-After', String(Math.ceil(IP_REFILL_MS / 1000)));
+    return res.status(429).json({ error: 'बहुत जल्दी बहुत सवाल आगः एक छोटु सांस ल्या, फिर पुछि जास।' });
+  }
+
   // Validate + cap message size to prevent abuse
   let safeMessages;
   try {
@@ -267,6 +319,13 @@ router.post('/', async (req, res) => {
     stream: true,
   };
 
+  // If breaker is tripped, skip Groq and serve from memory/offline immediately.
+  if (isGroqCoolingDown()) {
+    const fb = await findFallbackReply(lastUser?.content);
+    if (fb && streamFallbackReply(res, fb.text, `breaker:${fb.source}`)) return;
+    return streamFallbackReply(res, OFFLINE_REPLY, 'breaker:offline') || res.status(503).end();
+  }
+
   try {
     const upstream = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
@@ -280,6 +339,8 @@ router.post('/', async (req, res) => {
     if (!upstream.ok || !upstream.body) {
       const errText = await upstream.text().catch(() => '');
       console.error('Groq error:', upstream.status, errText);
+      // Trip the breaker on rate-limit / quota errors so we stop hammering the API.
+      if (upstream.status === 429 || upstream.status === 402) tripGroqBreaker();
       // Try to recover from memory before surfacing an error to the user
       const fb = await findFallbackReply(lastUser?.content);
       if (fb && streamFallbackReply(res, fb.text, fb.source)) return;
