@@ -2,6 +2,7 @@ const NodeCache = require('node-cache');
 const crypto = require('crypto');
 const glossary = require('../data/garhwali-glossary');
 const fewshot = require('../data/garhwali-fewshot');
+const { generateAll: generateFewShotPairs } = require('../data/garhwali-fewshot-generator');
 
 // ===== Response cache =====
 // Caches assistant replies keyed by a hash of the conversation tail.
@@ -89,13 +90,31 @@ function formatGlossaryContext(entries) {
 }
 
 function getCacheStats() {
-  return responseCache.getStats();
+  return {
+    ...responseCache.getStats(),
+    fewShotPairs: FEWSHOT_INDEX.length,
+    glossaryEntries: INDEX.length,
+  };
 }
 
 // ===== Few-shot translation examples =====
 // Pre-index Hindi side for keyword search; pick the most relevant pairs
 // for the current query so the LLM sees concrete Hindi→Garhwali mappings.
-const FEWSHOT_INDEX = fewshot.map((p) => ({
+// Combines hand-curated pairs with programmatically-generated grammar drills.
+const _allFewShot = (() => {
+  const generated = generateFewShotPairs();
+  const seen = new Set(fewshot.map((p) => p.hi));
+  const merged = [...fewshot];
+  for (const p of generated) {
+    if (!seen.has(p.hi)) {
+      seen.add(p.hi);
+      merged.push(p);
+    }
+  }
+  return merged;
+})();
+
+const FEWSHOT_INDEX = _allFewShot.map((p) => ({
   ...p,
   hiNorm: normalize(p.hi),
 }));
