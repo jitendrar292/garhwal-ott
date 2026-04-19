@@ -19,18 +19,11 @@
 //     shipping — placeholders will render as empty/broken IG cards.
 
 const INSTAGRAM_REELS = [
-  { url: 'https://www.instagram.com/reel/DWguqZojyfv/',   title: 'Priyanka Meher reel',          channel: '@priyankameher18'        },
-  { url: 'https://www.instagram.com/reel/DQooACwiVYR/',   title: 'Pahadi reel',                  channel: 'Instagram'               },
-  { url: 'https://www.instagram.com/reel/DXCZCG7D1wL/',   title: 'Pahadi reel',                  channel: 'Instagram'               },
-  { url: 'https://www.instagram.com/reel/DTXE3gkkjWd/',   title: 'Pahadi reel',                  channel: 'Instagram'               },
-  { url: 'https://www.instagram.com/reel/DJZRnPWTM4D/',   title: 'Pahadi reel',                  channel: 'Instagram'               },
-  { url: 'https://www.instagram.com/p/DXHaoDtE0yv/',      title: 'Pahadi post',                  channel: 'Instagram'               },
-  { url: 'https://www.instagram.com/p/DWzGtq5DsjC/',      title: 'Pahadi post',                  channel: 'Instagram'               },
-  { url: 'https://www.instagram.com/reel/DXOeNr8B1RL/',   title: 'Pahadi reel',                  channel: 'Instagram'               },
-  { url: 'https://www.instagram.com/reel/DWy5_dFiQs8/',   title: 'Pahadi reel',                  channel: 'Instagram'               },
-  { url: 'https://www.instagram.com/reel/DWbq4uJCeYX/',   title: 'Pahadi reel',                  channel: 'Instagram'               },
-  { url: 'https://www.instagram.com/reel/DVJDRd0ifqU/',   title: 'Pahadi reel',                  channel: 'Instagram'               },
-  { url: 'https://www.instagram.com/reel/DSZQ7vrCf2M/',   title: 'Pahadi reel',                  channel: 'Instagram'               },
+  { url: 'https://www.instagram.com/p/DQooACwiVYR/',      title: 'Karishma Shah reel', channel: '@karishmashah' },
+  { url: 'https://www.instagram.com/reel/DXOeNr8B1RL/',   title: 'Pahadi reel',        channel: 'Instagram'     },
+  { url: 'https://www.instagram.com/reel/DWy5_dFiQs8/',   title: 'Pahadi reel',        channel: 'Instagram'     },
+  { url: 'https://www.instagram.com/reel/DWsdt8Iv-JU/',   title: 'Pahadi reel',        channel: 'Instagram'     },
+  { url: 'https://www.instagram.com/reel/DULP-Q6DJX-/',   title: 'Pahadi reel',        channel: 'Instagram'     },
 ];
 
 export default INSTAGRAM_REELS;
