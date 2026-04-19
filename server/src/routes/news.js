@@ -1,22 +1,20 @@
-// Local News CRUD — stores articles in Redis, media files in Cloudflare R2.
+// Local News CRUD — stores articles + images in Redis (base64 data URIs).
 //
 // Endpoints:
 //   GET    /api/news               → list published articles (public)
 //   GET    /api/news/:id           → single article (public)
-//   POST   /api/news               → create (admin, multipart)
+//   POST   /api/news               → create (admin, JSON with base64 image)
 //   DELETE /api/news/:id            → delete (admin)
 //
 // Admin auth: ?key=<FEEDBACK_ADMIN_KEY>
-// File upload: multipart/form-data with field "image" (max 5 MB)
 
 const express = require('express');
 const router = express.Router();
-const { isR2Enabled, uploadFile, deleteFile, PUBLIC_URL } = require('../services/r2');
 const { redisGetJSON, redisSetJSON, isRedisEnabled } = require('../services/store');
 
 const REDIS_KEY = 'pahadi_news';
 const MAX_NEWS = 200;
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 MB
+const MAX_IMAGE_SIZE = 2 * 1024 * 1024; // 2 MB (stored in Redis)
 const ALLOWED_MIME = new Set(['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
 
 // In-memory fallback when Redis is down
@@ -95,31 +93,18 @@ router.post('/', async (req, res) => {
   }
 
   let imageUrl = '';
-  let imageKey = '';
 
-  // Upload image to R2 if provided as base64 data URI
+  // Store image as base64 data URI directly in Redis
   if (image && typeof image === 'string' && image.startsWith('data:')) {
-    if (!isR2Enabled()) {
-      return res.status(400).json({ error: 'Image storage (R2) not configured' });
-    }
     const match = image.match(/^data:(image\/\w+);base64,(.+)$/);
     if (!match || !ALLOWED_MIME.has(match[1])) {
       return res.status(400).json({ error: 'Invalid image format. Use JPEG, PNG, GIF, or WebP.' });
     }
     const buf = Buffer.from(match[2], 'base64');
     if (buf.length > MAX_IMAGE_SIZE) {
-      return res.status(400).json({ error: 'Image too large (max 5 MB)' });
+      return res.status(400).json({ error: 'Image too large (max 2 MB)' });
     }
-    const ext = match[1].split('/')[1].replace('jpeg', 'jpg');
-    const id = Date.now();
-    imageKey = `news/${id}.${ext}`;
-    try {
-      const result = await uploadFile(imageKey, buf, match[1]);
-      imageUrl = result.url;
-    } catch (err) {
-      console.error('[news] R2 upload error:', err.message);
-      return res.status(502).json({ error: 'Failed to upload image' });
-    }
+    imageUrl = image; // store the data URI as-is
   }
 
   try {
@@ -131,7 +116,6 @@ router.post('/', async (req, res) => {
       body: articleBody.trim(),
       category: (category || 'general').trim().toLowerCase(),
       imageUrl,
-      imageKey,
       createdAt: Date.now(),
     };
     articles.unshift(article);
@@ -159,13 +143,7 @@ router.delete('/:id', async (req, res) => {
     const idx = articles.findIndex((a) => a.id === id);
     if (idx === -1) return res.status(404).json({ error: 'Article not found' });
 
-    const [removed] = articles.splice(idx, 1);
-    // Delete image from R2 if it exists
-    if (removed.imageKey) {
-      deleteFile(removed.imageKey).catch((err) => {
-        console.error('[news] R2 delete error:', err.message);
-      });
-    }
+    articles.splice(idx, 1);
     await saveNews(articles);
     res.json({ success: true, remaining: articles.length });
   } catch (err) {
