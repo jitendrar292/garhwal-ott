@@ -357,61 +357,6 @@ export default function PahadiAIPage() {
           </div>
         )}
 
-        {/* Ornate input bar */}
-        <div className="relative mx-auto w-full max-w-2xl">
-          <div
-            className="rounded-2xl p-[2px]"
-            style={{
-              background:
-                'linear-gradient(135deg, #fbbf24 0%, #b45309 25%, #fbbf24 50%, #b45309 75%, #fbbf24 100%)',
-            }}
-          >
-            <div className="rounded-[14px] bg-[#0f1a36] border border-amber-300/20 flex items-end gap-2 p-2">
-              <textarea
-                ref={textareaRef}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder={listening ? '🎙️ बोला…' : 'गढ़वळि मा यखा लिख्या या बोला…'}
-                rows={1}
-                maxLength={4000}
-                disabled={streaming}
-                className="flex-1 bg-transparent text-white placeholder-white/50 px-3 py-2 text-sm resize-none outline-none disabled:opacity-60"
-                style={{ maxHeight: '160px' }}
-              />
-              <button
-                onClick={() => {
-                  if (listening) return stopListening();
-                  if (speechSupported) return startListening();
-                  textareaRef.current?.focus();
-                }}
-                className={`shrink-0 w-10 h-10 flex items-center justify-center rounded-xl transition-colors ${
-                  listening
-                    ? 'bg-red-500/30 text-red-200 ring-1 ring-red-300/50'
-                    : 'text-amber-300 hover:bg-amber-300/10'
-                }`}
-                aria-label="Voice input"
-                title="Tap to speak"
-              >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 14a3 3 0 003-3V5a3 3 0 00-6 0v6a3 3 0 003 3z" />
-                  <path d="M19 11a1 1 0 10-2 0 5 5 0 01-10 0 1 1 0 10-2 0 7 7 0 006 6.92V20H8a1 1 0 100 2h8a1 1 0 100-2h-3v-2.08A7 7 0 0019 11z" />
-                </svg>
-              </button>
-              <button
-                onClick={() => sendMessage(input)}
-                disabled={!input.trim() || streaming}
-                className="shrink-0 w-10 h-10 flex items-center justify-center rounded-xl bg-amber-400 text-amber-950 hover:bg-amber-300 disabled:bg-white/15 disabled:text-white/40 transition-colors shadow"
-                aria-label="Send"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 6l6 6-6 6" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-
         {/* === Topic cards (when empty) OR Chat panel === */}
         {showHero ? (
           <div className="mt-6">
@@ -494,6 +439,61 @@ export default function PahadiAIPage() {
             </div>
           </div>
         )}
+
+        {/* Ornate input bar (below chat / topic cards) */}
+        <div className="relative mx-auto w-full max-w-2xl mt-6">
+          <div
+            className="rounded-2xl p-[2px]"
+            style={{
+              background:
+                'linear-gradient(135deg, #fbbf24 0%, #b45309 25%, #fbbf24 50%, #b45309 75%, #fbbf24 100%)',
+            }}
+          >
+            <div className="rounded-[14px] bg-[#0f1a36] border border-amber-300/20 flex items-end gap-2 p-2">
+              <textarea
+                ref={textareaRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder={listening ? '🎙️ बोला…' : 'गढ़वळि मा यखा लिख्या या बोला…'}
+                rows={1}
+                maxLength={4000}
+                disabled={streaming}
+                className="flex-1 bg-transparent text-white placeholder-white/50 px-3 py-2 text-sm resize-none outline-none disabled:opacity-60"
+                style={{ maxHeight: '160px' }}
+              />
+              <button
+                onClick={() => {
+                  if (listening) return stopListening();
+                  if (speechSupported) return startListening();
+                  textareaRef.current?.focus();
+                }}
+                className={`shrink-0 w-10 h-10 flex items-center justify-center rounded-xl transition-colors ${
+                  listening
+                    ? 'bg-red-500/30 text-red-200 ring-1 ring-red-300/50'
+                    : 'text-amber-300 hover:bg-amber-300/10'
+                }`}
+                aria-label="Voice input"
+                title="Tap to speak"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 14a3 3 0 003-3V5a3 3 0 00-6 0v6a3 3 0 003 3z" />
+                  <path d="M19 11a1 1 0 10-2 0 5 5 0 01-10 0 1 1 0 10-2 0 7 7 0 006 6.92V20H8a1 1 0 100 2h8a1 1 0 100-2h-3v-2.08A7 7 0 0019 11z" />
+                </svg>
+              </button>
+              <button
+                onClick={() => sendMessage(input)}
+                disabled={!input.trim() || streaming}
+                className="shrink-0 w-10 h-10 flex items-center justify-center rounded-xl bg-amber-400 text-amber-950 hover:bg-amber-300 disabled:bg-white/15 disabled:text-white/40 transition-colors shadow"
+                aria-label="Send"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
 
         {/* Disclaimer */}
         <p className="mt-6 text-[10px] text-white/50 text-center max-w-md mx-auto">
