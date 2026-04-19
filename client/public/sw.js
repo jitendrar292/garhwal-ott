@@ -1,4 +1,7 @@
-const CACHE_NAME = 'pahaditube-v6';
+// __BUILD_ID__ is replaced at build time by the Vite plugin in vite.config.js.
+// In dev (un-built) it stays as the literal string, which is fine — dev SW lifecycle is short.
+const BUILD_ID = '__BUILD_ID__';
+const CACHE_NAME = `pahaditube-${BUILD_ID}`;
 const STATIC_ASSETS = [
   '/',
   '/manifest.json',
@@ -13,6 +16,13 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
   );
   self.skipWaiting();
+});
+
+// Allow the page to force-activate a waiting SW (used after a new build is detected)
+self.addEventListener('message', (event) => {
+  if (event.data === 'SKIP_WAITING' || event.data?.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 // Activate — clean old caches
