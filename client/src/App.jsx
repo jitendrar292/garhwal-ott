@@ -17,6 +17,7 @@ import ShortsPage from './pages/ShortsPage';
 import PodcastPage from './pages/PodcastPage';
 import PahadiAIPage from './pages/PahadiAIPage';
 import NewsPage from './pages/NewsPage';
+import NewsAdminPage from './pages/NewsAdminPage';
 
 export default function App() {
   return (
@@ -37,6 +38,7 @@ export default function App() {
             <Route path="/podcast" element={<PodcastPage />} />
             <Route path="/pahadi-ai" element={<PahadiAIPage />} />
             <Route path="/news" element={<NewsPage />} />
+            <Route path="/news/admin" element={<NewsAdminPage />} />
           </Routes>
         </main>
         <Footer />
