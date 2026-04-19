@@ -98,6 +98,15 @@ const OPENROUTER = {
   onFailure: () => {},
 };
 
+// Google Gemini — speaks its own wire format, handled by tryStreamGemini.
+// Free tier (gemini-1.5-flash): 15 req/min, 1500 req/day, 1M tokens/min.
+// Get key at https://aistudio.google.com/apikey (free).
+const GEMINI = {
+  name: 'gemini',
+  model: process.env.GEMINI_MODEL || 'gemini-1.5-flash',
+  getKey: () => process.env.GEMINI_API_KEY,
+};
+
 // Garhwali system prompt — instructs the LLM how to respond
 const SYSTEM_PROMPT = `तू एक पहाड़ी AI सहायक छै जु गढ़वळि (Garhwali) भाषा मा बात कर्दा।
 तेरु नाम "पहाड़ी AI" च। तू PahadiTube (गढ़वळि-OTT) प्लेटफॉर्म मा रौंदी छै, जख गढ़वळि गीत, फिल्म, पॉडकास्ट और लोक संस्कृति लोग देखदा/सुणदा छन।
@@ -357,6 +366,112 @@ async function tryStreamProvider(provider, basePayload, res, safeMessages, lastU
   }
 }
 
+/**
+ * Stream from Google Gemini (different wire format from OpenAI).
+ * Converts the OpenAI-style payload into Gemini's `contents` + `systemInstruction`
+ * shape, then translates streamed `candidates[].content.parts[].text` chunks
+ * back into the same SSE `data: { delta }` envelope the client already expects.
+ * Returns true if streaming started, false if provider couldn't be used.
+ */
+async function tryStreamGemini(basePayload, res, safeMessages, lastUser) {
+  const apiKey = GEMINI.getKey();
+  if (!apiKey) {
+    console.log('[chat] skipping gemini — no API key');
+    return false;
+  }
+
+  // Split system prompt from chat turns; map roles (assistant -> model).
+  const systemMsg = basePayload.messages.find((m) => m.role === 'system');
+  const turns = basePayload.messages.filter((m) => m.role !== 'system');
+  const contents = turns.map((m) => ({
+    role: m.role === 'assistant' ? 'model' : 'user',
+    parts: [{ text: m.content }],
+  }));
+
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI.model}:streamGenerateContent?alt=sse&key=${apiKey}`;
+  const body = {
+    contents,
+    systemInstruction: systemMsg ? { parts: [{ text: systemMsg.content }] } : undefined,
+    generationConfig: {
+      temperature: basePayload.temperature ?? 0.5,
+      maxOutputTokens: basePayload.max_tokens ?? 800,
+    },
+  };
+
+  let upstream;
+  try {
+    upstream = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+  } catch (err) {
+    console.error('[chat] gemini network error:', err.message);
+    return false;
+  }
+
+  if (!upstream.ok || !upstream.body) {
+    const errText = await upstream.text().catch(() => '');
+    console.error('[chat] gemini error:', upstream.status, errText.slice(0, 300));
+    return false;
+  }
+
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache, no-transform');
+  res.setHeader('Connection', 'keep-alive');
+  res.setHeader('X-Accel-Buffering', 'no');
+  res.setHeader('X-Cache', 'MISS');
+  res.setHeader('X-Provider', 'gemini');
+  res.flushHeaders?.();
+
+  const reader = upstream.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+  let fullReply = '';
+  let clientClosed = false;
+  res.on('close', () => { clientClosed = true; });
+
+  try {
+    while (true) {
+      if (clientClosed) break;
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed.startsWith('data:')) continue;
+        const data = trimmed.slice(5).trim();
+        if (!data) continue;
+        try {
+          const json = JSON.parse(data);
+          const parts = json.candidates?.[0]?.content?.parts || [];
+          for (const p of parts) {
+            if (p.text) {
+              fullReply += p.text;
+              res.write(`data: ${JSON.stringify({ delta: p.text })}\n\n`);
+            }
+          }
+        } catch {
+          // ignore malformed chunks
+        }
+      }
+    }
+    if (!clientClosed && fullReply.length > 5) {
+      setCached(safeMessages, fullReply);
+      persistExchange(lastUser?.content, fullReply);
+    }
+    res.write('data: [DONE]\n\n');
+    res.end();
+    return true;
+  } catch (streamErr) {
+    console.error('[chat] gemini stream error:', streamErr.message);
+    try { res.end(); } catch { /* noop */ }
+    return true;
+  }
+}
+
 // Save a Q→A pair to Redis (long-term memory) and to the in-memory mirror
 // so it's instantly retrievable for the next request. Fire-and-forget.
 function persistExchange(userMsg, assistantMsg) {
@@ -555,9 +670,13 @@ router.post('/', async (req, res) => {
 
   // If breaker is tripped, skip Groq and serve from memory/offline immediately.
   if (isGroqCoolingDown()) {
-    // Still try OpenRouter as a backup before falling back to memory.
+    // Still try OpenRouter, then Gemini, before falling back to memory.
     const orOk = await tryStreamProvider(OPENROUTER, payload, res, safeMessages, lastUser);
     if (orOk) return;
+    if (!res.headersSent) {
+      const gemOk = await tryStreamGemini(payload, res, safeMessages, lastUser);
+      if (gemOk) return;
+    }
     const fb = await findFallbackReply(lastUser?.content);
     if (fb && streamFallbackReply(res, fb.text, `breaker:${fb.source}`)) return;
     return streamFallbackReply(res, OFFLINE_REPLY, 'breaker:offline') || res.status(503).end();
@@ -567,10 +686,15 @@ router.post('/', async (req, res) => {
   const groqOk = await tryStreamProvider(GROQ, payload, res, safeMessages, lastUser);
   if (groqOk) return;
 
-  // Groq failed (network, 5xx, 429, etc.) — try OpenRouter before giving up.
+  // Groq failed (network, 5xx, 429, etc.) — try OpenRouter then Gemini before giving up.
   if (!res.headersSent) {
     const orOk = await tryStreamProvider(OPENROUTER, payload, res, safeMessages, lastUser);
     if (orOk) return;
+
+    if (!res.headersSent) {
+      const gemOk = await tryStreamGemini(payload, res, safeMessages, lastUser);
+      if (gemOk) return;
+    }
 
     const fb = await findFallbackReply(lastUser?.content);
     if (fb && streamFallbackReply(res, fb.text, fb.source)) return;
