@@ -10,6 +10,7 @@ const rateLimit = require('express-rate-limit');
 const youtubeRoutes = require('./routes/youtube');
 const chatRoutes = require('./routes/chat');
 const favoritesRoutes = require('./routes/favorites');
+const newsRoutes = require('./routes/news');
 const { getVisits, incrementVisits, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback } = require('./services/store');
 const { startTrendingRefresh } = require('./services/youtubeService');
 
@@ -74,6 +75,7 @@ app.use('/api/youtube', youtubeLimiter);
 app.use('/api/visits', visitLimiter);
 app.use('/api/feedback', visitLimiter);
 app.use('/api/favorites', visitLimiter);
+app.use('/api/news', visitLimiter);
 
 // Tighter limit for AI chat (paid upstream)
 const chatLimiter = rateLimit({
@@ -85,7 +87,7 @@ const chatLimiter = rateLimit({
 });
 app.use('/api/chat', chatLimiter);
 
-app.use(express.json());
+app.use(express.json({ limit: '8mb' }));
 
 // Serve static files from React build in production
 if (process.env.NODE_ENV === 'production') {
@@ -96,6 +98,7 @@ if (process.env.NODE_ENV === 'production') {
 app.use('/api/youtube', youtubeRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/favorites', favoritesRoutes);
+app.use('/api/news', newsRoutes);
 
 // Captions endpoint — tries hi, a.hi (auto Hindi), en, a.en in order
 app.get('/api/captions/:videoId', async (req, res) => {

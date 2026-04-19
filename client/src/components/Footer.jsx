@@ -9,6 +9,7 @@ const FOOTER_LINKS = [
   { label: 'Folk Dance', path: '/category/folkdance' },
   { label: 'Jaagar', path: '/category/jaagar' },
   { label: 'Mela', path: '/category/mela' },
+  { label: 'News', path: '/news' },
   { label: 'Favorites', path: '/favorites' },
   { label: 'Feedback', path: '/feedback' },
 ];
