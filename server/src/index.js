@@ -9,6 +9,7 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const youtubeRoutes = require('./routes/youtube');
 const chatRoutes = require('./routes/chat');
+const favoritesRoutes = require('./routes/favorites');
 const { getVisits, incrementVisits, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback } = require('./services/store');
 const { startTrendingRefresh } = require('./services/youtubeService');
 
@@ -72,6 +73,7 @@ const visitLimiter = rateLimit({
 app.use('/api/youtube', youtubeLimiter);
 app.use('/api/visits', visitLimiter);
 app.use('/api/feedback', visitLimiter);
+app.use('/api/favorites', visitLimiter);
 
 // Tighter limit for AI chat (paid upstream)
 const chatLimiter = rateLimit({
@@ -93,6 +95,7 @@ if (process.env.NODE_ENV === 'production') {
 // API routes
 app.use('/api/youtube', youtubeRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/favorites', favoritesRoutes);
 
 // Captions endpoint — tries hi, a.hi (auto Hindi), en, a.en in order
 app.get('/api/captions/:videoId', async (req, res) => {

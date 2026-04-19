@@ -310,6 +310,82 @@ async function getChatHistory(limit = MAX_CHAT_HISTORY) {
   return memChatHistory.slice(0, limit);
 }
 
+// ===== Favorites (per-device, anonymous) =====
+// Stored in Redis as one JSON array per deviceId. No auth — clients generate
+// a UUID locally and send it as ?deviceId=. Cap entries to keep memory bounded.
+const FAVORITES_KEY_PREFIX = 'pahadi_favs:';
+const MAX_FAVORITES_PER_DEVICE = 200;
+const memFavorites = new Map(); // deviceId -> array
+
+function favKey(deviceId) {
+  return `${FAVORITES_KEY_PREFIX}${deviceId}`;
+}
+
+// Strip down to the essential video fields so the Redis blob stays small.
+function sanitizeFavorite(v) {
+  if (!v || typeof v !== 'object' || !v.id) return null;
+  return {
+    id:           String(v.id).slice(0, 50),
+    title:        String(v.title || '').slice(0, 300),
+    thumbnail:    String(v.thumbnail || '').slice(0, 500),
+    channelTitle: String(v.channelTitle || '').slice(0, 200),
+    publishedAt:  String(v.publishedAt || '').slice(0, 40),
+  };
+}
+
+async function getFavorites(deviceId) {
+  if (!deviceId) return [];
+  if (UPSTASH_ENABLED) {
+    try {
+      const raw = await redisCmd('GET', favKey(deviceId));
+      return raw ? JSON.parse(raw) : [];
+    } catch (err) {
+      console.error('[store] getFavorites error:', err.message);
+    }
+  }
+  return memFavorites.get(deviceId) ? [...memFavorites.get(deviceId)] : [];
+}
+
+async function saveFavorites(deviceId, list) {
+  if (!deviceId) return [];
+  // Sanitize + dedupe by id (last write wins) + cap
+  const seen = new Set();
+  const cleaned = [];
+  for (const v of (Array.isArray(list) ? list : [])) {
+    const s = sanitizeFavorite(v);
+    if (!s || seen.has(s.id)) continue;
+    seen.add(s.id);
+    cleaned.push(s);
+    if (cleaned.length >= MAX_FAVORITES_PER_DEVICE) break;
+  }
+  if (UPSTASH_ENABLED) {
+    try {
+      await redisCmdPost('SET', favKey(deviceId), JSON.stringify(cleaned));
+      return cleaned;
+    } catch (err) {
+      console.error('[store] saveFavorites error:', err.message);
+    }
+  }
+  memFavorites.set(deviceId, cleaned);
+  return cleaned;
+}
+
+async function addFavorite(deviceId, video) {
+  const sanitized = sanitizeFavorite(video);
+  if (!sanitized) return await getFavorites(deviceId);
+  const existing = await getFavorites(deviceId);
+  if (existing.some((v) => v.id === sanitized.id)) return existing;
+  const updated = [sanitized, ...existing].slice(0, MAX_FAVORITES_PER_DEVICE);
+  return await saveFavorites(deviceId, updated);
+}
+
+async function removeFavorite(deviceId, videoId) {
+  const existing = await getFavorites(deviceId);
+  const updated = existing.filter((v) => v.id !== videoId);
+  if (updated.length === existing.length) return existing;
+  return await saveFavorites(deviceId, updated);
+}
+
 // On startup: deduplicate existing visitor list and seed pahadi_seen_ips set.
 // Safe to run multiple times — SADD is idempotent.
 async function seedAndDeduplicateVisitors() {
@@ -350,5 +426,5 @@ async function seedAndDeduplicateVisitors() {
   }
 }
 
-module.exports = { getVisits, incrementVisits, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback, redisGetJSON, redisSetJSON, isRedisEnabled, logChatExchange, getChatHistory };
+module.exports = { getVisits, incrementVisits, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback, redisGetJSON, redisSetJSON, isRedisEnabled, logChatExchange, getChatHistory, getFavorites, saveFavorites, addFavorite, removeFavorite };
 
