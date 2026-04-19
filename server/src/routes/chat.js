@@ -914,4 +914,27 @@ router.get('/memory', async (_req, res) => {
   }
 });
 
+// Diagnostic: raw vector search with NO minScore filter, so we can see what
+// scores the embedder actually produces for a given query.
+// Usage: GET /api/chat/vector-test?q=गढ़वाली+खाना+का+बारा+मा+बता
+router.get('/vector-test', async (req, res) => {
+  const q = req.query.q;
+  if (!q) return res.status(400).json({ error: 'Provide ?q=your+query' });
+  if (!isVectorEnabled()) return res.json({ enabled: false, results: [] });
+  try {
+    // Query with minScore=0 to see ALL matches and their raw scores.
+    const results = await querySimilar(q, { topK: 5, minScore: 0 });
+    res.json({
+      query: q,
+      results: results.map((r) => ({
+        score: r.score,
+        q: r.q?.slice(0, 120),
+        aPreview: r.a?.slice(0, 80),
+      })),
+    });
+  } catch (err) {
+    res.json({ error: err.message });
+  }
+});
+
 module.exports = router;
