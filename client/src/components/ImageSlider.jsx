@@ -8,6 +8,57 @@ const wmc = (file, width = 1600) =>
   `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(file)}?width=${width}`;
 
 const SLIDES = [
+  // ===== Online cultural / heritage images (Wikimedia Commons, CC) — shown FIRST =====
+  {
+    src: wmc('Kedarnath_Temple.jpg'),
+    title: 'केदारनाथ',
+    subtitle: 'Kedarnath — ancient Shiva shrine in the Garhwal Himalayas',
+    link: '/category/devotional',
+    credit: 'Wikimedia Commons',
+  },
+  {
+    src: wmc('Badrinath_Temple.jpg'),
+    title: 'बद्रीनाथ',
+    subtitle: 'Badrinath Dham — sacred Vishnu temple of the Char Dham',
+    link: '/category/devotional',
+    credit: 'Wikimedia Commons',
+  },
+  {
+    src: wmc('Valley_of_flowers_uttaranchal_full_view.JPG'),
+    title: 'फूलों की घाटी',
+    subtitle: 'Valley of Flowers — UNESCO World Heritage in Chamoli',
+    link: '/category/vlogs',
+    credit: 'Wikimedia Commons',
+  },
+  {
+    src: wmc('Hemkund_Sahib.jpg'),
+    title: 'हेमकुंड साहिब',
+    subtitle: 'Hemkund Sahib — Sikh pilgrimage shrine at 4,632 m',
+    link: '/category/devotional',
+    credit: 'Wikimedia Commons',
+  },
+  {
+    src: wmc('Auli_in_Uttarakhand.jpg'),
+    title: 'औली',
+    subtitle: 'Auli — alpine meadows and snow-capped peaks of Garhwal',
+    link: '/category/vlogs',
+    credit: 'Wikimedia Commons',
+  },
+  {
+    src: wmc('Nainital_Lake_002.jpg'),
+    title: 'नैनी ताल',
+    subtitle: 'Naini Lake — the emerald heart of Kumaon',
+    link: '/category/vlogs',
+    credit: 'Wikimedia Commons',
+  },
+  {
+    src: wmc('Jageshwar_Temple_complex.jpg'),
+    title: 'जागेश्वर',
+    subtitle: 'Jageshwar — cluster of 124 stone temples in Almora',
+    link: '/category/devotional',
+    credit: 'Wikimedia Commons',
+  },
+
   // ===== Local curated photos =====
   {
     src: '/slider/20210711_114700.jpg',
@@ -62,57 +113,6 @@ const SLIDES = [
     title: 'माल्टा',
     subtitle: 'Pahadi malta — the sweet citrus jewel of Uttarakhand',
     link: '/category/vlogs',
-  },
-
-  // ===== Online cultural / heritage images (Wikimedia Commons, CC) =====
-  {
-    src: wmc('Kedarnath_Temple.jpg'),
-    title: 'केदारनाथ',
-    subtitle: 'Kedarnath — ancient Shiva shrine in the Garhwal Himalayas',
-    link: '/category/devotional',
-    credit: 'Wikimedia Commons',
-  },
-  {
-    src: wmc('Badrinath_Temple.jpg'),
-    title: 'बद्रीनाथ',
-    subtitle: 'Badrinath Dham — sacred Vishnu temple of the Char Dham',
-    link: '/category/devotional',
-    credit: 'Wikimedia Commons',
-  },
-  {
-    src: wmc('Valley_of_flowers_uttaranchal_full_view.JPG'),
-    title: 'फूलों की घाटी',
-    subtitle: 'Valley of Flowers — UNESCO World Heritage in Chamoli',
-    link: '/category/vlogs',
-    credit: 'Wikimedia Commons',
-  },
-  {
-    src: wmc('Hemkund_Sahib.jpg'),
-    title: 'हेमकुंड साहिब',
-    subtitle: 'Hemkund Sahib — Sikh pilgrimage shrine at 4,632 m',
-    link: '/category/devotional',
-    credit: 'Wikimedia Commons',
-  },
-  {
-    src: wmc('Auli_in_Uttarakhand.jpg'),
-    title: 'औली',
-    subtitle: 'Auli — alpine meadows and snow-capped peaks of Garhwal',
-    link: '/category/vlogs',
-    credit: 'Wikimedia Commons',
-  },
-  {
-    src: wmc('Nainital_Lake_002.jpg'),
-    title: 'नैनी ताल',
-    subtitle: 'Naini Lake — the emerald heart of Kumaon',
-    link: '/category/vlogs',
-    credit: 'Wikimedia Commons',
-  },
-  {
-    src: wmc('Jageshwar_Temple_complex.jpg'),
-    title: 'जागेश्वर',
-    subtitle: 'Jageshwar — cluster of 124 stone temples in Almora',
-    link: '/category/devotional',
-    credit: 'Wikimedia Commons',
   },
 ];
 
