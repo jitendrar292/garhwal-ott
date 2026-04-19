@@ -59,12 +59,51 @@ setInterval(() => {
   }
 }, 10 * 60 * 1000).unref?.();
 
-const GROQ_COOLDOWN_MS = 15 * 60 * 1000; // 15 min
+const GROQ_COOLDOWN_MS = 15 * 60 * 1000; // default 15 min
+const MAX_COOLDOWN_MS = 6 * 60 * 60 * 1000; // never sleep more than 6h
 let groqCooldownUntil = 0;
+let openrouterCooldownUntil = 0;
+let geminiCooldownUntil = 0;
+
 const isGroqCoolingDown = () => Date.now() < groqCooldownUntil;
-const tripGroqBreaker = () => {
-  groqCooldownUntil = Date.now() + GROQ_COOLDOWN_MS;
-  console.warn(`[chat] Groq breaker tripped — skipping API until ${new Date(groqCooldownUntil).toISOString()}`);
+const isOpenRouterCoolingDown = () => Date.now() < openrouterCooldownUntil;
+const isGeminiCoolingDown = () => Date.now() < geminiCooldownUntil;
+
+// Parse Groq's "Please try again in 1h19m9.4s" / "Please try again in 42s"
+// hint into milliseconds so the breaker honors the actual quota window
+// (daily TPD limits can be hours, not minutes).
+function parseRetryAfterMs(errText) {
+  if (!errText) return null;
+  const m = /try again in\s+([0-9hms.\s]+?)(?:[."\s]|$)/i.exec(errText);
+  if (!m) return null;
+  let ms = 0;
+  const h = /([0-9.]+)\s*h/i.exec(m[1]); if (h) ms += parseFloat(h[1]) * 3600_000;
+  const mm = /([0-9.]+)\s*m(?!s)/i.exec(m[1]); if (mm) ms += parseFloat(mm[1]) * 60_000;
+  const s = /([0-9.]+)\s*s/i.exec(m[1]); if (s) ms += parseFloat(s[1]) * 1000;
+  return ms > 0 ? Math.min(ms, MAX_COOLDOWN_MS) : null;
+}
+
+const tripGroqBreaker = (errText) => {
+  const hint = parseRetryAfterMs(errText);
+  const cooldown = hint || GROQ_COOLDOWN_MS;
+  groqCooldownUntil = Date.now() + cooldown;
+  console.warn(`[chat] Groq breaker tripped for ${Math.round(cooldown / 60_000)}min — skipping API until ${new Date(groqCooldownUntil).toISOString()}`);
+};
+
+const tripOpenRouterBreaker = (errText) => {
+  // OpenRouter free tier resets quickly — default 10 min unless hint says otherwise.
+  const hint = parseRetryAfterMs(errText);
+  const cooldown = hint || 10 * 60_000;
+  openrouterCooldownUntil = Date.now() + cooldown;
+  console.warn(`[chat] OpenRouter breaker tripped for ${Math.round(cooldown / 60_000)}min`);
+};
+
+const tripGeminiBreaker = (errText) => {
+  // Gemini free tier resets daily — default 1h unless hint says otherwise.
+  const hint = parseRetryAfterMs(errText);
+  const cooldown = hint || 60 * 60_000;
+  geminiCooldownUntil = Date.now() + cooldown;
+  console.warn(`[chat] Gemini breaker tripped for ${Math.round(cooldown / 60_000)}min`);
 };
 
 // =====================================================================
@@ -80,8 +119,8 @@ const GROQ = {
   model: 'llama-3.3-70b-versatile',
   getKey: () => process.env.GROQ_API_KEY,
   extraHeaders: () => ({}),
-  onFailure: (status) => {
-    if (status === 429 || status === 402) tripGroqBreaker();
+  onFailure: (status, errText) => {
+    if (status === 429 || status === 402) tripGroqBreaker(errText);
   },
 };
 
@@ -95,7 +134,9 @@ const OPENROUTER = {
     'HTTP-Referer': process.env.OPENROUTER_REFERER || 'https://garhwali-stream.onrender.com',
     'X-Title': 'PahadiTube AI',
   }),
-  onFailure: () => {},
+  onFailure: (status, errText) => {
+    if (status === 429 || status === 402) tripOpenRouterBreaker(errText);
+  },
 };
 
 // Google Gemini — speaks its own wire format, handled by tryStreamGemini.
@@ -331,7 +372,7 @@ async function tryStreamProvider(provider, basePayload, res, safeMessages, lastU
   if (!upstream.ok || !upstream.body) {
     const errText = await upstream.text().catch(() => '');
     console.error(`[chat] ${provider.name} error:`, upstream.status, errText.slice(0, 300));
-    provider.onFailure(upstream.status);
+    provider.onFailure(upstream.status, errText);
     return false;
   }
 
@@ -448,6 +489,7 @@ async function tryStreamGemini(basePayload, res, safeMessages, lastUser) {
   if (!upstream.ok || !upstream.body) {
     const errText = await upstream.text().catch(() => '');
     console.error('[chat] gemini error:', upstream.status, errText.slice(0, 300));
+    if (upstream.status === 429 || upstream.status === 402) tripGeminiBreaker(errText);
     return false;
   }
 
@@ -699,38 +741,58 @@ router.post('/', async (req, res) => {
     model: 'llama-3.3-70b-versatile',
     messages: [{ role: 'system', content: systemContent }, ...safeMessages],
     temperature: 0.5,
-    max_tokens: 800,
+    // Reduced from 800 to conserve daily TPD budget across all providers.
+    // Garhwali responses are typically 2–4 short paragraphs; 500 tokens is
+    // ample. Bumping this back up will burn through Groq's 100k TPD limit
+    // ~60% faster.
+    max_tokens: 500,
     stream: true,
   };
 
-  // If breaker is tripped, skip Groq and serve from memory/offline immediately.
+  // If ALL providers are cooling down, skip straight to memory — no point
+  // hammering APIs we know will return 429.
+  const allCoolingDown = isGroqCoolingDown() && isOpenRouterCoolingDown() && isGeminiCoolingDown();
+  if (allCoolingDown) {
+    res.setHeader('X-All-Providers-Cooldown', '1');
+    const fb = await findFallbackReply(lastUser?.content);
+    if (fb && streamFallbackReply(res, fb.text, `cooldown:${fb.source}`)) return;
+    return streamFallbackReply(res, OFFLINE_REPLY, 'cooldown:offline') || res.status(503).end();
+  }
+
+  // If Groq is tripped, skip it and try the others.
   if (isGroqCoolingDown()) {
-    // Still try OpenRouter, then Gemini, before falling back to memory.
-    const orOk = await tryStreamProvider(OPENROUTER, payload, res, safeMessages, lastUser);
-    if (orOk) return;
-    if (!res.headersSent) {
+    if (!isOpenRouterCoolingDown()) {
+      const orOk = await tryStreamProvider(OPENROUTER, payload, res, safeMessages, lastUser);
+      if (orOk) return;
+    }
+    if (!res.headersSent && !isGeminiCoolingDown()) {
       const gemOk = await tryStreamGemini(payload, res, safeMessages, lastUser);
       if (gemOk) return;
     }
-    const fb = await findFallbackReply(lastUser?.content);
-    if (fb && streamFallbackReply(res, fb.text, `breaker:${fb.source}`)) return;
-    return streamFallbackReply(res, OFFLINE_REPLY, 'breaker:offline') || res.status(503).end();
+    if (!res.headersSent) {
+      const fb = await findFallbackReply(lastUser?.content);
+      if (fb && streamFallbackReply(res, fb.text, `breaker:${fb.source}`)) return;
+      return streamFallbackReply(res, OFFLINE_REPLY, 'breaker:offline') || res.status(503).end();
+    }
+    return;
   }
 
   // Try Groq first.
   const groqOk = await tryStreamProvider(GROQ, payload, res, safeMessages, lastUser);
   if (groqOk) return;
 
-  // Groq failed (network, 5xx, 429, etc.) — try OpenRouter then Gemini before giving up.
-  if (!res.headersSent) {
+  // Groq failed — try OpenRouter (if not cooling down) then Gemini.
+  if (!res.headersSent && !isOpenRouterCoolingDown()) {
     const orOk = await tryStreamProvider(OPENROUTER, payload, res, safeMessages, lastUser);
     if (orOk) return;
+  }
 
-    if (!res.headersSent) {
-      const gemOk = await tryStreamGemini(payload, res, safeMessages, lastUser);
-      if (gemOk) return;
-    }
+  if (!res.headersSent && !isGeminiCoolingDown()) {
+    const gemOk = await tryStreamGemini(payload, res, safeMessages, lastUser);
+    if (gemOk) return;
+  }
 
+  if (!res.headersSent) {
     const fb = await findFallbackReply(lastUser?.content);
     if (fb && streamFallbackReply(res, fb.text, fb.source)) return;
     if (streamFallbackReply(res, OFFLINE_REPLY, 'offline')) return;
@@ -740,7 +802,16 @@ router.post('/', async (req, res) => {
 
 // Lightweight cache stats (handy for monitoring)
 router.get('/stats', (_req, res) => {
-  res.json(getCacheStats());
+  const now = Date.now();
+  const remaining = (until) => (until > now ? Math.round((until - now) / 1000) : 0);
+  res.json({
+    ...getCacheStats(),
+    breakers: {
+      groq: { coolingDown: isGroqCoolingDown(), secondsRemaining: remaining(groqCooldownUntil) },
+      openrouter: { coolingDown: isOpenRouterCoolingDown(), secondsRemaining: remaining(openrouterCooldownUntil) },
+      gemini: { coolingDown: isGeminiCoolingDown(), secondsRemaining: remaining(geminiCooldownUntil) },
+    },
+  });
 });
 
 // Admin: flush the 24h response cache. Useful after a system-prompt change
