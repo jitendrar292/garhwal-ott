@@ -57,6 +57,46 @@ async function redisCmdPost(cmd, key, value) {
   return json.result;
 }
 
+// Generic JSON cache helpers (Redis-backed when Upstash is configured).
+// Use these to persist cache entries across server restarts / cold starts.
+async function redisGetJSON(key) {
+  if (!UPSTASH_ENABLED) return null;
+  try {
+    const raw = await redisCmd('GET', key);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (err) {
+    console.error('[store] redisGetJSON error:', err.message);
+    return null;
+  }
+}
+
+// SETEX = SET key seconds value (atomic write + TTL).
+// Uses POST body because cached payloads can be large (>2KB URL limit).
+async function redisSetJSON(key, value, ttlSeconds) {
+  if (!UPSTASH_ENABLED) return false;
+  try {
+    const body = JSON.stringify(value);
+    const res = await fetch(UPSTASH_URL, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${UPSTASH_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(['SETEX', key, String(ttlSeconds), body]),
+    });
+    if (!res.ok) throw new Error(`Upstash SETEX error ${res.status}`);
+    return true;
+  } catch (err) {
+    console.error('[store] redisSetJSON error:', err.message);
+    return false;
+  }
+}
+
+function isRedisEnabled() {
+  return UPSTASH_ENABLED;
+}
+
 async function getVisits() {
   if (UPSTASH_ENABLED) {
     try {
@@ -219,5 +259,5 @@ async function seedAndDeduplicateVisitors() {
   }
 }
 
-module.exports = { getVisits, incrementVisits, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback };
+module.exports = { getVisits, incrementVisits, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback, redisGetJSON, redisSetJSON, isRedisEnabled };
 

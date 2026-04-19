@@ -1,4 +1,5 @@
 const NodeCache = require('node-cache');
+const { redisGetJSON, redisSetJSON, isRedisEnabled } = require('./store');
 
 const YOUTUBE_API_BASE = 'https://www.googleapis.com/youtube/v3';
 const API_KEY = process.env.YOUTUBE_API_KEY;
@@ -8,6 +9,10 @@ const cache = new NodeCache({ stdTTL: 21600, checkperiod: 3600 });
 
 // Fallback cache that never expires — stores last good response
 const fallbackCache = new NodeCache({ stdTTL: 0 });
+
+// Redis (Upstash) long-term cache: survives server restarts and cold starts
+// on Render's free tier. TTL matches the 6h refresh cycle.
+const REDIS_TTL_SECONDS = 6 * 60 * 60;
 
 // Static fallback data when API quota is exhausted and no cache exists (real YouTube video IDs)
 const STATIC_FALLBACK = {
@@ -287,10 +292,19 @@ async function searchVideos(query, pageToken = '', maxResults = 12) {
   const cached = cache.get(cacheKey);
   if (cached) return cached;
 
+  // Redis (Upstash) — survives restarts. Hydrate the in-memory cache on hit.
+  const fromRedis = await redisGetJSON(`yt:${cacheKey}`);
+  if (fromRedis) {
+    cache.set(cacheKey, fromRedis);
+    fallbackCache.set(cacheKey, fromRedis);
+    return fromRedis;
+  }
+
   try {
     const result = await fetchFromYouTube(query, pageToken, maxResults);
     cache.set(cacheKey, result);
     fallbackCache.set(cacheKey, result);
+    redisSetJSON(`yt:${cacheKey}`, result, REDIS_TTL_SECONDS).catch(() => {});
     return result;
   } catch (err) {
     // Return fallback data if quota exceeded
@@ -316,10 +330,19 @@ async function getVideosByCategory(category, pageToken = '', maxResults = 12) {
   const cached = cache.get(cacheKey);
   if (cached) return cached;
 
+  // Redis layer
+  const fromRedis = await redisGetJSON(`yt:${cacheKey}`);
+  if (fromRedis) {
+    cache.set(cacheKey, fromRedis);
+    fallbackCache.set(cacheKey, fromRedis);
+    return fromRedis;
+  }
+
   try {
     const result = await fetchFromYouTube(query, pageToken, maxResults);
     cache.set(cacheKey, result);
     fallbackCache.set(cacheKey, result);
+    redisSetJSON(`yt:${cacheKey}`, result, REDIS_TTL_SECONDS).catch(() => {});
     return result;
   } catch (err) {
     const fallback = fallbackCache.get(cacheKey);
@@ -336,4 +359,96 @@ async function getVideosByCategory(category, pageToken = '', maxResults = 12) {
   }
 }
 
-module.exports = { searchVideos, getVideosByCategory };
+// =====================================================================
+// Trending refresh job
+// =====================================================================
+// Pre-warms the most-visited surfaces (music tabs + key categories) every 6h
+// so users always hit the in-memory cache and we burn the daily YouTube quota
+// once instead of per-request. Safe to run when Redis is missing — just
+// populates the in-memory cache.
+
+const TRENDING_REFRESH_MS = 6 * 60 * 60 * 1000; // 6 hours
+
+// Mirrors the music tabs in client/src/pages/MusicPage.jsx
+const TRENDING_SEARCH_QUERIES = [
+  'garhwali trending hit songs 2026',
+  'old garhwali evergreen songs Narendra Singh Negi',
+  'kumaoni hit songs uttarakhand',
+  'garhwali DJ remix nonstop dance',
+  'garhwali bhajan devotional aarti',
+  'garhwali jaagar Pritam Bhartwan ritual',
+  'garhwali folk dance chaunphula thadya',
+  'garhwali female singer Meena Rana Priyanka Meher',
+];
+
+const TRENDING_CATEGORIES = ['trending', 'songs', 'movies', 'comedy', 'devotional', 'shorts'];
+
+async function refreshTrending() {
+  if (!API_KEY || API_KEY === 'YOUR_YOUTUBE_API_KEY_HERE') {
+    console.log('[trending] skipping refresh — YOUTUBE_API_KEY not configured');
+    return;
+  }
+  const started = Date.now();
+  let okCount = 0;
+  let skipCount = 0;
+
+  // Run sequentially to avoid blowing through quota in a burst.
+  for (const q of TRENDING_SEARCH_QUERIES) {
+    const cacheKey = `search:${q}::20`;
+    try {
+      const result = await fetchFromYouTube(q, '', 20);
+      cache.set(cacheKey, result);
+      fallbackCache.set(cacheKey, result);
+      await redisSetJSON(`yt:${cacheKey}`, result, REDIS_TTL_SECONDS);
+      okCount++;
+    } catch (err) {
+      skipCount++;
+      if (err.message === 'QUOTA_EXCEEDED') {
+        console.log('[trending] quota exceeded — stopping refresh early');
+        break;
+      }
+      console.error('[trending] search refresh failed:', q, err.message);
+    }
+  }
+
+  for (const cat of TRENDING_CATEGORIES) {
+    const cacheKey = `category:${cat}::12`;
+    try {
+      const query = CATEGORY_QUERIES[cat];
+      if (!query) continue;
+      const result = await fetchFromYouTube(query, '', 12);
+      cache.set(cacheKey, result);
+      fallbackCache.set(cacheKey, result);
+      await redisSetJSON(`yt:${cacheKey}`, result, REDIS_TTL_SECONDS);
+      okCount++;
+    } catch (err) {
+      skipCount++;
+      if (err.message === 'QUOTA_EXCEEDED') {
+        console.log('[trending] quota exceeded — stopping refresh early');
+        break;
+      }
+      console.error('[trending] category refresh failed:', cat, err.message);
+    }
+  }
+
+  const dur = ((Date.now() - started) / 1000).toFixed(1);
+  console.log(
+    `[trending] refresh done in ${dur}s — ${okCount} ok, ${skipCount} skipped` +
+      (isRedisEnabled() ? ' (persisted to Redis)' : ' (in-memory only — Redis disabled)')
+  );
+}
+
+let refreshTimer = null;
+function startTrendingRefresh() {
+  // Run once on boot (small delay so it doesn't compete with server startup),
+  // then every 6 hours.
+  setTimeout(() => {
+    refreshTrending().catch((e) => console.error('[trending] initial refresh error:', e.message));
+  }, 5000);
+  if (refreshTimer) clearInterval(refreshTimer);
+  refreshTimer = setInterval(() => {
+    refreshTrending().catch((e) => console.error('[trending] refresh error:', e.message));
+  }, TRENDING_REFRESH_MS);
+}
+
+module.exports = { searchVideos, getVideosByCategory, refreshTrending, startTrendingRefresh };

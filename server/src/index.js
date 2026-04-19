@@ -10,6 +10,7 @@ const rateLimit = require('express-rate-limit');
 const youtubeRoutes = require('./routes/youtube');
 const chatRoutes = require('./routes/chat');
 const { getVisits, incrementVisits, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback } = require('./services/store');
+const { startTrendingRefresh } = require('./services/youtubeService');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -210,4 +211,6 @@ app.listen(PORT, () => {
   console.log(`🎬 PahadiTube server running on port ${PORT}`);
   // One-time startup: clean duplicate visitor records + seed seen-IPs set
   seedAndDeduplicateVisitors().catch(() => {});
+  // Pre-warm music tabs + key categories now and every 6h
+  startTrendingRefresh();
 });
