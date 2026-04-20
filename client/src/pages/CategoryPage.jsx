@@ -11,6 +11,7 @@ const CATEGORY_LABELS = {
   folkdance: '💃 Folk Dances',
   jaagar: '🔱 Jaagar',
   mela: '🎪 Mela & Festivals',
+  theatre: '🎭 Theatre & Culture',
 };
 
 export default function CategoryPage() {

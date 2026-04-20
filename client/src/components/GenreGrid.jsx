@@ -75,6 +75,15 @@ const GENRES = [
     glow: 'hover:shadow-green-500/50',
     hint: 'Fairs & Festivals',
   },
+  {
+    name: 'Theatre',
+    path: '/category/theatre',
+    emoji: '🎭',
+    gradient: 'from-purple-600 via-fuchsia-600 to-indigo-800',
+    glow: 'hover:shadow-purple-500/50',
+    hint: 'Rangmanch & HNBGU',
+    badge: { text: '🆕 New', cls: 'bg-purple-600/80' },
+  },
 ];
 
 export default function GenreGrid() {
@@ -86,7 +95,7 @@ export default function GenreGrid() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
       </h2>
-      <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-9 gap-2 sm:gap-3">
+      <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
         {GENRES.map((genre) => (
           <Link
             key={genre.path}

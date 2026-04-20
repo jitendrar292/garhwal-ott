@@ -249,6 +249,7 @@ function pickFallbackForQuery(query) {
   else if (/podcast|baramasa|ghughuti|interview|documentary/.test(q)) bucket = 'podcast';
   else if (/jaagar|folk dance|chholiya|tandi|pandav/.test(q)) bucket = 'folkdance';
   else if (/mela|fair|festival|harela|igas|phool dei|bikhoti/.test(q)) bucket = 'mela';
+  else if (/theatre|theater|natak|rangmanch|drama|nukkad|hnbgu/.test(q)) bucket = 'theatre';
   else if (/trend|trending|hit|popular|viral|top/.test(q)) bucket = 'trending';
   // Music sub-genres all draw from the songs pool but get a query-seeded
   // shuffle so each tab's order is unique.
@@ -273,6 +274,7 @@ const CATEGORY_QUERIES = {
   folkdance: 'Garhwali folk dance tandi chholiya langvir nritya pandav nritya uttarakhand',
   jaagar: 'Garhwali jaagar jagar uttarakhand devbhoomi ritual',
   mela: 'Uttarakhand mela fair festival garhwali kumaoni',
+  theatre: 'Uttarakhand theatre natak HNBGU theatre department garhwali kumaoni rangmanch nukkad natak pahadi drama',
 };
 
 async function fetchFromYouTube(query, pageToken = '', maxResults = 12) {

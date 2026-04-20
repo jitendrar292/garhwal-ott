@@ -4,6 +4,7 @@ import GenreGrid from '../components/GenreGrid';
 import VideoRow from '../components/VideoRow';
 import UpcomingFestivals from '../components/UpcomingFestivals';
 import UpcomingMelas from '../components/UpcomingMelas';
+import UpcomingEvents from '../components/UpcomingEvents';
 import AboutSection from '../components/AboutSection';
 import { getVideosByCategory } from '../api/youtube';
 
@@ -17,6 +18,7 @@ export default function HomePage() {
   const [folkdance, setFolkdance] = useState({ videos: [], loading: true, error: null });
   const [jaagar, setJaagar] = useState({ videos: [], loading: true, error: null });
   const [mela, setMela] = useState({ videos: [], loading: true, error: null });
+  const [theatre, setTheatre] = useState({ videos: [], loading: true, error: null });
   const [userLocation, setUserLocation] = useState(null);
 
   useEffect(() => {
@@ -37,6 +39,7 @@ export default function HomePage() {
     load('folkdance', setFolkdance);
     load('jaagar', setJaagar);
     load('mela', setMela);
+    load('theatre', setTheatre);
 
     // Detect user location via IP
     fetch('https://ipapi.co/json/')
@@ -67,6 +70,9 @@ export default function HomePage() {
 
         {/* Upcoming Melas (famous fairs across Uttarakhand) */}
         <UpcomingMelas />
+
+        {/* Theatre · Art · Music events (universities + local) */}
+        <UpcomingEvents />
 
         {/* Trending */}
         <VideoRow
@@ -148,6 +154,16 @@ export default function HomePage() {
           loading={mela.loading}
           error={mela.error}
           categoryLink="/category/mela"
+        />
+
+        {/* Theatre & Culture (HNBGU + Uttarakhand rangmanch) */}
+        <VideoRow
+          title="🎭 Uttarakhand Theatre & Culture"
+          subtitle="Featuring Theatre Department, HNB Garhwal University"
+          videos={theatre.videos}
+          loading={theatre.loading}
+          error={theatre.error}
+          categoryLink="/category/theatre"
         />
 
         {/* About PahadiTube */}
