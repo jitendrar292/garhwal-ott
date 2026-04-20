@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 const CATEGORIES = ['general', 'politics', 'culture', 'sports', 'weather', 'development'];
@@ -12,19 +12,22 @@ export default function NewsAdminPage() {
   const [success, setSuccess] = useState('');
 
   // Form state
+  const [editingId, setEditingId] = useState(null); // null = create mode
   const [title, setTitle] = useState('');
   const [summary, setSummary] = useState('');
   const [body, setBody] = useState('');
   const [category, setCategory] = useState('general');
   const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState('');
+  const [imagePreview, setImagePreview] = useState(''); // data URI or existing /api/news/:id/image URL
+  const [imageDirty, setImageDirty] = useState(false); // user changed image during edit
   const [submitting, setSubmitting] = useState(false);
+  const formRef = useRef(null);
 
   const fetchArticles = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('/api/news');
+      const res = await fetch('/api/news', { cache: 'no-store' });
       if (!res.ok) throw new Error('Failed to fetch');
       const data = await res.json();
       setArticles(data.articles || []);
@@ -51,9 +54,48 @@ export default function NewsAdminPage() {
       return;
     }
     setImageFile(file);
+    setImageDirty(true);
     const reader = new FileReader();
     reader.onload = () => setImagePreview(reader.result);
     reader.readAsDataURL(file);
+  };
+
+  const resetForm = () => {
+    setEditingId(null);
+    setTitle('');
+    setSummary('');
+    setBody('');
+    setCategory('general');
+    setImageFile(null);
+    setImagePreview('');
+    setImageDirty(false);
+  };
+
+  const startEdit = async (id) => {
+    setError('');
+    setSuccess('');
+    try {
+      const res = await fetch(`/api/news/${id}`, { cache: 'no-store' });
+      if (!res.ok) throw new Error('Failed to load article');
+      const { article } = await res.json();
+      setEditingId(article.id);
+      setTitle(article.title || '');
+      setSummary(article.summary || '');
+      setBody(article.body || '');
+      setCategory(article.category || 'general');
+      setImageFile(null);
+      setImagePreview(article.imageUrl || ''); // existing URL (not a data: URI)
+      setImageDirty(false);
+      setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const removeImage = () => {
+    setImageFile(null);
+    setImagePreview('');
+    setImageDirty(true);
   };
 
   const handleSubmit = async (e) => {
@@ -72,13 +114,28 @@ export default function NewsAdminPage() {
       body: body.trim(),
       category,
     };
-    if (imagePreview) {
-      payload.image = imagePreview;
+
+    if (editingId == null) {
+      // Create: send image only if user picked one.
+      if (imagePreview && imagePreview.startsWith('data:')) {
+        payload.image = imagePreview;
+      }
+    } else {
+      // Update: only send `image` if the user touched it.
+      //   - new file picked → data URI
+      //   - removed image    → '' (server treats as remove)
+      //   - untouched        → omit (server keeps existing)
+      if (imageDirty) {
+        payload.image = imagePreview && imagePreview.startsWith('data:') ? imagePreview : '';
+      }
     }
 
     try {
-      const res = await fetch(`/api/news?key=${encodeURIComponent(key)}`, {
-        method: 'POST',
+      const url = editingId == null
+        ? `/api/news?key=${encodeURIComponent(key)}`
+        : `/api/news/${editingId}?key=${encodeURIComponent(key)}`;
+      const res = await fetch(url, {
+        method: editingId == null ? 'POST' : 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
@@ -89,15 +146,10 @@ export default function NewsAdminPage() {
       }
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || 'Failed to create');
+        throw new Error(data.error || 'Request failed');
       }
-      setSuccess('Article published!');
-      setTitle('');
-      setSummary('');
-      setBody('');
-      setCategory('general');
-      setImageFile(null);
-      setImagePreview('');
+      setSuccess(editingId == null ? 'Article published!' : 'Article updated!');
+      resetForm();
       fetchArticles();
     } catch (err) {
       setError(err.message);
@@ -120,6 +172,7 @@ export default function NewsAdminPage() {
       if (!res.ok) throw new Error('Failed to delete');
       setArticles((prev) => prev.filter((a) => a.id !== id));
       setSuccess('Article deleted');
+      if (editingId === id) resetForm();
     } catch (err) {
       setError(err.message);
     }
@@ -153,13 +206,15 @@ export default function NewsAdminPage() {
     );
   }
 
+  const isEditing = editingId != null;
+
   // ── Admin dashboard ──
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">News Admin</h1>
         <button
-          onClick={() => { setAuthenticated(false); setKey(''); }}
+          onClick={() => { setAuthenticated(false); setKey(''); resetForm(); }}
           className="text-sm text-gray-400 hover:text-red-400"
         >
           Logout
@@ -177,9 +232,28 @@ export default function NewsAdminPage() {
         </div>
       )}
 
-      {/* Create Article Form */}
-      <form onSubmit={handleSubmit} className="mb-10 p-6 bg-dark-800 rounded-xl border border-dark-700 space-y-4">
-        <h2 className="text-lg font-semibold mb-2">Publish New Article</h2>
+      {/* Create / Edit Article Form */}
+      <form
+        ref={formRef}
+        onSubmit={handleSubmit}
+        className={`mb-10 p-6 rounded-xl border space-y-4 ${
+          isEditing ? 'bg-amber-950/20 border-amber-700/60' : 'bg-dark-800 border-dark-700'
+        }`}
+      >
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold">
+            {isEditing ? `Editing Article #${editingId}` : 'Publish New Article'}
+          </h2>
+          {isEditing && (
+            <button
+              type="button"
+              onClick={resetForm}
+              className="text-xs px-3 py-1 rounded-md bg-dark-700 hover:bg-dark-600 text-gray-300"
+            >
+              Cancel edit
+            </button>
+          )}
+        </div>
 
         <input
           type="text"
@@ -223,7 +297,13 @@ export default function NewsAdminPage() {
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            <span className="text-sm">{imageFile ? imageFile.name : 'Add image (max 2MB)'}</span>
+            <span className="text-sm">
+              {imageFile
+                ? imageFile.name
+                : isEditing && imagePreview
+                  ? 'Replace image (max 2MB)'
+                  : 'Add image (max 2MB)'}
+            </span>
             <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
           </label>
         </div>
@@ -233,8 +313,9 @@ export default function NewsAdminPage() {
             <img src={imagePreview} alt="Preview" className="h-24 rounded-lg object-cover" />
             <button
               type="button"
-              onClick={() => { setImageFile(null); setImagePreview(''); }}
+              onClick={removeImage}
               className="absolute -top-2 -right-2 w-6 h-6 bg-red-600 rounded-full flex items-center justify-center text-xs"
+              title="Remove image"
             >
               ✕
             </button>
@@ -244,9 +325,13 @@ export default function NewsAdminPage() {
         <button
           type="submit"
           disabled={submitting}
-          className="w-full sm:w-auto px-8 py-2.5 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 rounded-lg font-semibold transition-colors"
+          className={`w-full sm:w-auto px-8 py-2.5 rounded-lg font-semibold transition-colors disabled:bg-gray-600 ${
+            isEditing ? 'bg-amber-600 hover:bg-amber-700' : 'bg-green-600 hover:bg-green-700'
+          }`}
         >
-          {submitting ? 'Publishing...' : 'Publish Article'}
+          {submitting
+            ? (isEditing ? 'Updating...' : 'Publishing...')
+            : (isEditing ? 'Update Article' : 'Publish Article')}
         </button>
       </form>
 
@@ -256,7 +341,14 @@ export default function NewsAdminPage() {
 
       <div className="space-y-3">
         {articles.map((article) => (
-          <div key={article.id} className="flex items-start justify-between gap-3 p-4 bg-dark-800 rounded-lg border border-dark-700">
+          <div
+            key={article.id}
+            className={`flex items-start justify-between gap-3 p-4 rounded-lg border ${
+              editingId === article.id
+                ? 'bg-amber-950/30 border-amber-700/60'
+                : 'bg-dark-800 border-dark-700'
+            }`}
+          >
             <div className="flex-1 min-w-0">
               <p className="font-medium truncate">{article.title}</p>
               <p className="text-xs text-gray-400 mt-1">
@@ -267,12 +359,20 @@ export default function NewsAdminPage() {
             {article.imageUrl && (
               <img src={article.imageUrl} alt="" className="w-12 h-12 rounded object-cover flex-shrink-0" />
             )}
-            <button
-              onClick={() => handleDelete(article.id)}
-              className="flex-shrink-0 px-3 py-1.5 text-xs bg-red-700 hover:bg-red-600 rounded transition-colors"
-            >
-              Delete
-            </button>
+            <div className="flex flex-col sm:flex-row gap-2 flex-shrink-0">
+              <button
+                onClick={() => startEdit(article.id)}
+                className="px-3 py-1.5 text-xs bg-blue-700 hover:bg-blue-600 rounded transition-colors"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => handleDelete(article.id)}
+                className="px-3 py-1.5 text-xs bg-red-700 hover:bg-red-600 rounded transition-colors"
+              >
+                Delete
+              </button>
+            </div>
           </div>
         ))}
         {!loading && articles.length === 0 && (

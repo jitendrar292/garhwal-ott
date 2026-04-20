@@ -196,6 +196,79 @@ router.post('/', async (req, res) => {
   }
 });
 
+// ── Admin: update article ──
+// Body: JSON { title, summary, body, category, image }
+//   - image: omit/undefined → keep existing image
+//             ''/null         → remove image
+//             data:image/...  → replace image
+router.put('/:id', async (req, res) => {
+  const adminKey = process.env.FEEDBACK_ADMIN_KEY || 'pahadi2026';
+  if (req.query.key !== adminKey) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const id = Number(req.params.id);
+  if (!id || isNaN(id)) return res.status(400).json({ error: 'Invalid ID' });
+
+  const { title, summary, body: articleBody, category, image } = req.body || {};
+
+  if (!title || typeof title !== 'string' || title.trim().length === 0) {
+    return res.status(400).json({ error: 'Title is required' });
+  }
+  if (!articleBody || typeof articleBody !== 'string' || articleBody.trim().length === 0) {
+    return res.status(400).json({ error: 'Body is required' });
+  }
+  if (title.length > 300 || (summary && summary.length > 1000) || articleBody.length > 20000) {
+    return res.status(400).json({ error: 'Input too long' });
+  }
+
+  try {
+    const articles = await loadNews();
+    const idx = articles.findIndex((a) => a.id === id);
+    if (idx === -1) return res.status(404).json({ error: 'Article not found' });
+
+    const existing = articles[idx];
+
+    // Resolve image: undefined = keep, '' / null = remove, data: = replace
+    let nextImageUrl = existing.imageUrl || '';
+    if (image === null || image === '') {
+      nextImageUrl = '';
+    } else if (typeof image === 'string' && image.startsWith('data:')) {
+      const match = image.match(/^data:(image\/\w+);base64,(.+)$/);
+      if (!match || !ALLOWED_MIME.has(match[1])) {
+        return res.status(400).json({ error: 'Invalid image format. Use JPEG, PNG, GIF, or WebP.' });
+      }
+      const buf = Buffer.from(match[2], 'base64');
+      if (buf.length > MAX_IMAGE_SIZE) {
+        return res.status(400).json({ error: 'Image too large (max 2 MB)' });
+      }
+      nextImageUrl = image;
+    }
+
+    const updated = {
+      ...existing,
+      title: title.trim(),
+      summary: (summary || '').trim(),
+      body: articleBody.trim(),
+      category: (category || 'general').trim().toLowerCase(),
+      imageUrl: nextImageUrl,
+      updatedAt: Date.now(),
+    };
+    articles[idx] = updated;
+    await saveNews(articles);
+
+    // Return the article with the URL-style image (matches GET /:id shape).
+    const safe = {
+      ...updated,
+      imageUrl: updated.imageUrl ? `/api/news/${updated.id}/image` : '',
+    };
+    res.json({ article: safe });
+  } catch (err) {
+    console.error('[news] update error:', err.message);
+    res.status(500).json({ error: 'Failed to update article' });
+  }
+});
+
 // ── Admin: delete article ──
 router.delete('/:id', async (req, res) => {
   const adminKey = process.env.FEEDBACK_ADMIN_KEY || 'pahadi2026';
