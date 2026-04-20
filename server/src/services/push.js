@@ -119,10 +119,20 @@ async function sendNotificationToAll(payload) {
   let sent = 0;
   let failed = 0;
 
+  // High urgency + short TTL tells FCM/APNs to deliver IMMEDIATELY,
+  // bypassing Android Doze batching. Without this, Android can delay
+  // pushes by several minutes (or hours when the screen is off).
+  // Topic collapses older queued pushes with the same tag.
+  const sendOptions = {
+    TTL: 3600, // keep at most 1h if device is offline
+    urgency: 'high',
+    topic: (payload.tag || 'pahaditube').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 32) || 'pahaditube',
+  };
+
   await Promise.all(
     subs.map(async (sub) => {
       try {
-        await webpush.sendNotification(sub, body);
+        await webpush.sendNotification(sub, body, sendOptions);
         sent++;
       } catch (err) {
         // 404 / 410 → subscription is permanently gone, prune it.
