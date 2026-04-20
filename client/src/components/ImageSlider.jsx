@@ -166,7 +166,7 @@ export default function ImageSlider() {
       aria-label="Image slideshow"
     >
       {/* Slides with crossfade + Ken Burns */}
-      <div className="relative aspect-[16/7] sm:aspect-[3.5/1] bg-dark-800">
+      <div className="relative aspect-[16/6] sm:aspect-[5/1] bg-dark-800">
         {slides.map((slide, index) => (
           <div
             key={slide.src}
@@ -196,17 +196,17 @@ export default function ImageSlider() {
         <div className="absolute inset-0 z-20 bg-gradient-to-t from-dark-900/80 via-dark-900/20 to-transparent" />
 
         {/* Caption */}
-        <div className="absolute bottom-0 left-0 z-30 p-6 sm:p-10 max-w-xl">
+        <div className="absolute bottom-0 left-0 z-30 p-4 sm:p-6 max-w-xl">
           <p
             key={`title-${current}`}
-            className="text-white text-2xl sm:text-4xl font-extrabold drop-shadow-lg
+            className="text-white text-lg sm:text-2xl font-extrabold drop-shadow-lg
                        animate-fade-in-up"
           >
             {slides[current]?.title}
           </p>
           <p
             key={`sub-${current}`}
-            className="text-gray-300 text-sm sm:text-lg mt-2 drop-shadow animate-fade-in-up"
+            className="text-gray-300 text-xs sm:text-sm mt-1 drop-shadow animate-fade-in-up"
             style={{ animationDelay: '150ms' }}
           >
             {slides[current]?.subtitle}
@@ -215,10 +215,10 @@ export default function ImageSlider() {
             <Link
               key={`cta-${current}`}
               to={slides[current].link}
-              className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 rounded-full
+              className="inline-flex items-center gap-2 mt-2 sm:mt-3 px-4 py-1.5 rounded-full
                          bg-white/15 hover:bg-white/25 active:bg-white/10
                          backdrop-blur-sm border border-white/20 hover:border-white/40
-                         text-white text-sm font-semibold
+                         text-white text-xs sm:text-sm font-semibold
                          transition-all duration-200 hover:scale-105 active:scale-95
                          animate-fade-in-up shadow-lg"
               style={{ animationDelay: '280ms' }}
