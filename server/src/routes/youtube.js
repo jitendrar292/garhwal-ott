@@ -1,5 +1,11 @@
 const express = require('express');
-const { searchVideos, getVideosByCategory } = require('../services/youtubeService');
+const {
+  searchVideos,
+  getVideosByCategory,
+  refreshCategory,
+  refreshTrending,
+  listRefreshableCategories,
+} = require('../services/youtubeService');
 
 const router = express.Router();
 
@@ -50,6 +56,60 @@ router.get('/category/:category', async (req, res) => {
   } catch (err) {
     console.error('Category error:', err.message);
     res.status(502).json({ error: 'Failed to fetch videos' });
+  }
+});
+
+// =====================================================================
+// Admin: manual content refresh
+// =====================================================================
+// Auth via ?key=<FEEDBACK_ADMIN_KEY> (same key used for news/feedback admin).
+function requireAdmin(req, res) {
+  const adminKey = process.env.FEEDBACK_ADMIN_KEY || 'pahadi2026';
+  if (req.query.key !== adminKey) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return false;
+  }
+  return true;
+}
+
+// GET /api/youtube/admin/categories?key=...
+// Returns the list of categories the admin can refresh.
+router.get('/admin/categories', (req, res) => {
+  if (!requireAdmin(req, res)) return;
+  res.json({ categories: listRefreshableCategories() });
+});
+
+// POST /api/youtube/admin/refresh?key=...&category=movies
+// POST /api/youtube/admin/refresh?key=...&category=all  → refresh trending bundle
+router.post('/admin/refresh', async (req, res) => {
+  if (!requireAdmin(req, res)) return;
+  const { category } = req.query;
+  if (!category) {
+    return res.status(400).json({ error: 'category is required' });
+  }
+  try {
+    if (category === 'all') {
+      await refreshTrending();
+      return res.json({ ok: true, refreshed: 'all' });
+    }
+    const result = await refreshCategory(category);
+    res.json({
+      ok: true,
+      refreshed: category,
+      count: result.videos?.length || 0,
+    });
+  } catch (err) {
+    console.error('[admin] refresh error:', err.message);
+    if (err.code === 'UNKNOWN_CATEGORY') {
+      return res.status(400).json({ error: 'Unknown category' });
+    }
+    if (err.code === 'NO_API_KEY') {
+      return res.status(503).json({ error: 'YouTube API key not configured' });
+    }
+    if (err.message === 'QUOTA_EXCEEDED') {
+      return res.status(429).json({ error: 'YouTube quota exceeded — try again later' });
+    }
+    res.status(502).json({ error: 'Failed to refresh category' });
   }
 });
 

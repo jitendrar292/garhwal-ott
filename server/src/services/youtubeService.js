@@ -524,4 +524,48 @@ function startTrendingRefresh() {
   }, TRENDING_REFRESH_MS);
 }
 
-module.exports = { searchVideos, getVideosByCategory, refreshTrending, startTrendingRefresh, isQuotaCoolingDown };
+// =====================================================================
+// Admin: manual refresh helpers
+// =====================================================================
+// Force-refetch a single category from the YouTube API and overwrite all
+// cache layers (in-memory short-TTL cache, in-memory fallback, Redis short
+// + long-term mirrors). Use from the admin UI when a new release should
+// surface immediately instead of waiting for the 24h cycle.
+async function refreshCategory(category) {
+  const query = CATEGORY_QUERIES[category];
+  if (!query) {
+    const err = new Error('Unknown category');
+    err.code = 'UNKNOWN_CATEGORY';
+    throw err;
+  }
+  if (!API_KEY || API_KEY === 'YOUR_YOUTUBE_API_KEY_HERE') {
+    const err = new Error('YOUTUBE_API_KEY not configured');
+    err.code = 'NO_API_KEY';
+    throw err;
+  }
+
+  const cacheKey = `category:${category}::12`;
+  // Bypass quota breaker on manual refresh — admin explicitly asked for it.
+  const result = await fetchFromYouTube(query, '', 12);
+  cache.set(cacheKey, result);
+  fallbackCache.set(cacheKey, result);
+  redisSetJSON(`yt:${cacheKey}`, result, REDIS_TTL_SECONDS).catch(() => {});
+  redisSetJSON(longtermKey(cacheKey), result, REDIS_LONGTERM_TTL_SECONDS).catch(() => {});
+  console.log(`[admin] refreshed category ${category} — ${result.videos?.length || 0} videos`);
+  return result;
+}
+
+// List categories the admin UI can refresh.
+function listRefreshableCategories() {
+  return Object.keys(CATEGORY_QUERIES);
+}
+
+module.exports = {
+  searchVideos,
+  getVideosByCategory,
+  refreshTrending,
+  startTrendingRefresh,
+  isQuotaCoolingDown,
+  refreshCategory,
+  listRefreshableCategories,
+};

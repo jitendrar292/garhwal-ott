@@ -18,6 +18,7 @@ import PodcastPage from './pages/PodcastPage';
 import PahadiAIPage from './pages/PahadiAIPage';
 import NewsPage from './pages/NewsPage';
 import NewsAdminPage from './pages/NewsAdminPage';
+import YouTubeAdminPage from './pages/YouTubeAdminPage';
 
 export default function App() {
   return (
@@ -33,6 +34,7 @@ export default function App() {
             <Route path="/favorites" element={<FavoritesPage />} />
             <Route path="/feedback" element={<FeedbackPage />} />
             <Route path="/feedback/admin" element={<FeedbackAdminPage />} />
+            <Route path="/youtube/admin" element={<YouTubeAdminPage />} />
             <Route path="/music" element={<MusicPage />} />
             <Route path="/shorts" element={<ShortsPage />} />
             <Route path="/podcast" element={<PodcastPage />} />
