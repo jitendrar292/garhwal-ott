@@ -452,6 +452,13 @@ async function searchVideos(query, pageToken = '', maxResults = 12) {
 }
 
 async function getVideosByCategory(category, pageToken = '', maxResults = 12) {
+  const result = await getVideosByCategoryRaw(category, pageToken, maxResults);
+  // Always pin curated videos at the top of page 1, regardless of whether
+  // the data came from the API, Redis, in-memory cache or static fallback.
+  return pageToken ? result : withPinned(category, result);
+}
+
+async function getVideosByCategoryRaw(category, pageToken = '', maxResults = 12) {
   const query = CATEGORY_QUERIES[category];
   if (!query) throw new Error('Unknown category');
 
