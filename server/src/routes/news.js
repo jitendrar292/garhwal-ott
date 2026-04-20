@@ -181,12 +181,19 @@ router.post('/', async (req, res) => {
     await saveNews(articles);
 
     // Fire-and-forget push notification to all subscribed browsers.
+    //
+    // IMPORTANT (Android): use the static app icon for `icon` — Android Chrome
+    // silently drops the entire notification if the icon URL is slow to load,
+    // and `/api/news/:id/image` streams from Redis/disk which is too slow.
+    // The article image goes into `image` instead (rich preview), which is
+    // optional and won't block display if it fails.
     sendNotificationToAll({
       title: article.title.slice(0, 80),
       body: (article.summary || article.body).slice(0, 160),
       url: '/news',
       tag: `news-${article.id}`,
-      icon: article.imageUrl ? `/api/news/${article.id}/image` : '/icons/icon-192-v2.png',
+      icon: '/icons/icon-192-v2.png',
+      image: article.imageUrl ? `/api/news/${article.id}/image` : undefined,
     }).catch((e) => console.error('[news] push error:', e.message));
 
     res.status(201).json({ article });

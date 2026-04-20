@@ -152,8 +152,16 @@ self.addEventListener('push', (event) => {
     badge: '/icons/icon-192-v2.png',
     tag: data.tag || 'pahaditube',
     data: { url: data.url || '/' },
-    renotify: false,
+    renotify: true,
+    // Android Chrome needs vibrate for the notification to alert through
+    // DND-lite / silent profiles. Ignored on desktop and iOS.
+    vibrate: [200, 100, 200],
+    requireInteraction: false,
+    silent: false,
   };
+  // Optional rich preview image (Android only). Don't block on it — if it
+  // fails to load, the notification still shows with title + body + icon.
+  if (data.image) options.image = data.image;
 
   event.waitUntil(self.registration.showNotification(title, options));
 });

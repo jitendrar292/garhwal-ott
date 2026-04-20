@@ -14,6 +14,7 @@ const {
   addSubscription,
   removeSubscription,
   subscriptionCount,
+  sendNotificationToAll,
 } = require('../services/push');
 
 router.get('/vapid-public-key', (_req, res) => {
@@ -56,6 +57,23 @@ router.get('/count', async (req, res) => {
   }
   const count = await subscriptionCount();
   res.json({ count, enabled: isPushEnabled() });
+});
+
+// Admin: send a test push to every subscribed device. Useful for debugging
+// platform-specific delivery issues (e.g. Android battery optimization).
+//   curl -X POST 'https://<host>/api/push/test?key=<adminKey>'
+router.post('/test', async (req, res) => {
+  const adminKey = process.env.FEEDBACK_ADMIN_KEY || 'pahadi2026';
+  if (req.query.key !== adminKey) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  const result = await sendNotificationToAll({
+    title: 'PahadiTube test 🔔',
+    body: 'Agar yeh dikhe to notifications kaam kar rahe hain.',
+    url: '/',
+    tag: `test-${Date.now()}`,
+  });
+  res.json(result);
 });
 
 module.exports = router;
