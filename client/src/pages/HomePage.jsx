@@ -3,6 +3,7 @@ import ImageSlider from '../components/ImageSlider';
 import GenreGrid from '../components/GenreGrid';
 import VideoRow from '../components/VideoRow';
 import UpcomingFestivals from '../components/UpcomingFestivals';
+import UpcomingMelas from '../components/UpcomingMelas';
 import AboutSection from '../components/AboutSection';
 import { getVideosByCategory } from '../api/youtube';
 
@@ -63,6 +64,9 @@ export default function HomePage() {
 
         {/* Upcoming Festivals (Garhwal · Kumaon · Jaunsar) */}
         <UpcomingFestivals />
+
+        {/* Upcoming Melas (famous fairs across Uttarakhand) */}
+        <UpcomingMelas />
 
         {/* Trending */}
         <VideoRow
