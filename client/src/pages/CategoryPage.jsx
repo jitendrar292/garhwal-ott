@@ -7,9 +7,9 @@ const CATEGORY_LABELS = {
   movies: '🎬 Garhwali Movies',
   songs: '🎵 Garhwali Songs',
   comedy: '😂 Garhwali Comedy',
-  devotional: '🙏 Garhwali Devotional',
+  devotional: '� Jaagar & Devotional',
   folkdance: '💃 Folk Dances',
-  jaagar: '🔱 Jaagar',
+  jaagar: '🔱 Jaagar & Devotional',
   mela: '🎪 Mela & Festivals',
   theatre: '🎭 Theatre & Culture',
 };

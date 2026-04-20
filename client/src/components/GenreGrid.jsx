@@ -28,12 +28,12 @@ const GENRES = [
     badge: { text: '✨ New', cls: 'bg-fuchsia-600/80' },
   },
   {
-    name: 'Devotional',
+    name: 'Jaagar & Devotional',
     path: '/category/devotional',
-    emoji: '🙏',
-    gradient: 'from-emerald-500 via-teal-500 to-cyan-600',
-    glow: 'hover:shadow-emerald-500/50',
-    hint: 'भक्ति & आरती',
+    emoji: '🔱',
+    gradient: 'from-yellow-500 via-amber-600 to-orange-700',
+    glow: 'hover:shadow-amber-500/50',
+    hint: 'जागर · भजन · आरती',
   },
   {
     name: 'Vlogs',
@@ -58,14 +58,6 @@ const GENRES = [
     gradient: 'from-rose-500 via-red-500 to-orange-500',
     glow: 'hover:shadow-rose-500/50',
     hint: 'तांदी, छोलिया & more',
-  },
-  {
-    name: 'Jaagar',
-    path: '/category/jaagar',
-    emoji: '🔱',
-    gradient: 'from-yellow-500 via-amber-600 to-orange-700',
-    glow: 'hover:shadow-amber-500/50',
-    hint: 'देवभूमि की जागर',
   },
   {
     name: 'Mela',

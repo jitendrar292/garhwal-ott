@@ -265,14 +265,15 @@ const CATEGORY_QUERIES = {
   movies: 'Garhwali full movie',
   songs: 'Garhwali latest songs',
   comedy: 'Garhwali comedy',
-  devotional: 'Garhwali devotional bhajan',
+  devotional: 'Garhwali devotional bhajan jaagar jagar uttarakhand devbhoomi aarti bhakti ritual',
   trending: 'Garhwali trending songs OR comedy',
   vlogs: 'Pahadi vlogger uttarakhand village life OR pahadi lifestyle vlog',
   shorts: 'Pahadi garhwali shorts trending #shorts',
   reels: 'Garhwali pahadi trending reels uttarakhand viral pahadi reels kumaoni',
   podcast: 'Baramasa podcast Uttarakhand OR Ghughuti Uttarakhand documentary pahadi',
   folkdance: 'Garhwali folk dance tandi chholiya langvir nritya pandav nritya uttarakhand',
-  jaagar: 'Garhwali jaagar jagar uttarakhand devbhoomi ritual',
+  // Alias kept for old links/cache. Now points to the combined devotional query.
+  jaagar: 'Garhwali devotional bhajan jaagar jagar uttarakhand devbhoomi aarti bhakti ritual',
   mela: 'Uttarakhand mela fair festival garhwali kumaoni',
   theatre: 'Uttarakhand theatre natak HNBGU theatre department garhwali kumaoni rangmanch nukkad natak pahadi drama',
 };

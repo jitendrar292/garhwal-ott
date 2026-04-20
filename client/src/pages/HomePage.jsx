@@ -16,7 +16,7 @@ export default function HomePage() {
   const [blogs, setBlogs] = useState({ videos: [], loading: true, error: null });
   const [podcasts, setPodcasts] = useState({ videos: [], loading: true, error: null });
   const [folkdance, setFolkdance] = useState({ videos: [], loading: true, error: null });
-  const [jaagar, setJaagar] = useState({ videos: [], loading: true, error: null });
+  const [devotional, setDevotional] = useState({ videos: [], loading: true, error: null });
   const [mela, setMela] = useState({ videos: [], loading: true, error: null });
   const [theatre, setTheatre] = useState({ videos: [], loading: true, error: null });
   const [userLocation, setUserLocation] = useState(null);
@@ -37,7 +37,7 @@ export default function HomePage() {
     load('vlogs', setBlogs);
     load('podcast', setPodcasts);
     load('folkdance', setFolkdance);
-    load('jaagar', setJaagar);
+    load('devotional', setDevotional);
     load('mela', setMela);
     load('theatre', setTheatre);
 
@@ -138,13 +138,13 @@ export default function HomePage() {
           categoryLink="/category/folkdance"
         />
 
-        {/* Jaagar */}
+        {/* Jaagar & Devotional */}
         <VideoRow
-          title="🔱 Jaagar"
-          videos={jaagar.videos}
-          loading={jaagar.loading}
-          error={jaagar.error}
-          categoryLink="/category/jaagar"
+          title="🔱 Jaagar & Devotional"
+          videos={devotional.videos}
+          loading={devotional.loading}
+          error={devotional.error}
+          categoryLink="/category/devotional"
         />
 
         {/* Mela & Festivals */}
