@@ -91,11 +91,36 @@ export default function MusicPage() {
         <div className="space-y-1">
           {tracks.map((track, index) => {
             const isActive = currentTrack?.id === track.id;
+            const handleShare = (e) => {
+              e.stopPropagation();
+              const url = `${window.location.origin}/watch/${track.id}`;
+              const shareData = {
+                title: track.title,
+                text: `${track.title} — ${track.channelTitle || ''}`.trim(),
+                url,
+              };
+              if (navigator.share) {
+                navigator.share(shareData).catch(() => {});
+              } else {
+                navigator.clipboard
+                  .writeText(url)
+                  .then(() => alert('Link copied!'))
+                  .catch(() => {});
+              }
+            };
             return (
-              <button
+              <div
                 key={track.id}
+                role="button"
+                tabIndex={0}
                 onClick={() => handlePlay(track)}
-                className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all border
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handlePlay(track);
+                  }
+                }}
+                className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all border cursor-pointer
                   ${isActive
                     ? 'bg-primary-500/10 border-primary-500/30 shadow-sm shadow-primary-500/10'
                     : 'bg-dark-800/40 border-transparent hover:bg-dark-700/60'
@@ -132,11 +157,23 @@ export default function MusicPage() {
                   <p className="text-xs text-gray-500 truncate">{track.channelTitle}</p>
                 </div>
 
+                {/* Share button */}
+                <button
+                  onClick={handleShare}
+                  className="p-2 rounded-full text-gray-400 hover:text-white hover:bg-dark-600 transition-colors shrink-0"
+                  aria-label="Share"
+                  title="Share"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                  </svg>
+                </button>
+
                 {/* Play icon */}
                 <svg className={`w-5 h-5 shrink-0 ${isActive ? 'text-primary-400' : 'text-gray-600'}`} fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
                 </svg>
-              </button>
+              </div>
             );
           })}
         </div>

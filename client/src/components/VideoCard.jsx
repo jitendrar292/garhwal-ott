@@ -15,6 +15,25 @@ export default function VideoCard({ video, compact }) {
     }
   };
 
+  const handleShare = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const url = `${window.location.origin}/watch/${video.id}`;
+    const shareData = {
+      title: video.title,
+      text: `${video.title} — ${video.channelTitle || ''}`.trim(),
+      url,
+    };
+    if (navigator.share) {
+      navigator.share(shareData).catch(() => {});
+    } else {
+      navigator.clipboard
+        .writeText(url)
+        .then(() => alert('Link copied!'))
+        .catch(() => {});
+    }
+  };
+
   return (
     <Link
       to={`/watch/${video.id}`}
@@ -54,6 +73,18 @@ export default function VideoCard({ video, compact }) {
               d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
               clipRule="evenodd"
             />
+          </svg>
+        </button>
+        {/* Share button */}
+        <button
+          onClick={handleShare}
+          className="absolute top-2 right-12 p-2 rounded-full transition-all duration-200
+                     bg-black/50 text-white/70 opacity-0 group-hover:opacity-100 hover:bg-primary-500 hover:text-white"
+          aria-label="Share"
+          title="Share"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
           </svg>
         </button>
       </div>
