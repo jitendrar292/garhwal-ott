@@ -2,9 +2,7 @@ import { useEffect, useState } from 'react';
 import ImageSlider from '../components/ImageSlider';
 import GenreGrid from '../components/GenreGrid';
 import VideoRow from '../components/VideoRow';
-import UpcomingFestivals from '../components/UpcomingFestivals';
-import UpcomingMelas from '../components/UpcomingMelas';
-import UpcomingEvents from '../components/UpcomingEvents';
+import UpcomingHappenings from '../components/UpcomingHappenings';
 import AboutSection from '../components/AboutSection';
 import { getVideosByCategory } from '../api/youtube';
 
@@ -65,14 +63,8 @@ export default function HomePage() {
         {/* Genre cards */}
         <GenreGrid />
 
-        {/* Upcoming Festivals (Garhwal · Kumaon · Jaunsar) */}
-        <UpcomingFestivals />
-
-        {/* Upcoming Melas (famous fairs across Uttarakhand) */}
-        <UpcomingMelas />
-
-        {/* Theatre · Art · Music events (universities + local) */}
-        <UpcomingEvents />
+        {/* Festivals · Melas · Theatre / Events — unified row with type filters */}
+        <UpcomingHappenings />
 
         {/* Trending */}
         <VideoRow
