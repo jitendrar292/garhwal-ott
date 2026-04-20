@@ -76,4 +76,25 @@ router.post('/test', async (req, res) => {
   res.json(result);
 });
 
+// Admin: send a custom push to every subscribed device.
+//   POST /api/push/send?key=<adminKey>
+//   Body: { title, body, url?, tag? }
+router.post('/send', async (req, res) => {
+  const adminKey = process.env.FEEDBACK_ADMIN_KEY || 'pahadi2026';
+  if (req.query.key !== adminKey) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  const { title, body, url, tag } = req.body || {};
+  if (!title || typeof title !== 'string') {
+    return res.status(400).json({ error: 'title is required' });
+  }
+  const result = await sendNotificationToAll({
+    title: String(title).slice(0, 80),
+    body: String(body || '').slice(0, 200),
+    url: url || '/',
+    tag: tag || `custom-${Date.now()}`,
+  });
+  res.json(result);
+});
+
 module.exports = router;

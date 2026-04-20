@@ -1,7 +1,41 @@
 import { useState, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import FESTIVALS from '../data/festivals';
+import MELAS from '../data/melas';
+import EVENTS from '../data/events';
 
 const CATEGORIES = ['general', 'politics', 'culture', 'sports', 'weather', 'development'];
+
+// Pick the next upcoming entry across festivals + melas + events. Returns
+// a normalised { type, name, date, location, description } or null when
+// nothing is upcoming.
+function nextHappening() {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const todayMs = today.getTime();
+  const all = [
+    ...FESTIVALS.map((f) => ({ type: 'Festival', name: f.name, nameLocal: f.nameLocal, date: f.date, location: f.region, description: f.description, emoji: f.emoji })),
+    ...MELAS.map((m) => ({ type: 'Mela', name: m.name, nameLocal: m.nameLocal, date: m.date, location: m.region || m.location, description: m.description, emoji: m.emoji })),
+    ...EVENTS.map((e) => ({ type: e.category === 'theatre' ? 'Theatre' : e.category === 'music' ? 'Music' : e.category === 'fashion' ? 'Fashion' : e.category === 'art' ? 'Art' : e.category === 'literary' ? 'Literary' : 'Event', name: e.name, nameLocal: e.nameLocal, date: e.date, location: e.location, description: e.description, emoji: e.emoji })),
+  ]
+    .filter((i) => new Date(i.date + 'T00:00:00').getTime() >= todayMs)
+    .sort((a, b) => a.date.localeCompare(b.date));
+  return all[0] || null;
+}
+
+function daysUntil(iso) {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  return Math.round((new Date(iso + 'T00:00:00') - today) / 86400000);
+}
+
+function whenLabel(d) {
+  if (d === 0) return 'aaj';
+  if (d === 1) return 'kal';
+  if (d <= 30) return `${d} din me`;
+  const w = Math.round(d / 7);
+  if (d <= 90) return `${w} hafte me`;
+  const m = Math.round(d / 30);
+  return `${m} mahine me`;
+}
 
 export default function NewsAdminPage() {
   const [key, setKey] = useState('');
@@ -224,11 +258,53 @@ export default function NewsAdminPage() {
     }
   };
 
+  const sendHappeningPush = async () => {
+    setError('');
+    setSuccess('');
+    const item = nextHappening();
+    if (!item) {
+      setError('No upcoming happenings to notify about.');
+      return;
+    }
+    const days = daysUntil(item.date);
+    const when = whenLabel(days);
+    const title = `${item.emoji || '🎉'} ${item.type}: ${item.name}`;
+    const bodyParts = [];
+    bodyParts.push(`${when} — ${item.location}`);
+    if (item.description) bodyParts.push(item.description);
+    const body = bodyParts.join(' • ');
+    if (!confirm(`Send push to all devices?\n\n${title}\n${body}`)) return;
+    try {
+      const res = await fetch(`/api/push/send?key=${encodeURIComponent(key)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title,
+          body,
+          url: '/',
+          tag: `happening-${item.date}-${item.name}`,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || `Failed (${res.status})`);
+      setSuccess(`Happening push sent — sent: ${data.sent ?? 0}, failed: ${data.failed ?? 0}`);
+    } catch (err) {
+      setError(`Happening push failed: ${err.message}`);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">News Admin</h1>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 flex-wrap">
+          <button
+            onClick={sendHappeningPush}
+            className="text-sm px-3 py-1.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30 hover:bg-amber-500/25"
+            title="Send a push about the next upcoming festival/mela/event"
+          >
+            🎉 Notify next happening
+          </button>
           <button
             onClick={sendTestPush}
             className="text-sm px-3 py-1.5 rounded-full bg-primary-500/15 text-primary-300 border border-primary-500/30 hover:bg-primary-500/25"
