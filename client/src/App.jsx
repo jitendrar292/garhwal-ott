@@ -4,6 +4,7 @@ import BottomNav from './components/BottomNav';
 import Footer from './components/Footer';
 import FloatingPlayer from './components/FloatingPlayer';
 import InstallBanner from './components/InstallBanner';
+import IntroSound from './components/IntroSound';
 import { MusicProvider } from './context/MusicContext';
 import HomePage from './pages/HomePage';
 import CategoryPage from './pages/CategoryPage';
@@ -47,6 +48,7 @@ export default function App() {
         <FloatingPlayer />
         <BottomNav />
         <InstallBanner />
+        <IntroSound />
       </div>
     </MusicProvider>
   );
