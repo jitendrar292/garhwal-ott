@@ -21,15 +21,38 @@ export default function NewsPage() {
 
   useEffect(() => {
     let alive = true;
-    setLoading(true);
-    fetch('/api/news')
-      .then((r) => r.json())
-      .then((data) => {
-        if (alive) setArticles(data.articles || []);
-      })
-      .catch(() => {})
-      .finally(() => alive && setLoading(false));
-    return () => { alive = false; };
+    const load = () => {
+      setLoading(true);
+      fetch('/api/news', { cache: 'no-store' })
+        .then((r) => r.json())
+        .then((data) => {
+          if (alive) setArticles(data.articles || []);
+        })
+        .catch(() => {})
+        .finally(() => alive && setLoading(false));
+    };
+    load();
+
+    // Refetch when the user clicks a push notification (handled in sw.js)
+    // or when the tab becomes visible again — ensures latest news is shown.
+    const onSwMessage = (event) => {
+      if (event.data?.type === 'NOTIFICATION_CLICK') load();
+    };
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') load();
+    };
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.addEventListener('message', onSwMessage);
+    }
+    document.addEventListener('visibilitychange', onVisible);
+
+    return () => {
+      alive = false;
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.removeEventListener('message', onSwMessage);
+      }
+      document.removeEventListener('visibilitychange', onVisible);
+    };
   }, []);
 
   const filtered = category === 'all'

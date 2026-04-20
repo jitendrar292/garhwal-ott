@@ -169,7 +169,12 @@ self.addEventListener('notificationclick', (event) => {
         const url = new URL(client.url);
         if (url.origin === self.location.origin) {
           await client.focus();
-          if ('navigate' in client) await client.navigate(target);
+          // Tell the page to refresh its data (e.g. NewsPage refetches /api/news).
+          // We post BEFORE navigate so the listener exists if we're already on the target route.
+          try { client.postMessage({ type: 'NOTIFICATION_CLICK', url: target }); } catch { /* noop */ }
+          if ('navigate' in client) {
+            try { await client.navigate(target); } catch { /* same-route navigate can throw — ignore */ }
+          }
           return;
         }
       } catch { /* noop */ }
