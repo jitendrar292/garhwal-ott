@@ -133,11 +133,51 @@ function normaliseEvent(e) {
   };
 }
 
+async function notifyHappening(item) {
+  let key = localStorage.getItem('pahadi_admin_key') || '';
+  if (!key) {
+    key = window.prompt('Enter admin key to send notification:') || '';
+    if (!key) return;
+    localStorage.setItem('pahadi_admin_key', key);
+  }
+  const tag = TYPES[item.type];
+  const days = daysUntil(item.date);
+  const when = days === 0 ? 'today' : days === 1 ? 'tomorrow' : `in ${days} days`;
+  const title = `${item.emoji || '🎉'} ${item.name}`;
+  const body = `${tag ? tag.label + ' · ' : ''}${item.location || 'Uttarakhand'} · ${when}`;
+  try {
+    const res = await fetch(`/api/push/send?key=${encodeURIComponent(key)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: title.slice(0, 80),
+        body: body.slice(0, 200),
+        url: '/',
+        tag: `happening-${item.id}`,
+      }),
+    });
+    if (res.status === 401) {
+      localStorage.removeItem('pahadi_admin_key');
+      alert('Wrong admin key. Try again.');
+      return;
+    }
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      alert('Failed to send: ' + (data.error || res.status));
+      return;
+    }
+    alert(`Sent to ${data.sent ?? '?'} device(s)${data.failed ? `, ${data.failed} failed` : ''}.`);
+  } catch (err) {
+    alert('Network error: ' + err.message);
+  }
+}
+
 function HappeningCard({ item, isPast }) {
   const days = daysUntil(item.date);
   const tag = TYPES[item.type];
   const dateLabel = formatRange(item.date, item.endDate);
   const timeLabel = isPast ? pastLabel(days) : countdownLabel(days);
+  const isAdmin = typeof window !== 'undefined' && !!localStorage.getItem('pahadi_admin_key');
 
   return (
     <article
@@ -188,6 +228,16 @@ function HappeningCard({ item, isPast }) {
         >
           Learn more →
         </a>
+      )}
+      {!isPast && (
+        <button
+          type="button"
+          onClick={() => notifyHappening(item)}
+          className="mt-3 w-full text-[11px] font-bold uppercase tracking-wider text-white bg-black/35 hover:bg-black/55 rounded-full px-3 py-1.5 ring-1 ring-white/20 transition-colors"
+          title={isAdmin ? 'Send push notification to all devices' : 'Admin only — will ask for key'}
+        >
+          🔔 Notify {isAdmin ? '' : '(admin)'}
+        </button>
       )}
     </article>
   );
