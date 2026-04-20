@@ -46,7 +46,7 @@ export default function UpcomingFestivals() {
   return (
     <section className="my-8">
       <div className="flex items-baseline justify-between mb-4">
-        <h2 className="text-xl sm:text-2xl font-bold text-white">
+        <h2 className="text-lg font-bold text-white">
           🪔 Upcoming Festivals
         </h2>
         <span className="text-xs sm:text-sm text-white/50">
