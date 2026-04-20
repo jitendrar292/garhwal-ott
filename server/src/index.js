@@ -11,7 +11,7 @@ const youtubeRoutes = require('./routes/youtube');
 const chatRoutes = require('./routes/chat');
 const favoritesRoutes = require('./routes/favorites');
 const newsRoutes = require('./routes/news');
-const { getVisits, incrementVisits, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback } = require('./services/store');
+const { getVisits, incrementVisits, getOpens, incrementOpens, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback } = require('./services/store');
 const { startTrendingRefresh } = require('./services/youtubeService');
 
 const app = express();
@@ -130,19 +130,22 @@ app.get('/api/captions/:videoId', async (req, res) => {
   }
 });
 
-// Visit counter — unique IPs only
+// Visit counter — unique IPs + total page opens
 app.post('/api/visits', async (req, res) => {
   const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
   const userAgent = req.headers['user-agent'] || '';
   const fresh = await isNewIp(ip);
-  const count = fresh ? await incrementVisits() : await getVisits();
+  const [count, opens] = await Promise.all([
+    fresh ? incrementVisits() : getVisits(),
+    incrementOpens(),
+  ]);
   if (fresh) logVisitor(ip, userAgent).catch(() => {});
-  res.json({ count });
+  res.json({ count, opens });
 });
 
 app.get('/api/visits', async (_req, res) => {
-  const count = await getVisits();
-  res.json({ count });
+  const [count, opens] = await Promise.all([getVisits(), getOpens()]);
+  res.json({ count, opens });
 });
 
 // Feedback endpoints

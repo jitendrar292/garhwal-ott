@@ -8,11 +8,13 @@ const UPSTASH_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
 const VISIT_SEED = parseInt(process.env.VISIT_SEED || '0', 10);
 const UPSTASH_ENABLED = !!(UPSTASH_URL && UPSTASH_TOKEN);
 const REDIS_KEY = 'pahadi_visits';
+const OPENS_KEY = 'pahadi_opens';
 const VISITORS_KEY = 'pahadi_visitors';
 const SEEN_IPS_KEY = 'pahadi_seen_ips';
 const MAX_VISITORS = 500; // keep last 500 visitor records
 
 let memVisits = VISIT_SEED;
+let memOpens = 0;
 let memFeedback = [];
 let memVisitors = [];
 let memSeenIps = new Set();
@@ -120,6 +122,32 @@ async function incrementVisits() {
   }
   memVisits++;
   return memVisits;
+}
+
+// Total page opens — increments on every visit (not deduplicated by IP).
+async function getOpens() {
+  if (UPSTASH_ENABLED) {
+    try {
+      const val = await redisCmd('GET', OPENS_KEY);
+      return parseInt(val || '0', 10);
+    } catch (err) {
+      console.error('Upstash getOpens error:', err.message);
+    }
+  }
+  return memOpens;
+}
+
+async function incrementOpens() {
+  if (UPSTASH_ENABLED) {
+    try {
+      const val = await redisCmd('INCR', OPENS_KEY);
+      return parseInt(val, 10);
+    } catch (err) {
+      console.error('Upstash incrementOpens error:', err.message);
+    }
+  }
+  memOpens++;
+  return memOpens;
 }
 
 async function logVisitor(ip, userAgent = '') {
@@ -426,5 +454,5 @@ async function seedAndDeduplicateVisitors() {
   }
 }
 
-module.exports = { getVisits, incrementVisits, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback, redisGetJSON, redisSetJSON, isRedisEnabled, logChatExchange, getChatHistory, getFavorites, saveFavorites, addFavorite, removeFavorite };
+module.exports = { getVisits, incrementVisits, getOpens, incrementOpens, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback, redisGetJSON, redisSetJSON, isRedisEnabled, logChatExchange, getChatHistory, getFavorites, saveFavorites, addFavorite, removeFavorite };
 
