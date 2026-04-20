@@ -278,20 +278,56 @@ const CATEGORY_QUERIES = {
   theatre: 'Uttarakhand theatre natak HNBGU theatre department garhwali kumaoni rangmanch nukkad natak pahadi drama',
 };
 
-async function fetchFromYouTube(query, pageToken = '', maxResults = 12) {
+// Categories that should be sourced from one specific YouTube channel
+// (newest uploads first) instead of a free-text search. Maps category ->
+// channel handle (without the leading '@'). The handle is resolved to a
+// channelId on first use and cached for the process lifetime.
+const CATEGORY_CHANNEL_HANDLES = {
+  theatre: 'theatredepartment_hnbgu',
+};
+
+const channelIdCache = new Map(); // handle -> channelId
+
+async function resolveChannelId(handle) {
+  if (channelIdCache.has(handle)) return channelIdCache.get(handle);
+  if (!API_KEY || API_KEY === 'YOUR_YOUTUBE_API_KEY_HERE') {
+    throw new Error('YouTube API key is not configured');
+  }
+  const params = new URLSearchParams({
+    part: 'id',
+    forHandle: `@${handle}`,
+    key: API_KEY,
+  });
+  const res = await fetch(`${YOUTUBE_API_BASE}/channels?${params.toString()}`);
+  if (!res.ok) {
+    if (res.status === 403) {
+      tripQuotaBreaker();
+      throw new Error('QUOTA_EXCEEDED');
+    }
+    throw new Error(`channels API returned ${res.status}`);
+  }
+  const data = await res.json();
+  const id = data.items && data.items[0] && data.items[0].id;
+  if (!id) throw new Error(`Channel handle not found: @${handle}`);
+  channelIdCache.set(handle, id);
+  return id;
+}
+
+async function fetchFromYouTube(query, pageToken = '', maxResults = 12, options = {}) {
   if (!API_KEY || API_KEY === 'YOUR_YOUTUBE_API_KEY_HERE') {
     throw new Error('YouTube API key is not configured');
   }
 
   const params = new URLSearchParams({
     part: 'snippet',
-    q: query,
     type: 'video',
     maxResults: String(Math.min(Math.max(maxResults, 1), 50)),
     key: API_KEY,
     videoEmbeddable: 'true',
-    order: 'relevance',
+    order: options.order || 'relevance',
   });
+  if (query) params.set('q', query);
+  if (options.channelId) params.set('channelId', options.channelId);
 
   if (pageToken) {
     params.set('pageToken', pageToken);
@@ -404,7 +440,15 @@ async function getVideosByCategory(category, pageToken = '', maxResults = 12) {
   }
 
   try {
-    const result = await fetchFromYouTube(query, pageToken, maxResults);
+    const handle = CATEGORY_CHANNEL_HANDLES[category];
+    let result;
+    if (handle) {
+      // Channel-scoped category — newest uploads from a specific channel.
+      const channelId = await resolveChannelId(handle);
+      result = await fetchFromYouTube('', pageToken, maxResults, { channelId, order: 'date' });
+    } else {
+      result = await fetchFromYouTube(query, pageToken, maxResults);
+    }
     cache.set(cacheKey, result);
     fallbackCache.set(cacheKey, result);
     redisSetJSON(`yt:${cacheKey}`, result, REDIS_TTL_SECONDS).catch(() => {});
