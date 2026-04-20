@@ -20,6 +20,12 @@ const ALLOWED_MIME = new Set(['image/jpeg', 'image/png', 'image/gif', 'image/web
 // In-memory fallback when Redis is down
 let memNews = [];
 
+// Short-lived cache for the public list endpoint. Avoids hitting Upstash on
+// every visit (which can be slow from cold or geographically distant regions).
+let listCache = null;       // { at: number, payload: { articles: [...] } }
+const LIST_TTL_MS = 60 * 1000; // 60 seconds
+function invalidateListCache() { listCache = null; }
+
 async function loadNews() {
   if (isRedisEnabled()) {
     const data = await redisGetJSON(REDIS_KEY);
@@ -30,6 +36,7 @@ async function loadNews() {
 
 async function saveNews(list) {
   memNews = list;
+  invalidateListCache();
   if (isRedisEnabled()) {
     // TTL 0 = no expiry (SETEX with huge TTL)
     await redisSetJSON(REDIS_KEY, list, 365 * 24 * 3600);
@@ -43,19 +50,62 @@ async function saveNews(list) {
 // expect the client to send JSON + base64 image, which is simpler.
 
 // ── Public: list news ──
+// Strips the (potentially multi-MB) base64 image data URI from each entry
+// and replaces it with a thin URL that the browser fetches separately and
+// caches for a year. Cuts list-response size from MBs to KBs.
 router.get('/', async (_req, res) => {
   try {
+    if (listCache && Date.now() - listCache.at < LIST_TTL_MS) {
+      res.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=60');
+      return res.json(listCache.payload);
+    }
+
     const articles = await loadNews();
     // Return newest first, strip large fields for list view
     const list = articles
       .sort((a, b) => b.createdAt - a.createdAt)
       .map(({ id, title, summary, imageUrl, category, createdAt }) => ({
-        id, title, summary, imageUrl, category, createdAt,
+        id,
+        title,
+        summary,
+        // Replace base64 data URI with a URL the browser can cache.
+        imageUrl: imageUrl ? `/api/news/${id}/image` : '',
+        category,
+        createdAt,
       }));
-    res.json({ articles: list });
+
+    const payload = { articles: list };
+    listCache = { at: Date.now(), payload };
+    res.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=60');
+    res.json(payload);
   } catch (err) {
     console.error('[news] list error:', err.message);
     res.status(500).json({ error: 'Failed to load news' });
+  }
+});
+
+// ── Public: article image (binary, long-cached) ──
+// Decodes the base64 data URI stored with the article and serves the raw
+// bytes with a 1-year immutable cache header. The browser then never
+// re-downloads it, and the JSON list payload stays tiny.
+router.get('/:id/image', async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if (!id || isNaN(id)) return res.status(400).send('Bad id');
+    const articles = await loadNews();
+    const article = articles.find((a) => a.id === id);
+    if (!article || !article.imageUrl) return res.status(404).send('Not found');
+
+    const m = article.imageUrl.match(/^data:(image\/[\w+.-]+);base64,(.+)$/);
+    if (!m) return res.status(404).send('Not found');
+
+    const buf = Buffer.from(m[2], 'base64');
+    res.set('Content-Type', m[1]);
+    res.set('Cache-Control', 'public, max-age=31536000, immutable');
+    res.send(buf);
+  } catch (err) {
+    console.error('[news] image error:', err.message);
+    res.status(500).send('Server error');
   }
 });
 
@@ -65,7 +115,14 @@ router.get('/:id', async (req, res) => {
     const articles = await loadNews();
     const article = articles.find((a) => a.id === Number(req.params.id));
     if (!article) return res.status(404).json({ error: 'Article not found' });
-    res.json({ article });
+    // Same trick as the list endpoint: send a thin URL instead of the full
+    // base64 data URI so the browser can cache the image independently.
+    const safe = {
+      ...article,
+      imageUrl: article.imageUrl ? `/api/news/${article.id}/image` : '',
+    };
+    res.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=60');
+    res.json({ article: safe });
   } catch (err) {
     console.error('[news] get error:', err.message);
     res.status(500).json({ error: 'Failed to load article' });
