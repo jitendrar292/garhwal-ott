@@ -218,6 +218,6 @@ app.listen(PORT, () => {
   console.log(`🎬 PahadiTube server running on port ${PORT}`);
   // One-time startup: clean duplicate visitor records + seed seen-IPs set
   seedAndDeduplicateVisitors().catch(() => {});
-  // Pre-warm music tabs + key categories now and every 6h
+  // Pre-warm music tabs + key categories now and every 24h
   startTrendingRefresh();
 });

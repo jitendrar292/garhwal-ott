@@ -4,18 +4,18 @@ const { redisGetJSON, redisSetJSON, isRedisEnabled } = require('./store');
 const YOUTUBE_API_BASE = 'https://www.googleapis.com/youtube/v3';
 const API_KEY = process.env.YOUTUBE_API_KEY;
 
-// Cache results for 6 hours to save API quota (free tier = 10,000 units/day)
-const cache = new NodeCache({ stdTTL: 21600, checkperiod: 3600 });
+// Cache results for 24 hours to save API quota (free tier = 10,000 units/day)
+const cache = new NodeCache({ stdTTL: 86400, checkperiod: 3600 });
 
 // Fallback cache that never expires — stores last good response
 const fallbackCache = new NodeCache({ stdTTL: 0 });
 
 // Redis (Upstash) long-term cache: survives server restarts and cold starts
-// on Render's free tier. TTL matches the 6h refresh cycle.
-const REDIS_TTL_SECONDS = 6 * 60 * 60;
+// on Render's free tier. TTL matches the 24h refresh cycle.
+const REDIS_TTL_SECONDS = 24 * 60 * 60;
 
 // Long-term Redis mirror — kept for 30 days so we always have *something*
-// fresh-ish to serve even after quota exhaustion + Redis 6h TTL expiry +
+// fresh-ish to serve even after quota exhaustion + Redis 24h TTL expiry +
 // server cold-start (where in-memory fallbackCache is empty).
 const REDIS_LONGTERM_TTL_SECONDS = 30 * 24 * 60 * 60;
 const longtermKey = (k) => `yt:lt:${k}`;
@@ -429,12 +429,12 @@ async function getVideosByCategory(category, pageToken = '', maxResults = 12) {
 // =====================================================================
 // Trending refresh job
 // =====================================================================
-// Pre-warms the most-visited surfaces (music tabs + key categories) every 6h
+// Pre-warms the most-visited surfaces (music tabs + key categories) every 24h
 // so users always hit the in-memory cache and we burn the daily YouTube quota
 // once instead of per-request. Safe to run when Redis is missing — just
 // populates the in-memory cache.
 
-const TRENDING_REFRESH_MS = 6 * 60 * 60 * 1000; // 6 hours
+const TRENDING_REFRESH_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 // Mirrors the music tabs in client/src/pages/MusicPage.jsx
 const TRENDING_SEARCH_QUERIES = [
