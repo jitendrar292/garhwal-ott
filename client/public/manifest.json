@@ -2,8 +2,16 @@
   "name": "PahadiTube - Garhwali OTT",
   "short_name": "PahadiTube",
   "description": "Watch latest Garhwali movies, songs, comedy and devotional content",
+  "id": "/",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "launch_handler": {
+    "client_mode": ["navigate-existing", "auto"]
+  },
+  "capture_links": "existing-client-navigate",
+  "handle_links": "preferred",
   "background_color": "#0b0e1a",
   "theme_color": "#0b0e1a",
   "orientation": "any",
