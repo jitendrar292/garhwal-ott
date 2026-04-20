@@ -40,34 +40,34 @@ function formatRange(start, end) {
 }
 
 function countdownLabel(days) {
-  if (days === 0) return 'Today!';
-  if (days === 1) return 'Tomorrow';
-  if (days <= 30) return `in ${days} days`;
+  if (days === 0) return 'आज!';
+  if (days === 1) return 'सुबेर';
+  if (days <= 30) return `${days} दिन बचिं`;
   const weeks = Math.round(days / 7);
-  if (days <= 90) return `in ${weeks} weeks`;
+  if (days <= 90) return `${weeks} हफ्ता बचिं`;
   const months = Math.round(days / 30);
-  return `in ${months} months`;
+  return `${months} महीना बचिं`;
 }
 
 function pastLabel(days) {
   const d = -days;
-  if (d <= 1) return 'Yesterday';
-  if (d <= 30) return `${d} days ago`;
+  if (d <= 1) return 'ब्यखुनी';
+  if (d <= 30) return `${d} दिन पैल्ली`;
   const weeks = Math.round(d / 7);
-  if (d <= 90) return `${weeks} weeks ago`;
+  if (d <= 90) return `${weeks} हफ्ता पैल्ली`;
   const months = Math.round(d / 30);
-  return `${months} months ago`;
+  return `${months} महीना पैल्ली`;
 }
 
 // Unified type system. Keys are stable; labels + colours drive the UI.
 const TYPES = {
-  festival: { label: 'Festival', cls: 'bg-amber-600/85' },
-  mela:     { label: 'Mela',     cls: 'bg-lime-600/85' },
-  theatre:  { label: 'Theatre',  cls: 'bg-purple-600/85' },
-  music:    { label: 'Music',    cls: 'bg-emerald-600/85' },
-  fashion:  { label: 'Fashion',  cls: 'bg-pink-600/85' },
-  art:      { label: 'Art',      cls: 'bg-cyan-600/85' },
-  literary: { label: 'Literary', cls: 'bg-yellow-600/85' },
+  festival: { label: 'त्योहार', cls: 'bg-amber-500/85',   solid: 'bg-amber-700'   },
+  mela:     { label: 'मेला',    cls: 'bg-lime-500/85',    solid: 'bg-lime-700'    },
+  theatre:  { label: 'रंगमंच',  cls: 'bg-purple-500/85',  solid: 'bg-purple-700'  },
+  music:    { label: 'गीत',     cls: 'bg-emerald-500/85', solid: 'bg-emerald-700' },
+  fashion:  { label: 'पैरण',    cls: 'bg-pink-500/85',    solid: 'bg-pink-700'    },
+  art:      { label: 'कला',     cls: 'bg-cyan-500/85',    solid: 'bg-cyan-700'    },
+  literary: { label: 'साहित्य', cls: 'bg-yellow-500/85',  solid: 'bg-yellow-700'  },
 };
 
 // Event-data 'category' values that are really "events" (not festivals).
@@ -139,15 +139,26 @@ function HappeningCard({ item, isPast }) {
   const tag = TYPES[item.type];
   const dateLabel = formatRange(item.date, item.endDate);
   const timeLabel = isPast ? pastLabel(days) : countdownLabel(days);
+  const solidBg = (tag && tag.solid) || 'bg-slate-700';
 
   return (
     <article
-      className={`w-[270px] sm:w-[290px] rounded-2xl bg-gradient-to-br ${item.bg} p-4 shadow-lg shadow-black/30 ring-1 ring-white/10 hover:scale-[1.02] transition-transform ${isPast ? 'opacity-80' : ''}`}
+      className={`relative w-[260px] sm:w-[280px] rounded-2xl ${solidBg} p-4 shadow-lg shadow-black/30 ring-1 ring-white/10 hover:scale-[1.02] hover:ring-white/30 transition-all overflow-hidden ${isPast ? 'opacity-80' : ''}`}
     >
+      {/* dot pattern overlay (matches Pahadi AI card style) */}
+      <div
+        className="absolute inset-0 opacity-10 pointer-events-none"
+        style={{
+          backgroundImage:
+            'radial-gradient(circle at 30% 20%, #fff 1px, transparent 1px)',
+          backgroundSize: '10px 10px',
+        }}
+      />
+      <div className="relative">
       <div className="flex items-start justify-between mb-2 gap-2">
         <div className="text-4xl drop-shadow">{item.emoji}</div>
         <div className="text-right">
-          <div className="text-[10px] uppercase tracking-wider font-bold text-white/85 bg-black/30 rounded-full px-2 py-0.5">
+          <div className="text-[10px] uppercase tracking-wider font-bold text-white/90 bg-black/35 rounded-full px-2 py-0.5">
             {timeLabel}
           </div>
           <div className="mt-1 text-[11px] text-white/85">{dateLabel}</div>
@@ -156,13 +167,13 @@ function HappeningCard({ item, isPast }) {
 
       <div className="flex items-center gap-1.5 mb-1 flex-wrap">
         {tag && (
-          <span className={`text-[9px] uppercase tracking-wider font-bold text-white px-2 py-0.5 rounded-full ${tag.cls}`}>
+          <span className={`text-[10px] font-bold text-white px-2 py-0.5 rounded-full ${tag.cls}`}>
             {tag.label}
           </span>
         )}
         {isPast && (
-          <span className="text-[9px] uppercase tracking-wider font-bold text-white/90 px-2 py-0.5 rounded-full bg-black/40">
-            Recent
+          <span className="text-[10px] font-bold text-white/90 px-2 py-0.5 rounded-full bg-black/45">
+            हाल का
           </span>
         )}
       </div>
@@ -172,10 +183,10 @@ function HappeningCard({ item, isPast }) {
         <div className="text-sm text-white/90 font-medium">{item.nameLocal}</div>
       )}
       {item.location && (
-        <div className="mt-1 text-[11px] text-white/75 font-medium">📍 {item.location}</div>
+        <div className="mt-1 text-[11px] text-white/80 font-medium">📍 {item.location}</div>
       )}
       {item.organizer && (
-        <div className="text-[11px] text-white/65">{item.organizer}</div>
+        <div className="text-[11px] text-white/70">{item.organizer}</div>
       )}
       <p className="mt-2 text-[12px] text-white/85 leading-snug line-clamp-3">
         {item.description}
@@ -187,9 +198,10 @@ function HappeningCard({ item, isPast }) {
           rel="noopener noreferrer"
           className="mt-2 inline-block text-[11px] font-semibold text-white/95 underline underline-offset-2 hover:text-white"
         >
-          Learn more →
+          और जाणा →
         </a>
       )}
+      </div>
     </article>
   );
 }
@@ -239,12 +251,13 @@ export default function UpcomingHappenings() {
   // Build the filter pills in a stable order, only for types that exist.
   const filterOrder = ['all', 'festival', 'mela', 'theatre', 'music', 'fashion', 'art', 'literary'];
   const filters = filterOrder.filter((k) => k === 'all' || presentTypes.has(k));
+  const filterLabel = (k) => (k === 'all' ? 'सब' : TYPES[k].label);
 
   return (
     <section className="my-8">
       <div className="flex items-center justify-between mb-3 gap-3">
         <h2 className="text-lg font-bold text-white">
-          🎉 Upcoming in Uttarakhand
+          🎉 उत्तराखण्ड मा आणे वाला
         </h2>
         <NotifyButton />
       </div>
@@ -254,12 +267,12 @@ export default function UpcomingHappenings() {
         {filters.map((key) => {
           const isActive = filter === key;
           const tag = TYPES[key];
-          const label = key === 'all' ? 'All' : tag.label;
+          const label = filterLabel(key);
           return (
             <button
               key={key}
               onClick={() => setFilter(key)}
-              className={`shrink-0 text-[11px] uppercase tracking-wider font-bold px-3 py-1 rounded-full transition-colors ${
+              className={`shrink-0 text-[11px] font-bold px-3 py-1 rounded-full transition-colors ${
                 isActive
                   ? key === 'all'
                     ? 'bg-white text-dark-950'
