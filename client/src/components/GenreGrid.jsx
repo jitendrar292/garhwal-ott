@@ -1,125 +1,143 @@
 import { Link } from 'react-router-dom';
 
+// Card style matches the Pahadi AI topic tiles: solid colour, centred
+// emoji, two-line Garhwali label, dotted texture overlay.
 const GENRES = [
   {
-    name: 'Movies',
+    name: 'सिनेमा',
+    sub: 'फिल्म\nगढ़वळि',
     path: '/category/movies',
     emoji: '🎬',
-    gradient: 'from-indigo-600 via-purple-600 to-purple-800',
-    glow: 'hover:shadow-indigo-500/50',
-    hint: 'Films & Web Series',
+    bg: 'bg-indigo-700',
   },
   {
-    name: 'Comedy',
+    name: 'हँसी-ठट्ठा',
+    sub: 'कॉमेडी\nहँसते रौ',
     path: '/category/comedy',
     emoji: '😂',
-    gradient: 'from-amber-400 via-orange-500 to-red-500',
-    glow: 'hover:shadow-orange-500/50',
-    hint: 'हँसते रहो!',
-    badge: { text: '🔥 Hot', cls: 'bg-red-600/80' },
+    bg: 'bg-orange-600',
+    badge: { text: '🔥', cls: 'bg-red-600/85' },
   },
   {
-    name: 'Songs',
+    name: 'गीत',
+    sub: 'पहाड़ी\nगाणा',
     path: '/category/songs',
     emoji: '🎵',
-    gradient: 'from-pink-500 via-rose-500 to-fuchsia-600',
-    glow: 'hover:shadow-pink-500/50',
-    hint: 'Garhwali & Kumaoni',
-    badge: { text: '✨ New', cls: 'bg-fuchsia-600/80' },
+    bg: 'bg-pink-600',
+    badge: { text: '✨', cls: 'bg-fuchsia-600/85' },
   },
   {
-    name: 'Jaagar & Devotional',
+    name: 'जागर',
+    sub: 'भजन\nआरती',
     path: '/category/devotional',
     emoji: '🔱',
-    gradient: 'from-yellow-500 via-amber-600 to-orange-700',
-    glow: 'hover:shadow-amber-500/50',
-    hint: 'जागर · भजन · आरती',
+    bg: 'bg-amber-700',
   },
   {
-    name: 'Vlogs',
+    name: 'यात्रा',
+    sub: 'पहाड़ की\nव्लॉग',
     path: '/category/vlogs',
     emoji: '📹',
-    gradient: 'from-cyan-500 via-blue-500 to-blue-700',
-    glow: 'hover:shadow-blue-500/50',
-    hint: 'पहाड़ की यात्रा',
+    bg: 'bg-sky-700',
   },
   {
-    name: 'Podcast',
+    name: 'पॉडकास्ट',
+    sub: 'पहाड़ी\nकिस्सा',
     path: '/podcast',
     emoji: '🎙️',
-    gradient: 'from-violet-500 via-purple-600 to-indigo-700',
-    glow: 'hover:shadow-violet-500/50',
-    hint: 'Pahadi Stories',
+    bg: 'bg-violet-700',
   },
   {
-    name: 'Folk Dances',
+    name: 'नाच',
+    sub: 'तांदी\nछोलिया',
     path: '/category/folkdance',
     emoji: '💃',
-    gradient: 'from-rose-500 via-red-500 to-orange-500',
-    glow: 'hover:shadow-rose-500/50',
-    hint: 'तांदी, छोलिया & more',
+    bg: 'bg-rose-600',
   },
   {
-    name: 'Mela',
+    name: 'मेला',
+    sub: 'थौलू\nजात्रा',
     path: '/category/mela',
     emoji: '🎪',
-    gradient: 'from-lime-500 via-green-500 to-emerald-600',
-    glow: 'hover:shadow-green-500/50',
-    hint: 'Fairs & Festivals',
+    bg: 'bg-emerald-700',
   },
   {
-    name: 'Theatre',
+    name: 'रंगमंच',
+    sub: 'थियेटर\nHNBGU',
     path: '/category/theatre',
     emoji: '🎭',
-    gradient: 'from-purple-600 via-fuchsia-600 to-indigo-800',
-    glow: 'hover:shadow-purple-500/50',
-    hint: 'Rangmanch & HNBGU',
-    badge: { text: '🆕 New', cls: 'bg-purple-600/80' },
+    bg: 'bg-purple-700',
+    badge: { text: '🆕', cls: 'bg-purple-500/85' },
+  },
+  {
+    name: 'पहाड़ी AI',
+    sub: 'गढ़वळि\nमा बच्या',
+    path: '/pahadi-ai',
+    emoji: '🤖',
+    bg: 'bg-teal-700',
+    badge: { text: '🆕', cls: 'bg-teal-500/85' },
+  },
+  {
+    name: 'समाचार',
+    sub: 'पहाड़ की\nखबर',
+    path: '/news',
+    emoji: '📰',
+    bg: 'bg-slate-700',
+  },
+  {
+    name: 'शॉर्ट्स',
+    sub: 'छोटी\nवीडियो',
+    path: '/shorts',
+    emoji: '⚡',
+    bg: 'bg-red-700',
   },
 ];
 
 export default function GenreGrid() {
   return (
     <section className="mb-10">
-      <h2 className="text-lg font-bold mb-5 flex items-center gap-2">
-        Explore
+      <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+        खोजा (Explore)
         <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
       </h2>
-      <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
-        {GENRES.map((genre) => (
+      <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-2.5">
+        {GENRES.map((g) => (
           <Link
-            key={genre.path}
-            to={genre.path}
-            className={`relative bg-gradient-to-br ${genre.gradient} rounded-2xl overflow-hidden
-                       group hover:scale-[1.06] active:scale-[0.97]
-                       transition-all duration-300 shadow-lg hover:shadow-2xl ${genre.glow}`}
+            key={g.path}
+            to={g.path}
+            className={`group relative ${g.bg} rounded-xl p-2 text-center shadow-md shadow-black/30 ring-1 ring-white/10 hover:scale-[1.03] hover:ring-white/30 transition-all overflow-hidden`}
           >
-            {/* Shine sweep on hover */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent
-                            -translate-x-full group-hover:translate-x-full transition-transform duration-700 z-10 pointer-events-none" />
+            {/* subtle dot pattern overlay (matches Pahadi AI cards) */}
+            <div
+              className="absolute inset-0 opacity-10 pointer-events-none"
+              style={{
+                backgroundImage:
+                  'radial-gradient(circle at 30% 20%, #fff 1px, transparent 1px)',
+                backgroundSize: '10px 10px',
+              }}
+            />
 
             {/* Badge */}
-            {genre.badge && (
-              <div className={`absolute top-2 right-2 z-20 ${genre.badge.cls} backdrop-blur-sm
-                              text-white text-[10px] font-bold px-2 py-0.5 rounded-full leading-tight`}>
-                {genre.badge.text}
+            {g.badge && (
+              <div
+                className={`absolute top-1.5 right-1.5 z-20 ${g.badge.cls} backdrop-blur-sm text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none`}
+              >
+                {g.badge.text}
               </div>
             )}
 
-            <div className="relative z-10 p-3 pb-2.5 flex flex-col items-start gap-0.5">
-              {/* Large emoji */}
-              <span className="text-2xl sm:text-3xl mb-1 drop-shadow-lg group-hover:scale-110 transition-transform duration-300 inline-block">
-                {genre.emoji}
-              </span>
-              <p className="text-white font-extrabold text-sm leading-tight">{genre.name}</p>
-              <p className="text-white/60 text-[10px] leading-snug">{genre.hint}</p>
-              {/* Browse arrow — fades in on hover */}
-              <span className="mt-1.5 text-white/0 group-hover:text-white/90 text-xs font-semibold
-                               transition-colors duration-300 flex items-center gap-0.5">
-                Browse <span className="text-sm">→</span>
-              </span>
+            <div className="relative flex flex-col items-center justify-center gap-1 min-h-[92px]">
+              <div className="text-2xl sm:text-3xl drop-shadow group-hover:scale-110 transition-transform">
+                {g.emoji}
+              </div>
+              <div className="text-white font-bold text-[12px] sm:text-[13px] leading-tight drop-shadow">
+                {g.name}
+              </div>
+              <div className="text-white/80 font-medium text-[9px] sm:text-[10px] leading-tight whitespace-pre-line drop-shadow">
+                {g.sub}
+              </div>
             </div>
           </Link>
         ))}
