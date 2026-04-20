@@ -155,7 +155,7 @@ export default function Footer() {
             </div>
 
             <p className="text-xs text-gray-600 leading-relaxed text-center md:text-left mt-1">
-              Built by <a href="https://www.linkedin.com/in/jitendrar-singh-rawat/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-primary-400 transition-colors">Jitendrar Singh Rawat</a> · Copyright concerns? Reach out any time.
+              Built by <a href="https://www.linkedin.com/in/jitendrar-singh-rawat/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-primary-400 transition-colors">Jitendra Singh Rawat</a>
             </p>
           </div>
         </div>
