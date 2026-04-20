@@ -216,7 +216,44 @@ const STATIC_FALLBACK = {
     ],
     nextPageToken: null, prevPageToken: null, totalResults: 4,
   },
+  theatre: {
+    videos: [
+      { id: 'sAHCY2PGlPo', title: 'Theatre Department, HNBGU — Featured Production', thumbnail: 'https://i.ytimg.com/vi/sAHCY2PGlPo/hqdefault.jpg', channelTitle: 'Theatre Department (H.N.B.G. Central University)', publishedAt: '2026-01-01', description: '' },
+      { id: 'HYPEzio-eLg', title: 'Theatre Department, HNBGU — Stage Performance', thumbnail: 'https://i.ytimg.com/vi/HYPEzio-eLg/hqdefault.jpg', channelTitle: 'Theatre Department (H.N.B.G. Central University)', publishedAt: '2026-01-01', description: '' },
+      { id: 'p3_h0YBdP0c', title: 'Theatre Department, HNBGU — Student Play', thumbnail: 'https://i.ytimg.com/vi/p3_h0YBdP0c/hqdefault.jpg', channelTitle: 'Theatre Department (H.N.B.G. Central University)', publishedAt: '2026-01-01', description: '' },
+    ],
+    nextPageToken: null, prevPageToken: null, totalResults: 3,
+  },
 };
+
+// Curated/pinned video IDs that should always appear at the top of a
+// category, in the listed order. Live API results are appended after
+// these (deduped by videoId).
+const CATEGORY_PINNED = {
+  theatre: ['sAHCY2PGlPo', 'HYPEzio-eLg', 'p3_h0YBdP0c'],
+};
+
+function pinnedVideosFor(category) {
+  const ids = CATEGORY_PINNED[category];
+  if (!ids || ids.length === 0) return [];
+  const fb = (STATIC_FALLBACK[category] && STATIC_FALLBACK[category].videos) || [];
+  return ids.map((id) => fb.find((v) => v.id === id) || {
+    id,
+    title: '',
+    thumbnail: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
+    channelTitle: '',
+    publishedAt: '',
+    description: '',
+  });
+}
+
+function withPinned(category, result) {
+  const pinned = pinnedVideosFor(category);
+  if (pinned.length === 0) return result;
+  const seen = new Set(pinned.map((v) => v.id));
+  const rest = (result.videos || []).filter((v) => !seen.has(v.id));
+  return { ...result, videos: [...pinned, ...rest] };
+}
 
 function getStaticFallback(category) {
   return STATIC_FALLBACK[category] || { videos: [], nextPageToken: null, prevPageToken: null, totalResults: 0 };
@@ -449,6 +486,8 @@ async function getVideosByCategory(category, pageToken = '', maxResults = 12) {
     } else {
       result = await fetchFromYouTube(query, pageToken, maxResults);
     }
+    // Pin curated videos at the top (first page only).
+    if (!pageToken) result = withPinned(category, result);
     cache.set(cacheKey, result);
     fallbackCache.set(cacheKey, result);
     redisSetJSON(`yt:${cacheKey}`, result, REDIS_TTL_SECONDS).catch(() => {});
