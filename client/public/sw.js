@@ -129,3 +129,51 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
+
+// =====================================================================
+// Web Push notifications
+// =====================================================================
+// Server posts a JSON payload like:
+//   { title, body, url, tag, icon }
+// We display it as a system notification. Clicking opens (or focuses) the
+// target URL in the PWA / browser tab.
+self.addEventListener('push', (event) => {
+  let data = {};
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch {
+    data = { title: 'PahadiTube', body: event.data ? event.data.text() : '' };
+  }
+
+  const title = data.title || 'PahadiTube';
+  const options = {
+    body: data.body || '',
+    icon: data.icon || '/icons/icon-192-v2.png',
+    badge: '/icons/icon-192-v2.png',
+    tag: data.tag || 'pahaditube',
+    data: { url: data.url || '/' },
+    renotify: false,
+  };
+
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const target = event.notification.data?.url || '/';
+  event.waitUntil((async () => {
+    const all = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    // Focus an existing tab on the same origin if one is already open.
+    for (const client of all) {
+      try {
+        const url = new URL(client.url);
+        if (url.origin === self.location.origin) {
+          await client.focus();
+          if ('navigate' in client) await client.navigate(target);
+          return;
+        }
+      } catch { /* noop */ }
+    }
+    await self.clients.openWindow(target);
+  })());
+});

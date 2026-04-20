@@ -11,6 +11,7 @@
 const express = require('express');
 const router = express.Router();
 const { redisGetJSON, redisSetJSON, isRedisEnabled } = require('../services/store');
+const { sendNotificationToAll } = require('../services/push');
 
 const REDIS_KEY = 'pahadi_news';
 const MAX_NEWS = 200;
@@ -178,6 +179,16 @@ router.post('/', async (req, res) => {
     articles.unshift(article);
     if (articles.length > MAX_NEWS) articles.length = MAX_NEWS;
     await saveNews(articles);
+
+    // Fire-and-forget push notification to all subscribed browsers.
+    sendNotificationToAll({
+      title: article.title.slice(0, 80),
+      body: (article.summary || article.body).slice(0, 160),
+      url: '/news',
+      tag: `news-${article.id}`,
+      icon: article.imageUrl ? `/api/news/${article.id}/image` : '/icons/icon-192-v2.png',
+    }).catch((e) => console.error('[news] push error:', e.message));
+
     res.status(201).json({ article });
   } catch (err) {
     console.error('[news] create error:', err.message);
