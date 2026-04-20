@@ -209,16 +209,40 @@ export default function NewsAdminPage() {
   const isEditing = editingId != null;
 
   // ── Admin dashboard ──
+  const sendTestPush = async () => {
+    setError('');
+    setSuccess('');
+    try {
+      const res = await fetch(`/api/push/test?key=${encodeURIComponent(key)}`, {
+        method: 'POST',
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || `Failed (${res.status})`);
+      setSuccess(`Test push sent — sent: ${data.sent ?? 0}, removed: ${data.removed ?? 0}, failed: ${data.failed ?? 0}`);
+    } catch (err) {
+      setError(`Push test failed: ${err.message}`);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">News Admin</h1>
-        <button
-          onClick={() => { setAuthenticated(false); setKey(''); resetForm(); }}
-          className="text-sm text-gray-400 hover:text-red-400"
-        >
-          Logout
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={sendTestPush}
+            className="text-sm px-3 py-1.5 rounded-full bg-primary-500/15 text-primary-300 border border-primary-500/30 hover:bg-primary-500/25"
+            title="Send a test push notification to every subscribed device"
+          >
+            🔔 Send test push
+          </button>
+          <button
+            onClick={() => { setAuthenticated(false); setKey(''); resetForm(); }}
+            className="text-sm text-gray-400 hover:text-red-400"
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
       {error && (
