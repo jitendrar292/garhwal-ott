@@ -45,7 +45,8 @@ export default function VideoGrid({ videos, title, loading, error, onLoadMore, h
             </div>
           )}
 
-          {hasMore && onLoadMore && (
+          {/* Load More disabled for now */}
+          {false && hasMore && onLoadMore && (
             <div className="flex justify-center mt-8">
               <button
                 onClick={onLoadMore}
