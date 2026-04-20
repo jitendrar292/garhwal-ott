@@ -14,6 +14,7 @@ const {
   addSubscription,
   removeSubscription,
   subscriptionCount,
+  listSubscriptions,
   sendNotificationToAll,
 } = require('../services/push');
 
@@ -57,6 +58,17 @@ router.get('/count', async (req, res) => {
   }
   const count = await subscriptionCount();
   res.json({ count, enabled: isPushEnabled() });
+});
+
+// Admin: list registered subscribers (privacy-trimmed).
+//   GET /api/push/list?key=<adminKey>
+router.get('/list', async (req, res) => {
+  const adminKey = process.env.FEEDBACK_ADMIN_KEY || 'pahadi2026';
+  if (req.query.key !== adminKey) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  const subscriptions = await listSubscriptions();
+  res.json({ count: subscriptions.length, enabled: isPushEnabled(), subscriptions });
 });
 
 // Admin: send a test push to every subscribed device. Useful for debugging

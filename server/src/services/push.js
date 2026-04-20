@@ -77,6 +77,33 @@ async function subscriptionCount() {
   return subs.length;
 }
 
+// Returns a privacy-trimmed list of subscribers for admin display.
+// Each entry has: { host, browser, addedAt, endpointHash }. The full
+// endpoint URL is hashed so we never expose user-identifying push tokens.
+async function listSubscriptions() {
+  const subs = await loadSubs();
+  const crypto = require('crypto');
+  return subs.map((s) => {
+    let host = '';
+    try { host = new URL(s.endpoint).host; } catch { /* noop */ }
+    return {
+      host,
+      browser: hostToBrowser(host),
+      addedAt: s.addedAt || null,
+      endpointHash: crypto.createHash('sha1').update(s.endpoint).digest('hex').slice(0, 12),
+    };
+  });
+}
+
+function hostToBrowser(host) {
+  if (!host) return 'Unknown';
+  if (host.includes('fcm.googleapis.com') || host.includes('android.googleapis.com')) return 'Chrome / Android';
+  if (host.includes('updates.push.services.mozilla.com')) return 'Firefox';
+  if (host.includes('push.apple.com')) return 'Safari / iOS';
+  if (host.includes('notify.windows.com') || host.includes('wns2-')) return 'Edge / Windows';
+  return host;
+}
+
 // Send a payload to every subscribed browser. Removes subscriptions that
 // the push service reports as gone (404 / 410).
 async function sendNotificationToAll(payload) {
@@ -124,5 +151,6 @@ module.exports = {
   addSubscription,
   removeSubscription,
   subscriptionCount,
+  listSubscriptions,
   sendNotificationToAll,
 };

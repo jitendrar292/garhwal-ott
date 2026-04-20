@@ -55,6 +55,8 @@ export default function NewsAdminPage() {
   const [imagePreview, setImagePreview] = useState(''); // data URI or existing /api/news/:id/image URL
   const [imageDirty, setImageDirty] = useState(false); // user changed image during edit
   const [submitting, setSubmitting] = useState(false);
+  const [devices, setDevices] = useState(null); // { count, enabled, subscriptions } | null
+  const [devicesLoading, setDevicesLoading] = useState(false);
   const formRef = useRef(null);
 
   const fetchArticles = useCallback(async () => {
@@ -258,6 +260,21 @@ export default function NewsAdminPage() {
     }
   };
 
+  const loadDevices = async () => {
+    setError('');
+    setDevicesLoading(true);
+    try {
+      const res = await fetch(`/api/push/list?key=${encodeURIComponent(key)}`);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || `Failed (${res.status})`);
+      setDevices(data);
+    } catch (err) {
+      setError(`Could not load devices: ${err.message}`);
+    } finally {
+      setDevicesLoading(false);
+    }
+  };
+
   const sendHappeningPush = async () => {
     setError('');
     setSuccess('');
@@ -313,7 +330,15 @@ export default function NewsAdminPage() {
             🔔 Send test push
           </button>
           <button
-            onClick={() => { setAuthenticated(false); setKey(''); resetForm(); }}
+            onClick={loadDevices}
+            disabled={devicesLoading}
+            className="text-sm px-3 py-1.5 rounded-full bg-sky-500/15 text-sky-300 border border-sky-500/30 hover:bg-sky-500/25 disabled:opacity-50"
+            title="View devices currently subscribed to push notifications"
+          >
+            {devicesLoading ? '…' : `📱 ${devices ? `Refresh (${devices.count})` : 'View devices'}`}
+          </button>
+          <button
+            onClick={() => { setAuthenticated(false); setKey(''); resetForm(); setDevices(null); }}
             className="text-sm text-gray-400 hover:text-red-400"
           >
             Logout
@@ -329,6 +354,55 @@ export default function NewsAdminPage() {
       {success && (
         <div className="mb-4 p-3 bg-green-900/50 border border-green-700 rounded-lg text-green-200 text-sm">
           {success}
+        </div>
+      )}
+
+      {devices && (
+        <div className="mb-6 p-4 bg-dark-800 border border-white/10 rounded-lg">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-semibold text-white">
+              📱 Registered devices ({devices.count})
+            </h2>
+            <button
+              onClick={() => setDevices(null)}
+              className="text-xs text-gray-400 hover:text-white"
+            >
+              Hide
+            </button>
+          </div>
+          {!devices.enabled && (
+            <p className="text-xs text-amber-300 mb-2">
+              Push is not enabled on the server (VAPID keys missing).
+            </p>
+          )}
+          {devices.subscriptions?.length === 0 ? (
+            <p className="text-xs text-gray-400">No devices subscribed yet.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs">
+                <thead className="text-gray-400 border-b border-white/10">
+                  <tr>
+                    <th className="text-left py-2 pr-3 font-medium">Browser</th>
+                    <th className="text-left py-2 pr-3 font-medium">Push host</th>
+                    <th className="text-left py-2 pr-3 font-medium">Subscribed</th>
+                    <th className="text-left py-2 font-medium">ID</th>
+                  </tr>
+                </thead>
+                <tbody className="text-gray-200">
+                  {devices.subscriptions.map((d) => (
+                    <tr key={d.endpointHash} className="border-b border-white/5 last:border-0">
+                      <td className="py-2 pr-3">{d.browser}</td>
+                      <td className="py-2 pr-3 text-gray-400">{d.host}</td>
+                      <td className="py-2 pr-3 text-gray-400">
+                        {d.addedAt ? new Date(d.addedAt).toLocaleString('en-IN') : '—'}
+                      </td>
+                      <td className="py-2 font-mono text-[10px] text-gray-500">{d.endpointHash}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       )}
 
