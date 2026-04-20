@@ -328,6 +328,32 @@ export default function PahadiAIPage() {
           <p className="mt-1 text-xs sm:text-sm text-white/70 font-medium">
             गढ़वळि भाषा मा बच्या · Powered by Llama 3.3
           </p>
+          <button
+            type="button"
+            onClick={() => {
+              const url = `${window.location.origin}/pahadi-ai`;
+              const shareData = {
+                title: 'पहाड़ी AI · PahadiTube',
+                text: 'गढ़वळि भाषा मा बच्या करा — Pahadi AI try karein!',
+                url,
+              };
+              if (navigator.share) {
+                navigator.share(shareData).catch(() => {});
+              } else {
+                navigator.clipboard
+                  .writeText(url)
+                  .then(() => alert('Link copied!'))
+                  .catch(() => {});
+              }
+            }}
+            className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-amber-200 hover:text-amber-100 bg-white/5 hover:bg-white/10 border border-amber-300/25 rounded-full px-3 py-1.5 transition-colors"
+            aria-label="Share Pahadi AI"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+            </svg>
+            Share Pahadi AI
+          </button>
         </div>
 
         {/* Greeting (only when chat empty) */}
