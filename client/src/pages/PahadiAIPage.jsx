@@ -344,7 +344,7 @@ export default function PahadiAIPage() {
                   .catch(() => {});
               }
             }}
-            className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-amber-200 hover:text-amber-100 bg-gray-100 hover:bg-gray-100 border border-amber-300/25 rounded-full px-3 py-1.5 transition-colors"
+            className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 border border-amber-300/40 shadow-md shadow-orange-900/30 rounded-full px-3.5 py-1.5 transition-colors"
             aria-label="Share Pahadi AI"
           >
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
