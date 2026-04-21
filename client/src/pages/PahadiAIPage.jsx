@@ -312,7 +312,7 @@ export default function PahadiAIPage() {
       </div>
 
       {/* ===== Content ===== */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-6 pb-40 flex flex-col" style={{ minHeight: '100vh' }}>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-6 pb-64 flex flex-col" style={{ minHeight: '100vh' }}>
         {/* Brand header */}
         <div className="flex flex-col items-center mb-4">
           <div className="bg-white rounded-2xl p-2 shadow-2xl shadow-black/40 ring-1 ring-amber-300/30">
@@ -418,7 +418,7 @@ export default function PahadiAIPage() {
             <div
               ref={scrollRef}
               className="overflow-y-auto px-4 sm:px-6 py-5 space-y-4"
-              style={{ maxHeight: '60vh', minHeight: '320px' }}
+              style={{ maxHeight: 'calc(100vh - 360px)', minHeight: '320px' }}
             >
               {messages.map((m, i) => (
                 <MessageBubble
@@ -452,8 +452,9 @@ export default function PahadiAIPage() {
           </div>
         )}
 
-        {/* Ornate input bar (below chat / topic cards) */}
-        <div className="relative mx-auto w-full max-w-2xl mt-6">
+        {/* Ornate input bar (fixed above bottom dock so it stays visible while chat scrolls) */}
+        <div className="fixed left-0 right-0 bottom-32 sm:bottom-36 z-30 px-4 sm:px-6 pointer-events-none">
+          <div className="relative mx-auto w-full max-w-2xl pointer-events-auto">
           <div
             className="rounded-2xl p-[2px]"
             style={{
@@ -504,6 +505,7 @@ export default function PahadiAIPage() {
                 </svg>
               </button>
             </div>
+          </div>
           </div>
         </div>
 
