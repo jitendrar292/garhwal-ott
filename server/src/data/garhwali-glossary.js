@@ -45,7 +45,7 @@ module.exports = [
   { gw: 'झंगोरा', hi: 'सावां चावल / बार्नयार्ड बाजरा', en: 'barnyard millet', tags: ['झंगोरा', 'jhangora', 'savan'] },
   { gw: 'फाणु', hi: 'गहत की पारंपरिक दाल', en: 'traditional Garhwali lentil curry made from horse gram', tags: ['फाणु', 'फाणू', 'phaanu', 'gahat', 'गहत', 'dal'] },
   { gw: 'बाडि', hi: 'मंडुवा का पारंपरिक व्यंजन', en: 'Garhwali ragi flour dish', tags: ['बाडि', 'baadi', 'मंडुवा'] },
-  { gw: 'काफुली', hi: 'पालक/हरी सब्जियों की पारंपरिक करी', en: 'spinach-based Garhwali curry', tags: ['काफुली', 'kafuli', 'पालक', 'spinach'] },
+  { gw: 'काफुली / कापा', hi: 'पालक, मेथी, लिंगुड़ा जन हरी पत्तेदार सब्जियूं औ मंडुवा/गेहूं का आटा सी बण्यां पारंपरिक गढ़वळि करी (शुद्ध शाकाहारी — मांस सी कभी नी बणदु)', en: 'Traditional Garhwali curry made from green leafy vegetables (spinach, fenugreek, lingura) thickened with finger-millet or wheat flour. Strictly VEGETARIAN — never made with meat.', tags: ['काफुली', 'कापा', 'kafuli', 'kapa', 'kaapa', 'पालक', 'spinach', 'मेथी', 'लिंगुड़ा', 'fenugreek', 'curry', 'vegetarian', 'food'], note: 'IMPORTANT: कापा / काफुली is a vegetarian dish — greens (पालक/मेथी/लिंगुड़ा) cooked with finger-millet (मंडुवा) or wheat flour as thickener, tempered with ghee, garlic, ginger, jakhya/jeera. Never contains meat. Often confused by AI with non-veg dishes — DO NOT make that mistake.' },
   { gw: 'गहत', hi: 'कुलथी दाल', en: 'horse gram', tags: ['गहत', 'gahat', 'kulthi', 'horse gram'] },
   { gw: 'चैनसू', hi: 'काले उरद की दाल', en: 'roasted black gram dal', tags: ['चैनसू', 'chainsoo', 'urad'] },
   { gw: 'अरसा', hi: 'पारंपरिक मीठा पकवान (चावल का)', en: 'traditional rice-jaggery sweet', tags: ['अरसा', 'arsa', 'sweet', 'मिठाई'] },
