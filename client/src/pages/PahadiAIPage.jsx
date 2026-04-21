@@ -319,14 +319,11 @@ export default function PahadiAIPage() {
         {/* Brand header */}
         <div className="flex flex-col items-center mb-4">
           <img
-            src="/logo.png"
-            alt="PahadiTube"
-            className="w-28 h-28 sm:w-32 sm:h-32 object-contain drop-shadow-[0_8px_24px_rgba(251,191,36,0.25)]"
+            src="/pahadi-ai-logo.png"
+            alt="पहाड़ी AI"
+            className="w-64 sm:w-80 h-auto object-contain drop-shadow-[0_10px_30px_rgba(0,0,0,0.45)]"
           />
-          <h1 className="mt-4 text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-            पहाड़ी <span className="text-amber-400">AI</span>
-          </h1>
-          <p className="mt-1 text-xs sm:text-sm text-white/70 font-medium">
+          <p className="mt-2 text-xs sm:text-sm text-white/70 font-medium">
             गढ़वळि भाषा मा बच्या · Powered by Llama 3.3
           </p>
           <button
@@ -347,7 +344,7 @@ export default function PahadiAIPage() {
                   .catch(() => {});
               }
             }}
-            className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-amber-200 hover:text-amber-100 bg-white/5 hover:bg-white/10 border border-amber-300/25 rounded-full px-3 py-1.5 transition-colors"
+            className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-amber-200 hover:text-amber-100 bg-gray-100 hover:bg-gray-100 border border-amber-300/25 rounded-full px-3 py-1.5 transition-colors"
             aria-label="Share Pahadi AI"
           >
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -411,7 +408,7 @@ export default function PahadiAIPage() {
             {messages.length > 0 && (
               <button
                 onClick={clearChat}
-                className="absolute top-3 right-3 z-10 px-3 py-1 text-[11px] font-medium text-white/80 hover:text-white bg-white/5 hover:bg-red-500/40 rounded-full transition-colors"
+                className="absolute top-3 right-3 z-10 px-3 py-1 text-[11px] font-medium text-white/80 hover:text-white bg-gray-100 hover:bg-red-500/40 rounded-full transition-colors"
               >
                 ✕ Clear
               </button>
@@ -437,7 +434,7 @@ export default function PahadiAIPage() {
                 !messages[messages.length - 1].content && (
                   <div className="flex gap-3">
                     <Avatar isUser={false} />
-                    <div className="px-4 py-2.5 rounded-2xl bg-white/10 border border-white/15 text-white/90 text-sm flex items-center gap-2">
+                    <div className="px-4 py-2.5 rounded-2xl bg-gray-100 border border-gray-300 text-white/90 text-sm flex items-center gap-2">
                       <span className="text-base">✨</span>
                       <span>सोचणु रा छ…</span>
                       <TypingDots />
@@ -498,7 +495,7 @@ export default function PahadiAIPage() {
               <button
                 onClick={() => sendMessage(input)}
                 disabled={!input.trim() || streaming}
-                className="shrink-0 w-10 h-10 flex items-center justify-center rounded-xl bg-amber-400 text-amber-950 hover:bg-amber-300 disabled:bg-white/15 disabled:text-white/40 transition-colors shadow"
+                className="shrink-0 w-10 h-10 flex items-center justify-center rounded-xl bg-amber-400 text-amber-950 hover:bg-amber-300 disabled:bg-gray-200 disabled:text-white/40 transition-colors shadow"
                 aria-label="Send"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
@@ -548,8 +545,8 @@ function Avatar({ isUser }) {
     );
   }
   return (
-    <div className="shrink-0 w-9 h-9 rounded-full overflow-hidden ring-2 ring-yellow-300/70 shadow bg-emerald-700 flex items-center justify-center">
-      <img src="/logo.png" alt="" className="w-full h-full object-contain p-0.5" />
+    <div className="shrink-0 w-9 h-9 rounded-full overflow-hidden ring-2 ring-yellow-300/70 shadow bg-white flex items-center justify-center">
+      <img src="/pahadi-ai-logo.png" alt="" className="w-full h-full object-contain" />
     </div>
   );
 }
@@ -564,7 +561,7 @@ function MessageBubble({ role, content, isStreaming, onSpeak, isSpeaking, timeLa
           className={`px-4 py-2.5 rounded-3xl text-[14px] leading-relaxed whitespace-pre-wrap shadow-md backdrop-blur ${
             isUser
               ? 'bg-emerald-600/85 text-white rounded-br-md border border-emerald-300/30'
-              : 'bg-white/20 text-white rounded-bl-md border border-white/30'
+              : 'bg-gray-200 text-white rounded-bl-md border border-white/30'
           }`}
         >
           {content || (isStreaming ? <TypingDots /> : '')}
@@ -582,7 +579,7 @@ function MessageBubble({ role, content, isStreaming, onSpeak, isSpeaking, timeLa
               className={`flex items-center gap-1 px-2 py-0.5 text-[10px] rounded-full transition-colors ${
                 isSpeaking
                   ? 'text-white bg-emerald-500/40'
-                  : 'text-white/80 hover:text-white hover:bg-white/15'
+                  : 'text-white/80 hover:text-white hover:bg-gray-200'
               }`}
               aria-label={isSpeaking ? 'Stop speaking' : 'Speak this reply'}
             >
