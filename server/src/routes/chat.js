@@ -9,6 +9,8 @@ const {
   formatFewShotContext,
   retrievePhrases,
   formatPhraseContext,
+  retrieveFolkStory,
+  formatFolkStoryContext,
   getCacheStats,
   flushResponseCache,
   ensureConversationMirror,
@@ -803,6 +805,10 @@ router.post('/', async (req, res) => {
   // Only injected when the query has English words; for pure Hindi/Devanagari
   // queries the keyword overlap usually returns nothing anyway.
   const phraseContext = lastUser ? formatPhraseContext(retrievePhrases(lastUser.content, 4)) : '';
+  // Folk-story RAG: pulls a single matching tale (Jagdev Panwar, Jeetu
+  // Bagdwal, Kalu Bhandari, Tilu Rauteli, Ranu Rout) when the query mentions
+  // it. Trimmed to ~1500 chars to stay within Groq's TPM budget.
+  const folkStoryContext = lastUser ? formatFolkStoryContext(retrieveFolkStory(lastUser.content, 1)) : '';
 
   // Long-term memory: prefer semantic (Upstash Vector) recall;
   // fall back to keyword overlap on the in-memory mirror.
@@ -829,6 +835,7 @@ router.post('/', async (req, res) => {
     + (fewShotContext ? `\n\n${fewShotContext}` : '')
     + (phraseContext ? `\n\n${phraseContext}` : '')
     + (ragContext ? `\n\n${ragContext}` : '')
+    + (folkStoryContext ? `\n\n${folkStoryContext}` : '')
     + (memoryContext ? `\n\n${memoryContext}` : '');
 
   const payload = {

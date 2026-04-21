@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const glossary = require('../data/garhwali-glossary');
 const himlingo = require('../data/himlingo-dictionary');
 const himlingoPhrases = require('../data/himlingo-phrases');
+const himlingoFolkStories = require('../data/himlingo-folkstories');
 const fewshot = require('../data/garhwali-fewshot');
 const { generateAll: generateFewShotPairs } = require('../data/garhwali-fewshot-generator');
 
@@ -159,6 +160,7 @@ function getCacheStats() {
     glossaryCurated: INDEX.filter((e) => e._source === 'curated').length,
     glossaryHimlingo: INDEX.filter((e) => e._source === 'himlingo').length,
     phraseExamples: PHRASE_INDEX.length,
+    folkStories: FOLK_INDEX.length,
   };
 }
 
@@ -286,6 +288,77 @@ function formatPhraseContext(phrases) {
   ].join('\n');
 }
 
+// ===== Folk stories (Himlingo) =====
+// Full Devanagari Garhwali narratives of cultural touchstones — Jagdev
+// Panwar, Jeetu Bagdwal, Kalu Bhandari, Tilu Rauteli, Ranu Rout. Used so
+// the AI can recognise & summarise these when asked.
+//
+// Bodies are LONG (2-4 KB each), so we only inject the top single match,
+// trimmed to the first ~1500 chars (≈ first half of the story) to keep the
+// system prompt within Groq's TPM budget. Mention them by title in any
+// lower-priority retrieval channel and the LLM can fall back to its own
+// general knowledge for further detail.
+const FOLK_INDEX = (himlingoFolkStories || []).map((s) => {
+  const titleText = normalize(`${s.title} ${s.slug.replace(/-/g, ' ')}`);
+  const bodyText = normalize(s.body);
+  return {
+    ...s,
+    // Title + slug carry the proper-noun keys (जगदेव पंवार, "jeetu bagdwal"
+    // etc.). Body adds depth so a question about a specific scene or line
+    // can still score. Loose copies fold doubled Latin letters so romanized
+    // queries like "jeetu" → "jetu" still hit "jeetu-bagdwal".
+    titleLoose: collapseRoman(titleText),
+    bodyLoose: collapseRoman(bodyText),
+  };
+});
+
+function retrieveFolkStory(query, limit = 1) {
+  const q = normalize(query);
+  if (!q || FOLK_INDEX.length === 0) return [];
+  const tokens = Array.from(new Set(
+    q.split(/[\s,.!?;:()"'\-—–\/]+/).filter((t) => t.length >= 3)
+  ));
+  if (tokens.length === 0) return [];
+  const looseTokens = Array.from(new Set(tokens.map(collapseRoman)));
+
+  // Skip pure stop-words / generic Garhwali nouns that match every story.
+  // These would otherwise drag in a random tale for any Garhwali question.
+  const STOPS = new Set(['the', 'and', 'who', 'what', 'about', 'tell', 'story', 'kahani', 'गढ़वाली', 'बारे', 'बताओ', 'kaun', 'kaise', 'kya']);
+
+  const scored = [];
+  for (const s of FOLK_INDEX) {
+    let score = 0;
+    for (const tok of looseTokens) {
+      if (STOPS.has(tok)) continue;
+      // Title/slug hits are worth 3× a body hit — a single proper-noun
+      // match (e.g. "rauteli", "panwar") is enough to surface the right
+      // story even when the user's romanization differs from the slug.
+      if (s.titleLoose.includes(tok)) score += 3;
+      else if (s.bodyLoose.includes(tok)) score += 1;
+    }
+    if (score >= 2) scored.push({ s, score });
+  }
+  scored.sort((a, b) => b.score - a.score);
+  return scored.slice(0, limit).map((x) => x.s);
+}
+
+function formatFolkStoryContext(stories, maxBodyChars = 1500) {
+  if (!stories || stories.length === 0) return '';
+  const blocks = stories.map((s) => {
+    const trimmed = s.body.length > maxBodyChars
+      ? `${s.body.slice(0, maxBodyChars)}…\n\n[गाथा अधूरी — पूरा पाठ: ${s.url}]`
+      : s.body;
+    return `### ${s.title}\n\n${trimmed}`;
+  });
+  return [
+    '',
+    '=== गढ़वाली लोक-गाथा (Folk-tale reference — use to ground your answer; cite by title, do not paste verbatim) ===',
+    blocks.join('\n\n---\n\n'),
+    '=== अंत ===',
+    '',
+  ].join('\n');
+}
+
 function flushResponseCache() {
   const before = responseCache.keys().length;
   responseCache.flushAll();
@@ -397,6 +470,8 @@ module.exports = {
   formatFewShotContext,
   retrievePhrases,
   formatPhraseContext,
+  retrieveFolkStory,
+  formatFolkStoryContext,
   getCacheStats,
   flushResponseCache,
   ensureConversationMirror,
