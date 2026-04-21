@@ -26,7 +26,7 @@ import FolkStoriesIndexPage from './pages/FolkStoriesIndexPage';
 export default function App() {
   return (
     <MusicProvider>
-      <div className="min-h-screen flex flex-col bg-dark-950 text-white">
+      <div className="min-h-screen flex flex-col text-white bg-gradient-to-b from-sky-300 via-blue-700 to-slate-900 bg-fixed">
         <Navbar />
         <main className="flex-1 pb-24 sm:pb-8">
           <Routes>

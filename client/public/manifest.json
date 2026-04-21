@@ -12,8 +12,8 @@
   },
   "capture_links": "existing-client-navigate",
   "handle_links": "preferred",
-  "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "background_color": "#7dd3fc",
+  "theme_color": "#1d4ed8",
   "orientation": "any",
   "icons": [
     {

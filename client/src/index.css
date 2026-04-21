@@ -8,7 +8,10 @@
   }
 
   body {
-    @apply bg-dark-950 text-white font-sans antialiased;
+    @apply text-white font-sans antialiased;
+    background: linear-gradient(to bottom, #7dd3fc 0%, #1d4ed8 55%, #0f172a 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
   }
 
   /* Custom scrollbar */
@@ -41,7 +44,7 @@
   }
 
   .glass {
-    @apply bg-dark-900/90 backdrop-blur-xl border-b border-white/5;
+    @apply bg-dark-900/90 backdrop-blur-xl border-b border-gray-200;
   }
 
   /* Horizontal scroll row */
