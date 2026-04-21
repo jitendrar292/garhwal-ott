@@ -24,8 +24,11 @@ const TOPIC_CARDS = [
   { emoji: '🪔',  label: 'हरेला\nत्योहार',          bg: 'bg-red-700',     prompt: SUGGESTIONS[2] },
   { emoji: '🥁',  label: 'नरेन्द्र\nसिंह नेगी',     bg: 'bg-amber-800',   prompt: SUGGESTIONS[3] },
   { emoji: '🛕',  label: 'केदारनाथ',                bg: 'bg-teal-600',    prompt: SUGGESTIONS[4] },
-  { emoji: '📖',  label: 'गढ़वाली\nकविता',         bg: 'bg-emerald-700', prompt: SUGGESTIONS[5] },  { emoji: '📚',  label: 'नया\nशब्द सिखा',         bg: 'bg-indigo-700',  prompt: 'मीं कुछ नया गढ़वळि शब्द सिखाओ — रोजमर्रा का प्रयोग वाला 5 शब्द हिन्दी अर्थ का साथ।' },
-  { emoji: '🎯',  label: 'सांस्कृतिक\nक्विज़',     bg: 'bg-fuchsia-700', prompt: 'गढ़वाली संस्कृति का बारा मा एक मजेदार सवाल पूछा — चार विकल्प सहित।' },];
+  { emoji: '📖',  label: 'गढ़वाली\nकविता',         bg: 'bg-emerald-700', prompt: SUGGESTIONS[5] },
+  { emoji: '📚',  label: 'नया\nशब्द सिखा',         bg: 'bg-indigo-700',  prompt: 'मीं कुछ नया गढ़वळि शब्द सिखाओ — रोजमर्रा का प्रयोग वाला 5 शब्द हिन्दी अर्थ का साथ।' },
+  { emoji: '🎯',  label: 'सांस्कृतिक\nक्विज़',     bg: 'bg-fuchsia-700', prompt: 'गढ़वाली संस्कृति का बारा मा एक मजेदार सवाल पूछा — चार विकल्प सहित।' },
+  { emoji: '🛤️',  label: 'यात्रा\nसवाल',           bg: 'bg-rose-700',    prompt: 'मीं उत्तराखंड की यात्रा करण चांदु — चार धाम, हेमकुण्ड, औली, फूलों की घाटी जना ठिकाणा का बारा मा बता: कब जाण, कन पौंछण, अर क्या-क्या देखण।' },
+];
 
 export default function PahadiAIPage() {
   const [messages, setMessages] = useState([]);
@@ -372,12 +375,12 @@ export default function PahadiAIPage() {
         {/* === Topic cards (when empty) OR Chat panel === */}
         {showHero ? (
           <div className="mt-6">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5">
+            <div className="grid grid-cols-3 sm:grid-cols-5 gap-1.5 sm:gap-2">
               {TOPIC_CARDS.map((card) => (
                 <button
                   key={card.label}
                   onClick={() => sendMessage(card.prompt)}
-                  className={`group relative ${card.bg} rounded-xl p-2 text-center shadow-md shadow-black/30 ring-1 ring-white/10 hover:scale-[1.03] hover:ring-white/30 transition-all overflow-hidden`}
+                  className={`group relative ${card.bg} rounded-lg p-1.5 text-center shadow-md shadow-black/30 ring-1 ring-white/10 hover:scale-[1.03] hover:ring-white/30 transition-all overflow-hidden`}
                 >
                   {/* subtle pattern overlay */}
                   <div
@@ -388,9 +391,9 @@ export default function PahadiAIPage() {
                       backgroundSize: '10px 10px',
                     }}
                   />
-                  <div className="relative flex flex-col items-center justify-center gap-1 min-h-[88px]">
-                    <div className="text-2xl drop-shadow">{card.emoji}</div>
-                    <div className="text-white font-semibold text-[10px] sm:text-[11px] leading-tight whitespace-pre-line drop-shadow">
+                  <div className="relative flex flex-col items-center justify-center gap-0.5 min-h-[68px]">
+                    <div className="text-xl drop-shadow">{card.emoji}</div>
+                    <div className="text-white font-semibold text-[9px] sm:text-[10px] leading-tight whitespace-pre-line drop-shadow">
                       {card.label}
                     </div>
                   </div>
