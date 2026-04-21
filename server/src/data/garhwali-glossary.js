@@ -502,4 +502,13 @@ module.exports = [
   { gw: 'जवैं', hi: 'दामाद', en: 'son-in-law', tags: ['jawain', 'जवैं', 'दामाद', 'son-in-law'] },
   { gw: 'द्यूर', hi: 'देवर', en: "husband's younger brother", tags: ['dyur', 'द्यूर', 'देवर'] },
   { gw: 'भुली', hi: 'छोटी बहन', en: 'younger sister', tags: ['bhuli', 'भुली', 'छोटी बहन', 'younger sister'] },
+
+  // --- Yatra / pilgrimage vocabulary (used in Char Dham doli/yatra reporting) ---
+  { gw: 'राति', hi: 'रात / रात्रि', en: 'night', tags: ['raati', 'rati', 'राति', 'रात', 'रात्रि', 'night'] },
+  { gw: 'राति बस्णा / राति बास', hi: 'रात्रि प्रवास / रात्रि विश्राम', en: 'overnight stay / night halt', tags: ['raati basna', 'rati bas', 'राति बस्णा', 'रात्रि प्रवास', 'night halt', 'overnight stay', 'विश्राम'] },
+  { gw: 'बस्णा / बासा करण', hi: 'ठहरना / निवास करना', en: 'to stay / to lodge', tags: ['basna', 'basa karan', 'बस्णा', 'ठहरना', 'stay', 'lodge', 'निवास'] },
+  { gw: 'पहुंचि गे / पौंछि गे', hi: 'पहुँच गई / पहुँच गया', en: 'reached / arrived', tags: ['pahunchi ge', 'paunchi ge', 'पहुंचि गे', 'पौंछि गे', 'पहुँच गई', 'पहुँच गया', 'reached', 'arrived'] },
+  { gw: 'का वास्ता / खातिर', hi: 'के लिए', en: 'for / for the sake of', tags: ['ka vasta', 'khatir', 'का वास्ता', 'खातिर', 'के लिए', 'for'] },
+  { gw: 'डोली', hi: 'डोली / पालकी (देव यात्रा की)', en: 'doli / palanquin (of the deity in yatra)', tags: ['doli', 'डोली', 'palanquin', 'पालकी', 'yatra'] },
+  { gw: 'जात्रा / यात्रा', hi: 'देव यात्रा / तीर्थ यात्रा', en: 'deity procession / pilgrimage', tags: ['jatra', 'yatra', 'जात्रा', 'यात्रा', 'pilgrimage', 'procession'] },
 ];
