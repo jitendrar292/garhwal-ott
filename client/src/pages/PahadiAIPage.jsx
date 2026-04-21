@@ -24,8 +24,8 @@ const TOPIC_CARDS = [
   { emoji: '🪔',  label: 'हरेला\nत्योहार',          bg: 'bg-red-700',     prompt: SUGGESTIONS[2] },
   { emoji: '🥁',  label: 'नरेन्द्र\nसिंह नेगी',     bg: 'bg-amber-800',   prompt: SUGGESTIONS[3] },
   { emoji: '🛕',  label: 'केदारनाथ',                bg: 'bg-teal-600',    prompt: SUGGESTIONS[4] },
-  { emoji: '📖',  label: 'गढ़वाली\nकविता',         bg: 'bg-emerald-700', prompt: SUGGESTIONS[5] },
-];
+  { emoji: '📖',  label: 'गढ़वाली\nकविता',         bg: 'bg-emerald-700', prompt: SUGGESTIONS[5] },  { emoji: '📚',  label: 'नया\nशब्द सिखा',         bg: 'bg-indigo-700',  prompt: 'मीं कुछ नया गढ़वळि शब्द सिखाओ — रोजमर्रा का प्रयोग वाला 5 शब्द हिन्दी अर्थ का साथ।' },
+  { emoji: '🎯',  label: 'सांस्कृतिक\nक्विज़',     bg: 'bg-fuchsia-700', prompt: 'गढ़वाली संस्कृति का बारा मा एक मजेदार सवाल पूछा — चार विकल्प सहित।' },];
 
 export default function PahadiAIPage() {
   const [messages, setMessages] = useState([]);
@@ -312,7 +312,7 @@ export default function PahadiAIPage() {
       </div>
 
       {/* ===== Content ===== */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-6 pb-64 flex flex-col" style={{ minHeight: '100vh' }}>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-6 pb-48 flex flex-col" style={{ minHeight: '100vh' }}>
         {/* Brand header */}
         <div className="flex flex-col items-center mb-4">
           <div className="bg-white rounded-2xl p-2 shadow-2xl shadow-black/40 ring-1 ring-amber-300/30">
@@ -372,7 +372,7 @@ export default function PahadiAIPage() {
         {/* === Topic cards (when empty) OR Chat panel === */}
         {showHero ? (
           <div className="mt-6">
-            <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-2.5">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5">
               {TOPIC_CARDS.map((card) => (
                 <button
                   key={card.label}
@@ -418,7 +418,7 @@ export default function PahadiAIPage() {
             <div
               ref={scrollRef}
               className="overflow-y-auto px-4 sm:px-6 py-5 space-y-4"
-              style={{ maxHeight: 'calc(100vh - 360px)', minHeight: '320px' }}
+              style={{ maxHeight: 'calc(100vh - 280px)', minHeight: '320px' }}
             >
               {messages.map((m, i) => (
                 <MessageBubble
@@ -452,8 +452,8 @@ export default function PahadiAIPage() {
           </div>
         )}
 
-        {/* Ornate input bar (fixed above bottom dock so it stays visible while chat scrolls) */}
-        <div className="fixed left-0 right-0 bottom-32 sm:bottom-36 z-30 px-4 sm:px-6 pointer-events-none">
+        {/* Ornate input bar (fixed above bottom nav so it stays visible while chat scrolls) */}
+        <div className="fixed left-0 right-0 bottom-20 sm:bottom-24 z-30 px-4 sm:px-6 pointer-events-none">
           <div className="relative mx-auto w-full max-w-2xl pointer-events-auto">
           <div
             className="rounded-2xl p-[2px]"
@@ -522,58 +522,7 @@ export default function PahadiAIPage() {
       </div>
 
       {/* ===== Bottom action dock (sticky above BottomNav) ===== */}
-      <div className="fixed left-0 right-0 bottom-16 sm:bottom-20 z-30 pointer-events-none">
-        <div className="max-w-md mx-auto px-4">
-          <div className="pointer-events-auto flex items-center justify-between gap-3 px-3 py-2.5 rounded-full bg-[#0f1a36]/95 border border-amber-300/25 shadow-2xl shadow-black/60 backdrop-blur-xl">
-            <button
-              onClick={() => sendMessage('मीं कुछ नया गढ़वळि शब्द सिखाओ — रोजमर्रा का प्रयोग वाला 5 शब्द हिन्दी अर्थ का साथ।')}
-              className="shrink-0 px-3 py-2 text-[11px] sm:text-xs font-semibold text-white bg-white/5 hover:bg-amber-300/15 border border-white/10 hover:border-amber-300/40 rounded-full transition-colors"
-            >
-              📚 Learn New Words
-            </button>
-            <button
-              onClick={() => {
-                if (streaming) return stop();
-                if (listening) return stopListening();
-                if (speechSupported) return startListening();
-                textareaRef.current?.focus();
-              }}
-              className={`relative shrink-0 w-14 h-14 sm:w-16 sm:h-16 -mt-6 rounded-full flex items-center justify-center text-white shadow-2xl transition-all ${
-                listening
-                  ? 'bg-gradient-to-br from-red-500 to-red-700 scale-110'
-                  : streaming
-                    ? 'bg-gradient-to-br from-orange-500 to-red-600'
-                    : 'bg-gradient-to-br from-emerald-400 to-teal-600 hover:scale-105'
-              }`}
-              style={{ boxShadow: '0 10px 30px -5px rgba(0,0,0,0.6), 0 0 30px rgba(45, 212, 191, 0.5)' }}
-              aria-label={listening ? 'Stop' : streaming ? 'Stop generating' : 'Tap to speak'}
-            >
-              {listening && (
-                <>
-                  <span className="absolute inset-0 rounded-full border-2 border-white/60 animate-ping" />
-                  <span className="absolute -inset-2 rounded-full border-2 border-white/30 animate-ping" style={{ animationDelay: '0.4s' }} />
-                </>
-              )}
-              {streaming ? (
-                <svg className="w-5 h-5 relative" fill="currentColor" viewBox="0 0 20 20">
-                  <rect x="5" y="5" width="10" height="10" rx="2" />
-                </svg>
-              ) : (
-                <svg className="w-7 h-7 relative" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 14a3 3 0 003-3V5a3 3 0 00-6 0v6a3 3 0 003 3z" />
-                  <path d="M19 11a1 1 0 10-2 0 5 5 0 01-10 0 1 1 0 10-2 0 7 7 0 006 6.92V20H8a1 1 0 100 2h8a1 1 0 100-2h-3v-2.08A7 7 0 0019 11z" />
-                </svg>
-              )}
-            </button>
-            <button
-              onClick={() => sendMessage('गढ़वाली संस्कृति का बारा मा एक मजेदार सवाल पूछा — चार विकल्प सहित।')}
-              className="shrink-0 px-3 py-2 text-[11px] sm:text-xs font-semibold text-white bg-white/5 hover:bg-amber-300/15 border border-white/10 hover:border-amber-300/40 rounded-full transition-colors"
-            >
-              🎯 Cultural Quiz
-            </button>
-          </div>
-        </div>
-      </div>
+      {/* Bottom dock removed — Learn Words / Cultural Quiz are now topic cards; mic lives in the input bar. */}
     </div>
   );
 }
