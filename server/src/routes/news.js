@@ -301,3 +301,6 @@ router.delete('/:id', async (req, res) => {
 });
 
 module.exports = router;
+// Also expose loadNews so other modules (e.g. chat RAG) can read articles
+// without going through HTTP.
+module.exports.loadNews = loadNews;
