@@ -9,7 +9,7 @@
 
   body {
     @apply text-white font-sans antialiased;
-    background: linear-gradient(to bottom, #7dd3fc 0%, #1d4ed8 55%, #0f172a 100%);
+    background: linear-gradient(to bottom, #87CEEB 0%, #2E8B57 100%);
     background-attachment: fixed;
     min-height: 100vh;
   }
