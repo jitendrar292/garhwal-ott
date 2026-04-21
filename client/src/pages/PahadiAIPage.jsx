@@ -318,13 +318,11 @@ export default function PahadiAIPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-6 pb-48 flex flex-col" style={{ minHeight: '100vh' }}>
         {/* Brand header */}
         <div className="flex flex-col items-center mb-4">
-          <div className="bg-white rounded-2xl p-2 shadow-2xl shadow-black/40 ring-1 ring-amber-300/30">
-            <img
-              src="/logo.png"
-              alt="PahadiTube"
-              className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl object-contain"
-            />
-          </div>
+          <img
+            src="/logo.png"
+            alt="PahadiTube"
+            className="w-28 h-28 sm:w-32 sm:h-32 object-contain drop-shadow-[0_8px_24px_rgba(251,191,36,0.25)]"
+          />
           <h1 className="mt-4 text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
             पहाड़ी <span className="text-amber-400">AI</span>
           </h1>
@@ -550,8 +548,8 @@ function Avatar({ isUser }) {
     );
   }
   return (
-    <div className="shrink-0 w-9 h-9 rounded-full overflow-hidden ring-2 ring-yellow-300/70 shadow bg-emerald-700">
-      <img src="/logo.png" alt="" className="w-full h-full object-cover" />
+    <div className="shrink-0 w-9 h-9 rounded-full overflow-hidden ring-2 ring-yellow-300/70 shadow bg-emerald-700 flex items-center justify-center">
+      <img src="/logo.png" alt="" className="w-full h-full object-contain p-0.5" />
     </div>
   );
 }
