@@ -7,4 +7,4 @@ Disallow: /youtube/admin
 Disallow: /news/admin
 Disallow: /api/
 
-Sitemap: https://garhwali-stream.onrender.com/sitemap.xml
+Sitemap: https://pahaditube.in/sitemap.xml

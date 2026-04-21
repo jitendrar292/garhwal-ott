@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { folkStories } from '../src/data/folkStories.js';
 
-const SITE = process.env.SITE_URL || 'https://garhwali-stream.onrender.com';
+const SITE = process.env.SITE_URL || 'https://pahaditube.in';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT = resolve(__dirname, '../public/sitemap.xml');
