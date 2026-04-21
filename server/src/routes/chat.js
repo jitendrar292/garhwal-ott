@@ -7,6 +7,8 @@ const {
   formatGlossaryContext,
   retrieveFewShot,
   formatFewShotContext,
+  retrievePhrases,
+  formatPhraseContext,
   getCacheStats,
   flushResponseCache,
   ensureConversationMirror,
@@ -797,6 +799,10 @@ router.post('/', async (req, res) => {
 
   const ragContext = lastUser ? formatGlossaryContext(retrieveGlossary(lastUser.content, 6)) : '';
   const fewShotContext = lastUser ? formatFewShotContext(retrieveFewShot(lastUser.content, 6)) : '';
+  // EN→Garhwali phrase examples from Himlingo (Roman script — labelled).
+  // Only injected when the query has English words; for pure Hindi/Devanagari
+  // queries the keyword overlap usually returns nothing anyway.
+  const phraseContext = lastUser ? formatPhraseContext(retrievePhrases(lastUser.content, 4)) : '';
 
   // Long-term memory: prefer semantic (Upstash Vector) recall;
   // fall back to keyword overlap on the in-memory mirror.
@@ -821,6 +827,7 @@ router.post('/', async (req, res) => {
 
   const systemContent = SYSTEM_PROMPT
     + (fewShotContext ? `\n\n${fewShotContext}` : '')
+    + (phraseContext ? `\n\n${phraseContext}` : '')
     + (ragContext ? `\n\n${ragContext}` : '')
     + (memoryContext ? `\n\n${memoryContext}` : '');
 

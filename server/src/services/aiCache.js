@@ -2,6 +2,7 @@ const NodeCache = require('node-cache');
 const crypto = require('crypto');
 const glossary = require('../data/garhwali-glossary');
 const himlingo = require('../data/himlingo-dictionary');
+const himlingoPhrases = require('../data/himlingo-phrases');
 const fewshot = require('../data/garhwali-fewshot');
 const { generateAll: generateFewShotPairs } = require('../data/garhwali-fewshot-generator');
 
@@ -157,6 +158,7 @@ function getCacheStats() {
     glossaryEntries: INDEX.length,
     glossaryCurated: INDEX.filter((e) => e._source === 'curated').length,
     glossaryHimlingo: INDEX.filter((e) => e._source === 'himlingo').length,
+    phraseExamples: PHRASE_INDEX.length,
   };
 }
 
@@ -229,6 +231,55 @@ function formatFewShotContext(pairs) {
   return [
     '',
     '=== Hindi → Garhwali अनुवाद उदाहरण (इन्हीं शैली मा जवाब लिख — सरल, शुद्ध गढ़वळि) ===',
+    lines.join('\n\n'),
+    '=== अंत ===',
+    '',
+  ].join('\n');
+}
+
+// ===== Phrase examples (Himlingo) =====
+// Curated EN ↔ Romanized-Garhwali phrases scraped from himlingo.com/phrases.
+// Kept in a SEPARATE pool from few-shots because:
+//   1. The pairs are English (not Hindi) → so they're useful when the user
+//      query is English, but they'd dilute Hindi-keyed retrieval if mixed in.
+//   2. The Garhwali side is in Roman/Latin script — the LLM must transliterate
+//      to Devanagari before answering. The formatter labels this explicitly
+//      so the model doesn't echo Roman script back.
+const PHRASE_INDEX = (himlingoPhrases || []).map((p) => ({
+  ...p,
+  enNorm: normalize(p.en),
+  enLoose: collapseRoman(normalize(p.en)),
+}));
+
+function retrievePhrases(query, limit = 4) {
+  const q = normalize(query);
+  if (!q || PHRASE_INDEX.length === 0) return [];
+  const tokens = Array.from(new Set(
+    q.split(/[\s,.!?;:()"'\-—–\/]+/).filter((t) => t.length >= 3)
+  ));
+  if (tokens.length === 0) return [];
+  const looseTokens = Array.from(new Set(tokens.map(collapseRoman)));
+
+  const scored = [];
+  for (const p of PHRASE_INDEX) {
+    let score = 0;
+    for (const tok of looseTokens) {
+      if (p.enLoose.includes(tok)) score += 1;
+    }
+    if (score > 0) scored.push({ p, score });
+  }
+  scored.sort((a, b) => b.score - a.score);
+  return scored.slice(0, limit).map((s) => ({ en: s.p.en, gwRoman: s.p.gwRoman }));
+}
+
+function formatPhraseContext(phrases) {
+  if (!phrases || phrases.length === 0) return '';
+  const lines = phrases.map((p) => `English: ${p.en}\nGarhwali (Roman): ${p.gwRoman}`);
+  return [
+    '',
+    '=== English → Garhwali वाक्यांश (Roman script — output mei pehle Devanagari mein convert kar) ===',
+    'NOTE: यो उदाहरण Roman/Latin अक्षरों मा छन — तू अपणु जवाब हमेसा देवनागरी मा दे।',
+    '',
     lines.join('\n\n'),
     '=== अंत ===',
     '',
@@ -344,6 +395,8 @@ module.exports = {
   formatGlossaryContext,
   retrieveFewShot,
   formatFewShotContext,
+  retrievePhrases,
+  formatPhraseContext,
   getCacheStats,
   flushResponseCache,
   ensureConversationMirror,
