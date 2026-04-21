@@ -20,6 +20,18 @@ function normalize(text) {
     .trim();
 }
 
+// Collapse repeated Latin letters so romanized Garhwali variants match a
+// single canonical tag. People type the same word many ways:
+//   "duur" / "dur" / "duuur"           -> दूर
+//   "bhujji" / "bhujjii" / "bhuji"     -> भुज्जि
+//   "namaste" / "namaaste"             -> नमस्ते
+// We fold any run of the same a-z letter down to one occurrence and apply
+// the same fold to both the glossary index and the user's query, so all of
+// those spellings hit the same row. Devanagari is left untouched.
+function collapseRoman(text) {
+  return String(text || '').toLowerCase().replace(/([a-z])\1+/g, '$1');
+}
+
 function hashConversation(messages) {
   // Hash last user message + last 2 turns of context for stability.
   const tail = messages.slice(-5).map((m) => `${m.role}:${normalize(m.content)}`).join('|');
@@ -38,12 +50,17 @@ function setCached(messages, reply) {
 // ===== Glossary RAG =====
 // Lightweight keyword retrieval. Fast, deterministic, no embeddings needed.
 // Pre-build a flat searchable index once.
-const INDEX = glossary.map((entry) => ({
-  ...entry,
-  searchText: normalize(
+const INDEX = glossary.map((entry) => {
+  const searchText = normalize(
     [entry.gw, entry.hi, entry.en, ...(entry.tags || [])].filter(Boolean).join(' ')
-  ),
-}));
+  );
+  return {
+    ...entry,
+    searchText,
+    // Romanized form with repeated letters collapsed — see collapseRoman().
+    looseText: collapseRoman(searchText),
+  };
+});
 
 /**
  * Find glossary entries relevant to the user's query.
@@ -59,11 +76,17 @@ function retrieveGlossary(query, limit = 6) {
   ));
   if (tokens.length === 0) return [];
 
+  // Romanized variants of each token (e.g. "duur" -> "dur", "bhujjii" -> "bhuji")
+  // so users typing English-script Garhwali still hit the right glossary row.
+  // Devanagari tokens are unchanged (collapseRoman only touches a-z), so this
+  // is strictly a recall boost — never loses verbatim Devanagari matches.
+  const looseTokens = Array.from(new Set(tokens.map(collapseRoman)));
+
   const scored = [];
   for (const entry of INDEX) {
     let score = 0;
-    for (const tok of tokens) {
-      if (entry.searchText.includes(tok)) score += 1;
+    for (const tok of looseTokens) {
+      if (entry.looseText.includes(tok)) score += 1;
     }
     if (score > 0) scored.push({ entry, score });
   }
@@ -117,6 +140,7 @@ const _allFewShot = (() => {
 const FEWSHOT_INDEX = _allFewShot.map((p) => ({
   ...p,
   hiNorm: normalize(p.hi),
+  hiLoose: collapseRoman(normalize(p.hi)),
 }));
 
 function retrieveFewShot(query, limit = 6) {
@@ -127,11 +151,13 @@ function retrieveFewShot(query, limit = 6) {
   ));
   if (tokens.length === 0) return pickRandomFewShot(limit);
 
+  const looseTokens = Array.from(new Set(tokens.map(collapseRoman)));
+
   const scored = [];
   for (const p of FEWSHOT_INDEX) {
     let score = 0;
-    for (const tok of tokens) {
-      if (p.hiNorm.includes(tok)) score += 1;
+    for (const tok of looseTokens) {
+      if (p.hiLoose.includes(tok)) score += 1;
     }
     if (score > 0) scored.push({ p, score });
   }
