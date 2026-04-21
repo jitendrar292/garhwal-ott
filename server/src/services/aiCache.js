@@ -1,6 +1,7 @@
 const NodeCache = require('node-cache');
 const crypto = require('crypto');
 const glossary = require('../data/garhwali-glossary');
+const himlingo = require('../data/himlingo-dictionary');
 const fewshot = require('../data/garhwali-fewshot');
 const { generateAll: generateFewShotPairs } = require('../data/garhwali-fewshot-generator');
 
@@ -50,17 +51,44 @@ function setCached(messages, reply) {
 // ===== Glossary RAG =====
 // Lightweight keyword retrieval. Fast, deterministic, no embeddings needed.
 // Pre-build a flat searchable index once.
-const INDEX = glossary.map((entry) => {
-  const searchText = normalize(
-    [entry.gw, entry.hi, entry.en, ...(entry.tags || [])].filter(Boolean).join(' ')
-  );
-  return {
-    ...entry,
-    searchText,
-    // Romanized form with repeated letters collapsed — see collapseRoman().
-    looseText: collapseRoman(searchText),
-  };
-});
+//
+// Two tiers are merged into one index:
+//   1. Curated `glossary` — hand-written entries with hi + en + tags + notes.
+//      These score higher because they carry more searchable text and the
+//      richer payload renders better in the LLM context.
+//   2. Bulk `himlingo` — ~4,200 EN→GW pairs scraped from himlingo.com. Used
+//      as a fallback when the curated set has no relevant hit (e.g. obscure
+//      English words). Each carries a `_source` flag so the formatter can
+//      render them more compactly.
+const INDEX = [
+  ...glossary.map((entry) => {
+    const searchText = normalize(
+      [entry.gw, entry.hi, entry.en, ...(entry.tags || [])].filter(Boolean).join(' ')
+    );
+    return {
+      ...entry,
+      _source: 'curated',
+      searchText,
+      // Romanized form with repeated letters collapsed — see collapseRoman().
+      looseText: collapseRoman(searchText),
+    };
+  }),
+  ...himlingo.map((entry) => {
+    const searchText = normalize(
+      [entry.gw, entry.en, entry.gloss].filter(Boolean).join(' ')
+    );
+    return {
+      gw: entry.gw,
+      hi: '',
+      en: entry.en,
+      note: entry.gloss || '',
+      _source: 'himlingo',
+      _dialect: entry.dialect || '',
+      searchText,
+      looseText: collapseRoman(searchText),
+    };
+  }),
+];
 
 /**
  * Find glossary entries relevant to the user's query.
@@ -88,7 +116,12 @@ function retrieveGlossary(query, limit = 6) {
     for (const tok of looseTokens) {
       if (entry.looseText.includes(tok)) score += 1;
     }
-    if (score > 0) scored.push({ entry, score });
+    if (score === 0) continue;
+    // Curated entries win ties — they carry richer Hindi + tag metadata and
+    // are hand-verified for grammar. Himlingo bulk entries only surface when
+    // no curated match exists or to fill remaining slots.
+    if (entry._source === 'curated') score += 0.5;
+    scored.push({ entry, score });
   }
   scored.sort((a, b) => b.score - a.score);
   return scored.slice(0, limit).map((s) => s.entry);
@@ -100,6 +133,11 @@ function retrieveGlossary(query, limit = 6) {
 function formatGlossaryContext(entries) {
   if (!entries || entries.length === 0) return '';
   const lines = entries.map((e) => {
+    if (e._source === 'himlingo') {
+      // Bulk dictionary entry — just gw + English headword (+ optional gloss).
+      const gloss = e.note ? ` — ${e.note}` : '';
+      return `• ${e.gw} (English: ${e.en})${gloss}`;
+    }
     const note = e.note ? ` — ${e.note}` : '';
     return `• ${e.gw} (हिंदी: ${e.hi}; English: ${e.en})${note}`;
   });
@@ -117,6 +155,8 @@ function getCacheStats() {
     ...responseCache.getStats(),
     fewShotPairs: FEWSHOT_INDEX.length,
     glossaryEntries: INDEX.length,
+    glossaryCurated: INDEX.filter((e) => e._source === 'curated').length,
+    glossaryHimlingo: INDEX.filter((e) => e._source === 'himlingo').length,
   };
 }
 
