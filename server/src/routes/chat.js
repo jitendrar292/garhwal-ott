@@ -11,6 +11,8 @@ const {
   formatPhraseContext,
   retrieveFolkStory,
   formatFolkStoryContext,
+  retrieveLesson,
+  formatLessonContext,
   getCacheStats,
   flushResponseCache,
   ensureConversationMirror,
@@ -809,6 +811,10 @@ router.post('/', async (req, res) => {
   // Bagdwal, Kalu Bhandari, Tilu Rauteli, Ranu Rout) when the query mentions
   // it. Trimmed to ~1500 chars to stay within Groq's TPM budget.
   const folkStoryContext = lastUser ? formatFolkStoryContext(retrieveFolkStory(lastUser.content, 1)) : '';
+  // Lesson RAG: 10-day basic-Garhwali curriculum from Himlingo. Surfaces
+  // grounded answers for greetings, pronouns, numbers, verb tenses,
+  // dialects, etc. Top 2 lessons (~1.2 KB each) keep prompt budget sane.
+  const lessonContext = lastUser ? formatLessonContext(retrieveLesson(lastUser.content, 2)) : '';
 
   // Long-term memory: prefer semantic (Upstash Vector) recall;
   // fall back to keyword overlap on the in-memory mirror.
@@ -836,6 +842,7 @@ router.post('/', async (req, res) => {
     + (phraseContext ? `\n\n${phraseContext}` : '')
     + (ragContext ? `\n\n${ragContext}` : '')
     + (folkStoryContext ? `\n\n${folkStoryContext}` : '')
+    + (lessonContext ? `\n\n${lessonContext}` : '')
     + (memoryContext ? `\n\n${memoryContext}` : '');
 
   const payload = {

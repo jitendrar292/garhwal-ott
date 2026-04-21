@@ -1,9 +1,11 @@
 const NodeCache = require('node-cache');
 const crypto = require('crypto');
 const glossary = require('../data/garhwali-glossary');
+const grammarRef = require('../data/viewuttarakhand-grammar');
 const himlingo = require('../data/himlingo-dictionary');
 const himlingoPhrases = require('../data/himlingo-phrases');
 const himlingoFolkStories = require('../data/himlingo-folkstories');
+const himlingoLessons = require('../data/himlingo-lessons');
 const fewshot = require('../data/garhwali-fewshot');
 const { generateAll: generateFewShotPairs } = require('../data/garhwali-fewshot-generator');
 
@@ -72,6 +74,19 @@ const INDEX = [
       _source: 'curated',
       searchText,
       // Romanized form with repeated letters collapsed — see collapseRoman().
+      looseText: collapseRoman(searchText),
+    };
+  }),
+  // Grammar reference scraped from viewuttarakhand.blogspot.com (pronouns,
+  // copula, cases, numerals). Same shape as `glossary`, treated as curated.
+  ...grammarRef.map((entry) => {
+    const searchText = normalize(
+      [entry.gw, entry.hi, entry.en, ...(entry.tags || [])].filter(Boolean).join(' ')
+    );
+    return {
+      ...entry,
+      _source: 'grammar-ref',
+      searchText,
       looseText: collapseRoman(searchText),
     };
   }),
@@ -158,6 +173,7 @@ function getCacheStats() {
     fewShotPairs: FEWSHOT_INDEX.length,
     glossaryEntries: INDEX.length,
     glossaryCurated: INDEX.filter((e) => e._source === 'curated').length,
+    glossaryGrammarRef: INDEX.filter((e) => e._source === 'grammar-ref').length,
     glossaryHimlingo: INDEX.filter((e) => e._source === 'himlingo').length,
     phraseExamples: PHRASE_INDEX.length,
     folkStories: FOLK_INDEX.length,
@@ -359,6 +375,73 @@ function formatFolkStoryContext(stories, maxBodyChars = 1500) {
   ].join('\n');
 }
 
+// ===== Lessons (Himlingo "Learn Basic Garhwali in 10 Days") =====
+// Structured 10-day curriculum: phonology, pronouns, greetings, question
+// words, numbers, present/past/future verb forms, everyday phrases,
+// dialects, cultural context. Each entry has its own keyword tag list so
+// concept queries ("how do I say hello", "garhwali numbers", "dialects",
+// "past tense") surface the right lesson even when the user's wording
+// doesn't appear verbatim in the body.
+const LESSON_INDEX = (himlingoLessons || []).map((l) => {
+  const titleText = normalize(`${l.topic} day ${l.day}`);
+  const bodyText = normalize(l.body);
+  const kwText = normalize((l.keywords || []).join(' '));
+  return {
+    ...l,
+    titleLoose: collapseRoman(titleText),
+    bodyLoose: collapseRoman(bodyText),
+    keywordLoose: collapseRoman(kwText),
+  };
+});
+
+function retrieveLesson(query, limit = 2) {
+  const q = normalize(query);
+  if (!q || LESSON_INDEX.length === 0) return [];
+  const tokens = Array.from(new Set(
+    q.split(/[\s,.!?;:()"'\-—–\/]+/).filter((t) => t.length >= 3)
+  ));
+  if (tokens.length === 0) return [];
+  const looseTokens = Array.from(new Set(tokens.map(collapseRoman)));
+
+  // Generic fillers we don't want dragging in every lesson.
+  const STOPS = new Set(['the', 'and', 'for', 'with', 'about', 'tell', 'kya',
+    'kaise', 'kaun', 'mein', 'garhwali', 'गढ़वाली', 'बारे', 'बताओ', 'सिखाओ', 'सीखना']);
+
+  const scored = [];
+  for (const l of LESSON_INDEX) {
+    let score = 0;
+    for (const tok of looseTokens) {
+      if (STOPS.has(tok)) continue;
+      // Curated keyword hit > title hit > body hit.
+      if (l.keywordLoose.includes(tok)) score += 4;
+      else if (l.titleLoose.includes(tok)) score += 3;
+      else if (l.bodyLoose.includes(tok)) score += 1;
+    }
+    if (score >= 3) scored.push({ l, score });
+  }
+  scored.sort((a, b) => b.score - a.score);
+  return scored.slice(0, limit).map((x) => ({
+    day: x.l.day,
+    topic: x.l.topic,
+    body: x.l.body,
+    url: x.l.url,
+  }));
+}
+
+function formatLessonContext(lessons) {
+  if (!lessons || lessons.length === 0) return '';
+  const blocks = lessons.map((l) => l.body);
+  return [
+    '',
+    '=== Garhwali learning notes (Himlingo “Learn Basic Garhwali in 10 Days”) ===',
+    'Use as ground truth for vocabulary, pronouns, greetings, numbers, verb tenses and dialects. Quote Devanagari forms exactly; cite as Himlingo when relevant.',
+    '',
+    blocks.join('\n\n---\n\n'),
+    '=== अंत ===',
+    '',
+  ].join('\n');
+}
+
 function flushResponseCache() {
   const before = responseCache.keys().length;
   responseCache.flushAll();
@@ -472,6 +555,8 @@ module.exports = {
   formatPhraseContext,
   retrieveFolkStory,
   formatFolkStoryContext,
+  retrieveLesson,
+  formatLessonContext,
   getCacheStats,
   flushResponseCache,
   ensureConversationMirror,
