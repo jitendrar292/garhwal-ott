@@ -223,4 +223,83 @@ module.exports = [
   { gw: 'बांज', hi: 'बांज (ओक का पेड़)', en: 'oak tree', tags: ['बांज', 'banj', 'oak'] },
   { gw: 'बुरांश', hi: 'बुरांश (राज्य पुष्प)', en: 'rhododendron (state flower)', tags: ['बुरांश', 'burans', 'rhododendron', 'state flower'] },
   { gw: 'काफळ', hi: 'काफल (पहाड़ी फल)', en: 'kaphal (Himalayan bayberry)', tags: ['काफल', 'kafal', 'kaphal', 'bayberry'] },
+
+  // ===========================================================
+  // Authentic phrases — sourced from Omniglot (omniglot.com/language/phrases/garhwali.htm)
+  // These are conversational sentences, not single words. They give
+  // the LLM real Garhwali sentence patterns to ground its replies.
+  // ===========================================================
+
+  // ----- Greetings -----
+  { gw: 'सिवासौँळी / ढकुली / सेमन्या / नमस्कार', hi: 'नमस्ते / नमस्कार (सामान्य अभिवादन)', en: 'Hello (general greeting)', tags: ['hello', 'hi', 'नमस्ते', 'नमस्कार', 'siwasanli', 'dhakuli', 'semanya', 'greeting'] },
+  { gw: 'सेमन्या', hi: 'हेलो (फ़ोन पर)', en: 'Hello (on phone)', tags: ['hello on phone', 'फोन', 'semanya'] },
+  { gw: 'स्वागत छ', hi: 'स्वागत है', en: 'Welcome', tags: ['welcome', 'स्वागत', 'swagat'] },
+  { gw: 'उठी / बीजा · जसीलो बिनसरि', hi: 'सुप्रभात / सुबह की शुभकामना', en: 'Good morning', tags: ['good morning', 'सुप्रभात', 'सुबह', 'jasilo binsari', 'subah'] },
+  { gw: 'जसीलो दोफर / शुभ दोफर', hi: 'शुभ दोपहर', en: 'Good afternoon', tags: ['good afternoon', 'दोपहर', 'jasilo dofar'] },
+  { gw: 'जसीलो बखयुनी / जसीलो शाम', hi: 'शुभ संध्या / शुभ शाम', en: 'Good evening', tags: ['good evening', 'शाम', 'संध्या', 'jasilo bakhayuni'] },
+  { gw: 'जसीलो रुमुक / जसीलो रात्री / शुभ रात्री', hi: 'शुभ रात्रि', en: 'Good night', tags: ['good night', 'रात', 'jasilo rumuk', 'shubh ratri'] },
+  { gw: 'अच्छी बात / फेरि मल्यां', hi: 'अलविदा / फिर मिलेंगे', en: 'Goodbye / See you later', tags: ['goodbye', 'bye', 'अलविदा', 'फिर मिलेंगे', 'feri malyan'] },
+  { gw: 'जसीलो बेली', hi: 'आपका दिन शुभ हो', en: 'Have a nice day', tags: ['have a nice day', 'शुभ दिन', 'jasilo beli'] },
+  { gw: 'जसीलो जात्रा / शुभ जात्रा', hi: 'शुभ यात्रा', en: 'Bon voyage / Have a good journey', tags: ['bon voyage', 'safe journey', 'shubh yatra', 'jasilo jatra'] },
+  { gw: 'पौंडल्या पौणखि जिम्मुस्', hi: 'भोजन का आनंद लें', en: 'Bon appetit / Have a nice meal', tags: ['bon appetit', 'enjoy meal', 'भोजन', 'paundalya'] },
+  { gw: 'छंद', hi: 'शुभकामनाएँ / गुड लक', en: 'Good luck!', tags: ['good luck', 'शुभकामनाएँ', 'chand'] },
+  { gw: 'जसीलो गासी', hi: 'चियर्स! तंदुरुस्ती के लिए!', en: 'Cheers! Good health!', tags: ['cheers', 'good health', 'toast', 'jasilo gasi'] },
+  { gw: 'भद्दे भद्दे!', hi: 'बधाई हो!', en: 'Congratulations!', tags: ['congratulations', 'बधाई', 'bhadde'] },
+  { gw: 'जन्मदिणा की बधाई च!', hi: 'जन्मदिन मुबारक!', en: 'Happy birthday!', tags: ['happy birthday', 'जन्मदिन', 'janmadina'] },
+  { gw: 'भिंड्या दिन पच्छी भेठ ह्वी', hi: 'बहुत दिनों बाद मुलाक़ात हुई', en: 'Long time no see', tags: ['long time no see', 'bhindya din', 'मुलाक़ात'] },
+
+  // ----- Introductions -----
+  { gw: 'आप कन छो? / तू के छा?', hi: 'आप कैसे हैं? / तुम कैसे हो?', en: 'How are you?', tags: ['how are you', 'कैसे हो', 'aap kan cho', 'tu ke cha'] },
+  { gw: 'मी भल्लु छो / मी ठीक छो', hi: 'मैं ठीक हूँ', en: "I'm fine / I'm well (reply to 'How are you?')", tags: ['i am fine', 'मैं ठीक हूँ', 'mi bhallu cho', 'mi thik cho'] },
+  { gw: 'तुमर नौ कि छ? / तेरू नाम के छ?', hi: 'आपका नाम क्या है?', en: "What's your name?", tags: ['what is your name', 'नाम क्या है', 'tumar naw ki cha', 'teru nam'] },
+  { gw: 'मेरु नौ … छ / म्यार नौ … छ', hi: 'मेरा नाम … है', en: 'My name is …', tags: ['my name is', 'मेरा नाम', 'meru naw', 'myar naw'] },
+  { gw: 'आप कख बटि छो? / तू कहाँ का छा?', hi: 'आप कहाँ से हैं?', en: 'Where are you from?', tags: ['where are you from', 'कहाँ से', 'aap kakh bati cho'] },
+  { gw: 'मी … बटि छो / मैं … सौं छु', hi: 'मैं … से हूँ', en: "I'm from …", tags: ['i am from', 'मैं से हूँ', 'mi bati cho'] },
+  { gw: 'त्वैते भेटिन भल्लु लगील / तुज मिलक बढ़िया लागु', hi: 'आपसे मिलकर अच्छा लगा', en: 'Pleased to meet you', tags: ['pleased to meet you', 'nice to meet you', 'milkar accha laga', 'twaite bhetin'] },
+  { gw: 'तीमी कति विरबैको छौ? / ती कति विरबैको छै?', hi: 'आप कितने साल के हैं?', en: 'How old are you?', tags: ['how old are you', 'उम्र', 'kati virbaiko'] },
+  { gw: 'मी … विरबैको छु', hi: 'मैं … साल का हूँ', en: "I'm … years old", tags: ['i am years old', 'उम्र', 'mi virbaiko chu'] },
+
+  // ----- Yes / No / Understanding -----
+  { gw: 'हो', hi: 'हाँ', en: 'Yes', tags: ['yes', 'हाँ', 'ho'] },
+  { gw: 'नी / ना', hi: 'नहीं', en: 'No', tags: ['no', 'नहीं', 'ni', 'na'] },
+  { gw: 'ह्वै सकदन', hi: 'शायद / हो सकता है', en: 'Maybe', tags: ['maybe', 'शायद', 'hwai sakdan'] },
+  { gw: 'भैं/भौं, म्यै नीं थाह छन्', hi: 'मुझे नहीं पता', en: "I don't know", tags: ['i dont know', 'पता नहीं', 'nahi pata', 'myai ni thah'] },
+  { gw: 'मी विंग् छु', hi: 'मैं समझता हूँ', en: 'I understand', tags: ['i understand', 'समझता हूँ', 'mi ving chu'] },
+  { gw: 'मी नीं विंग् छु', hi: 'मैं नहीं समझता', en: "I don't understand", tags: ['i dont understand', 'नहीं समझा', 'mi ni ving chu'] },
+  { gw: 'कृपा मठु-मठु बव्ल्या', hi: 'कृपया धीरे बोलें', en: 'Please speak more slowly', tags: ['speak slowly', 'धीरे बोलें', 'mathu-mathu bawlya'] },
+  { gw: 'फेरि भन्नुस्', hi: 'कृपया दोबारा कहें', en: 'Please say that again', tags: ['say again', 'फिर कहें', 'feri bhannus'] },
+  { gw: 'कृपा इथे लिख द्या', hi: 'कृपया लिख दीजिए', en: 'Please write it down', tags: ['write it down', 'लिखें', 'likh dya'] },
+
+  // ----- Language -----
+  { gw: 'कि आप गढ़वाली बव्ल्दा छौ?', hi: 'क्या आप गढ़वाली बोलते हैं?', en: 'Do you speak Garhwali?', tags: ['speak garhwali', 'garhwali bolte ho', 'ki aap garhwali'] },
+  { gw: 'कि आप अंग्रेजी बव्ल्दा छौ?', hi: 'क्या आप अंग्रेज़ी बोलते हैं?', en: 'Do you speak English?', tags: ['speak english', 'angrezi bolte ho'] },
+  { gw: 'हो, जरू-ज़रासेक', hi: 'हाँ, थोड़ी-सी', en: 'Yes, a little', tags: ['yes a little', 'थोड़ी सी', 'haan thoda', 'jaru-zarasek'] },
+  { gw: 'गढ़वाली मा म्यार दगड छुई लग्या कौर', hi: 'मुझसे गढ़वाली में बात करें', en: 'Speak to me in Garhwali', tags: ['speak in garhwali', 'गढ़वाली में बात', 'myar dagad chui'] },
+  { gw: 'गढ़वाली मा … ते कि बव्ल्दा छौ?', hi: 'गढ़वाली में … को क्या कहते हैं?', en: 'How do you say … in Garhwali?', tags: ['how do you say in garhwali', 'kya bolte hain', 'kaise kahte hain'] },
+  { gw: 'यक भाखा कत्तई खार्यों नी हुंद छ', hi: 'एक भाषा कभी काफ़ी नहीं होती', en: 'One language is never enough', tags: ['one language is never enough', 'भाषा', 'bhasha', 'yak bhakha'] },
+
+  // ----- Politeness -----
+  { gw: 'कृपा', hi: 'कृपया', en: 'Please', tags: ['please', 'कृपया', 'krpa'] },
+  { gw: 'धन्बाद / धन्यवाद / आभार', hi: 'धन्यवाद', en: 'Thank you', tags: ['thank you', 'धन्यवाद', 'dhanbad', 'aabhar'] },
+  { gw: 'स्वागत छ', hi: 'स्वागत है (धन्यवाद का जवाब)', en: "You're welcome (reply to thank you)", tags: ['youre welcome', 'koi baat nahi', 'swagat cha'] },
+  { gw: 'माफ गरुस्', hi: 'माफ़ कीजिए / क्षमा करें', en: 'Sorry / Excuse me', tags: ['sorry', 'excuse me', 'माफ़ करें', 'maaf garus'] },
+
+  // ----- Common questions / shopping -----
+  { gw: 'यु कथगा च?', hi: 'यह कितने का है?', en: 'How much is this?', tags: ['how much', 'कितने का', 'kathaga cha', 'price'] },
+  { gw: 'बाथरूम कख च?', hi: 'बाथरूम कहाँ है?', en: "Where's the toilet / bathroom?", tags: ['where is bathroom', 'टॉयलेट कहाँ', 'bathroom kakh cha'] },
+
+  // ----- Emotions -----
+  { gw: 'मी त्वै अग्णाण् छु', hi: 'मैं तुमसे प्यार करता हूँ', en: 'I love you', tags: ['i love you', 'प्यार', 'pyaar', 'mi twai agnan'] },
+  { gw: 'म्यै त्यारो खुद छ', hi: 'मुझे तुम्हारी याद आती है', en: 'I miss you', tags: ['i miss you', 'याद आती', 'tyaro khud'] },
+  { gw: 'मी तीमी तड़गे चिफ् छु', hi: 'मैं आप पर भरोसा करता हूँ', en: 'I trust you', tags: ['i trust you', 'भरोसा', 'mi timi chif chu'] },
+  { gw: 'मी तीमी तड़गे नीं चिफ् छु', hi: 'मैं आप पर भरोसा नहीं करता', en: "I don't trust you", tags: ['dont trust you', 'भरोसा नहीं', 'ni chif chu'] },
+  { gw: 'छिटो-छिटो भल्लु ह्वे जावा', hi: 'जल्दी ठीक हो जाओ', en: 'Get well soon', tags: ['get well soon', 'जल्दी ठीक', 'chito-chito bhallu'] },
+
+  // ----- Emergencies -----
+  { gw: 'धड्वे!', hi: 'मदद!', en: 'Help!', tags: ['help', 'मदद', 'dhadwe'] },
+  { gw: 'भडि!', hi: 'आग!', en: 'Fire!', tags: ['fire', 'आग', 'bhadi'] },
+  { gw: 'ठैरा बल!', hi: 'रुको!', en: 'Stop!', tags: ['stop', 'रुको', 'thaira bal'] },
+  { gw: 'ठापी भटयुस्!', hi: 'पुलिस को बुलाओ!', en: 'Call the police!', tags: ['call police', 'पुलिस', 'thapi bhatyus'] },
+  { gw: 'फुण्ड फूंक!', hi: 'चले जाओ!', en: 'Go away!', tags: ['go away', 'चले जाओ', 'phund phunk'] },
+  { gw: 'म्यै यखुड्या फूको!', hi: 'मुझे अकेला छोड़ दो!', en: 'Leave me alone!', tags: ['leave me alone', 'अकेला छोड़', 'yakhudya phuko'] },
 ];
