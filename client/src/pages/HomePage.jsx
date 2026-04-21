@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import ImageSlider from '../components/ImageSlider';
 import GenreGrid from '../components/GenreGrid';
 import VideoRow from '../components/VideoRow';
+import FolkStoriesRow from '../components/FolkStoriesRow';
 import UpcomingHappenings from '../components/UpcomingHappenings';
 import AboutSection from '../components/AboutSection';
 import { getVideosByCategory } from '../api/youtube';
@@ -129,6 +130,9 @@ export default function HomePage() {
           error={folkdance.error}
           categoryLink="/category/folkdance"
         />
+
+        {/* Garhwali folk-stories — Devanagari narratives sourced from himlingo.com */}
+        <FolkStoriesRow />
 
         {/* Jaagar & Devotional */}
         <VideoRow

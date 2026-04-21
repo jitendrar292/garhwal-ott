@@ -20,6 +20,7 @@ import PahadiAIPage from './pages/PahadiAIPage';
 import NewsPage from './pages/NewsPage';
 import NewsAdminPage from './pages/NewsAdminPage';
 import YouTubeAdminPage from './pages/YouTubeAdminPage';
+import FolkStoryPage from './pages/FolkStoryPage';
 
 export default function App() {
   return (
@@ -42,6 +43,7 @@ export default function App() {
             <Route path="/pahadi-ai" element={<PahadiAIPage />} />
             <Route path="/news" element={<NewsPage />} />
             <Route path="/news/admin" element={<NewsAdminPage />} />
+            <Route path="/folk-story/:slug" element={<FolkStoryPage />} />
           </Routes>
         </main>
         <Footer />
