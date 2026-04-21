@@ -302,4 +302,38 @@ module.exports = [
   { gw: 'ठापी भटयुस्!', hi: 'पुलिस को बुलाओ!', en: 'Call the police!', tags: ['call police', 'पुलिस', 'thapi bhatyus'] },
   { gw: 'फुण्ड फूंक!', hi: 'चले जाओ!', en: 'Go away!', tags: ['go away', 'चले जाओ', 'phund phunk'] },
   { gw: 'म्यै यखुड्या फूको!', hi: 'मुझे अकेला छोड़ दो!', en: 'Leave me alone!', tags: ['leave me alone', 'अकेला छोड़', 'yakhudya phuko'] },
+
+  // ===========================================================
+  // लोक व्यवसायों से जुड़ीं गढ़वाळि शब्दावली
+  // Traditional occupations / trades vocabulary
+  // ===========================================================
+  { gw: 'अन्वाळ', hi: 'बकरी चुगाने वाला', en: 'goat herder / one who grazes goats', tags: ['anwal', 'अन्वाळ', 'goat herder', 'shepherd', 'बकरी'] },
+  { gw: 'अलखणियाँ', hi: 'अलख-अलख पुकारने वाला (साधु)', en: 'wandering ascetic who calls "alakh-alakh"', tags: ['alakhaniyan', 'अलखणियाँ', 'sadhu', 'ascetic', 'अलख'] },
+  { gw: 'औजी', hi: 'वादक, दर्जी (पारंपरिक)', en: 'traditional musician and tailor caste', tags: ['auji', 'औजी', 'musician', 'tailor', 'वादक', 'दर्जी'] },
+  { gw: 'कंडेर', hi: 'कंडी (टोकरी) पर आदमी या बोझ ले जाने वाला', en: 'porter who carries people/loads in a basket', tags: ['kander', 'कंडेर', 'porter', 'kandi', 'कंडी'] },
+  { gw: 'कुमार', hi: 'कुम्हार, मिट्टी के बर्तन बनाने वाला', en: 'potter', tags: ['kumar', 'कुमार', 'potter', 'कुम्हार', 'kumhar'] },
+  { gw: 'कोळि', hi: 'तिलहन से तेल निकालने वाला', en: 'oil-presser (extracts oil from oilseeds)', tags: ['koli', 'कोळि', 'oil presser', 'तेल', 'तिलहन'] },
+  { gw: 'खड्वाळ', hi: 'भेड़पालक', en: 'shepherd / sheep-rearer', tags: ['khadwal', 'खड्वाळ', 'shepherd', 'sheep', 'भेड़पालक'] },
+  { gw: 'खेत्वाळो', hi: 'खेत मज़दूर', en: 'farm labourer', tags: ['khetwalo', 'खेत्वाळो', 'farm labourer', 'खेत मज़दूर'] },
+  { gw: 'गळ्दार', hi: 'पशुओं का व्यापार करने वाला', en: 'cattle trader', tags: ['galdar', 'गळ्दार', 'cattle trader', 'पशु व्यापारी'] },
+  { gw: 'गारुड़ि', hi: 'तांत्रिक', en: 'tantric / occult practitioner', tags: ['garudi', 'गारुड़ि', 'tantric', 'तांत्रिक'] },
+  { gw: 'ग्वेर / ग्वीर', hi: 'गाय चराने वाले', en: 'cowherd', tags: ['gwer', 'gwir', 'ग्वेर', 'ग्वीर', 'cowherd', 'cattle herder', 'गाय चराने'] },
+  { gw: 'घड्यळ्या / जागरी / धामी', hi: 'डौंर-थाली बजाकर भूत एवं देवता नचाने वाले', en: 'jaagari — drums daunr-thali to invoke spirits/deities (jaagar performer)', tags: ['ghadyalya', 'jagari', 'dhami', 'जागरी', 'धामी', 'जागर', 'jaagar', 'daunr', 'thali'] },
+  { gw: 'घसारि', hi: 'घास काटने वाली', en: 'woman who cuts grass / fodder collector', tags: ['ghasari', 'घसारि', 'grass cutter', 'घास काटने', 'fodder'] },
+  { gw: 'घोड़ीत', hi: 'घोड़े वाला', en: 'horseman / mule driver', tags: ['ghorit', 'घोड़ीत', 'horseman', 'mule', 'घोड़े वाला'] },
+  { gw: 'चिरानि', hi: 'आरी से लकड़ी चीरने का काम करने वाले', en: 'sawyer (cuts wood with saw)', tags: ['chirani', 'चिरानि', 'sawyer', 'wood cutter', 'लकड़ी चीरने'] },
+  { gw: 'चुनार', hi: 'काष्ठ शिल्पी', en: 'wood carver / carpenter-artisan', tags: ['chunar', 'चुनार', 'wood carver', 'काष्ठ शिल्पी', 'carpenter'] },
+  { gw: 'डंडेर', hi: 'डांडी ले जाने वाले', en: 'palanquin/dandi bearer', tags: ['dander', 'डंडेर', 'dandi bearer', 'palanquin', 'डांडी'] },
+  { gw: 'डळ्यो', hi: 'गाकर माँगने वाले जोगी', en: 'singing mendicant / wandering minstrel-yogi', tags: ['dalyo', 'डळ्यो', 'mendicant', 'singing yogi', 'जोगी'] },
+  { gw: 'डोल्यौर', hi: 'कहार, डोली ले जाने वाले', en: 'kahar / doli (palanquin) bearer', tags: ['dolyaur', 'डोल्यौर', 'kahar', 'doli bearer', 'palanquin', 'कहार'] },
+  { gw: 'धयाणी', hi: 'सिर पर देवता रखकर भविष्य कथन करने वाले', en: 'oracle who carries deity on head and foretells future', tags: ['dhayani', 'धयाणी', 'oracle', 'soothsayer', 'भविष्य कथन', 'देवता'] },
+  { gw: 'धुनार', hi: 'नदियों पर रस्सियों के पुल बनाकर लोगों को नदी पार करवाने वाला', en: 'rope-bridge builder / river-crossing helper', tags: ['dhunar', 'धुनार', 'rope bridge', 'river crossing', 'पुल बनाने'] },
+  { gw: 'धूणा', hi: 'बालू धोकर सोना निकालने वाला', en: 'gold-panner (washes sand to extract gold)', tags: ['dhuna', 'धूणा', 'gold panner', 'सोना निकालने', 'बालू'] },
+  { gw: 'धौंस्या', hi: 'डमरू की तरह का एक वाद्य यंत्र "धाँसी" बजाने वाला', en: 'player of dhansi (small drum like damaru)', tags: ['dhansya', 'धौंस्या', 'dhansi', 'धाँसी', 'damaru', 'drummer'] },
+  { gw: 'पंडा', hi: 'तीर्थस्थल पर पूजा कराने के हकदार', en: 'panda — hereditary priest at pilgrimage sites', tags: ['panda', 'पंडा', 'priest', 'तीर्थ', 'pilgrimage priest'] },
+  { gw: 'पंडित', hi: 'ब्राह्मण', en: 'pandit / brahmin priest', tags: ['pandit', 'पंडित', 'brahmin', 'ब्राह्मण', 'priest'] },
+  { gw: 'पौरि', hi: 'पहरेदार', en: 'guard / sentry', tags: ['pauri', 'पौरि', 'guard', 'sentry', 'पहरेदार'] },
+  { gw: 'पणतरु', hi: 'पानी में तैरने वाला', en: 'swimmer (one who swims in water)', tags: ['pantaru', 'पणतरु', 'swimmer', 'तैरने वाला'] },
+  { gw: 'पणसारु', hi: 'पानी ढोने वाला', en: 'water-carrier', tags: ['pansaru', 'पणसारु', 'water carrier', 'पानी ढोने'] },
+  { gw: 'पतरोळ', hi: 'जंगल का चौकीदार', en: 'forest watchman / patrolman', tags: ['patrol', 'patrol forest guard', 'पतरोळ', 'forest guard', 'जंगल चौकीदार'] },
 ];
