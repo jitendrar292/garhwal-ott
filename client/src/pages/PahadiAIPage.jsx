@@ -408,7 +408,7 @@ export default function PahadiAIPage() {
             {messages.length > 0 && (
               <button
                 onClick={clearChat}
-                className="absolute top-3 right-3 z-10 px-3 py-1 text-[11px] font-medium text-white/80 hover:text-white bg-gray-100 hover:bg-red-500/40 rounded-full transition-colors"
+                className="absolute top-3 right-3 z-10 px-3 py-1 text-[11px] font-medium text-white/80 hover:text-white bg-white/10 hover:bg-red-500/40 border border-white/15 rounded-full transition-colors"
               >
                 ✕ Clear
               </button>
@@ -434,7 +434,7 @@ export default function PahadiAIPage() {
                 !messages[messages.length - 1].content && (
                   <div className="flex gap-3">
                     <Avatar isUser={false} />
-                    <div className="px-4 py-2.5 rounded-2xl bg-gray-100 border border-gray-300 text-white/90 text-sm flex items-center gap-2">
+                    <div className="px-4 py-2.5 rounded-2xl bg-white/10 border border-white/20 text-white/90 text-sm flex items-center gap-2">
                       <span className="text-base">✨</span>
                       <span>सोचणु रा छ…</span>
                       <TypingDots />
@@ -561,7 +561,7 @@ function MessageBubble({ role, content, isStreaming, onSpeak, isSpeaking, timeLa
           className={`px-4 py-2.5 rounded-3xl text-[14px] leading-relaxed whitespace-pre-wrap shadow-md backdrop-blur ${
             isUser
               ? 'bg-emerald-600/85 text-white rounded-br-md border border-emerald-300/30'
-              : 'bg-gray-200 text-white rounded-bl-md border border-white/30'
+              : 'bg-slate-700/80 text-white rounded-bl-md border border-white/15'
           }`}
         >
           {content || (isStreaming ? <TypingDots /> : '')}
@@ -579,7 +579,7 @@ function MessageBubble({ role, content, isStreaming, onSpeak, isSpeaking, timeLa
               className={`flex items-center gap-1 px-2 py-0.5 text-[10px] rounded-full transition-colors ${
                 isSpeaking
                   ? 'text-white bg-emerald-500/40'
-                  : 'text-white/80 hover:text-white hover:bg-gray-200'
+                  : 'text-white/80 hover:text-white hover:bg-white/10'
               }`}
               aria-label={isSpeaking ? 'Stop speaking' : 'Speak this reply'}
             >
