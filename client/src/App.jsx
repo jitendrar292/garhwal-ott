@@ -26,7 +26,7 @@ import FolkStoriesIndexPage from './pages/FolkStoriesIndexPage';
 export default function App() {
   return (
     <MusicProvider>
-      <div className="min-h-screen flex flex-col text-white bg-fixed" style={{ background: 'linear-gradient(to bottom, #87CEEB 0%, #2E8B57 100%)' }}>
+      <div className="min-h-screen flex flex-col text-white" style={{ backgroundColor: '#14122a' }}>
         <Navbar />
         <main className="flex-1 pb-24 sm:pb-8">
           <Routes>
