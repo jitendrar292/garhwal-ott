@@ -67,6 +67,9 @@ export default function HomePage() {
         {/* Festivals · Melas · Theatre / Events — unified row with type filters */}
         <UpcomingHappenings />
 
+        {/* Garhwali folk-stories — Devanagari narratives sourced from himlingo.com */}
+        <FolkStoriesRow />
+
         {/* Trending */}
         <VideoRow
           title={trendingTitle}
@@ -130,9 +133,6 @@ export default function HomePage() {
           error={folkdance.error}
           categoryLink="/category/folkdance"
         />
-
-        {/* Garhwali folk-stories — Devanagari narratives sourced from himlingo.com */}
-        <FolkStoriesRow />
 
         {/* Jaagar & Devotional */}
         <VideoRow
