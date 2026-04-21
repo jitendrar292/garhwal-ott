@@ -336,4 +336,29 @@ module.exports = [
   { gw: 'पणतरु', hi: 'पानी में तैरने वाला', en: 'swimmer (one who swims in water)', tags: ['pantaru', 'पणतरु', 'swimmer', 'तैरने वाला'] },
   { gw: 'पणसारु', hi: 'पानी ढोने वाला', en: 'water-carrier', tags: ['pansaru', 'पणसारु', 'water carrier', 'पानी ढोने'] },
   { gw: 'पतरोळ', hi: 'जंगल का चौकीदार', en: 'forest watchman / patrolman', tags: ['patrol', 'patrol forest guard', 'पतरोळ', 'forest guard', 'जंगल चौकीदार'] },
+
+  // ===========================================================
+  // Words from "Thando Re Thando" — Narendra Singh Negi (classic)
+  // (lyric vocabulary, useful for explaining the song & for general use)
+  // ===========================================================
+  { gw: 'थंडो / ठंडो', hi: 'ठंडा', en: 'cold / cool', tags: ['cold', 'cool', 'ठंडा', 'thando', 'thanda'] },
+  { gw: 'गाड़ु', hi: 'नदी / जलधारा', en: 'river / mountain stream', tags: ['river', 'stream', 'नदी', 'जलधारा', 'gaadu', 'gaad'] },
+  { gw: 'बौण', hi: 'जंगल', en: 'forest / jungle', tags: ['forest', 'jungle', 'जंगल', 'baun', 'baand'] },
+  { gw: 'डांडा', hi: 'पहाड़ की चोटी', en: 'mountain ridge / peak', tags: ['ridge', 'peak', 'पहाड़ चोटी', 'danda'] },
+  { gw: 'सेरा / सेरु', hi: 'सीढ़ीदार खेत', en: 'terraced field', tags: ['terraced field', 'सीढ़ीदार खेत', 'sera', 'seru'] },
+  { gw: 'चौंरि', hi: 'याक / पहाड़ी पशु', en: 'yak / chauri (Himalayan cattle)', tags: ['yak', 'chauri', 'चौंरि'] },
+  { gw: 'ब्योली', hi: 'दुल्हन', en: 'bride', tags: ['bride', 'दुल्हन', 'byoli', 'byouli'] },
+  { gw: 'घस्यारी', hi: 'घास काटने वाली स्त्री', en: 'woman who cuts grass / fodder collector', tags: ['ghasyari', 'घस्यारी', 'grass cutter woman', 'fodder woman'] },
+  { gw: 'खुदेड़', hi: 'किसी की याद / विरह-वेदना', en: 'longing / pining for someone (homesickness)', tags: ['khuded', 'खुदेड़', 'longing', 'याद', 'विरह'] },
+  { gw: 'मैत', hi: 'मायका (विवाहित स्त्री का जन्म-घर)', en: "maternal home (woman's natal village)", tags: ['mait', 'मैत', 'maika', 'मायका', 'maternal home'] },
+  { gw: 'सौंजाड़', hi: 'सहेली / संगिनी', en: 'female friend / companion', tags: ['saunjar', 'सौंजाड़', 'female friend', 'companion', 'सहेली'] },
+  { gw: 'बीजा', hi: 'जल्दी उठो / जागो', en: 'wake up / get up early', tags: ['wake up', 'get up', 'जागो', 'bija'] },
+  { gw: 'बाटो / बाट', hi: 'रास्ता', en: 'path / road', tags: ['path', 'road', 'रास्ता', 'baat', 'bato'] },
+  { gw: 'धार', hi: 'पहाड़ की धार / मुहाने पर बहता पानी', en: 'mountain ridge or natural spring outlet', tags: ['dhar', 'धार', 'ridge', 'spring outlet'] },
+  { gw: 'धुर', hi: 'दूर / सबसे ऊँची चोटी', en: 'far / highest peak', tags: ['dhur', 'धुर', 'far', 'highest peak'] },
+  { gw: 'दीदा', hi: 'देखा (past tense)', en: 'saw / looked at', tags: ['dida', 'दीदा', 'saw', 'देखा'] },
+  { gw: 'खैरि / खैर', hi: 'दुख / विपदा', en: 'sorrow / hardship', tags: ['khair', 'खैरि', 'sorrow', 'दुख', 'hardship'] },
+  { gw: 'बिगरैकी', hi: 'विरह में / बिछड़कर', en: 'in separation / having parted', tags: ['bigraiki', 'बिगरैकी', 'separation', 'विरह'] },
+  { gw: 'मुलुक', hi: 'देश / प्रदेश', en: 'country / homeland', tags: ['mulk', 'mulluk', 'मुलुक', 'country', 'homeland', 'प्रदेश'] },
+  { gw: 'पराण', hi: 'प्राण / जान', en: 'life-breath / soul', tags: ['praan', 'पराण', 'life', 'soul', 'प्राण'] },
 ];
