@@ -26,6 +26,7 @@ const {
   upsertExchange,
   querySimilar,
   vectorInfo,
+  resetNamespace,
 } = require('../services/vectorStore');
 
 // =====================================================================
@@ -942,6 +943,19 @@ router.post('/flush-cache', (req, res) => {
     return res.status(401).json({ error: 'Unauthorized' });
   }
   res.json(flushResponseCache());
+});
+
+// Admin: wipe the Upstash Vector namespace (semantic memory). Use after a
+// system-prompt change so stale answers stop being served via the semantic
+// cache shortcut.
+// Usage: POST /api/chat/reset-vector?key=<FEEDBACK_ADMIN_KEY>
+router.post('/reset-vector', async (req, res) => {
+  const adminKey = process.env.FEEDBACK_ADMIN_KEY || 'pahadi2026';
+  if (req.query.key !== adminKey) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  const result = await resetNamespace();
+  res.json(result);
 });
 
 // Long-term memory inspection (count + most recent exchange).

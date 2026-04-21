@@ -116,9 +116,34 @@ async function vectorInfo() {
   }
 }
 
+/**
+ * Wipe every vector in the namespace. Used after a system-prompt change
+ * so stale answers stop bubbling up via the semantic-cache shortcut.
+ */
+async function resetNamespace() {
+  if (!VECTOR_ENABLED) return { enabled: false, deleted: 0 };
+  try {
+    const res = await fetch(`${VECTOR_URL}/reset/${NAMESPACE}`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${VECTOR_TOKEN}` },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) {
+      const text = await res.text().catch(() => '');
+      throw new Error(`reset ${res.status}: ${text.slice(0, 200)}`);
+    }
+    const json = await res.json().catch(() => ({}));
+    return { enabled: true, namespace: NAMESPACE, result: json.result || 'OK' };
+  } catch (err) {
+    console.error('[vector] reset error:', err.message);
+    return { enabled: true, error: err.message };
+  }
+}
+
 module.exports = {
   isVectorEnabled,
   upsertExchange,
   querySimilar,
   vectorInfo,
+  resetNamespace,
 };
