@@ -711,25 +711,63 @@ const OFFLINE_REPLY =
 /**
  * When upstream Groq fails, try to serve a relevant past answer from memory.
  * Returns the assistant text or null if nothing relevant found.
- * Uses a *lower* similarity threshold than the normal recall path because
- * any reasonable past answer is better than an error message.
+ *
+ * GUARDS — to prevent off-topic stale memory being served as a real answer:
+ *   - Higher similarity bar (0.75 cosine) than before (0.55 was too loose).
+ *   - Token-overlap gate: past Q must share ≥ 30% of meaningful tokens with
+ *     the current Q. This catches false positives where the embedding model
+ *     scores two unrelated Garhwali questions as similar simply because they
+ *     share stylistic words ("बता", "गढ़वाली", "में").
  */
+const FALLBACK_STOPWORDS = new Set([
+  'गढ़वाली', 'गढ़वळि', 'पहाड़ी', 'पहाड़', 'उत्तराखंड', 'मा', 'का', 'की', 'के',
+  'और', 'या', 'बता', 'बतावा', 'बारा', 'बारे', 'मे', 'में', 'है', 'हैं', 'च', 'छ', 'छन',
+  'क्या', 'कैसे', 'कन', 'कख', 'कब', 'क्यों', 'who', 'what', 'how', 'when', 'where',
+  'tell', 'me', 'about', 'is', 'are', 'the', 'a', 'an', 'of', 'in', 'on', 'kya', 'kaise',
+]);
+function fallbackTokenize(s) {
+  return String(s || '')
+    .toLowerCase()
+    .split(/[\s,.!?;:()"'\-—–\/।]+/)
+    .filter((t) => t.length >= 2 && !FALLBACK_STOPWORDS.has(t));
+}
+function fallbackOverlap(a, b) {
+  const sa = new Set(fallbackTokenize(a));
+  const sb = new Set(fallbackTokenize(b));
+  if (sa.size === 0 || sb.size === 0) return 0;
+  let inter = 0;
+  for (const t of sa) if (sb.has(t)) inter++;
+  return inter / Math.min(sa.size, sb.size);
+}
+
 async function findFallbackReply(userText) {
   if (!userText) return null;
-  // 1. Try semantic vector search first (lower bar — 0.55 cosine)
+  const MIN_SCORE = 0.75;
+  const MIN_OVERLAP = 0.3;
+
+  // 1. Try semantic vector search first
   if (isVectorEnabled()) {
     try {
-      const hits = await querySimilar(userText, { topK: 1, minScore: 0.55 });
-      if (hits[0]?.a) return { text: hits[0].a, source: 'vector' };
+      const hits = await querySimilar(userText, { topK: 3, minScore: MIN_SCORE });
+      const good = hits.find((h) => h.a && fallbackOverlap(userText, h.q) >= MIN_OVERLAP);
+      if (good) return { text: good.a, source: 'vector' };
+      if (hits[0]) {
+        console.log(
+          `[chat] fallback vector REJECTED (score=${hits[0].score.toFixed(3)}, ` +
+          `overlap=${fallbackOverlap(userText, hits[0].q).toFixed(2)}) ` +
+          `q="${userText.slice(0, 50)}" ~ past="${(hits[0].q || '').slice(0, 50)}"`
+        );
+      }
     } catch (err) {
       console.error('[chat] fallback vector error:', err.message);
     }
   }
-  // 2. Keyword overlap on in-memory mirror
+  // 2. Keyword overlap on in-memory mirror — already token-based, looser bar OK
   try {
     await ensureConversationMirror(() => getChatHistory(300));
-    const hits = retrieveSimilarConversations(userText, 1);
-    if (hits[0]?.a) return { text: hits[0].a, source: 'keyword' };
+    const hits = retrieveSimilarConversations(userText, 3);
+    const good = hits.find((h) => h.a && fallbackOverlap(userText, h.q) >= MIN_OVERLAP);
+    if (good) return { text: good.a, source: 'keyword' };
   } catch (err) {
     console.error('[chat] fallback keyword error:', err.message);
   }
