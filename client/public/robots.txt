@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Block admin / API surfaces from being indexed
+Disallow: /feedback/admin
+Disallow: /youtube/admin
+Disallow: /news/admin
+Disallow: /api/
+
+Sitemap: https://garhwali-stream.onrender.com/sitemap.xml
