@@ -21,6 +21,7 @@ import NewsPage from './pages/NewsPage';
 import NewsAdminPage from './pages/NewsAdminPage';
 import YouTubeAdminPage from './pages/YouTubeAdminPage';
 import FolkStoryPage from './pages/FolkStoryPage';
+import FolkStoriesIndexPage from './pages/FolkStoriesIndexPage';
 
 export default function App() {
   return (
@@ -44,6 +45,7 @@ export default function App() {
             <Route path="/news" element={<NewsPage />} />
             <Route path="/news/admin" element={<NewsAdminPage />} />
             <Route path="/folk-story/:slug" element={<FolkStoryPage />} />
+            <Route path="/folk-stories" element={<FolkStoriesIndexPage />} />
           </Routes>
         </main>
         <Footer />

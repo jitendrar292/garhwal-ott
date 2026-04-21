@@ -85,11 +85,12 @@ const GENRES = [
     bg: 'bg-slate-700',
   },
   {
-    name: 'शॉर्ट्स',
-    sub: 'छोटी\nवीडियो',
-    path: '/shorts',
-    emoji: '⚡',
-    bg: 'bg-red-700',
+    name: 'लोक-गाथा',
+    sub: 'गढ़वाली\nकहानी',
+    path: '/folk-stories',
+    emoji: '📖',
+    bg: 'bg-amber-700',
+    badge: { text: '🆕', cls: 'bg-amber-500/85' },
   },
 ];
 
