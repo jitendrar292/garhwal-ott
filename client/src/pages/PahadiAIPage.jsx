@@ -495,7 +495,7 @@ export default function PahadiAIPage() {
               <button
                 onClick={() => sendMessage(input)}
                 disabled={!input.trim() || streaming}
-                className="shrink-0 w-10 h-10 flex items-center justify-center rounded-xl bg-amber-400 text-amber-950 hover:bg-amber-300 disabled:bg-gray-200 disabled:text-white/40 transition-colors shadow"
+                className="shrink-0 w-10 h-10 flex items-center justify-center rounded-xl bg-amber-400 text-amber-950 hover:bg-amber-300 disabled:bg-[#0f1a36] disabled:text-amber-300/40 disabled:border disabled:border-amber-300/20 transition-colors shadow"
                 aria-label="Send"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
