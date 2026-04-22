@@ -53,92 +53,177 @@ function setCached(messages, reply) {
 }
 
 // ===== Glossary RAG =====
-// Lightweight keyword retrieval. Fast, deterministic, no embeddings needed.
-// Pre-build a flat searchable index once.
+// Token-aware keyword retrieval. Each entry is pre-tokenized into per-field
+// token sets so we can score *how* a query token matches, not just whether
+// it appears as a substring anywhere. Three things this fixes vs. the old
+// `entry.looseText.includes(tok)` approach:
+//
+//   1. Short/common tokens like "ka", "se", "है" no longer drag in dozens
+//      of unrelated entries via accidental substring overlap (e.g. "ka"
+//      matching "kapa", "kaka", "akash"). Tokens < 3 chars now require an
+//      exact whole-token match.
+//   2. Whole-token matches in the curated `tags` field score 5× higher than
+//      a substring hit deep inside a `note`. Tags ARE the search keywords,
+//      so a hit there is the strongest possible signal.
+//   3. Coverage matters: an entry matching 3 distinct query tokens beats
+//      one matching the same token 3 times. Stops a single common word
+//      from dominating the ranking.
 //
 // Two tiers are merged into one index:
 //   1. Curated `glossary` — hand-written entries with hi + en + tags + notes.
-//      These score higher because they carry more searchable text and the
-//      richer payload renders better in the LLM context.
-//   2. Bulk `himlingo` — ~4,200 EN→GW pairs scraped from himlingo.com. Used
-//      as a fallback when the curated set has no relevant hit (e.g. obscure
-//      English words). Each carries a `_source` flag so the formatter can
-//      render them more compactly.
+//   2. Bulk `himlingo` — ~4,200 EN→GW pairs scraped from himlingo.com.
+//      Used as a fallback (lower source weight) when curated has no hit.
+
+// Tokenize a string into normalized whole tokens (length ≥ 2).
+// Devanagari is left alone (collapseRoman only touches a-z); Latin tokens
+// also get a "loose" copy with doubled letters folded so "duur"/"dur"/"duuur"
+// share a key.
+function tokenize(text) {
+  if (!text) return [];
+  const norm = normalize(text);
+  return norm
+    .split(/[\s,.!?;:()"'\-—–\/]+/)
+    .filter((t) => t.length >= 2);
+}
+
+// Build per-entry indexes. We keep one big Set (every distinct token across
+// all fields) for cheap "any field?" checks, plus per-field Sets so the
+// scorer can apply field-specific weights.
+function buildEntryIndex(fields) {
+  const all = new Set();
+  const allLoose = new Set();
+  const perField = {};
+  for (const [name, text] of Object.entries(fields)) {
+    const toks = tokenize(text);
+    perField[name] = new Set(toks);
+    for (const t of toks) {
+      all.add(t);
+      allLoose.add(collapseRoman(t));
+    }
+  }
+  return { all, allLoose, perField };
+}
+
 const INDEX = [
-  ...glossary.map((entry) => {
-    const searchText = normalize(
-      [entry.gw, entry.hi, entry.en, ...(entry.tags || [])].filter(Boolean).join(' ')
-    );
-    return {
-      ...entry,
-      _source: 'curated',
-      searchText,
-      // Romanized form with repeated letters collapsed — see collapseRoman().
-      looseText: collapseRoman(searchText),
-    };
-  }),
+  ...glossary.map((entry) => ({
+    ...entry,
+    _source: 'curated',
+    _idx: buildEntryIndex({
+      gw: entry.gw,
+      hi: entry.hi,
+      en: entry.en,
+      tags: (entry.tags || []).join(' '),
+      note: entry.note || '',
+    }),
+  })),
   // Grammar reference scraped from viewuttarakhand.blogspot.com (pronouns,
   // copula, cases, numerals). Same shape as `glossary`, treated as curated.
-  ...grammarRef.map((entry) => {
-    const searchText = normalize(
-      [entry.gw, entry.hi, entry.en, ...(entry.tags || [])].filter(Boolean).join(' ')
-    );
-    return {
-      ...entry,
-      _source: 'grammar-ref',
-      searchText,
-      looseText: collapseRoman(searchText),
-    };
-  }),
-  ...himlingo.map((entry) => {
-    const searchText = normalize(
-      [entry.gw, entry.en, entry.gloss].filter(Boolean).join(' ')
-    );
-    return {
+  ...grammarRef.map((entry) => ({
+    ...entry,
+    _source: 'grammar-ref',
+    _idx: buildEntryIndex({
       gw: entry.gw,
-      hi: '',
+      hi: entry.hi,
       en: entry.en,
+      tags: (entry.tags || []).join(' '),
+      note: entry.note || '',
+    }),
+  })),
+  ...himlingo.map((entry) => ({
+    gw: entry.gw,
+    hi: '',
+    en: entry.en,
+    note: entry.gloss || '',
+    _source: 'himlingo',
+    _dialect: entry.dialect || '',
+    _idx: buildEntryIndex({
+      gw: entry.gw,
+      en: entry.en,
+      // Treat a himlingo gloss as note-tier evidence (weakest field weight).
       note: entry.gloss || '',
-      _source: 'himlingo',
-      _dialect: entry.dialect || '',
-      searchText,
-      looseText: collapseRoman(searchText),
-    };
-  }),
+    }),
+  })),
 ];
+
+// Field weights for token-position scoring. Tags are curated search keys
+// (the strongest signal); a note hit is the weakest because notes are prose.
+const FIELD_WEIGHTS = { tags: 5, gw: 3, hi: 3, en: 3, note: 1 };
+// Source priority bonus added once per entry that has any match.
+const SOURCE_BONUS = { curated: 1, 'grammar-ref': 0.5, himlingo: 0 };
+// Drop entries that didn't reach this minimum total. Empirically tuned to
+// cut the long tail of weak prefix-only hits (a single 1-pt match) without
+// losing meaningful single-word lookups (which always reach ≥3 via tags/gw).
+const MIN_GLOSSARY_SCORE = 2;
+
+/**
+ * Score a single (entry, queryToken) pair across all fields.
+ *
+ * Match tiers, in descending order:
+ *   - Whole-token match (token ∈ field's token set)        → field weight × 1.0
+ *   - Loose whole-token match (collapseRoman variant)      → field weight × 0.8
+ *   - Prefix match for tokens ≥ 4 chars                    → field weight × 0.4
+ *   - Substring containment, only when query token ≥ 4    → field weight × 0.2
+ *
+ * Tokens shorter than 3 chars require an exact whole-token match — they're
+ * too noisy to allow prefix/substring expansion.
+ */
+function scoreTokenAgainstEntry(token, entryIdx) {
+  const tokLoose = collapseRoman(token);
+  let best = 0;
+  for (const [field, weight] of Object.entries(FIELD_WEIGHTS)) {
+    const set = entryIdx.perField[field];
+    if (!set || set.size === 0) continue;
+    if (set.has(token)) { best = Math.max(best, weight); continue; }
+    if (token.length < 3) continue; // short tokens: exact only
+    let fieldBest = 0;
+    // Iterate the entry's tokens (small set) instead of scanning all fields.
+    for (const entryToken of set) {
+      const entryLoose = collapseRoman(entryToken);
+      if (entryLoose === tokLoose) { fieldBest = Math.max(fieldBest, weight * 0.8); continue; }
+      if (token.length >= 4 && entryToken.startsWith(token)) {
+        fieldBest = Math.max(fieldBest, weight * 0.4);
+      } else if (token.length >= 4 && entryToken.includes(token)) {
+        fieldBest = Math.max(fieldBest, weight * 0.2);
+      }
+    }
+    best = Math.max(best, fieldBest);
+  }
+  return best;
+}
 
 /**
  * Find glossary entries relevant to the user's query.
- * Returns at most `limit` entries scored by token-match count.
+ * Returns at most `limit` entries scored by token-position match strength.
  */
 function retrieveGlossary(query, limit = 6) {
   const q = normalize(query);
   if (!q) return [];
 
-  // Tokenize: keep words 2+ chars, dedupe
   const tokens = Array.from(new Set(
     q.split(/[\s,.!?;:()"'\-—–\/]+/).filter((t) => t.length >= 2)
   ));
   if (tokens.length === 0) return [];
 
-  // Romanized variants of each token (e.g. "duur" -> "dur", "bhujjii" -> "bhuji")
-  // so users typing English-script Garhwali still hit the right glossary row.
-  // Devanagari tokens are unchanged (collapseRoman only touches a-z), so this
-  // is strictly a recall boost — never loses verbatim Devanagari matches.
-  const looseTokens = Array.from(new Set(tokens.map(collapseRoman)));
-
   const scored = [];
   for (const entry of INDEX) {
-    let score = 0;
-    for (const tok of looseTokens) {
-      if (entry.looseText.includes(tok)) score += 1;
+    let total = 0;
+    let matchedTokens = 0;
+    for (const tok of tokens) {
+      const s = scoreTokenAgainstEntry(tok, entry._idx);
+      if (s > 0) { total += s; matchedTokens += 1; }
     }
-    if (score === 0) continue;
-    // Curated entries win ties — they carry richer Hindi + tag metadata and
-    // are hand-verified for grammar. Himlingo bulk entries only surface when
-    // no curated match exists or to fill remaining slots.
-    if (entry._source === 'curated') score += 0.5;
-    scored.push({ entry, score });
+    if (matchedTokens === 0) continue;
+
+    // Coverage bonus: matching N distinct tokens beats matching one token
+    // N times. Multiplicative so a single weak hit can't compound into noise.
+    if (matchedTokens > 1) total *= 1 + 0.4 * (matchedTokens - 1);
+
+    // Source bonus added last so it can break ties between equally-strong
+    // hits across tiers (curated > grammar-ref > himlingo).
+    total += SOURCE_BONUS[entry._source] || 0;
+
+    if (total < MIN_GLOSSARY_SCORE) continue;
+    scored.push({ entry, score: total });
   }
   scored.sort((a, b) => b.score - a.score);
   return scored.slice(0, limit).map((s) => s.entry);
@@ -197,11 +282,34 @@ const _allFewShot = (() => {
   return merged;
 })();
 
+// Few-shot pairs are searched by their Hindi side. We index Hindi tokens
+// (Devanagari) plus also tokenize the Garhwali (gw) side so a query that
+// includes a Garhwali keyword (e.g. "ब्योह", "मैत") can still find a
+// related pair even when the user phrased their question in Garhwali.
 const FEWSHOT_INDEX = _allFewShot.map((p) => ({
   ...p,
-  hiNorm: normalize(p.hi),
-  hiLoose: collapseRoman(normalize(p.hi)),
+  _hiTokens: new Set(tokenize(p.hi)),
+  _gwTokens: new Set(tokenize(p.gw)),
 }));
+
+// Scoring tiers for few-shot. Tighter than glossary because we have many
+// hundreds of pairs and a single weak match easily out-competes a strong one.
+const FEWSHOT_MIN_SCORE = 2;
+function scoreFewShotToken(token, pair) {
+  const tokLoose = collapseRoman(token);
+  let best = 0;
+  for (const set of [pair._hiTokens, pair._gwTokens]) {
+    if (set.has(token)) { best = Math.max(best, 3); continue; }
+    if (token.length < 3) continue;
+    for (const entryToken of set) {
+      if (collapseRoman(entryToken) === tokLoose) { best = Math.max(best, 2.4); continue; }
+      if (token.length >= 4 && entryToken.startsWith(token)) {
+        best = Math.max(best, 1.2);
+      }
+    }
+  }
+  return best;
+}
 
 function retrieveFewShot(query, limit = 6) {
   const q = normalize(query);
@@ -211,15 +319,18 @@ function retrieveFewShot(query, limit = 6) {
   ));
   if (tokens.length === 0) return pickRandomFewShot(limit);
 
-  const looseTokens = Array.from(new Set(tokens.map(collapseRoman)));
-
   const scored = [];
   for (const p of FEWSHOT_INDEX) {
-    let score = 0;
-    for (const tok of looseTokens) {
-      if (p.hiLoose.includes(tok)) score += 1;
+    let total = 0;
+    let matched = 0;
+    for (const tok of tokens) {
+      const s = scoreFewShotToken(tok, p);
+      if (s > 0) { total += s; matched += 1; }
     }
-    if (score > 0) scored.push({ p, score });
+    if (matched === 0) continue;
+    if (matched > 1) total *= 1 + 0.4 * (matched - 1);
+    if (total < FEWSHOT_MIN_SCORE) continue;
+    scored.push({ p, score: total });
   }
   scored.sort((a, b) => b.score - a.score);
   const top = scored.slice(0, limit).map((s) => s.p);
@@ -265,8 +376,8 @@ function formatFewShotContext(pairs) {
 //      so the model doesn't echo Roman script back.
 const PHRASE_INDEX = (himlingoPhrases || []).map((p) => ({
   ...p,
-  enNorm: normalize(p.en),
-  enLoose: collapseRoman(normalize(p.en)),
+  _enTokens: new Set(tokenize(p.en)),
+  _gwTokens: new Set(tokenize(p.gwRoman || '')),
 }));
 
 function retrievePhrases(query, limit = 4) {
@@ -276,15 +387,28 @@ function retrievePhrases(query, limit = 4) {
     q.split(/[\s,.!?;:()"'\-—–\/]+/).filter((t) => t.length >= 3)
   ));
   if (tokens.length === 0) return [];
-  const looseTokens = Array.from(new Set(tokens.map(collapseRoman)));
 
   const scored = [];
   for (const p of PHRASE_INDEX) {
-    let score = 0;
-    for (const tok of looseTokens) {
-      if (p.enLoose.includes(tok)) score += 1;
+    let total = 0;
+    let matched = 0;
+    for (const tok of tokens) {
+      const tokLoose = collapseRoman(tok);
+      let best = 0;
+      for (const set of [p._enTokens, p._gwTokens]) {
+        if (set.has(tok)) { best = Math.max(best, 3); continue; }
+        for (const entryToken of set) {
+          if (collapseRoman(entryToken) === tokLoose) { best = Math.max(best, 2.4); continue; }
+          if (tok.length >= 4 && entryToken.startsWith(tok)) {
+            best = Math.max(best, 1.2);
+          }
+        }
+      }
+      if (best > 0) { total += best; matched += 1; }
     }
-    if (score > 0) scored.push({ p, score });
+    if (matched === 0 || total < 2) continue;
+    if (matched > 1) total *= 1 + 0.4 * (matched - 1);
+    scored.push({ p, score: total });
   }
   scored.sort((a, b) => b.score - a.score);
   return scored.slice(0, limit).map((s) => ({ en: s.p.en, gwRoman: s.p.gwRoman }));
