@@ -126,6 +126,10 @@ const GROQ = {
   name: 'groq',
   url: 'https://api.groq.com/openai/v1/chat/completions',
   model: 'llama-3.3-70b-versatile',
+  // Trusted primary — its replies may be cached + persisted to long-term memory.
+  trusted: true,
+  // Llama-3.3-70B handles the long Devanagari instruction prompt at 0.5.
+  temperature: 0.5,
   getKey: () => process.env.GROQ_API_KEY,
   extraHeaders: () => ({}),
   onFailure: (status, errText) => {
@@ -137,6 +141,11 @@ const OPENROUTER = {
   name: 'openrouter',
   url: 'https://openrouter.ai/api/v1/chat/completions',
   model: process.env.OPENROUTER_MODEL || 'meta-llama/llama-3.3-70b-instruct:free',
+  // Fallback: free-tier model is weaker and follows the long prompt loosely
+  // — don't poison the response cache or vector memory with its replies.
+  trusted: false,
+  // Lower temperature keeps the weaker model closer to the grounded facts.
+  temperature: 0.3,
   getKey: () => process.env.OPENROUTER_API_KEY,
   extraHeaders: () => ({
     // OpenRouter recommends these for analytics + free-tier eligibility.
@@ -170,6 +179,9 @@ function normalizeGeminiModel(raw) {
 const GEMINI = {
   name: 'gemini',
   model: normalizeGeminiModel(process.env.GEMINI_MODEL || 'gemini-2.0-flash'),
+  // Fallback: 2.0-flash is fast but follows long Devanagari prompts loosely.
+  trusted: false,
+  temperature: 0.3,
   getKey: () => process.env.GEMINI_API_KEY,
 };
 
@@ -564,7 +576,13 @@ async function tryStreamProvider(provider, basePayload, res, safeMessages, lastU
     return false;
   }
 
-  const payload = { ...basePayload, model: provider.model };
+  const payload = {
+    ...basePayload,
+    model: provider.model,
+    // Per-provider temperature override — weaker fallback models hallucinate
+    // less when kept colder. See provider config.
+    ...(provider.temperature != null ? { temperature: provider.temperature } : {}),
+  };
 
   let upstream;
   try {
@@ -625,7 +643,9 @@ async function tryStreamProvider(provider, basePayload, res, safeMessages, lastU
           // Only cache + persist replies that finished naturally. If the
           // model hit max_tokens (truncated), skip both so the user gets
           // a fresh attempt next time instead of replaying the cut-off text.
-          if (!clientClosed && fullReply.length > 5 && !truncated) {
+          // ALSO skip cache/persist for untrusted fallback providers — their
+          // replies are weaker and would otherwise poison future requests.
+          if (!clientClosed && fullReply.length > 5 && !truncated && provider.trusted) {
             setCached(safeMessages, fullReply);
             persistExchange(lastUser?.content, fullReply);
           }
@@ -653,7 +673,7 @@ async function tryStreamProvider(provider, basePayload, res, safeMessages, lastU
         }
       }
     }
-    if (!clientClosed && fullReply.length > 5) {
+    if (!clientClosed && fullReply.length > 5 && provider.trusted) {
       setCached(safeMessages, fullReply);
       persistExchange(lastUser?.content, fullReply);
     }
@@ -694,7 +714,7 @@ async function tryStreamGemini(basePayload, res, safeMessages, lastUser) {
     contents,
     systemInstruction: systemMsg ? { parts: [{ text: systemMsg.content }] } : undefined,
     generationConfig: {
-      temperature: basePayload.temperature ?? 0.5,
+      temperature: GEMINI.temperature ?? basePayload.temperature ?? 0.3,
       maxOutputTokens: basePayload.max_tokens ?? 800,
     },
   };
@@ -764,7 +784,7 @@ async function tryStreamGemini(basePayload, res, safeMessages, lastUser) {
         }
       }
     }
-    if (!clientClosed && fullReply.length > 5 && !truncated) {
+    if (!clientClosed && fullReply.length > 5 && !truncated && GEMINI.trusted) {
       setCached(safeMessages, fullReply);
       persistExchange(lastUser?.content, fullReply);
     }
