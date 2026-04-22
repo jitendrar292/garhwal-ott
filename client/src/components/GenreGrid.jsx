@@ -21,7 +21,7 @@ const GENRES = [
   {
     name: 'गीत',
     sub: 'पहाड़ी\nगाणा',
-    path: '/category/songs',
+    path: '/music',
     emoji: '🎵',
     bg: 'bg-pink-600',
     badge: { text: '✨', cls: 'bg-fuchsia-600/85' },

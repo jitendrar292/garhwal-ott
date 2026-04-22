@@ -18,6 +18,31 @@ const { startTrendingRefresh } = require('./services/youtubeService');
 const app = express();
 const PORT = process.env.PORT || 5001;
 
+// Trust the first proxy (Render/Railway sets x-forwarded-for / x-forwarded-host)
+app.set('trust proxy', 1);
+
+// 301 redirect old onrender.com host (and any non-canonical host) to the
+// canonical custom domain. Skip API requests so server-to-server calls keep
+// working, and only redirect GET/HEAD to avoid breaking POST bodies.
+const CANONICAL_HOST = 'pahaditube.in';
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV !== 'production') return next();
+  const host = (req.headers.host || '').toLowerCase();
+  const isApi = req.path.startsWith('/api/');
+  const isSafeMethod = req.method === 'GET' || req.method === 'HEAD';
+  if (
+    !isApi &&
+    isSafeMethod &&
+    host &&
+    host !== CANONICAL_HOST &&
+    host !== `www.${CANONICAL_HOST}` &&
+    /onrender\.com$/i.test(host)
+  ) {
+    return res.redirect(301, `https://${CANONICAL_HOST}${req.originalUrl}`);
+  }
+  next();
+});
+
 // Security middleware - configure CSP to allow YouTube embeds
 app.use(helmet({
   contentSecurityPolicy: {
@@ -53,9 +78,6 @@ app.use(cors({
     }
   },
 }));
-
-// Trust the first proxy (Render/Railway sets x-forwarded-for)
-app.set('trust proxy', 1);
 
 // Rate limiting — per real client IP, scoped by route
 const youtubeLimiter = rateLimit({
