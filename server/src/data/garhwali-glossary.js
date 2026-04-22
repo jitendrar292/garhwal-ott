@@ -690,4 +690,226 @@ module.exports = [
   { gw: 'मिरजई', hi: 'पारंपरिक छोटी जैकेट जैसा वस्त्र', en: 'traditional short jacket-like garment', tags: ['mirjai', 'मिरजई', 'jacket', 'attire'] },
   { gw: 'दुशलु / खंडेली', hi: 'महिलाओं कु पारंपरिक शॉल', en: 'traditional womens shawl', tags: ['dushlu', 'khandeli', 'दुशलु', 'खंडेली', 'shawl', 'attire'] },
   { gw: 'झगुली / झगुलु', hi: 'बच्चों कु पारंपरिक झुला-नुमा वस्त्र', en: 'traditional childrens loose dress', tags: ['jhaguli', 'jhagulu', 'झगुली', 'झगुलु', 'kids dress', 'attire'] },
+
+  // ===========================================================================
+  // बालकृष्ण ध्यानी जी की "गढ़वळि कक्षा" सी अतिरिक्त शब्दावली
+  // (sites.google.com/view/dhyani — विभिन्न पृष्ठों सी संकलित)
+  // ===========================================================================
+
+  // ----- मौसम / Weather -----
+  { gw: 'घाम', hi: 'धूप', en: 'sunshine', tags: ['gham', 'घाम', 'sunshine', 'sunlight', 'धूप', 'weather', 'mausam'] },
+  { gw: 'बथों / हव्वा', hi: 'हवा', en: 'wind / breeze', tags: ['bathon', 'hawa', 'बथों', 'हव्वा', 'wind', 'breeze', 'हवा', 'weather'] },
+  { gw: 'ह्यूं / बरफ', hi: 'बर्फ़', en: 'snow', tags: ['hyun', 'baraf', 'ह्यूं', 'बरफ', 'snow', 'weather'] },
+  { gw: 'ढांडू', hi: 'ओला', en: 'hailstone', tags: ['dhandu', 'ढांडू', 'hail', 'hailstone', 'ओला', 'weather'] },
+  { gw: 'छैल / छेल', hi: 'छाया', en: 'shade / shadow', tags: ['chhel', 'chhail', 'छैल', 'छेल', 'shade', 'shadow', 'छाया', 'weather'] },
+  { gw: 'सर्ग / अगास', hi: 'आसमान', en: 'sky', tags: ['sarg', 'agas', 'सर्ग', 'अगास', 'sky', 'आसमान', 'weather'] },
+  { gw: 'बरखा', hi: 'बारिश', en: 'rain', tags: ['barkha', 'बरखा', 'rain', 'बारिश', 'weather'] },
+  { gw: 'औडल / औडळ', hi: 'तूफ़ान / आँधी', en: 'storm', tags: ['audal', 'औडल', 'storm', 'तूफ़ान', 'आँधी', 'weather'] },
+
+  // ----- ऋतु / Seasons -----
+  { gw: 'मौल्यार', hi: 'बसंत ऋतु', en: 'spring', tags: ['maulyar', 'मौल्यार', 'spring', 'बसंत', 'season', 'ritu'] },
+  { gw: 'रूड़ी / करषा', hi: 'ग्रीष्म ऋतु', en: 'summer', tags: ['rudi', 'karsha', 'रूड़ी', 'करषा', 'summer', 'ग्रीष्म', 'season'] },
+  { gw: 'चौमास / चतुर्मास', hi: 'वर्षा ऋतु (जुलाई–अक्टूबर)', en: 'monsoon / rainy season', tags: ['chaumas', 'चौमास', 'चतुर्मास', 'monsoon', 'वर्षा', 'rainy season', 'season'] },
+  { gw: 'क्वठार', hi: 'शरद ऋतु / भंडार का समय', en: 'autumn / harvest storage time', tags: ['kwathar', 'क्वठार', 'autumn', 'शरद', 'season'] },
+  { gw: 'ह्यूंद', hi: 'शिशिर / सर्दी', en: 'winter', tags: ['hyund', 'ह्यूंद', 'winter', 'शिशिर', 'सर्दी', 'season'] },
+  { gw: 'झाड़पात', hi: 'हेमंत ऋतु (पतझड़ की शुरुआत)', en: 'late autumn / hemant', tags: ['jhadpat', 'झाड़पात', 'hemant', 'हेमंत', 'season'] },
+
+  // ----- महीने / Months (Vikram calendar) -----
+  { gw: 'चैत', hi: 'चैत्र (मार्च–अप्रैल)', en: 'Chaitra month', tags: ['chait', 'चैत', 'chaitra', 'month', 'mahina'] },
+  { gw: 'बैसाख', hi: 'बैशाख (अप्रैल–मई)', en: 'Baishakh', tags: ['baisakh', 'बैसाख', 'baishakh', 'month'] },
+  { gw: 'जेठ', hi: 'ज्येष्ठ (मई–जून)', en: 'Jeth', tags: ['jeth', 'जेठ', 'jyeshtha', 'month'] },
+  { gw: 'असाढ़', hi: 'आषाढ़ (जून–जुलाई)', en: 'Asadh', tags: ['asadh', 'असाढ़', 'ashadh', 'month'] },
+  { gw: 'सौंण', hi: 'श्रावण / सावन (जुलाई–अगस्त)', en: 'Saun / Shravan', tags: ['saun', 'सौंण', 'shravan', 'sawan', 'month'] },
+  { gw: 'भादौ', hi: 'भाद्रपद (अगस्त–सितंबर)', en: 'Bhado / Bhadrapad', tags: ['bhado', 'भादौ', 'bhadrapad', 'month'] },
+  { gw: 'असूज', hi: 'आश्विन (सितंबर–अक्टूबर)', en: 'Asuj / Ashwin', tags: ['asuj', 'असूज', 'ashwin', 'month'] },
+  { gw: 'कातिक', hi: 'कार्तिक (अक्टूबर–नवंबर)', en: 'Kartik', tags: ['katik', 'कातिक', 'kartik', 'month'] },
+  { gw: 'मंगसीर', hi: 'मार्गशीर्ष (नवंबर–दिसंबर)', en: 'Mangsir / Margshirsh', tags: ['mangsir', 'मंगसीर', 'margshirsh', 'month'] },
+  { gw: 'पूस', hi: 'पौष (दिसंबर–जनवरी)', en: 'Pus / Paush', tags: ['pus', 'पूस', 'paush', 'month'] },
+  { gw: 'माघ', hi: 'माघ (जनवरी–फरवरी)', en: 'Magh', tags: ['magh', 'माघ', 'month'] },
+  { gw: 'फागुण', hi: 'फाल्गुन (फरवरी–मार्च)', en: 'Phagun / Phalgun', tags: ['phagun', 'फागुण', 'phalgun', 'month'] },
+
+  // ----- सप्ताह / Days -----
+  { gw: 'एतवार', hi: 'रविवार', en: 'Sunday', tags: ['etwar', 'एतवार', 'sunday', 'ravivar', 'din', 'day'] },
+  { gw: 'सोमवार', hi: 'सोमवार', en: 'Monday', tags: ['somwar', 'सोमवार', 'monday', 'day'] },
+  { gw: 'मंगल्वार / म्वाटुवार', hi: 'मंगलवार', en: 'Tuesday', tags: ['mangalwar', 'mwatuwar', 'मंगल्वार', 'tuesday', 'day'] },
+  { gw: 'बुवार', hi: 'बुधवार', en: 'Wednesday', tags: ['buwar', 'बुवार', 'wednesday', 'budh', 'day'] },
+  { gw: 'भिप्प्यार', hi: 'बृहस्पतिवार', en: 'Thursday', tags: ['bhippyar', 'भिप्प्यार', 'thursday', 'guruwar', 'day'] },
+  { gw: 'सुक्वार', hi: 'शुक्रवार', en: 'Friday', tags: ['sukwar', 'सुक्वार', 'friday', 'shukrawar', 'day'] },
+  { gw: 'छंचर', hi: 'शनिवार', en: 'Saturday', tags: ['chhanchar', 'छंचर', 'saturday', 'shaniwar', 'day'] },
+
+  // ----- शरीर के अंग / Body parts -----
+  { gw: 'बर्मंड', hi: 'सिर / खोपड़ी', en: 'head', tags: ['barmand', 'बर्मंड', 'head', 'सिर', 'body part'] },
+  { gw: 'मुंड', hi: 'सिर', en: 'head', tags: ['mund', 'मुंड', 'head', 'body part'] },
+  { gw: 'कपाल', hi: 'सिर / माथा', en: 'forehead / head', tags: ['kapal', 'कपाल', 'forehead', 'head', 'body part'] },
+  { gw: 'गल्वड़ी', hi: 'गाल', en: 'cheek', tags: ['galwadi', 'गल्वड़ी', 'cheek', 'गाल', 'body part'] },
+  { gw: 'कन्दूड़', hi: 'कान', en: 'ear', tags: ['kandud', 'कन्दूड़', 'ear', 'kaan', 'body part'] },
+  { gw: 'आँखि / अंखि', hi: 'आँख', en: 'eye', tags: ['ankhi', 'आँखि', 'eye', 'body part'] },
+  { gw: 'नाक', hi: 'नाक', en: 'nose', tags: ['nak', 'नाक', 'nose', 'body part'] },
+  { gw: 'मुख', hi: 'मुँह', en: 'mouth', tags: ['mukh', 'मुख', 'mouth', 'face', 'body part'] },
+  { gw: 'गिच्ची', hi: 'मुँह (बोलचाल)', en: 'mouth (colloquial)', tags: ['gichchi', 'गिच्ची', 'mouth', 'body part'] },
+  { gw: 'जिब्बड़ी', hi: 'जीभ', en: 'tongue', tags: ['jibbadi', 'जिब्बड़ी', 'tongue', 'body part'] },
+  { gw: 'दांत', hi: 'दाँत', en: 'tooth', tags: ['dant', 'दांत', 'teeth', 'body part'] },
+  { gw: 'गाळु', hi: 'गला', en: 'throat / neck', tags: ['galu', 'गाळु', 'throat', 'neck', 'body part'] },
+  { gw: 'खुटि', hi: 'पैर', en: 'foot / leg', tags: ['khuti', 'खुटि', 'foot', 'leg', 'पैर', 'body part'] },
+  { gw: 'हथ्थ', hi: 'हाथ', en: 'hand', tags: ['hath', 'हथ्थ', 'hand', 'body part'] },
+  { gw: 'अंगल्ली', hi: 'उँगली', en: 'finger', tags: ['angalli', 'अंगल्ली', 'finger', 'ungli', 'body part'] },
+  { gw: 'पेट', hi: 'पेट', en: 'belly / stomach', tags: ['pet', 'पेट', 'stomach', 'belly', 'body part'] },
+  { gw: 'पीठ्ठ', hi: 'पीठ', en: 'back', tags: ['pithh', 'पीठ्ठ', 'back', 'body part'] },
+  { gw: 'छाती', hi: 'छाती', en: 'chest', tags: ['chhati', 'छाती', 'chest', 'body part'] },
+
+  // ===========================================================================
+  // पशु–पक्षी / Animals & insects (dhyani.com — सजीव दुनिया)
+  // ===========================================================================
+  { gw: 'बल्द', hi: 'बैल', en: 'ox', tags: ['bald', 'बल्द', 'ox', 'animal', 'domestic'] },
+  { gw: 'बौड़', hi: 'बछड़ा', en: 'calf', tags: ['baud', 'बौड़', 'calf', 'animal'] },
+  { gw: 'भैंस', hi: 'भैंस', en: 'buffalo', tags: ['bhains', 'भैंस', 'buffalo', 'animal', 'domestic'] },
+  { gw: 'बखरी / बखर्या', hi: 'बकरी', en: 'goat', tags: ['bakhri', 'बखरी', 'बखर्या', 'goat', 'animal'] },
+  { gw: 'घ्वाड़ा', hi: 'घोड़ा', en: 'horse', tags: ['ghwada', 'घ्वाड़ा', 'horse', 'animal'] },
+  { gw: 'खच्चर', hi: 'खच्चर', en: 'mule', tags: ['khachchar', 'खच्चर', 'mule', 'animal'] },
+  { gw: 'कुकुर / कुकर', hi: 'कुत्ता', en: 'dog', tags: ['kukur', 'kukar', 'कुकुर', 'dog', 'animal'] },
+  { gw: 'बिरळु / बिराळु', hi: 'बिल्ली', en: 'cat', tags: ['biralu', 'बिरळु', 'cat', 'animal'] },
+  { gw: 'बाघ', hi: 'बाघ', en: 'tiger', tags: ['bagh', 'बाघ', 'tiger', 'animal', 'wild'] },
+  { gw: 'गुलदार', hi: 'तेंदुआ', en: 'leopard', tags: ['guldar', 'गुलदार', 'leopard', 'animal', 'wild'] },
+  { gw: 'भल्लू / रिक्क', hi: 'भालू', en: 'bear', tags: ['bhallu', 'rikk', 'भल्लू', 'रिक्क', 'bear', 'animal', 'wild'] },
+  { gw: 'सुंगर', hi: 'जंगली सुअर', en: 'wild boar', tags: ['sungar', 'सुंगर', 'boar', 'animal', 'wild'] },
+  { gw: 'स्याळ', hi: 'सियार / लोमड़ी', en: 'jackal / fox', tags: ['syal', 'स्याळ', 'jackal', 'fox', 'animal'] },
+  { gw: 'काखड़', hi: 'काकड़ (छोटा हिरण)', en: 'barking deer', tags: ['kakhad', 'काखड़', 'barking deer', 'animal', 'wild'] },
+  { gw: 'मिरग', hi: 'हिरण / मृग', en: 'deer', tags: ['mirag', 'मिरग', 'deer', 'animal', 'wild'] },
+  { gw: 'घ्वीड़', hi: 'घोरल (पहाड़ी हिरण)', en: 'goral (Himalayan deer)', tags: ['ghwid', 'घ्वीड़', 'goral', 'deer', 'animal', 'wild'] },
+  { gw: 'बांदर', hi: 'बंदर', en: 'monkey', tags: ['bandar', 'बांदर', 'monkey', 'animal'] },
+  { gw: 'लंगूर', hi: 'लंगूर', en: 'langur', tags: ['langur', 'लंगूर', 'langur', 'monkey', 'animal'] },
+  { gw: 'लुखंदर / म्यूस', hi: 'चूहा', en: 'mouse / rat', tags: ['lukhandar', 'myus', 'लुखंदर', 'म्यूस', 'mouse', 'rat', 'animal'] },
+  { gw: 'खरगोश / स्वागू', hi: 'खरगोश', en: 'rabbit / hare', tags: ['khargosh', 'swagu', 'स्वागू', 'rabbit', 'animal'] },
+  { gw: 'सौलु', hi: 'साही (कांटों वाला जंतु)', en: 'porcupine', tags: ['saulu', 'सौलु', 'porcupine', 'animal'] },
+  { gw: 'गुरौ / गुरु', hi: 'सर्प / साँप', en: 'snake', tags: ['gurau', 'गुरौ', 'snake', 'serpent', 'animal'] },
+  { gw: 'छिपड़', hi: 'छिपकली', en: 'lizard', tags: ['chhipad', 'छिपड़', 'lizard', 'animal'] },
+  { gw: 'मिंडख', hi: 'मेंढक', en: 'frog', tags: ['mindakh', 'मिंडख', 'frog', 'animal'] },
+  { gw: 'माछ / गड्याल', hi: 'मछली', en: 'fish', tags: ['machh', 'gadyal', 'माछ', 'fish', 'animal'] },
+  { gw: 'बिच्छु', hi: 'बिच्छू', en: 'scorpion', tags: ['bichchhu', 'बिच्छु', 'scorpion', 'insect'] },
+  { gw: 'संगुळ', hi: 'तिलचट्टा / कॉकरोच', en: 'cockroach', tags: ['sangul', 'संगुळ', 'cockroach', 'insect'] },
+  { gw: 'किरम्वळ', hi: 'चींटी', en: 'ant', tags: ['kirmwal', 'किरम्वळ', 'ant', 'insect'] },
+  { gw: 'म्वार', hi: 'मधुमक्खी', en: 'honey bee', tags: ['mwar', 'म्वार', 'bee', 'honeybee', 'insect'] },
+  { gw: 'घिरळ', hi: 'कनखजूरा', en: 'centipede', tags: ['ghiral', 'घिरळ', 'centipede', 'insect'] },
+  { gw: 'माख / म्वाख', hi: 'मक्खी', en: 'fly', tags: ['makh', 'mwakh', 'माख', 'म्वाख', 'fly', 'insect'] },
+  { gw: 'कुखड़ी', hi: 'मुर्गी', en: 'hen', tags: ['kukhdi', 'कुखड़ी', 'hen', 'bird'] },
+  { gw: 'काग / कग्ग', hi: 'कौआ', en: 'crow', tags: ['kag', 'kagg', 'काग', 'crow', 'bird'] },
+  { gw: 'घुघुती', hi: 'फाख़्ता / पहाड़ी कबूतर', en: 'Himalayan dove (ghughuti)', tags: ['ghughuti', 'घुघुती', 'dove', 'bird', 'iconic'] },
+  { gw: 'न्यौळी', hi: 'न्यौली पक्षी (पहाड़ी)', en: 'Himalayan whistling thrush', tags: ['nyauli', 'न्यौळी', 'thrush', 'bird'] },
+  { gw: 'चकोर', hi: 'चकोर', en: 'chukar partridge', tags: ['chakor', 'चकोर', 'chukar', 'bird'] },
+  { gw: 'मोनाळ', hi: 'मोनाल पक्षी (राज्य पक्षी)', en: 'Himalayan monal — state bird', tags: ['monal', 'मोनाळ', 'monal', 'state bird'] },
+
+  // ===========================================================================
+  // ऋतु / Seasons (gढ़वळि बारह मासि)
+  // ===========================================================================
+  { gw: 'मौल्यार', hi: 'वसंत ऋतु', en: 'spring', tags: ['maulyar', 'मौल्यार', 'spring', 'season', 'ritu'] },
+  { gw: 'रूड़ी / करषा', hi: 'ग्रीष्म ऋतु', en: 'summer', tags: ['rudi', 'karsha', 'रूड़ी', 'करषा', 'summer', 'season'] },
+  { gw: 'चौमास / बरखा', hi: 'वर्षा ऋतु', en: 'monsoon / rainy season', tags: ['chaumas', 'barkha', 'चौमास', 'बरखा', 'monsoon', 'rains', 'season'] },
+  { gw: 'क्वठार', hi: 'शरद ऋतु', en: 'autumn', tags: ['kwathar', 'क्वठार', 'autumn', 'sharad', 'season'] },
+  { gw: 'झाड़पात', hi: 'शिशिर ऋतु (पतझड़)', en: 'shishir / leaf-fall', tags: ['jhadpat', 'झाड़पात', 'shishir', 'autumn', 'season'] },
+  { gw: 'ह्यूंद', hi: 'शीत ऋतु / जाड़ा', en: 'winter', tags: ['hyund', 'ह्यूंद', 'winter', 'jada', 'season'] },
+
+  // ===========================================================================
+  // मौसम / Weather words
+  // ===========================================================================
+  { gw: 'घाम', hi: 'धूप / सूरज की रोशनी', en: 'sunshine / sunlight', tags: ['gham', 'घाम', 'sunshine', 'sun', 'weather'] },
+  { gw: 'बथों / हव्वा', hi: 'हवा', en: 'wind', tags: ['bathon', 'havva', 'बथों', 'हव्वा', 'wind', 'air', 'weather'] },
+  { gw: 'ह्यूं', hi: 'बर्फ', en: 'snow', tags: ['hyun', 'ह्यूं', 'snow', 'weather'] },
+  { gw: 'ध्याण', hi: 'बर्फ / हिमपात', en: 'snowfall', tags: ['dhyan', 'ध्याण', 'snowfall', 'weather'] },
+  { gw: 'ढांडू', hi: 'ओले / हिमवर्षा', en: 'hail', tags: ['dhandu', 'ढांडू', 'hail', 'weather'] },
+  { gw: 'छैल', hi: 'छाया', en: 'shade', tags: ['chhail', 'छैल', 'shade', 'weather'] },
+  { gw: 'सर्ग / अगास', hi: 'आसमान', en: 'sky', tags: ['sarg', 'agas', 'सर्ग', 'अगास', 'sky', 'weather'] },
+  { gw: 'बरखा', hi: 'बारिश', en: 'rain', tags: ['barkha', 'बरखा', 'rain', 'weather'] },
+  { gw: 'औडल / आँधि', hi: 'आँधी / तूफान', en: 'storm / gale', tags: ['audal', 'andhi', 'औडल', 'आँधि', 'storm', 'gale', 'weather'] },
+  { gw: 'बादल', hi: 'बादल', en: 'cloud', tags: ['badal', 'बादल', 'cloud', 'weather'] },
+  { gw: 'ज्वाळ', hi: 'कोहरा / धुंध', en: 'fog / mist', tags: ['jwal', 'ज्वाळ', 'fog', 'mist', 'weather'] },
+  { gw: 'चटक घाम', hi: 'तेज धूप', en: 'bright harsh sunshine', tags: ['chatak gham', 'चटक घाम', 'bright sun', 'weather'] },
+  { gw: 'जाड़ु / सिंगाणु', hi: 'जाड़ा / ठंड', en: 'cold', tags: ['jadu', 'singanu', 'जाड़ु', 'सिंगाणु', 'cold', 'weather'] },
+
+  // ===========================================================================
+  // भू-संज्ञा / Land terms (खेत-पाणी)
+  // ===========================================================================
+  { gw: 'पुंगडा / पुंगड़ी', hi: 'खेत', en: 'field', tags: ['pungda', 'पुंगडा', 'field', 'land', 'farm'] },
+  { gw: 'तलाऊं', hi: 'सिंचित खेत', en: 'irrigated field', tags: ['talaun', 'तलाऊं', 'irrigated', 'field', 'land'] },
+  { gw: 'उपराऊं', hi: 'असिंचित खेत (वर्षा-आधारित)', en: 'rain-fed / non-irrigated field', tags: ['uparaun', 'उपराऊं', 'unirrigated', 'rainfed', 'field', 'land'] },
+  { gw: 'सेरा / सीरा', hi: 'नदी किनारे का समतल खेत', en: 'flat riverside field', tags: ['sera', 'sira', 'सेरा', 'सीरा', 'riverside field', 'land'] },
+  { gw: 'बांजो / बंजर', hi: 'बंजर / परती ज़मीन', en: 'fallow / barren land', tags: ['banjo', 'banjar', 'बांजो', 'fallow', 'barren', 'land'] },
+  { gw: 'घट्ट', hi: 'पनचक्की', en: 'water mill', tags: ['ghatt', 'घट्ट', 'water mill', 'land'] },
+  { gw: 'नौला', hi: 'पारंपरिक पत्थर का जल-स्रोत', en: 'traditional stone water source / aquifer', tags: ['naula', 'नौला', 'water source', 'spring', 'land', 'culture'] },
+  { gw: 'धारा', hi: 'पाणी की धारा / झरना', en: 'water spring / stream', tags: ['dhara', 'धारा', 'spring', 'stream', 'water'] },
+  { gw: 'गधेरा', hi: 'छोटी नदी / नाला', en: 'small stream / brook', tags: ['gadhera', 'गधेरा', 'stream', 'brook', 'land'] },
+  { gw: 'गाड़', hi: 'नदी', en: 'river', tags: ['gad', 'गाड़', 'river', 'water', 'land'] },
+  { gw: 'डांडा', hi: 'पहाड़ी / चोटी', en: 'mountain / ridge', tags: ['danda', 'डांडा', 'mountain', 'ridge', 'land'] },
+  { gw: 'बुग्याल', hi: 'अल्पाइन घास का मैदान', en: 'alpine meadow', tags: ['bugyal', 'बुग्याल', 'alpine meadow', 'pasture', 'land'] },
+  { gw: 'खाळ', hi: 'दर्रा / पहाड़ी पास; तालाब भि', en: 'mountain pass; also a pond', tags: ['khal', 'खाळ', 'pass', 'pond', 'land'] },
+  { gw: 'तोक', hi: 'गाँव कु तोक / छोटा हिस्सा', en: 'hamlet / sub-village cluster', tags: ['tok', 'तोक', 'hamlet', 'village', 'land'] },
+
+  // ===========================================================================
+  // भाव / Emotion words (अनूठा गढ़वाली शब्द)
+  // ===========================================================================
+  { gw: 'फाम', hi: 'याद / स्मृति', en: 'memory / remembrance', tags: ['pham', 'फाम', 'memory', 'remembrance', 'emotion'] },
+  { gw: 'खुद', hi: 'अपनों कि याद / विरह', en: 'longing for loved ones (deep nostalgia)', tags: ['khud', 'खुद', 'longing', 'nostalgia', 'viraha', 'emotion'], note: 'गढ़वाली कु सबसे प्रसिद्ध भाव-शब्द — परदेस मा बैठ्यां पहाड़ी कि अपणा गाँव-घर-मनिखौं की याद।' },
+  { gw: 'नराई', hi: 'मायूसी / उदासी', en: 'sadness / dejection', tags: ['narai', 'नराई', 'sadness', 'gloom', 'emotion'] },
+  { gw: 'बाटुली', hi: 'व्याकुलता / बेचैनी', en: 'restlessness / anxious yearning', tags: ['batuli', 'बाटुली', 'restlessness', 'anxiety', 'emotion'] },
+  { gw: 'ओछियाट', hi: 'ऊब / अरुचि', en: 'boredom / aversion', tags: ['ochhiyat', 'ओछियाट', 'boredom', 'emotion'] },
+  { gw: 'फुसियाट', hi: 'फुसफुसाहट / गुस्से कि छटपटाहट', en: 'whisper / suppressed irritation', tags: ['phusiyat', 'फुसियाट', 'whisper', 'irritation', 'emotion'] },
+  { gw: 'अमोखो', hi: 'असमंजस / दुविधा', en: 'dilemma / confusion', tags: ['amokho', 'अमोखो', 'dilemma', 'confusion', 'emotion'] },
+  { gw: 'उकताट', hi: 'ऊबकर खीझ', en: 'fed-up irritation', tags: ['uktat', 'उकताट', 'irritation', 'emotion'] },
+  { gw: 'उचाट', hi: 'मन कि अशांति / उदासी', en: 'mental restlessness / despondency', tags: ['uchat', 'उचाट', 'restlessness', 'emotion'] },
+  { gw: 'कळकळी', hi: 'करुणा / मन कि टीस', en: 'compassion / inner ache', tags: ['kalkali', 'कळकळी', 'compassion', 'ache', 'emotion'] },
+  { gw: 'रिस', hi: 'गुस्सा', en: 'anger', tags: ['ris', 'रिस', 'anger', 'gussa', 'emotion'] },
+  { gw: 'खुसी', hi: 'खुशी', en: 'happiness', tags: ['khusi', 'खुसी', 'happiness', 'joy', 'emotion'] },
+
+  // ===========================================================================
+  // पेशा / Professions & roles (ग्राम्य जीवन)
+  // ===========================================================================
+  { gw: 'रैबारिया', hi: 'संदेशवाहक / दूत', en: 'messenger', tags: ['raibariya', 'रैबारिया', 'messenger', 'profession'] },
+  { gw: 'पुछारी', hi: 'देव-पूछ करण वाला (ओरेकल)', en: 'oracle / one who questions deities', tags: ['puchhari', 'पुछारी', 'oracle', 'profession', 'culture'] },
+  { gw: 'डंगरिया', hi: 'देवता का पात्र (जिस पर देव अवतरित होंद)', en: 'medium possessed by deity', tags: ['dangariya', 'डंगरिया', 'medium', 'oracle', 'culture'] },
+  { gw: 'जगरिया', hi: 'जागर गायक — देव-कथा गायन वाला', en: 'jagar singer — sings deity narratives', tags: ['jagariya', 'जगरिया', 'jagar singer', 'culture', 'profession'] },
+  { gw: 'पतरोल', hi: 'वन रक्षक / पटवारी', en: 'forest guard / patwari', tags: ['patrol', 'पतरोल', 'forest guard', 'profession'] },
+  { gw: 'चिरान', hi: 'लकड़ी चीरण वाला', en: 'wood-sawer / carpenter', tags: ['chiran', 'चिरान', 'sawer', 'carpenter', 'profession'] },
+  { gw: 'ग्वैर / ग्वाला', hi: 'चरवाहा', en: 'cowherd / shepherd', tags: ['gwair', 'gwala', 'ग्वैर', 'cowherd', 'shepherd', 'profession'] },
+  { gw: 'ढोली', hi: 'ढोल वादक', en: 'drummer', tags: ['dholi', 'ढोली', 'drummer', 'culture', 'profession'] },
+  { gw: 'दास / औजी', hi: 'पारंपरिक वाद्य वादक', en: 'traditional musician (Aauji community)', tags: ['das', 'auji', 'दास', 'औजी', 'musician', 'culture', 'profession'] },
+
+  // ===========================================================================
+  // असौंगा शब्द — Rare poetic Garhwali words (dhyani.com)
+  // ===========================================================================
+  { gw: 'ब्येया', hi: 'विवाह कु प्रसंग / शादी', en: 'wedding context / marriage', tags: ['byeya', 'ब्येया', 'wedding', 'marriage', 'rare'] },
+  { gw: 'उबड्याँ', hi: 'उबड़-खाबड़', en: 'rough / uneven (terrain)', tags: ['ubdyan', 'उबड्याँ', 'rough', 'uneven', 'rare'] },
+  { gw: 'म्याला', hi: 'मेला', en: 'fair / festival gathering', tags: ['myala', 'म्याला', 'fair', 'mela'] },
+  { gw: 'फुरफुरा', hi: 'हल्की हवा कि हलचल / फड़फड़ाहट', en: 'flutter / soft wind movement', tags: ['phurphura', 'फुरफुरा', 'flutter', 'wind', 'rare'] },
+  { gw: 'भुतगिला', hi: 'भुतैला / भयावह स्थान', en: 'haunted / eerie place', tags: ['bhutgila', 'भुतगिला', 'haunted', 'eerie', 'rare'] },
+  { gw: 'सगंढ', hi: 'सघन / बहुत घना', en: 'dense / thick (forest etc.)', tags: ['sagandh', 'सगंढ', 'dense', 'thick', 'rare'] },
+  { gw: 'खुरक्यूँन्', hi: 'खुजली / कुरेदन', en: 'itch / scraping urge', tags: ['khurkyun', 'खुरक्यूँन्', 'itch', 'rare'] },
+  { gw: 'दमळैनि', hi: 'दबा हुआ क्रोध / कसक', en: 'suppressed anger / inner pang', tags: ['damalaini', 'दमळैनि', 'suppressed anger', 'rare', 'emotion'] },
+
+  // ===========================================================================
+  // खान-पान — पुरातन गढ़वाली व्यंजन (additional from dhyani.com)
+  // ===========================================================================
+  { gw: 'अट्वाणी', hi: 'अनेक प्रकार का अनाज मिलाकर बण्यां सत्तू-जैसा', en: 'multi-grain sattu-like preparation', tags: ['atwani', 'अट्वाणी', 'multigrain', 'sattu', 'food'] },
+  { gw: 'अमसुटि', hi: 'खटास युक्त पारंपरिक व्यंजन', en: 'tangy traditional dish', tags: ['amsuti', 'अमसुटि', 'sour', 'food'] },
+  { gw: 'ऊमी', hi: 'भुना हुआ हरा गेहूँ', en: 'roasted green wheat', tags: ['umi', 'ऊमी', 'roasted wheat', 'food'] },
+  { gw: 'चबेना', hi: 'भुना/मिश्रित नाश्ता', en: 'mixed roasted snack', tags: ['chabena', 'चबेना', 'snack', 'food'] },
+  { gw: 'कल्यौ', hi: 'सुबह का नाश्ता', en: 'morning breakfast', tags: ['kalyau', 'कल्यौ', 'breakfast', 'food'] },
+  { gw: 'छंसेड़ो', hi: 'पारंपरिक स्थानीय व्यंजन', en: 'traditional local dish', tags: ['chhansedo', 'छंसेड़ो', 'food'] },
+  { gw: 'समै', hi: 'पारंपरिक मीठा', en: 'traditional sweet', tags: ['samai', 'समै', 'sweet', 'food'] },
+
+  // ===========================================================================
+  // विलुप्तप्राय शब्द — Vanishing Garhwali words (dhyani.com)
+  // ===========================================================================
+  { gw: 'विलुप्तप्राय शब्द', hi: 'गढ़वाली कु लुप्त होणु वाला शब्द — संस्कृति का खजाना', en: 'vanishing Garhwali words — cultural treasure', tags: ['vanishing words', 'विलुप्त शब्द', 'lupta', 'culture', 'preservation'], note: 'दैनिक बोलचाल से लुप्त होणु वाला कुछ शब्द: ओबरा (अंधेरा कमरा), तिबारी (3-दरवाजों कु बैठक), जंदरी (हाथ की चक्की), डल्या (बांस कि टोकरी), मांगल्या (शुभ मांगलिक गीत), न्यासणु (कन्या-विदाई गीत), छ्वड़ा (नवविवाहित जोड़ा), क्वथली (अनाज कि मिट्टी कि कोठी), सिलबट्टा (पथ्थर कु पीसण कु यंत्र), डिकरा (बच्चा), मौ (पड़ोस), थाक (थकान), गुठ्यार (गोठ — पशुशाला), हीठ (नीचे), ऊंद (ऊपर — ऊंदा)।' },
+  { gw: 'ओबरा', hi: 'अंधेरा भीतरी कमरा / भंडार', en: 'dark inner room / store', tags: ['obra', 'ओबरा', 'dark room', 'store', 'house', 'vanishing'] },
+  { gw: 'तिबारी', hi: 'तीन दरवाजों वाली परंपरागत बैठक', en: 'traditional three-doored sitting hall', tags: ['tibari', 'तिबारी', 'sitting hall', 'architecture', 'culture'] },
+  { gw: 'जंदरी', hi: 'हाथ की पथ्थर चक्की', en: 'hand-operated stone grinder', tags: ['jandri', 'जंदरी', 'hand mill', 'grinder', 'household'] },
+  { gw: 'डल्या', hi: 'बांस की टोकरी', en: 'bamboo basket', tags: ['dalya', 'डल्या', 'basket', 'bamboo', 'household'] },
+  { gw: 'मांगल्या', hi: 'मांगलिक/शुभ गीत', en: 'auspicious wedding songs', tags: ['mangalya', 'मांगल्या', 'auspicious songs', 'wedding', 'culture'] },
+  { gw: 'क्वथली', hi: 'मिट्टी कि अनाज-कोठी', en: 'mud grain storage bin', tags: ['kwathli', 'क्वथली', 'grain bin', 'storage', 'household'] },
+  { gw: 'गुठ्यार / ग्वठ्यार', hi: 'गोठ — पशुशाला (नीचे की मंजिल)', en: 'cattle shed (ground floor of traditional house)', tags: ['guthyar', 'गुठ्यार', 'cattle shed', 'goth', 'house', 'culture'] },
+  { gw: 'सिलबट्टा / स्यूल', hi: 'पथ्थर कु पीसण कु यंत्र', en: 'stone grinder (pestle & slab)', tags: ['silbatta', 'syul', 'सिलबट्टा', 'grinder', 'household'] },
+  { gw: 'डिकरा / न्यानु', hi: 'बच्चा', en: 'child', tags: ['dikra', 'nyanu', 'डिकरा', 'न्यानु', 'child'] },
+  { gw: 'मौ', hi: 'पड़ोस / पास', en: 'neighbourhood / nearby', tags: ['mau', 'मौ', 'neighbourhood', 'place'] },
+  { gw: 'हीठ', hi: 'नीचे', en: 'below / down', tags: ['hith', 'हीठ', 'below', 'down', 'direction'] },
+  { gw: 'ऊंद / ऊंदा', hi: 'ऊपर', en: 'up / above', tags: ['und', 'ऊंद', 'up', 'above', 'direction'] },
 ];
+
