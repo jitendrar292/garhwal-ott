@@ -23,7 +23,7 @@ const staticRoutes = [
   { path: '/news', changefreq: 'daily', priority: '0.8' },
   { path: '/podcast', changefreq: 'weekly', priority: '0.7' },
   { path: '/folk-stories', changefreq: 'weekly', priority: '0.7' },
-  { path: '/pahadi-ai', changefreq: 'weekly', priority: '0.7' },
+  { path: '/ghughuti-ai', changefreq: 'weekly', priority: '0.7' },
   { path: '/favorites', changefreq: 'monthly', priority: '0.4' },
   { path: '/feedback', changefreq: 'monthly', priority: '0.3' },
 ];

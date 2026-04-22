@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-// Card style matches the Pahadi AI topic tiles: solid colour, centred
+// Card style matches the Ghughuti AI topic tiles: solid colour, centred
 // emoji, two-line Garhwali label, dotted texture overlay.
 const GENRES = [
   {
@@ -70,9 +70,9 @@ const GENRES = [
     badge: { text: '🆕', cls: 'bg-purple-500/85' },
   },
   {
-    name: 'पहाड़ी AI',
+    name: 'घुघुती AI',
     sub: 'गढ़वळि\nमा बच्या',
-    path: '/pahadi-ai',
+    path: '/ghughuti-ai',
     emoji: '🤖',
     bg: 'bg-teal-700',
     badge: { text: '🆕', cls: 'bg-teal-500/85' },
@@ -110,7 +110,7 @@ export default function GenreGrid() {
             to={g.path}
             className={`group relative ${g.bg} rounded-xl p-2 text-center shadow-md shadow-black/30 ring-1 ring-white/10 hover:scale-[1.03] hover:ring-white/30 transition-all overflow-hidden`}
           >
-            {/* subtle dot pattern overlay (matches Pahadi AI cards) */}
+            {/* subtle dot pattern overlay (matches Ghughuti AI cards) */}
             <div
               className="absolute inset-0 opacity-10 pointer-events-none"
               style={{

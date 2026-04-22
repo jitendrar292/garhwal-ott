@@ -32,7 +32,7 @@ const TOPIC_CARDS = [
   { emoji: '🛤️',  label: 'यात्रा\nसवाल',           bg: 'bg-rose-700',    prompt: 'मीं उत्तराखंड की यात्रा करण चांदु — चार धाम, हेमकुण्ड, औली, फूलों की घाटी जना ठिकाणा का बारा मा बता: कब जाण, कन पौंछण, अर क्या-क्या देखण।' },
 ];
 
-export default function PahadiAIPage() {
+export default function GhughutiAIPage() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [streaming, setStreaming] = useState(false);
@@ -280,15 +280,15 @@ export default function PahadiAIPage() {
   return (
     <div className="relative min-h-screen overflow-hidden text-white">
       <SEO
-        title="Pahadi AI - Garhwali Chatbot & Language Assistant"
-        description="Pahadi AI is a Garhwali-speaking chatbot — ask about Uttarakhand culture, festivals, food, travel, folk songs and learn new Garhwali words with everyday examples."
-        path="/pahadi-ai"
-        keywords="Pahadi AI, Garhwali chatbot, Garhwali AI, Uttarakhand AI, learn Garhwali, Garhwali language, Pahadi assistant"
+        title="Ghughuti AI - Garhwali Chatbot & Language Assistant"
+        description="Ghughuti AI is a Garhwali-speaking chatbot — ask about Uttarakhand culture, festivals, food, travel, folk songs and learn new Garhwali words with everyday examples."
+        path="/ghughuti-ai"
+        keywords="Ghughuti AI, Garhwali chatbot, Garhwali AI, Uttarakhand AI, learn Garhwali, Garhwali language, Pahadi assistant"
         jsonLd={{
           '@context': 'https://schema.org',
           '@type': 'WebApplication',
-          name: 'Pahadi AI',
-          url: 'https://pahaditube.in/pahadi-ai',
+          name: 'Ghughuti AI',
+          url: 'https://pahaditube.in/ghughuti-ai',
           applicationCategory: 'EducationalApplication',
           inLanguage: ['hi', 'gbm'],
           description: 'A Garhwali-speaking AI chatbot for Uttarakhand culture, language and travel questions.',
@@ -352,8 +352,8 @@ export default function PahadiAIPage() {
         {/* Brand header */}
         <div className="flex flex-col items-center mb-4">
           <img
-            src="/pahadi-ai-logo.png"
-            alt="पहाड़ी AI"
+            src="/ghughuti-ai-logo.png"
+            alt="घुघुती AI"
             className="w-64 sm:w-80 h-auto object-contain drop-shadow-[0_10px_30px_rgba(0,0,0,0.45)]"
           />
           <p className="mt-2 text-xs sm:text-sm text-white/70 font-medium">
@@ -362,10 +362,10 @@ export default function PahadiAIPage() {
           <button
             type="button"
             onClick={() => {
-              const url = `${window.location.origin}/pahadi-ai`;
+              const url = `${window.location.origin}/ghughuti-ai`;
               const shareData = {
-                title: 'पहाड़ी AI · PahadiTube',
-                text: 'गढ़वळि भाषा मा बच्या करा — Pahadi AI try karein!',
+                title: 'घुघुती AI · PahadiTube',
+                text: 'गढ़वळि भाषा मा बच्या करा — Ghughuti AI try karein!',
                 url,
               };
               if (navigator.share) {
@@ -378,12 +378,12 @@ export default function PahadiAIPage() {
               }
             }}
             className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 border border-amber-300/40 shadow-md shadow-orange-900/30 rounded-full px-3.5 py-1.5 transition-colors"
-            aria-label="Share Pahadi AI"
+            aria-label="Share Ghughuti AI"
           >
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
             </svg>
-            Share Pahadi AI
+            Share Ghughuti AI
           </button>
         </div>
 
@@ -579,7 +579,7 @@ function Avatar({ isUser }) {
   }
   return (
     <div className="shrink-0 w-9 h-9 rounded-full overflow-hidden ring-2 ring-yellow-300/70 shadow bg-white flex items-center justify-center">
-      <img src="/pahadi-ai-logo.png" alt="" className="w-full h-full object-contain" />
+      <img src="/ghughuti-ai-logo.png" alt="" className="w-full h-full object-contain" />
     </div>
   );
 }

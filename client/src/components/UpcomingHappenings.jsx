@@ -145,7 +145,7 @@ function HappeningCard({ item, isPast }) {
     <article
       className={`relative w-[260px] sm:w-[280px] rounded-2xl ${solidBg} p-4 shadow-lg shadow-black/30 ring-1 ring-white/10 hover:scale-[1.02] hover:ring-white/30 transition-all overflow-hidden ${isPast ? 'opacity-80' : ''}`}
     >
-      {/* dot pattern overlay (matches Pahadi AI card style) */}
+      {/* dot pattern overlay (matches Ghughuti AI card style) */}
       <div
         className="absolute inset-0 opacity-10 pointer-events-none"
         style={{

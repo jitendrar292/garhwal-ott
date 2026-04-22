@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * PahadiAI golden-test runner.
+ * GhughutiAI golden-test runner.
  *
  *   Usage:
  *     # Against locally running server (default):
@@ -196,7 +196,7 @@ function printSummary(results) {
     process.exit(2);
   }
 
-  console.log(c('bold', `\nPahadiAI eval — ${selected.length} cases against ${CHAT_URL}`));
+  console.log(c('bold', `\nGhughutiAI eval — ${selected.length} cases against ${CHAT_URL}`));
   console.log(c('dim', `(concurrency=${CONCURRENCY}, timeout=${REQUEST_TIMEOUT_MS}ms)\n`));
 
   const results = await runAll(selected);

@@ -23,7 +23,7 @@ const STATIC_ROUTES = [
   '/news',
   '/podcast',
   '/folk-stories',
-  '/pahadi-ai',
+  '/ghughuti-ai',
   '/favorites',
   '/feedback',
   '/category/movies',

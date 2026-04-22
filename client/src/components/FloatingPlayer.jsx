@@ -130,7 +130,13 @@ export default function FloatingPlayer() {
     }
   }, [currentTime, duration]);
 
-  /* ── create / recreate YT player on track change ── */
+  /* ── create YT player ONCE; reuse it across track changes ──
+     Recreating the iframe on every track breaks autoplay on iOS PWA
+     (loss of user-gesture context). Instead we keep one player alive
+     and call loadVideoById() to switch tracks. ── */
+  const playlistLenRef = useRef(playlist.length);
+  useEffect(() => { playlistLenRef.current = playlist.length; }, [playlist.length]);
+
   useEffect(() => {
     if (!currentTrack) return;
 
@@ -138,18 +144,26 @@ export default function FloatingPlayer() {
     setCurrentTime(0);
     setDuration(0);
     setIsPlaying(false);
-    setIsReady(false);
     endedFiredRef.current = false;
     clearTimeout(skipTimer.current);
-    clearInterval(pollTimer.current);
 
+    // If a player already exists, just swap the video — keeps iOS gesture context
+    if (playerRef.current && typeof playerRef.current.loadVideoById === 'function') {
+      try {
+        playerRef.current.loadVideoById(currentTrack.id);
+        playerRef.current.unMute?.();
+        playerRef.current.setVolume?.(100);
+        playerRef.current.playVideo?.();
+      } catch {}
+      return;
+    }
+
+    setIsReady(false);
     let destroyed = false;
 
     loadYTApi().then(() => {
       if (destroyed) return;
-
-      try { playerRef.current?.destroy(); } catch {}
-      playerRef.current = null;
+      if (playerRef.current) return; // another effect already built it
 
       const host = document.getElementById('yt-audio-host');
       if (!host) return;
@@ -189,6 +203,7 @@ export default function FloatingPlayer() {
             const s = e.data;
             if (s === window.YT.PlayerState.PLAYING) {
               setIsPlaying(true);
+              endedFiredRef.current = false;
               const d = e.target.getDuration();
               if (d > 0) setDuration(d);
             }
@@ -198,10 +213,9 @@ export default function FloatingPlayer() {
               endedFiredRef.current = true;
               if (repeatRef.current) {
                 endedFiredRef.current = false;
-                e.target.seekTo(0);
-                e.target.playVideo();
+                try { e.target.seekTo(0); e.target.playVideo(); } catch {}
               } else {
-                nextTrackRef.current();
+                nextTrackRef.current?.();
               }
             }
           },
@@ -209,8 +223,8 @@ export default function FloatingPlayer() {
             if (destroyed) return;
             setEmbedError(true);
             setIsPlaying(false);
-            if (playlist.length > 1) {
-              skipTimer.current = setTimeout(() => nextTrackRef.current(), 2500);
+            if (playlistLenRef.current > 1) {
+              skipTimer.current = setTimeout(() => nextTrackRef.current?.(), 2500);
             }
           },
         },
@@ -222,11 +236,20 @@ export default function FloatingPlayer() {
     return () => {
       destroyed = true;
       clearTimeout(skipTimer.current);
-      clearInterval(pollTimer.current);
-      try { playerRef.current?.destroy(); } catch {}
-      playerRef.current = null;
+      // Note: we intentionally do NOT destroy the player here — it must
+      // persist across track changes for iOS autoplay to keep working.
     };
-  }, [currentTrack?.id, playlist.length]);
+  }, [currentTrack?.id]);
+
+  /* ── tear down the player only when music is fully stopped ── */
+  useEffect(() => {
+    if (currentTrack) return;
+    clearInterval(pollTimer.current);
+    try { playerRef.current?.destroy(); } catch {}
+    playerRef.current = null;
+    setIsReady(false);
+    setIsPlaying(false);
+  }, [currentTrack]);
 
   /* ── poll current time while playing ── */
   useEffect(() => {

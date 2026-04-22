@@ -1,4 +1,4 @@
-// Golden evaluation set for PahadiAI quality regression tests.
+// Golden evaluation set for GhughutiAI quality regression tests.
 //
 // Each case represents a known failure mode or a behaviour we want to lock in.
 // Run via:  npm run eval         (from server/)
@@ -225,7 +225,7 @@ module.exports = [
     category: 'out-of-scope',
     maxChars: 400,
     mustNotContain: [/```/, /for i in range/, /def /],
-    notes: 'PahadiAI is for Garhwali culture, not coding help.',
+    notes: 'GhughutiAI is for Garhwali culture, not coding help.',
   },
 
   // ── Identity ─────────────────────────────────────────────────────────
@@ -234,7 +234,7 @@ module.exports = [
     query: 'tumhara naam kya hai',
     category: 'identity',
     lang: 'gw',
-    mustContain: [/पहाड़ी AI|पहाड़ी ai/i],
+    mustContain: [/घुघुती AI|घुघुती ai/i],
   },
 
   // ── Grammar: future tense ───────────────────────────────────────────

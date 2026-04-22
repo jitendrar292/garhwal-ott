@@ -99,8 +99,8 @@ export default function FolkStoryPage() {
           {' '}— एक समुदाय-आधारित पहाड़ी भाषा संरक्षण परियोजना।
         </p>
         <p>
-          यो गाथा का बारे मा पहाड़ी AI सी पुछण च त{' '}
-          <Link to="/pahadi-ai" className="text-primary-400 hover:underline">पहाड़ी AI</Link> मा जा।
+          यो गाथा का बारे मा घुघुती AI सी पुछण च त{' '}
+          <Link to="/ghughuti-ai" className="text-primary-400 hover:underline">घुघुती AI</Link> मा जा।
         </p>
       </footer>
 

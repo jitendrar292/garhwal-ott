@@ -12,7 +12,7 @@ const TABS = [
   { name: 'Vlogs', path: '/category/vlogs', emoji: '📹' },
   { name: 'Reels', path: '/shorts', emoji: '⚡' },
   { name: 'Podcast', path: '/podcast', emoji: '🎙️' },
-  { name: 'Pahadi AI', path: '/pahadi-ai', emoji: '🤖' },
+  { name: 'Ghughuti AI', path: '/ghughuti-ai', emoji: '🤖' },
 ];
 
 export default function Navbar() {

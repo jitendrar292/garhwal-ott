@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import BottomNav from './components/BottomNav';
 import Footer from './components/Footer';
@@ -16,7 +16,7 @@ import FeedbackAdminPage from './pages/FeedbackAdminPage';
 import MusicPage from './pages/MusicPage';
 import ShortsPage from './pages/ShortsPage';
 import PodcastPage from './pages/PodcastPage';
-import PahadiAIPage from './pages/PahadiAIPage';
+import GhughutiAIPage from './pages/GhughutiAIPage';
 import NewsPage from './pages/NewsPage';
 import NewsAdminPage from './pages/NewsAdminPage';
 import YouTubeAdminPage from './pages/YouTubeAdminPage';
@@ -41,7 +41,9 @@ export default function App() {
             <Route path="/music" element={<MusicPage />} />
             <Route path="/shorts" element={<ShortsPage />} />
             <Route path="/podcast" element={<PodcastPage />} />
-            <Route path="/pahadi-ai" element={<PahadiAIPage />} />
+            <Route path="/ghughuti-ai" element={<GhughutiAIPage />} />
+            {/* Legacy URL — keep so old bookmarks/sitemap entries don't 404. */}
+            <Route path="/pahadi-ai" element={<Navigate to="/ghughuti-ai" replace />} />
             <Route path="/news" element={<NewsPage />} />
             <Route path="/news/admin" element={<NewsAdminPage />} />
             <Route path="/folk-story/:slug" element={<FolkStoryPage />} />

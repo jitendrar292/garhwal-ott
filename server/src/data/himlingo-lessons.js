@@ -1,6 +1,6 @@
 // Sourced from https://himlingo.com/learn-basic-garhwali/ — "Learn Basic
 // Garhwali in 10 Days" (admin, Mar 2026). Hand-curated into a structured
-// lesson index so PahadiAI can ground answers about basic vocabulary,
+// lesson index so GhughutiAI can ground answers about basic vocabulary,
 // pronouns, greetings, numbers, verb tenses and dialects.
 //
 // Each entry: { day, topic, keywords, body, url }.
