@@ -1263,4 +1263,37 @@ router.get('/vector-test', async (req, res) => {
   }
 });
 
+// Admin: list golden eval test cases. Read-only — the actual runner lives
+// in scripts/eval-chat.js so we don't expose a way for visitors to burn
+// upstream tokens by triggering N LLM calls from a public endpoint.
+// Usage: GET /api/chat/eval-cases?key=<FEEDBACK_ADMIN_KEY>
+router.get('/eval-cases', (req, res) => {
+  const adminKey = process.env.FEEDBACK_ADMIN_KEY || 'pahadi2026';
+  if (req.query.key !== adminKey) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  // Lazy-require so a syntax error in the eval data file doesn't break /api/chat.
+  let cases = [];
+  try { cases = require('../data/garhwali-eval'); }
+  catch (err) { return res.status(500).json({ error: err.message }); }
+
+  // Convert RegExp instances to strings so the JSON response is human-readable.
+  const serialize = (val) => (val instanceof RegExp ? val.toString() : val);
+  res.json({
+    total: cases.length,
+    runHint: 'Run from server/: npm run eval   (set CHAT_URL=https://pahaditube.in/api/chat to test prod)',
+    cases: cases.map((c) => ({
+      id: c.id,
+      category: c.category,
+      query: c.query,
+      lang: c.lang,
+      mustContain: (c.mustContain || []).map(serialize),
+      mustNotContain: (c.mustNotContain || []).map(serialize),
+      maxChars: c.maxChars,
+      minChars: c.minChars,
+      notes: c.notes,
+    })),
+  });
+});
+
 module.exports = router;
