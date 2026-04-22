@@ -235,6 +235,21 @@ module.exports = [
     category: 'identity',
     lang: 'gw',
     mustContain: [/घुघुती AI|घुघुती ai/i],
+    mustNotContain: [/पहाड़ी AI|पहाड़ी ai/i],
+  },
+  {
+    id: 'identity-who-are-you-en',
+    query: 'who are you?',
+    category: 'identity',
+    mustContain: [/Ghughuti AI|घुघुती AI/i],
+    mustNotContain: [/Pahadi AI|पहाड़ी AI/i],
+  },
+  {
+    id: 'identity-introduce',
+    query: 'apna parichay do',
+    category: 'identity',
+    mustContain: [/घुघुती AI/],
+    mustNotContain: [/पहाड़ी AI/],
   },
 
   // ── Grammar: future tense ───────────────────────────────────────────
