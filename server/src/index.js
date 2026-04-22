@@ -40,6 +40,8 @@ const allowedOrigins = [
   process.env.CLIENT_URL || 'http://localhost:5173',
   'http://localhost:4173', // Vite preview
   'https://garhwali-stream.onrender.com',
+  'https://pahaditube.in',
+  'https://www.pahaditube.in',
 ];
 app.use(cors({
   origin(origin, callback) {

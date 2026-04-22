@@ -872,6 +872,62 @@ function streamFallbackReply(res, text, source) {
   return true;
 }
 
+// =====================================================================
+// Romanized-Garhwali detector
+// =====================================================================
+// The system prompt asks the model to detect Roman-script Garhwali and
+// reply in Devanagari Garhwali only. In practice the LLM still drifts to
+// Hindi when the input is short or song-title-like (e.g. "Nauchami narena
+// sune dei tab"). We add a programmatic detector and inject a hard
+// override directive into the system prompt — this is far more reliable
+// than relying on the model alone.
+
+// Common Garhwali tokens that almost never appear in Hindi/English. Match
+// as whole words (case-insensitive) on the Roman-script input.
+const ROMAN_GARHWALI_TOKENS = [
+  // pronouns / verbs / particles
+  'che', 'chau', 'chha', 'chhau', 'chhan', 'chen', 'chein', 'chyan',
+  'kakh', 'kakhi', 'kanke', 'kanaki', 'kankai', 'kankay', 'kx',
+  'rou', 'rauni', 'raula', 'roula', 'rounda', 'raunda', 'baith',
+  'dei', 'deni', 'denu', 'dyani', 'dyandu', 'dindu', 'dindi',
+  'banada', 'banaye', 'banoonda', 'banaunda', 'baundu', 'baundi',
+  'jaun', 'jaunda', 'jandu', 'jando', 'janda', 'jaundi',
+  'aundu', 'aundi', 'aunda', 'aunde',
+  'bola', 'boldu', 'boldi', 'bolda', 'kaindu', 'kaindi',
+  'tab', 'kab', 'kya', 'kyu', 'kyun', 'kaiku', 'kaiki', 'kaika',
+  // greetings / songs / culture-specific
+  'ramram', 'pranam', 'namaskar', 'dhanyawad', 'bhalu', 'bhal', 'bhauji',
+  'dajyu', 'bwari', 'bwe', 'baba', 'dagdya', 'manakhi', 'ghasyari',
+  'pungda', 'mait', 'byali', 'saunjar', 'khuded', 'khanau',
+  'nauchami', 'narena', 'narayna', 'narayana',
+  // food
+  'chaisu', 'chainsoo', 'phaanu', 'phanu', 'kafuli', 'kapa', 'baadi',
+  'bhujji', 'jhangora', 'mandwa', 'kodu', 'arsa', 'singodi',
+  // location / kinship
+  'pahadu', 'pahad', 'ghaur', 'ghar', 'gaaon', 'gaun', 'mait',
+];
+
+const ROMAN_GARHWALI_RE = new RegExp(
+  `\\b(${ROMAN_GARHWALI_TOKENS.join('|')})\\b`,
+  'i'
+);
+
+const DEVANAGARI_RE = /[\u0900-\u097F]/;
+
+function looksRomanizedGarhwali(text) {
+  const s = String(text || '').trim();
+  if (!s) return false;
+  // If it already contains Devanagari, the existing prompt rules handle it.
+  if (DEVANAGARI_RE.test(s)) return false;
+  // Must contain at least one Roman-Garhwali marker token.
+  return ROMAN_GARHWALI_RE.test(s);
+}
+
+const ROMAN_GARHWALI_OVERRIDE = `
+
+## ⚠️ HARD OVERRIDE — ROMAN-SCRIPT GARHWALI DETECTED IN USER INPUT:
+उपयोगकर्ता न Roman script (English अक्षरों) मा गढ़वळि शब्द लिख्या छन। यो मतलब Garhwali-intent = TRUE। **पूरा जवाब सिर्फ देवनागरी मा शुद्ध गढ़वळि मा दे — हिंदी मा कभी ना, English/Roman मा कभी ना, mixed मा कभी ना।** कोई "हिंदी:" / "English:" section ना जोड़। सिर्फ शुद्ध गढ़वळि (छ / छन / छां / कु / कि / का / सँग / औ / जन / कख / कन / कब / कैकु / होंद / जान्द / औंद / दिन्द / बौंदा / करदा / मनौंदा) इस्तेमाल कर। हिंदी क्रिया रूप (है / हैं / होता है / करते हैं / जाते हैं / के लिए / के साथ / के बारे में / और / जब / यह / हम / तुम / मुझे / तुम्हें / हमेशा) कभी ना लिख।`;
+
 router.post('/', async (req, res) => {
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
@@ -1045,7 +1101,14 @@ router.post('/', async (req, res) => {
     }
   }
 
+  // Programmatic Garhwali-intent detection: if the latest user message is
+  // Roman-script Garhwali (e.g. "Nauchami narena sune dei tab"), inject a
+  // hard override so the model can't drift to Hindi.
+  const romanGarhwaliDetected = lastUser ? looksRomanizedGarhwali(lastUser.content) : false;
+  if (romanGarhwaliDetected) res.setHeader('X-Garhwali-Intent', 'roman');
+
   const systemContent = SYSTEM_PROMPT
+    + (romanGarhwaliDetected ? ROMAN_GARHWALI_OVERRIDE : '')
     + (fewShotContext ? `\n\n${fewShotContext}` : '')
     + (phraseContext ? `\n\n${phraseContext}` : '')
     + (ragContext ? `\n\n${ragContext}` : '')
