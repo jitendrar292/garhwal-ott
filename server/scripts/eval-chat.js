@@ -32,6 +32,10 @@ const FILTER = (process.env.EVAL_FILTER || '').toLowerCase();
 const FORMAT = process.env.EVAL_FORMAT || 'pretty';
 const REQUEST_TIMEOUT_MS = Number(process.env.EVAL_TIMEOUT_MS || 60_000);
 const CONCURRENCY = Math.max(1, Number(process.env.EVAL_CONCURRENCY || 2));
+// Admin key bypasses the per-IP rate limiter on /api/chat so a 30-case
+// run doesn't get HTTP 429'd after the 8th request. Falls back to the
+// in-code default ('pahadi2026') matching server/src/routes/chat.js.
+const ADMIN_KEY = process.env.FEEDBACK_ADMIN_KEY || process.env.EVAL_ADMIN_KEY || 'pahadi2026';
 
 const COLORS = {
   reset: '\x1b[0m',
@@ -52,7 +56,10 @@ async function streamReply(query) {
   try {
     res = await fetch(CHAT_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Admin-Key': ADMIN_KEY,
+      },
       body: JSON.stringify({ messages: [{ role: 'user', content: query }] }),
       signal: ctrl.signal,
     });

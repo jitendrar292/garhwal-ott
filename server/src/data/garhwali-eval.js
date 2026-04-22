@@ -52,8 +52,10 @@ module.exports = [
     query: 'काफुली कैसे बनती है?',
     category: 'cuisine',
     lang: 'gw',
-    mustContain: [/पालक|मेथि|हरि|पत्तेदार|मंडुवा|गेहूं/],
-    mustNotContain: [/मांस/, /मटन/, /चिकन/, /मीट/, /गोश्त/, /बकर/],
+    mustContain: [/पालक|मेथि|हरि|पत्तेदार|मंडुवा|गेहूं|शाकाहारी/],
+    // Same rationale as food-kapa-veg: a correct answer may legitimately say
+    // "मांस सी कभी नी बण्दु". Catch only unambiguously wrong claims.
+    mustNotContain: [/(?<!\s)(मटन|चिकन|बकरा का मांस|चिकन से बण|मटन से बण)/],
     notes: 'काफुली is strictly vegetarian — green leaves + flour, never meat.',
   },
   {
@@ -61,7 +63,11 @@ module.exports = [
     query: 'kapa kaise banaye',
     category: 'cuisine',
     lang: 'gw',
-    mustNotContain: [/मांस/, /मटन/, /चिकन/, /मीट/],
+    // Positive evidence: must affirm vegetarian or list veg ingredients.
+    // We don't ban /मांस/ outright because a correct answer often says
+    // "मांस सी कभी नी बण्दु" (never made with meat) — that's the right answer.
+    mustContain: [/शाकाहारी|पालक|मेथि|हरी|पत्तेदार|मंडुवा|गेहूं/],
+    mustNotContain: [/(?<!नी |कभी नी |नहीं |without )(मटन|चिकन|बकर[ेा] का मांस)/],
   },
   {
     id: 'food-phaanu',

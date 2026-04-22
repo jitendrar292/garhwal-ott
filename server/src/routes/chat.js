@@ -939,9 +939,13 @@ router.post('/', async (req, res) => {
     return res.status(400).json({ error: 'messages array is required' });
   }
 
-  // Per-IP rate limit
+  // Per-IP rate limit. Skipped when caller presents the admin key in the
+  // X-Admin-Key header — used by the eval harness so a 30-case run doesn't
+  // get throttled into HTTP 429 for the last 22 cases.
   const ip = (req.headers['x-forwarded-for']?.split(',')[0] || req.ip || 'unknown').trim();
-  if (!takeIpToken(ip)) {
+  const adminKey = process.env.FEEDBACK_ADMIN_KEY || 'pahadi2026';
+  const isAdmin = req.headers['x-admin-key'] === adminKey;
+  if (!isAdmin && !takeIpToken(ip)) {
     res.setHeader('Retry-After', String(Math.ceil(IP_REFILL_MS / 1000)));
     return res.status(429).json({ error: 'बहुत जल्दी बहुत सवाल आगः एक छोटु सांस ल्या, फिर पुछि जास।' });
   }
