@@ -18,7 +18,7 @@ const { redisGetJSON, redisSetJSON, isRedisEnabled } = require('./store');
 
 const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY || '';
 const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY || '';
-const VAPID_SUBJECT = process.env.VAPID_SUBJECT || 'mailto:jitendrar292@gmail.com';
+const VAPID_SUBJECT = process.env.VAPID_SUBJECT || 'mailto:info@pahaditube.in';
 const REDIS_KEY = 'pahadi_push_subs';
 
 // In-memory fallback (used only when Redis is unavailable).
