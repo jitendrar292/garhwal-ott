@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import SEO from '../components/SEO';
+import { toGarhwaliSpeech, pickPahadiVoice, PAHADI_RATE, PAHADI_PITCH } from '../utils/garhwaliTone';
 
 // Chat history is intentionally NOT persisted in the browser — Redis is the
 // only store and the server already logs Q→A pairs server-side
@@ -234,13 +235,28 @@ export default function PahadiAIPage() {
       setSpeakingIdx(-1);
       return;
     }
-    const utter = new SpeechSynthesisUtterance(text);
+    // Convert Hindi-leaning words to their Garhwali equivalents so the
+    // synthesizer (which only knows hi-IN phonemes) reads pahadi vocabulary.
+    const spoken = toGarhwaliSpeech(text);
+    const utter = new SpeechSynthesisUtterance(spoken);
     utter.lang = 'hi-IN';
-    utter.rate = 0.95;
-    utter.pitch = 1;
+    utter.rate = PAHADI_RATE;   // slower for pahadi cadence
+    utter.pitch = PAHADI_PITCH; // slightly higher / sing-song
+    const voice = pickPahadiVoice();
+    if (voice) utter.voice = voice;
     utter.onend = () => setSpeakingIdx((cur) => (cur === idx ? -1 : cur));
     utter.onerror = () => setSpeakingIdx(-1);
     setSpeakingIdx(idx);
+    // Some browsers populate voices async — if none were ready, retry once.
+    if (!voice && window.speechSynthesis.getVoices().length === 0) {
+      window.speechSynthesis.onvoiceschanged = () => {
+        const v = pickPahadiVoice();
+        if (v) utter.voice = v;
+        window.speechSynthesis.speak(utter);
+        window.speechSynthesis.onvoiceschanged = null;
+      };
+      return;
+    }
     window.speechSynthesis.speak(utter);
   };
 
