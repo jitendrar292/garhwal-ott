@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { folkStories } from '../data/folkStories';
+import SEO from '../components/SEO';
 
 // Grid index for /folk-stories — shows every Garhwali folk-tale card so the
 // "लोक-गाथा" Explore tile has a real destination. Cards reuse the same
@@ -8,6 +9,29 @@ import { folkStories } from '../data/folkStories';
 export default function FolkStoriesIndexPage() {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-16">
+      <SEO
+        title="Garhwali Folk Stories - Uttarakhand Lok Gatha & Legends"
+        description="Read Garhwali folk stories (लोक-गाथा) from Uttarakhand — Jagdev Panwar, Jeetu Bagdwal, Teelu Rauteli, Kalu Bhandari, Ranu Rout and more Pahadi legends."
+        path="/folk-stories"
+        keywords="Garhwali folk stories, Uttarakhand lok gatha, Pahadi legends, Teelu Rauteli, Jeetu Bagdwal, Jagdev Panwar, Garhwali kahani"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          name: 'Garhwali Folk Stories',
+          url: 'https://pahaditube.in/folk-stories',
+          description: 'A collection of Garhwali folk tales and Uttarakhand legends.',
+          isPartOf: { '@id': 'https://pahaditube.in/#website' },
+          mainEntity: {
+            '@type': 'ItemList',
+            itemListElement: folkStories.map((s, i) => ({
+              '@type': 'ListItem',
+              position: i + 1,
+              url: `https://pahaditube.in/folk-story/${s.slug}`,
+              name: s.name,
+            })),
+          },
+        }}
+      />
       <header className="mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-amber-100 flex items-center gap-3">
           <span className="text-4xl">📖</span>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { folkStories, getFolkStoryWithBody } from '../data/folkStories';
+import SEO from '../components/SEO';
 
 // Full-text reader for a single Garhwali folk-story. The story body is loaded
 // via dynamic import so the heavy ~50 KB Devanagari bundle never lands in the
@@ -45,6 +46,22 @@ export default function FolkStoryPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-6 pb-16">
+      <SEO
+        title={`${name} - Garhwali Folk Story`}
+        description={blurb || `${name} — a Garhwali folk story (लोक-गाथा) from Uttarakhand.`}
+        path={`/folk-story/${slug}`}
+        type="article"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'Article',
+          headline: name,
+          description: blurb,
+          inLanguage: 'hi',
+          articleSection: 'Garhwali Folk Stories',
+          mainEntityOfPage: `https://pahaditube.in/folk-story/${slug}`,
+          publisher: { '@id': 'https://pahaditube.in/#organization' },
+        }}
+      />
       <Link to="/" className="text-sm text-gray-400 hover:text-primary-400 inline-flex items-center gap-1 mb-6">
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />

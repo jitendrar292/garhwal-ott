@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getVideosByCategory } from '../api/youtube';
 import INSTAGRAM_REELS from '../data/instagramReels';
+import SEO from '../components/SEO';
 
 // Interleave two arrays so the user sees a mix instead of all-shorts-then-all-reels.
 function interleave(a, b) {
@@ -174,6 +175,20 @@ export default function ShortsPage() {
 
   return (
     <div className="flex flex-col items-center">
+      <SEO
+        title="Pahadi Reels & Shorts - Garhwali Comedy, Dance & Vlogs"
+        description="Scroll the best Pahadi Shorts, YouTube Reels and Instagram Reels — Garhwali comedy, folk dance, vlogs and trending clips from Uttarakhand creators."
+        path="/shorts"
+        keywords="Pahadi shorts, Garhwali reels, Pahadi reels, Uttarakhand shorts, Garhwali comedy reels"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          name: 'Pahadi Reels & Shorts',
+          url: 'https://pahaditube.in/shorts',
+          description: 'Short-form Garhwali and Pahadi videos — comedy, dance, vlogs and trending reels.',
+          isPartOf: { '@id': 'https://pahaditube.in/#website' },
+        }}
+      />
       {/* Header */}
       <div className="w-full max-w-md px-4 pt-4 pb-2 flex items-center gap-3">
         <div className="w-1 h-6 bg-gradient-to-b from-pink-400 to-red-500 rounded-full" />

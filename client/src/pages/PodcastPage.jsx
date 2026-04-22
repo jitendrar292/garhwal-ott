@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import VideoGrid from '../components/VideoGrid';
 import { getVideosByCategory } from '../api/youtube';
+import SEO from '../components/SEO';
 
 export default function PodcastPage() {
   const [state, setState] = useState({
@@ -48,6 +49,20 @@ export default function PodcastPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+      <SEO
+        title="Pahadi Podcast - Garhwali Stories, Culture & Interviews"
+        description="Listen to Pahadi podcasts in Garhwali and Hindi — interviews, folk stories, culture talks and untold Uttarakhand stories from creators across the hills."
+        path="/podcast"
+        keywords="Pahadi podcast, Garhwali podcast, Uttarakhand podcast, Garhwali interview, Pahadi stories"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          name: 'Pahadi Podcasts',
+          url: 'https://pahaditube.in/podcast',
+          description: 'Garhwali and Pahadi podcasts featuring interviews, folk stories and Uttarakhand culture.',
+          isPartOf: { '@id': 'https://pahaditube.in/#website' },
+        }}
+      />
       {/* Channel credits header */}
       <div className="mb-6 flex flex-wrap items-center gap-3">
         <div className="flex items-center gap-2 bg-dark-800 rounded-xl px-4 py-2 border border-white/5">

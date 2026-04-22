@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import NotifyButton from '../components/NotifyButton';
+import SEO from '../components/SEO';
 
 const CATEGORIES = [
   { id: 'all', label: 'सब / All', emoji: '📰' },
@@ -67,6 +68,20 @@ export default function NewsPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 pb-28">
+      <SEO
+        title="Pahadi News - Latest Uttarakhand & Garhwali Samachar"
+        description="Daily Pahadi news from Uttarakhand — politics, culture, sports, weather and development updates from Garhwal and Kumaon, in Hindi and Garhwali."
+        path="/news"
+        keywords="Pahadi news, Uttarakhand news, Garhwali samachar, Kumaon news, Garhwal news, Uttarakhand politics, Uttarakhand weather"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          name: 'Pahadi News - Uttarakhand Samachar',
+          url: 'https://pahaditube.in/news',
+          description: 'Daily Uttarakhand and Garhwali news covering politics, culture, sports, weather and development.',
+          isPartOf: { '@id': 'https://pahaditube.in/#website' },
+        }}
+      />
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">

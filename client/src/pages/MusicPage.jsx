@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { searchVideos } from '../api/youtube';
 import { useMusic } from '../context/MusicContext';
+import SEO from '../components/SEO';
 
 const MUSIC_QUERIES = [
   { label: '🔥 Trending', query: 'garhwali trending hit songs 2026' },
@@ -42,6 +43,20 @@ export default function MusicPage() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 pb-32">
+      <SEO
+        title="Garhwali & Pahadi Songs - Trending, Bhajan, Jaagar, DJ Mix"
+        description="Stream the latest Garhwali songs, evergreen Narendra Singh Negi classics, Kumaoni hits, Pahadi DJ remixes, devotional bhajans and Jaagar — curated playlists from Uttarakhand."
+        path="/music"
+        keywords="Garhwali songs, Pahadi songs, Garhwali music, Narendra Singh Negi, Kumaoni songs, Garhwali bhajan, Jaagar, Garhwali DJ, Uttarakhand music"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          name: 'Garhwali & Pahadi Songs',
+          url: 'https://pahaditube.in/music',
+          description: 'Curated Garhwali and Pahadi music playlists — trending hits, classics, bhajans, jaagar and DJ remixes.',
+          isPartOf: { '@id': 'https://pahaditube.in/#website' },
+        }}
+      />
       {/* Header — YouTube Music style */}
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-500 via-rose-500 to-orange-500 flex items-center justify-center shadow-lg shadow-red-500/20">

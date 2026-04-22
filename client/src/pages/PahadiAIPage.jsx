@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import SEO from '../components/SEO';
 
 // Chat history is intentionally NOT persisted in the browser — Redis is the
 // only store and the server already logs Q→A pairs server-side
@@ -262,6 +263,22 @@ export default function PahadiAIPage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden text-white">
+      <SEO
+        title="Pahadi AI - Garhwali Chatbot & Language Assistant"
+        description="Pahadi AI is a Garhwali-speaking chatbot — ask about Uttarakhand culture, festivals, food, travel, folk songs and learn new Garhwali words with everyday examples."
+        path="/pahadi-ai"
+        keywords="Pahadi AI, Garhwali chatbot, Garhwali AI, Uttarakhand AI, learn Garhwali, Garhwali language, Pahadi assistant"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'WebApplication',
+          name: 'Pahadi AI',
+          url: 'https://pahaditube.in/pahadi-ai',
+          applicationCategory: 'EducationalApplication',
+          inLanguage: ['hi', 'gbm'],
+          description: 'A Garhwali-speaking AI chatbot for Uttarakhand culture, language and travel questions.',
+          isPartOf: { '@id': 'https://pahaditube.in/#website' },
+        }}
+      />
       {/* ===== Background: deep navy + mandala ===== */}
       <div className="absolute inset-0 -z-10 bg-[#0a1228]">
         {/* radial accent glow */}

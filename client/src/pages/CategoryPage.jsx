@@ -2,6 +2,18 @@ import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import VideoGrid from '../components/VideoGrid';
 import { getVideosByCategory } from '../api/youtube';
+import SEO from '../components/SEO';
+
+const CATEGORY_SEO = {
+  movies:     { title: 'Garhwali Movies - Watch Pahadi Films Online', desc: 'Watch full Garhwali movies and Pahadi films from Uttarakhand — classic and latest releases curated in one place.' },
+  songs:      { title: 'Garhwali Songs - Pahadi Music & Hits', desc: 'Latest and evergreen Garhwali songs, Pahadi hits and Uttarakhandi music from top singers and labels.' },
+  comedy:     { title: 'Garhwali Comedy - Pahadi Funny Videos', desc: 'Hilarious Garhwali comedy sketches and Pahadi funny videos from Uttarakhand creators.' },
+  devotional: { title: 'Garhwali Bhajan & Jaagar - Devotional Songs', desc: 'Garhwali bhajans, Jaagar and devotional songs from Uttarakhand temples and folk traditions.' },
+  jaagar:     { title: 'Garhwali Jaagar & Devotional Music', desc: 'Traditional Garhwali Jaagar performances and devotional music from Uttarakhand.' },
+  folkdance:  { title: 'Garhwali Folk Dance - Chaunphula, Thadya, Jhumelo', desc: 'Watch Garhwali folk dances — Chaunphula, Thadya, Jhumelo and Pahadi traditional performances.' },
+  mela:       { title: 'Uttarakhand Mela & Festivals', desc: 'Coverage of Uttarakhand melas, fairs and Pahadi festivals from across Garhwal and Kumaon.' },
+  theatre:    { title: 'Garhwali Theatre & Cultural Programs', desc: 'Garhwali theatre, cultural performances and stage shows celebrating Pahadi heritage.' },
+};
 
 const CATEGORY_LABELS = {
   movies: '🎬 Garhwali Movies',
@@ -55,6 +67,18 @@ export default function CategoryPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+      <SEO
+        title={(CATEGORY_SEO[category] && CATEGORY_SEO[category].title) || `${CATEGORY_LABELS[category] || category} - PahadiTube`}
+        description={(CATEGORY_SEO[category] && CATEGORY_SEO[category].desc) || `Browse ${category} videos on PahadiTube — Garhwali and Pahadi content from Uttarakhand.`}
+        path={`/category/${category}`}
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          name: CATEGORY_LABELS[category] || category,
+          url: `https://pahaditube.in/category/${category}`,
+          isPartOf: { '@id': 'https://pahaditube.in/#website' },
+        }}
+      />
       <VideoGrid
         title={CATEGORY_LABELS[category] || category}
         videos={state.videos}
