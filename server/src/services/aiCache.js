@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const glossary = require('../data/garhwali-glossary');
 const grammarRef = require('../data/viewuttarakhand-grammar');
 const himlingo = require('../data/himlingo-dictionary');
+const garhwaliiVocab = require('../data/garhwalii-vocab');
 const himlingoPhrases = require('../data/himlingo-phrases');
 const himlingoFolkStories = require('../data/himlingo-folkstories');
 const himlingoLessons = require('../data/himlingo-lessons');
@@ -143,13 +144,29 @@ const INDEX = [
       note: entry.gloss || '',
     }),
   })),
+  // Curated entries from garhwalii.com — the gloss is the Hindi meaning, so
+  // we surface it as `hi` (gets the same field weight as `en`/`gw`) instead
+  // of a weaker `note`. Source priority sits between curated and himlingo.
+  ...garhwaliiVocab.map((entry) => ({
+    gw: entry.gw,
+    hi: entry.gloss || '',
+    en: entry.en || '',
+    note: '',
+    _source: 'garhwalii',
+    _dialect: entry.dialect || '',
+    _idx: buildEntryIndex({
+      gw: entry.gw,
+      hi: entry.gloss || '',
+      en: entry.en || '',
+    }),
+  })),
 ];
 
 // Field weights for token-position scoring. Tags are curated search keys
 // (the strongest signal); a note hit is the weakest because notes are prose.
 const FIELD_WEIGHTS = { tags: 5, gw: 3, hi: 3, en: 3, note: 1 };
 // Source priority bonus added once per entry that has any match.
-const SOURCE_BONUS = { curated: 1, 'grammar-ref': 0.5, himlingo: 0 };
+const SOURCE_BONUS = { curated: 1, 'grammar-ref': 0.5, garhwalii: 0.25, himlingo: 0 };
 // Drop entries that didn't reach this minimum total. Empirically tuned to
 // cut the long tail of weak prefix-only hits (a single 1-pt match) without
 // losing meaningful single-word lookups (which always reach ≥3 via tags/gw).
