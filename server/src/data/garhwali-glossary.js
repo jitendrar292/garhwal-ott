@@ -531,4 +531,163 @@ module.exports = [
   { gw: 'घसेरी / घस्यारी', hi: 'घसयारिन (घास काटने वाली स्त्री)', en: 'woman who cuts grass for cattle', tags: ['ghaseri', 'ghasyari', 'घसेरी', 'घस्यारी', 'घसयारिन', 'grass cutter'] },
   { gw: 'फालू / फौड़', hi: 'फावड़ा', en: 'spade / shovel', tags: ['phalu', 'phaud', 'फालू', 'फौड़', 'फावड़ा', 'spade', 'shovel'] },
   { gw: 'चखुला', hi: 'चिड़िया', en: 'bird', tags: ['chakhula', 'चखुला', 'चिड़िया', 'bird', 'chidiya'] },
+
+  // ===========================================================================
+  // बनि बनि किस्मौ व्यवहार — Words for different behaviors / habits / conduct
+  // Source: बालकृष्ण डी ध्यानी (sites.google.com/view/dhyani), based on
+  // श्रीमती रजनी कुकरेती, "गढ़वाली भाषा का व्याकरण" (Dehradun).
+  // These are onomatopoeic / descriptive single-word terms with no neat
+  // Hindi or English equivalent — perfect for authentic Garhwali tone.
+  // ===========================================================================
+  { gw: 'कतामती', hi: 'जल्दबाज़ी / उतावलापन', en: 'haste, hurried behavior', tags: ['katamati', 'कतामती', 'haste', 'hurry', 'जल्दबाज़ी', 'behavior', 'vyavhar'] },
+  { gw: 'खिगचाट', hi: 'ज़ोर-ज़ोर से हंसी मज़ाक', en: 'loud laughing and joking', tags: ['khigchat', 'खिगचाट', 'laugh', 'joke', 'मज़ाक', 'behavior'] },
+  { gw: 'खुचर्याट', hi: 'बेकार / नकारात्मक बहस करना', en: 'unnecessary or negative argument', tags: ['khuchryat', 'खुचर्याट', 'argue', 'argument', 'बहस', 'behavior'] },
+  { gw: 'खुबसाट', hi: 'फुसफुसाहट / कानाफूसी', en: 'whisper, whispering talk', tags: ['khubsat', 'खुबसाट', 'whisper', 'फुसफुसाहट', 'behavior'] },
+  { gw: 'घिघलाट', hi: 'बच्चों की वो हंसी-मज़ाक जो बड़ों के सामने नही करनी चाहिए', en: 'inappropriate joking by children not permitted before elders', tags: ['ghighlat', 'घिघलाट', 'joke', 'children', 'behavior'] },
+  { gw: 'चचराट', hi: 'निम्न स्तर पर अधिक बहस करना', en: 'arguing at a low / petty level', tags: ['chachrat', 'चचराट', 'argue', 'petty', 'behavior'] },
+  { gw: 'चबल़ाट', hi: 'बेचैन / चंचल व्यवहार', en: 'restless behavior', tags: ['chablat', 'चबल़ाट', 'restless', 'बेचैन', 'behavior'] },
+  { gw: 'जकबक', hi: 'अपने ऊपर नियंत्रण न होना', en: 'no control over oneself', tags: ['jakbak', 'जकबक', 'no control', 'behavior'] },
+  { gw: 'तितड़ात', hi: 'मौखिक झगड़े मा बहस', en: 'argument during a verbal fight', tags: ['titdat', 'तितड़ात', 'argument', 'fight', 'behavior'] },
+  { gw: 'धंगध्याट', hi: 'बेमतलब उछल-कूद जो दुसरों को चिढ़ाए', en: 'aimless jumping/playing that irritates others', tags: ['dhangdhyat', 'धंगध्याट', 'jumping', 'irritate', 'behavior'] },
+  { gw: 'नचराट / नचर्याट', hi: 'दिखावा / बेचैन व्यवहार', en: 'showy / restless behavior', tags: ['nachryat', 'नचराट', 'नचर्याट', 'showy', 'restless', 'behavior'] },
+  { gw: 'फफराट', hi: 'दिखावा / डींग मारणु', en: 'showy / boastful behavior', tags: ['phaphrat', 'फफराट', 'boastful', 'showy', 'behavior'] },
+  { gw: 'बबराट', hi: 'गुस्सा मा चमकणु / भड़कणु', en: 'dazzling in rage', tags: ['babrat', 'बबराट', 'rage', 'गुस्सा', 'behavior'] },
+  { gw: 'रगबग', hi: 'बहुत सारे काम या भ्रम सी असमंजस की स्थिति', en: 'perplexed condition due to many works or confusion', tags: ['ragbag', 'रगबग', 'perplexed', 'confusion', 'behavior'] },
+  { gw: 'रगर्याट', hi: 'भावुक व्यवहार — खास कर भावनाओं मा जल्दबाज़ी', en: 'emotional behavior, haste from high emotion', tags: ['ragryat', 'रगर्याट', 'emotional', 'behavior'] },
+  { gw: 'लबराट', hi: 'बेमतलब लगातार बोलणु (विशेषकर महिला)', en: 'speaking continuously without aim', tags: ['labrat', 'लबराट', 'talkative', 'behavior'] },
+  { gw: 'लबड़ाट', hi: 'बेमतलब देरी', en: 'unnecessary delay', tags: ['labdat', 'लबड़ाट', 'delay', 'देरी', 'behavior'] },
+  { gw: 'सगर -बगर', hi: 'उत्साह मा हलचल / कोलाहल', en: 'commotion in enthusiasm', tags: ['sagar bagar', 'सगर बगर', 'commotion', 'enthusiasm', 'behavior'] },
+  { gw: 'स्क्स्याट / सगस्याट', hi: 'तेज़ साँस', en: 'fast breath / panting', tags: ['saksyat', 'sagasyat', 'सगस्याट', 'panting', 'breath', 'behavior'] },
+  { gw: 'हकदक', hi: 'चकित / आश्चर्यचकित', en: 'surprise, astonished', tags: ['hakdak', 'हकदक', 'surprised', 'astonished', 'आश्चर्य', 'behavior'] },
+
+  // ===========================================================================
+  // बनि बनि क अव़ाज — Various types of sounds (onomatopoeia)
+  // Same source. These give authentic flavor when describing nature,
+  // village life, animals, weather etc.
+  // ===========================================================================
+  { gw: 'भिमणाट', hi: 'मक्खी (माख) की आवाज़', en: 'sound of a house fly', tags: ['bhimnat', 'भिमणाट', 'fly sound', 'मक्खी', 'sound', 'awaaz'] },
+  { gw: 'गगडाट', hi: 'बादल की गड़गड़ाहट', en: 'sound of cloud / thunder', tags: ['gagdat', 'गगडाट', 'thunder', 'cloud', 'बादल', 'sound'] },
+  { gw: 'गुमणाट', hi: 'मधुमक्खियों जै मनुष्य कि आवाज़ (भनभनाहट)', en: 'human sound resembling bees, buzzing', tags: ['gumnat', 'गुमणाट', 'buzz', 'bees', 'sound'] },
+  { gw: 'खमणाट', hi: 'धातु बर्तनों की रगड़ या बर्तन गिरण की आवाज़', en: 'sound of friction among metal utensils or utensils falling', tags: ['khamnat', 'खमणाट', 'utensils', 'metal', 'sound'] },
+  { gw: 'छमणाट', hi: 'चूड़ियों या पायल की आवाज़', en: 'sound of bangles or anklets', tags: ['chhamnat', 'छमणाट', 'bangles', 'anklets', 'sound'] },
+  { gw: 'च्वींचाट', hi: 'चिड़ियों या चूहों की आवाज़', en: 'sound of birds or mice', tags: ['chwinchat', 'च्वींचाट', 'birds', 'mice', 'sound'] },
+  { gw: 'घुंघ्याट', hi: 'गाड़ियों की आवाज़', en: 'sound of automobiles', tags: ['ghunghyat', 'घुंघ्याट', 'vehicle', 'automobile', 'sound'] },
+  { gw: 'घगराट', hi: 'घर की चक्की या मिल की आवाज़', en: 'sound of house grinders / mills', tags: ['ghagrat', 'घगराट', 'grinder', 'mill', 'चक्की', 'sound'] },
+  { gw: 'छिबडाट', hi: 'सूखी झाड़ी या सूखे पत्तों मा चलण की आवाज़', en: 'walking inside dry bushes or on dry leaves', tags: ['chhibdat', 'छिबडाट', 'dry leaves', 'walking', 'sound'] },
+  { gw: 'ततडाट', hi: 'पाणी गिरण की आवाज़', en: 'sound of falling water', tags: ['tatdat', 'ततडाट', 'falling water', 'sound'] },
+  { gw: 'कणाट', hi: 'बुखार या दर्द मा धीमी कराह — ऊं ऊं', en: 'low cry/moan in fever or pain', tags: ['kanat', 'कणाट', 'moan', 'pain', 'fever', 'sound'] },
+  { gw: 'तबडाट', hi: 'अनाज भुनण की आवाज़', en: 'sound of roasting cereals', tags: ['tabdat', 'तबडाट', 'roasting', 'cereals', 'sound'] },
+  { gw: 'बबडाट', hi: 'मुँह के अंदर बुदबुदाण की आवाज़', en: 'sound of muttering inside the mouth', tags: ['babdat', 'बबडाट', 'muttering', 'sound'] },
+  { gw: 'घमणाट', hi: 'घंटियों की आवाज़', en: 'sound of bells', tags: ['ghamnat', 'घमणाट', 'bells', 'घंटी', 'sound'] },
+  { gw: 'स्वींसाट', hi: 'पाणी (नदी, धारा) के बहण की आवाज़', en: 'sound of flowing water (river, streams)', tags: ['swinsat', 'स्वींसाट', 'river', 'flow', 'water', 'sound'] },
+  { gw: 'प्वींपाट', hi: 'छोटे बच्चों कु रोणु', en: 'weeping of younger children', tags: ['pwinpat', 'प्वींपाट', 'weeping', 'children', 'sound'] },
+  { gw: 'घमघ्याट', hi: 'मनुष्यों के दौड़ण/उछलण की आवाज़', en: 'sound when persons run or jump', tags: ['ghamghyat', 'घमघ्याट', 'running', 'jumping', 'sound'] },
+  { gw: 'ससराट', hi: 'चलते समय कपड़ों की आवाज़', en: 'sound of clothing while walking', tags: ['sasrat', 'ससराट', 'clothing', 'walking', 'sound'] },
+  { gw: 'खड़बाट', hi: 'दरवाजा या धातु पेटी खुलण की आवाज़', en: 'sound of opening a door or metal box', tags: ['khadbat', 'खड़बाट', 'door', 'opening', 'sound'] },
+  { gw: 'भभडाट', hi: 'दरवाजा का अचानक धड़ाम (हवा या खुलण से)', en: 'sudden bang of door (by air or opening)', tags: ['bhabdat', 'भभडाट', 'bang', 'door', 'sound'] },
+  { gw: 'खिगताट', hi: 'जोर सी हंसी (खासकर बच्चूं की)', en: 'loud laughing especially by youngsters', tags: ['khigtat', 'खिगताट', 'loud laugh', 'children', 'sound'] },
+
+  // ===========================================================================
+  // पिटण / मारण का शब्द — Verbs of hitting / striking
+  // ===========================================================================
+  { gw: 'धळकौण', hi: 'अंगूठा सी मारणु / डाल काटणु', en: 'to strike with thumb / to cut a branch', tags: ['dhalkaun', 'धळकौण', 'strike', 'cut', 'hit'] },
+  { gw: 'लठयाण', hi: 'लकड़ी कि छड़ी सी मारणु', en: 'to beat with a wooden rod', tags: ['lathyan', 'लठयाण', 'beat', 'rod', 'lathi', 'hit'] },
+  { gw: 'मुठक्यांण', hi: 'मुक्का मारणु', en: 'to punch / fist', tags: ['muthkyan', 'मुठक्यांण', 'punch', 'fist', 'मुक्का', 'hit'] },
+  { gw: 'चुटण / सुटक्याण', hi: 'लचीली छड़ी सी मारणु', en: 'to beat by a flexible stick', tags: ['chutan', 'sutkyan', 'चुटण', 'सुटक्याण', 'beat', 'stick', 'hit'] },
+  { gw: 'थंचकौण', hi: 'कुचलणु', en: 'to crush', tags: ['thanchkaun', 'थंचकौण', 'crush', 'कुचलना'] },
+  { gw: 'लत्याण', hi: 'पैरों सी मारणु', en: 'to beat with feet / kick', tags: ['latyan', 'लत्याण', 'kick', 'feet', 'hit'] },
+  { gw: 'कचमोरण / कचमोन / कचमोर्न / कचम्वन', hi: 'मसलणु / निचोड़णु', en: 'to squeeze / crush', tags: ['kachmoran', 'कचमोरण', 'कचम्वन', 'squeeze', 'crush'] },
+  { gw: 'कच्याण', hi: 'पथ्थर सी कुचलणु / काटणु', en: 'to crush or cut by stone', tags: ['kachyan', 'कच्याण', 'crush', 'stone', 'hit'] },
+
+  // ===========================================================================
+  // गढ़वाल का बावन (52) ब्यंजन — Garhwal's 52 traditional dishes
+  // Authentic ठेट गढ़वाली names. (Some already covered above — added with
+  // explicit "बावन ब्यंजन" tag for retrieval.)
+  // ===========================================================================
+  { gw: 'बावन ब्यंजन', hi: 'गढ़वाल का 52 पारंपरिक व्यंजन', en: '52 traditional dishes of Garhwal', tags: ['bawan vyanjan', 'बावन ब्यंजन', '52 dishes', 'traditional food', 'garhwal food', 'cuisine'], note: 'गढ़वाल मा "बावन गढ़ कु गढ़वाल" से जुड़ी परम्परा — कृष्ण कुमार ममगांई जी द्वारा संकलित 52 ठेट गढ़वाली ब्यंजन: खिचड़ी, गिंजड़ी, पल्यो, छछिन्डु, बाड़ी, रैलु, रैठु, ढुंगला, स्वाली, भूड़ी/पक्वड़ी, रोट, अरसा, गुलगुला, लगड़ी, पैतूड़, मरगल, बुखणा, पटुड़ी, परसाद, सूजी, सत्तू, पाइस, झंग्वरू, कौंणी, पिंजरी, भटगरू, चैंसु, फांणु, झ्वल्ली, गथ्वणि, थींच्वणी, झोल, दाल, भात, र्वट्टी (रोटी), रोट (परसाद), पीलू भात, खुसका, भुज्जी, कफली, धपड़ी, बोड़ी, भ्वरीं र्वट्टी, पिस्यूँ लूण, कचम्वली, मिठै, खटै (चटनी), च्यूँ, सिकार, कुखड़, अंडरु, गड्याल/माछा।' },
+  { gw: 'गिंजड़ी', hi: 'पारंपरिक गढ़वाली व्यंजन', en: 'traditional Garhwali dish', tags: ['ginjdi', 'गिंजड़ी', 'food', 'dish'] },
+  { gw: 'पल्यो', hi: 'मंडुवा/जौ के आटे की पतली पकौड़ी जैसी डिश', en: 'thin gruel / paste dish from millet/barley flour', tags: ['palyo', 'पल्यो', 'food', 'dish'] },
+  { gw: 'छछिन्डु', hi: 'मट्ठा/छाछ आधारित पारंपरिक व्यंजन', en: 'buttermilk-based traditional dish', tags: ['chhachhindu', 'छछिन्डु', 'buttermilk', 'food'] },
+  { gw: 'बाड़ी', hi: 'मंडुवा का गाढ़ा हलवा जैसा व्यंजन (नमकीन)', en: 'thick savory finger-millet (mandua) preparation', tags: ['baadi', 'बाड़ी', 'mandua', 'finger millet', 'food'] },
+  { gw: 'रैलु', hi: 'चावल और दाल का पारंपरिक व्यंजन', en: 'traditional rice + dal preparation', tags: ['railu', 'रैलु', 'rice', 'food'] },
+  { gw: 'रैठु', hi: 'पारंपरिक गढ़वाली व्यंजन', en: 'traditional Garhwali dish', tags: ['raithu', 'रैठु', 'food'] },
+  { gw: 'ढुंगला', hi: 'पत्तों मा लपेट के बण्यां पारंपरिक व्यंजन', en: 'traditional dish wrapped in leaves', tags: ['dhungla', 'ढुंगला', 'leaf wrap', 'food'] },
+  { gw: 'स्वाली', hi: 'पूरी जैसा तला हुआ मीठा/नमकीन', en: 'fried sweet/savory like puri', tags: ['swali', 'स्वाली', 'puri', 'fried', 'food'] },
+  { gw: 'भूड़ी / पक्वड़ी', hi: 'पकौड़ी जैसा तला व्यंजन', en: 'fritter-like fried dish', tags: ['bhudi', 'pakwadi', 'भूड़ी', 'पक्वड़ी', 'fritter', 'food'] },
+  { gw: 'रोट', hi: 'गाढ़ी मोटी रोटी — प्रसाद के रूप मा भि', en: 'thick dense bread, also offered as prasad', tags: ['rot', 'रोट', 'bread', 'prasad', 'food'] },
+  { gw: 'गुलगुला', hi: 'गुड़ और आटे का तला हुआ मीठा', en: 'fried jaggery-flour sweet ball', tags: ['gulgula', 'गुलगुला', 'sweet', 'jaggery', 'food'] },
+  { gw: 'लगड़ी', hi: 'पारंपरिक मीठा/नमकीन', en: 'traditional sweet/savory', tags: ['lagdi', 'लगड़ी', 'food'] },
+  { gw: 'पैतूड़', hi: 'अरबी/कोलकासिया के पत्ते सी बण्यां पारंपरिक व्यंजन', en: 'arbi/colocasia leaf-roll dish', tags: ['paitud', 'पैतूड़', 'arbi', 'colocasia', 'patod', 'food'] },
+  { gw: 'मरगल', hi: 'पारंपरिक नमकीन व्यंजन', en: 'traditional savory dish', tags: ['margal', 'मरगल', 'food'] },
+  { gw: 'बुखणा', hi: 'भुना हुआ अनाज (स्नैक)', en: 'roasted grain snack', tags: ['bukhna', 'बुखणा', 'roasted', 'snack', 'food'] },
+  { gw: 'पटुड़ी', hi: 'अरबी के पत्तों कि लपेट सी बण्यां व्यंजन', en: 'colocasia leaf rolls (similar to patra)', tags: ['patudi', 'पटुड़ी', 'arbi', 'food'] },
+  { gw: 'झंग्वरू / झंग्वरा', hi: 'झंगोरा कि खीर/भात', en: 'barnyard millet (jhangora) preparation', tags: ['jhangwru', 'झंग्वरू', 'jhangora', 'millet', 'food'] },
+  { gw: 'कौंणी', hi: 'कौंणी (foxtail millet) कु व्यंजन', en: 'foxtail millet dish', tags: ['kaunni', 'कौंणी', 'foxtail millet', 'food'] },
+  { gw: 'पिंजरी', hi: 'पारंपरिक गढ़वाली व्यंजन', en: 'traditional Garhwali dish', tags: ['pinjri', 'पिंजरी', 'food'] },
+  { gw: 'भटगरू', hi: 'काले भट्ट कि दाल कु व्यंजन', en: 'black soybean (bhatt) dish', tags: ['bhatgaru', 'भटगरू', 'bhatt', 'soybean', 'food'] },
+  { gw: 'झ्वल्ली', hi: 'पतली कढ़ी जैसी डिश', en: 'thin curry-like dish', tags: ['jhwalli', 'झ्वल्ली', 'curry', 'food'] },
+  { gw: 'गथ्वणि / गहत्वाणि', hi: 'गहत (कुलथी) कि पतली दाल', en: 'thin horse-gram lentil', tags: ['gathwani', 'गथ्वणि', 'gahat', 'horse gram', 'food'] },
+  { gw: 'थींच्वणी', hi: 'पथ्थर पे कूट के बणाई दाल/सब्जी', en: 'stone-pounded lentil/vegetable preparation', tags: ['thinchwani', 'थींच्वणी', 'pounded', 'food'] },
+  { gw: 'झोल', hi: 'पतला रसा / तरी', en: 'thin gravy / broth', tags: ['jhol', 'झोल', 'gravy', 'broth', 'food'] },
+  { gw: 'पीलू भात', hi: 'पीला भात (हल्दी आदि सी रंगदार)', en: 'yellow turmeric rice', tags: ['pilu bhat', 'पीलू भात', 'rice', 'turmeric', 'food'] },
+  { gw: 'खुसका', hi: 'सादा भुना हुआ भात', en: 'plain pulao-like rice', tags: ['khuska', 'खुसका', 'rice', 'food'] },
+  { gw: 'धपड़ी', hi: 'पारंपरिक गढ़वाली व्यंजन', en: 'traditional Garhwali dish', tags: ['dhapdi', 'धपड़ी', 'food'] },
+  { gw: 'बोड़ी', hi: 'दाल की बड़ी (सूखा) — सब्जी बणाण मा प्रयोग', en: 'sun-dried lentil dumplings used in curry', tags: ['bodi', 'बोड़ी', 'badi', 'food'] },
+  { gw: 'भ्वरीं र्वट्टी', hi: 'भरवा रोटी', en: 'stuffed roti', tags: ['bhwarin rwatti', 'भ्वरीं र्वट्टी', 'stuffed roti', 'bharwa', 'food'] },
+  { gw: 'पिस्यूँ लूण', hi: 'पिसा हुआ नमक (मसाले युक्त)', en: 'ground spiced salt (chutney-style)', tags: ['pisyun lun', 'पिस्यूँ लूण', 'ground salt', 'spiced salt', 'food'] },
+  { gw: 'कचम्वली', hi: 'पारंपरिक चटनी/अचार जैसा', en: 'traditional pickle/chutney-like preparation', tags: ['kachmwali', 'कचम्वली', 'pickle', 'chutney', 'food'] },
+  { gw: 'मिठै', hi: 'मिठाई', en: 'sweet', tags: ['mithai', 'मिठै', 'sweet', 'food'] },
+  { gw: 'खटै', hi: 'चटनी', en: 'chutney', tags: ['khatai', 'खटै', 'chutney', 'food'] },
+  { gw: 'च्यूँ', hi: 'मशरूम / कुकुरमुत्ता', en: 'mushroom', tags: ['chyun', 'च्यूँ', 'mushroom', 'food'] },
+  { gw: 'सिकार', hi: 'शिकार कु मांस (मटन/जंगली)', en: 'meat from hunt (mutton / wild game)', tags: ['sikar', 'सिकार', 'meat', 'mutton', 'food'] },
+  { gw: 'कुखड़', hi: 'मुर्गा / कुक्कुट', en: 'chicken', tags: ['kukhad', 'कुखड़', 'chicken', 'kukkut', 'food'] },
+  { gw: 'अंडरु', hi: 'अंडा', en: 'egg', tags: ['andru', 'अंडरु', 'egg', 'food'] },
+  { gw: 'गड्याल / माछा', hi: 'मछली', en: 'fish', tags: ['gadyal', 'macha', 'गड्याल', 'माछा', 'fish', 'food'] },
+
+  // ===========================================================================
+  // गढ़वाल का बावन (52) डाला — 52 traditional trees of Garhwal
+  // ===========================================================================
+  { gw: 'बावन डाला', hi: 'गढ़वाल का 52 पारंपरिक पेड़', en: '52 traditional trees of Garhwal', tags: ['bawan dala', 'बावन डाला', '52 trees', 'garhwal trees', 'flora', 'plants'], note: 'गढ़वाल का 52 आम पेड़ (कृष्ण कुमार ममगांई जी संकलित): कुलैं, बांज, खड़िक, ककड़सिंग, तूंण, औंला, बेडू, तिमला, भ्यूल, काफल, पीपल, पय्यां, दल्म्या, अनार, लुकाट, माल्टा, दक्क, च्वाला, आरू, बुरान्स, रौंसल, ग्वीराल, लींची, आम, लिसोड़ा, सेब, नाशपाती, मेलु, मौसमी, पुलम, खैर, सांधण, साल, शीसम, बांस, ईसकोस, हैड़ा, निम्म्बु, डैंगण, सेमल, द्वोदार, अखोड़, ब्यलपत्री, नारंगी, संतरा, चबूतरा/चकोतरा, गलगल, सेउ, हल्दु, खिन्ना, खुमानी, अमरूद। (झाड़ियाँ जै किनगोड़, घिंगरू, हिंसर अलग सूची मा।)' },
+  { gw: 'बांज', hi: 'बांज का पेड़ (Himalayan oak)', en: 'Himalayan oak — vital for water springs & forests', tags: ['banj', 'बांज', 'oak', 'tree', 'forest', 'flora'] },
+  { gw: 'बुरान्स', hi: 'बुरांश (Rhododendron) — गढ़वाल का राज्य पुष्प', en: 'Rhododendron arboreum — state flower of Uttarakhand', tags: ['burans', 'बुरान्स', 'rhododendron', 'flower', 'state flower', 'tree'] },
+  { gw: 'काफल', hi: 'काफल — पहाड़ी जंगली फल', en: 'Kafal (Box-myrtle) — wild Himalayan berry', tags: ['kafal', 'काफल', 'box myrtle', 'wild berry', 'fruit', 'tree'] },
+  { gw: 'द्वोदार', hi: 'देवदार', en: 'deodar / Himalayan cedar', tags: ['dwodar', 'द्वोदार', 'deodar', 'cedar', 'tree'] },
+  { gw: 'पय्यां', hi: 'पय्यां (Wild Himalayan cherry)', en: 'wild Himalayan cherry — sacred wood', tags: ['payyan', 'पय्यां', 'wild cherry', 'sacred', 'tree'] },
+  { gw: 'तिमला', hi: 'तिमला — जंगली अंजीर', en: 'wild fig (Ficus auriculata)', tags: ['timla', 'तिमला', 'wild fig', 'tree'] },
+  { gw: 'किनगोड़', hi: 'किनगोड़ — काँटेदार जंगली बेर जैसी झाड़ी', en: 'wild thorny berry shrub', tags: ['kingod', 'किनगोड़', 'wild berry', 'shrub'] },
+  { gw: 'हिंसर', hi: 'हिंसर — पहाड़ी जंगली रसीला फल', en: 'wild Himalayan raspberry-like berry', tags: ['hinsar', 'हिंसर', 'wild raspberry', 'berry', 'shrub'] },
+  { gw: 'घिंगरू', hi: 'घिंगरू — पहाड़ी जंगली बेर', en: 'wild hill berry', tags: ['ghingaru', 'घिंगरू', 'wild berry', 'shrub'] },
+
+  // ===========================================================================
+  // गढ़वाली मा "ळ" कु परयोग — Use of letter "ळ" (uchchaaran "ल्द" jaisa)
+  // Distinctive Garhwali phoneme — these are signature words.
+  // ===========================================================================
+  { gw: 'ळ', hi: 'गढ़वाली कि विशिष्ट ध्वनि — उच्चारण "ल्द" जैसा', en: 'distinctive Garhwali phoneme; pronounced like a retroflex "ld"', tags: ['lla', 'ळ', 'phoneme', 'pronunciation', 'garhwali letter'], note: 'गढ़वाली मा "ळ" अक्षर कु प्रयोग होंद जैकु उच्चारण "ल्द" जनु होंद — ये शब्द गढ़वाली कि पहचान छन। उदाहरण: बळ (बैल), हळ (हल), जग्वाळ (प्रतीक्षा), उमाळ (उबाल), उकाळ (चढ़ाई), तिर्वाळ (नीचे का किनारा)।' },
+  { gw: 'बळ', hi: 'बैल', en: 'ox', tags: ['bal', 'बळ', 'ox', 'bull'] },
+  { gw: 'हळ', hi: 'हल', en: 'plough', tags: ['hal', 'हळ', 'plough', 'plow'] },
+  { gw: 'कळकल्दि', hi: 'करुणा (भाव संबंधी)', en: 'compassion / tender feeling', tags: ['kalkaldi', 'कळकल्दि', 'compassion', 'karuna'] },
+  { gw: 'मळमल्दि', hi: 'स्वाद संबंधी भाव', en: 'taste-related feeling', tags: ['malmaldi', 'मळमल्दि', 'taste'] },
+  { gw: 'माल्दु', hi: 'एक पादप', en: 'a kind of plant', tags: ['maldu', 'माल्दु', 'plant'] },
+  { gw: 'जग्वाळ', hi: 'प्रतीक्षा / इंतज़ार', en: 'wait, awaiting', tags: ['jagwal', 'जग्वाळ', 'wait', 'awaiting', 'pratiksha'] },
+  { gw: 'मक्वाळ', hi: 'मक्कूमठ का निवासी', en: 'resident of Makku-math', tags: ['makwal', 'मक्वाळ', 'resident'] },
+  { gw: 'फ्यक्वाळ', hi: 'भिक्षा-वृत्ति करण वाला विशेष जन-समूह', en: 'a community of mendicants', tags: ['phyakwal', 'फ्यक्वाळ', 'mendicant', 'beggar community'] },
+  { gw: 'जौंदाळ', hi: 'अक्षत (पूजा का चावल)', en: 'akshat — unbroken rice for worship', tags: ['jaundal', 'जौंदाळ', 'akshat', 'rice', 'worship'] },
+  { gw: 'छ्यंवाळ', hi: 'खास उम्र का व्यक्तियों कु समूह', en: 'group of persons of a specific age', tags: ['chhyanwal', 'छ्यंवाळ', 'age group'] },
+  { gw: 'उमाळ', hi: 'उबाल', en: 'boil / boiling', tags: ['umal', 'उमाळ', 'boil', 'ubaal'] },
+  { gw: 'तिर्वाळ', hi: 'नीचे कु किनारा (स्थान संबंधी)', en: 'lower edge (of a location)', tags: ['tirwal', 'तिर्वाळ', 'lower edge'] },
+  { gw: 'उकाळ', hi: 'चढ़ाई (मार्ग संबंधी)', en: 'uphill climb / ascent', tags: ['ukal', 'उकाळ', 'uphill', 'climb', 'ascent'] },
+  { gw: 'ल्यक्वाळ', hi: 'बांज कु फल/बीज', en: 'fruit / seed of oak (banj)', tags: ['lyakwal', 'ल्यक्वाळ', 'oak', 'banj', 'seed'] },
+  { gw: 'जिबाळ', hi: 'पक्षी/जानवर पकड़ण कु डाला गया चारा', en: 'bait laid to catch birds/animals', tags: ['jibal', 'जिबाळ', 'bait', 'trap'] },
+  { gw: 'खाळ', hi: 'बारिश का पाणी सी बण्यां ताल / चमोली कु एक गाँव', en: 'pond formed by rainwater; also a village in Chamoli', tags: ['khal', 'खाळ', 'pond', 'rainwater', 'village'] },
+
+  // ===========================================================================
+  // गढ़वाली परम्परिक परिधान — Traditional Garhwali attire
+  // ===========================================================================
+  { gw: 'पारम्परिक परिधान — पुरुष', hi: 'धोती, चूड़ीदार, पायजामा, जांघिया (सलवार), कुर्ता, मिरजई, कोट, काली टोपी (गढ़वाली टोपी), सफेद टोपी, पगड़ी, फेतकि (बास्कट / जवाहर कट)', en: 'Mens traditional Garhwali attire — dhoti, churidar, pyjama, janghiya (salwar), kurta, mirjai, coat, black Garhwali cap, white cap, pagdi, phetki (waistcoat / Jawahar cut)', tags: ['mens dress', 'paridhan', 'परिधान', 'पुरुष', 'mirjai', 'pheti', 'गढ़वाली टोपी', 'attire', 'clothing', 'culture'] },
+  { gw: 'पारम्परिक परिधान — स्त्री', hi: 'धोती, घागरा, चोली, कुर्ती, सलवार (सुलार), तिग्बंदा, फुन्दा, दुशलु (खंडेली)', en: 'Womens traditional Garhwali attire — dhoti, ghagra, choli, kurti, salwar (sular), tigbanda, phunda, dushlu (khandeli)', tags: ['womens dress', 'paridhan', 'परिधान', 'स्त्री', 'tigbanda', 'phunda', 'dushlu', 'attire', 'clothing', 'culture'] },
+  { gw: 'पारम्परिक परिधान — बच्चे', hi: 'झगुली / झगुलु, चूड़ीदार पायजामा, कुर्ता, सलदरास, मिरजई, टोपी', en: 'Childrens traditional Garhwali attire — jhaguli/jhagulu, churidar pyjama, kurta, saldaras, mirjai, cap', tags: ['kids dress', 'paridhan', 'परिधान', 'बच्चे', 'jhaguli', 'attire', 'clothing', 'culture'] },
+  { gw: 'गढ़वाली टोपी', hi: 'काली / सफेद पारंपरिक गढ़वाली टोपी', en: 'traditional Garhwali cap (black / white)', tags: ['garhwali topi', 'गढ़वाली टोपी', 'cap', 'pahadi topi', 'culture', 'attire'] },
+  { gw: 'मिरजई', hi: 'पारंपरिक छोटी जैकेट जैसा वस्त्र', en: 'traditional short jacket-like garment', tags: ['mirjai', 'मिरजई', 'jacket', 'attire'] },
+  { gw: 'दुशलु / खंडेली', hi: 'महिलाओं कु पारंपरिक शॉल', en: 'traditional womens shawl', tags: ['dushlu', 'khandeli', 'दुशलु', 'खंडेली', 'shawl', 'attire'] },
+  { gw: 'झगुली / झगुलु', hi: 'बच्चों कु पारंपरिक झुला-नुमा वस्त्र', en: 'traditional childrens loose dress', tags: ['jhaguli', 'jhagulu', 'झगुली', 'झगुलु', 'kids dress', 'attire'] },
 ];
