@@ -70,10 +70,13 @@ setInterval(() => {
 
 const GROQ_COOLDOWN_MS = 15 * 60 * 1000; // default 15 min
 const MAX_COOLDOWN_MS = 6 * 60 * 60 * 1000; // never sleep more than 6h
+const OPENAI_COOLDOWN_MS = 2 * 60 * 1000; // OpenAI 429s usually recover quickly
+let openaiCooldownUntil = 0;
 let groqCooldownUntil = 0;
 let openrouterCooldownUntil = 0;
 let geminiCooldownUntil = 0;
 
+const isOpenAICoolingDown = () => Date.now() < openaiCooldownUntil;
 const isGroqCoolingDown = () => Date.now() < groqCooldownUntil;
 const isOpenRouterCoolingDown = () => Date.now() < openrouterCooldownUntil;
 const isGeminiCoolingDown = () => Date.now() < geminiCooldownUntil;
@@ -99,6 +102,13 @@ const tripGroqBreaker = (errText) => {
   console.warn(`[chat] Groq breaker tripped for ${Math.round(cooldown / 60_000)}min — skipping API until ${new Date(groqCooldownUntil).toISOString()}`);
 };
 
+const tripOpenAIBreaker = (errText) => {
+  const hint = parseRetryAfterMs(errText);
+  const cooldown = hint || OPENAI_COOLDOWN_MS;
+  openaiCooldownUntil = Date.now() + cooldown;
+  console.warn(`[chat] OpenAI breaker tripped for ${Math.round(cooldown / 60_000)}min`);
+};
+
 const tripOpenRouterBreaker = (errText) => {
   // OpenRouter free tier resets quickly — default 10 min unless hint says otherwise.
   const hint = parseRetryAfterMs(errText);
@@ -116,11 +126,25 @@ const tripGeminiBreaker = (errText) => {
 };
 
 // =====================================================================
-// Upstream providers — Groq is primary, OpenRouter is the LLM fallback
+// Upstream providers — OpenAI (gpt-5-mini) primary, others are fallbacks
 // =====================================================================
 // Both speak the OpenAI Chat Completions wire format, so a single helper
-// can stream from either one. OpenRouter is only attempted when Groq fails
-// (cooldown active, network error, 4xx/5xx, or empty body).
+// can stream from any of them. They are attempted in order:
+// OpenAI -> Groq -> OpenRouter -> Gemini.
+
+const OPENAI = {
+  name: 'openai',
+  url: 'https://api.openai.com/v1/chat/completions',
+  model: process.env.OPENAI_MODEL || 'gpt-5-mini',
+  trusted: true,
+  // Lower-mid temperature for stable, low-hallucination Garhwali responses.
+  temperature: 0.4,
+  getKey: () => process.env.OPENAI_API_KEY,
+  extraHeaders: () => ({}),
+  onFailure: (status, errText) => {
+    if (status === 429) tripOpenAIBreaker(errText);
+  },
+};
 
 const GROQ = {
   name: 'groq',
@@ -965,9 +989,16 @@ const ROMAN_GARHWALI_OVERRIDE = `
 उपयोगकर्ता न Roman script (English अक्षरों) मा गढ़वळि शब्द लिख्या छन। यो मतलब Garhwali-intent = TRUE। **पूरा जवाब सिर्फ देवनागरी मा शुद्ध गढ़वळि मा दे — हिंदी मा कभी ना, English/Roman मा कभी ना, mixed मा कभी ना।** कोई "हिंदी:" / "English:" section ना जोड़। सिर्फ शुद्ध गढ़वळि (छ / छन / छां / कु / कि / का / सँग / औ / जन / कख / कन / कब / कैकु / होंद / जान्द / औंद / दिन्द / बौंदा / करदा / मनौंदा) इस्तेमाल कर। हिंदी क्रिया रूप (है / हैं / होता है / करते हैं / जाते हैं / के लिए / के साथ / के बारे में / और / जब / यह / हम / तुम / मुझे / तुम्हें / हमेशा) कभी ना लिख।`;
 
 router.post('/', async (req, res) => {
-  const apiKey = process.env.GROQ_API_KEY;
-  if (!apiKey) {
-    return res.status(503).json({ error: 'Ghughuti AI is not configured. Please set GROQ_API_KEY.' });
+  const hasAnyProviderKey = Boolean(
+    process.env.OPENAI_API_KEY ||
+    process.env.GROQ_API_KEY ||
+    process.env.OPENROUTER_API_KEY ||
+    process.env.GEMINI_API_KEY
+  );
+  if (!hasAnyProviderKey) {
+    return res.status(503).json({
+      error: 'Ghughuti AI is not configured. Set OPENAI_API_KEY (recommended) or GROQ_API_KEY/OPENROUTER_API_KEY/GEMINI_API_KEY.',
+    });
   }
 
   const { messages } = req.body;
@@ -1169,45 +1200,39 @@ router.post('/', async (req, res) => {
     stream: true,
   };
 
-  // If ALL providers are cooling down, skip straight to memory — no point
-  // hammering APIs we know will return 429.
-  const allCoolingDown = isGroqCoolingDown() && isOpenRouterCoolingDown() && isGeminiCoolingDown();
-  if (allCoolingDown) {
-    res.setHeader('X-All-Providers-Cooldown', '1');
+  // Build runtime availability once so we don't hammer providers that are
+  // keyless or in cooldown.
+  const openaiReady = Boolean(OPENAI.getKey()) && !isOpenAICoolingDown();
+  const groqReady = Boolean(GROQ.getKey()) && !isGroqCoolingDown();
+  const openrouterReady = Boolean(OPENROUTER.getKey()) && !isOpenRouterCoolingDown();
+  const geminiReady = Boolean(GEMINI.getKey()) && !isGeminiCoolingDown();
+
+  // If all providers are unavailable (cooldown or no key), skip straight to
+  // memory/offline fallback.
+  if (!openaiReady && !groqReady && !openrouterReady && !geminiReady) {
+    res.setHeader('X-All-Providers-Unavailable', '1');
     const fb = await findFallbackReply(lastUser?.content);
     if (fb && streamFallbackReply(res, fb.text, `cooldown:${fb.source}`)) return;
     return streamFallbackReply(res, OFFLINE_REPLY, 'cooldown:offline') || res.status(503).end();
   }
 
-  // If Groq is tripped, skip it and try the others.
-  if (isGroqCoolingDown()) {
-    if (!isOpenRouterCoolingDown()) {
-      const orOk = await tryStreamProvider(OPENROUTER, payload, res, safeMessages, lastUser);
-      if (orOk) return;
-    }
-    if (!res.headersSent && !isGeminiCoolingDown()) {
-      const gemOk = await tryStreamGemini(payload, res, safeMessages, lastUser);
-      if (gemOk) return;
-    }
-    if (!res.headersSent) {
-      const fb = await findFallbackReply(lastUser?.content);
-      if (fb && streamFallbackReply(res, fb.text, `breaker:${fb.source}`)) return;
-      return streamFallbackReply(res, OFFLINE_REPLY, 'breaker:offline') || res.status(503).end();
-    }
-    return;
+  // Try providers in priority order.
+  if (openaiReady) {
+    const openaiOk = await tryStreamProvider(OPENAI, payload, res, safeMessages, lastUser);
+    if (openaiOk) return;
   }
 
-  // Try Groq first.
-  const groqOk = await tryStreamProvider(GROQ, payload, res, safeMessages, lastUser);
-  if (groqOk) return;
+  if (!res.headersSent && groqReady) {
+    const groqOk = await tryStreamProvider(GROQ, payload, res, safeMessages, lastUser);
+    if (groqOk) return;
+  }
 
-  // Groq failed — try OpenRouter (if not cooling down) then Gemini.
-  if (!res.headersSent && !isOpenRouterCoolingDown()) {
+  if (!res.headersSent && openrouterReady) {
     const orOk = await tryStreamProvider(OPENROUTER, payload, res, safeMessages, lastUser);
     if (orOk) return;
   }
 
-  if (!res.headersSent && !isGeminiCoolingDown()) {
+  if (!res.headersSent && geminiReady) {
     const gemOk = await tryStreamGemini(payload, res, safeMessages, lastUser);
     if (gemOk) return;
   }
@@ -1228,6 +1253,7 @@ router.get('/stats', (_req, res) => {
     ...getCacheStats(),
     breakers: {
       groq: { coolingDown: isGroqCoolingDown(), secondsRemaining: remaining(groqCooldownUntil) },
+      openai: { coolingDown: isOpenAICoolingDown(), secondsRemaining: remaining(openaiCooldownUntil) },
       openrouter: { coolingDown: isOpenRouterCoolingDown(), secondsRemaining: remaining(openrouterCooldownUntil) },
       gemini: { coolingDown: isGeminiCoolingDown(), secondsRemaining: remaining(geminiCooldownUntil) },
     },
