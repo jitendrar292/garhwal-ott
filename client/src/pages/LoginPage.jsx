@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import SEO from '../components/SEO';
+import { autoSubscribeToPush } from '../components/NotifyButton';
 
 // Google Client ID - set via environment variable
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -59,6 +60,9 @@ export default function LoginPage() {
         localStorage.setItem('pahaditube_auth_token', token);
         localStorage.setItem('pahaditube_user', JSON.stringify(user));
         
+        // Auto-subscribe to push notifications after login
+        autoSubscribeToPush().catch(() => {});
+        
         // Clean URL and redirect
         const redirectTo = state || from;
         navigate(redirectTo, { replace: true });
@@ -109,6 +113,10 @@ export default function LoginPage() {
       } else {
         await signIn(email, password);
       }
+      
+      // Auto-subscribe to push notifications after login
+      autoSubscribeToPush().catch(() => {});
+      
       navigate(from, { replace: true });
     } catch (err) {
       if (err.authType === 'google') {

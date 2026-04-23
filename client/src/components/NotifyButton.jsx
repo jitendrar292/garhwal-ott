@@ -18,6 +18,70 @@ const SUPPORTED =
   'PushManager' in window &&
   'Notification' in window;
 
+// Auto-subscribe to push notifications (called after login)
+// Returns true if subscribed successfully
+export async function autoSubscribeToPush() {
+  if (!SUPPORTED) {
+    console.log('[notify] Push not supported');
+    return false;
+  }
+  
+  try {
+    // Check if already subscribed
+    const reg = await navigator.serviceWorker.ready;
+    const existingSub = await reg.pushManager.getSubscription();
+    if (existingSub) {
+      console.log('[notify] Already subscribed to push');
+      return true;
+    }
+    
+    // Check if permission already denied
+    if (Notification.permission === 'denied') {
+      console.log('[notify] Notification permission denied');
+      return false;
+    }
+    
+    // Request permission
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') {
+      console.log('[notify] Permission not granted:', perm);
+      return false;
+    }
+    
+    // Get VAPID key
+    const keyRes = await fetch('/api/push/vapid-public-key');
+    if (!keyRes.ok) {
+      console.log('[notify] VAPID key not available');
+      return false;
+    }
+    const { publicKey } = await keyRes.json();
+    
+    // Subscribe
+    const sub = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(publicKey),
+    });
+    
+    // Send subscription to server
+    const res = await fetch('/api/push/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(sub),
+    });
+    
+    if (!res.ok) {
+      console.error('[notify] Subscribe to server failed');
+      return false;
+    }
+    
+    console.log('[notify] Auto-subscribed to push notifications');
+    return true;
+  } catch (err) {
+    console.error('[notify] Auto-subscribe error:', err);
+    return false;
+  }
+}
+
 export default function NotifyButton() {
   const [state, setState] = useState('loading'); // loading | subscribed | unsubscribed | denied | unsupported | unavailable
   const [busy, setBusy] = useState(false);
