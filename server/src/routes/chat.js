@@ -136,6 +136,9 @@ const OPENAI = {
   name: 'openai',
   url: 'https://api.openai.com/v1/chat/completions',
   model: process.env.OPENAI_MODEL || 'gpt-5-mini',
+  // Some accounts/regions may not have the newest model immediately.
+  // Retry once on OpenAI with this fallback model before leaving OpenAI.
+  fallbackModel: process.env.OPENAI_FALLBACK_MODEL || 'gpt-4.1-mini',
   trusted: true,
   // Lower-mid temperature for stable, low-hallucination Garhwali responses.
   temperature: 0.4,
@@ -608,17 +611,19 @@ async function tryStreamProvider(provider, basePayload, res, safeMessages, lastU
     ...(provider.temperature != null ? { temperature: provider.temperature } : {}),
   };
 
+  const requestOnce = async (bodyPayload) => fetch(provider.url, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+      ...provider.extraHeaders(),
+    },
+    body: JSON.stringify(bodyPayload),
+  });
+
   let upstream;
   try {
-    upstream = await fetch(provider.url, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-        ...provider.extraHeaders(),
-      },
-      body: JSON.stringify(payload),
-    });
+    upstream = await requestOnce(payload);
   } catch (err) {
     console.error(`[chat] ${provider.name} network error:`, err.message);
     return false;
@@ -626,9 +631,37 @@ async function tryStreamProvider(provider, basePayload, res, safeMessages, lastU
 
   if (!upstream.ok || !upstream.body) {
     const errText = await upstream.text().catch(() => '');
-    console.error(`[chat] ${provider.name} error:`, upstream.status, errText.slice(0, 300));
-    provider.onFailure(upstream.status, errText);
-    return false;
+
+    // Keep traffic on OpenAI even if the chosen model is unavailable.
+    if (
+      provider.name === 'openai' &&
+      (upstream.status === 400 || upstream.status === 404) &&
+      provider.fallbackModel &&
+      payload.model !== provider.fallbackModel
+    ) {
+      const retryPayload = { ...payload, model: provider.fallbackModel };
+      console.warn(
+        `[chat] openai model ${payload.model} unavailable (${upstream.status}) — retrying with ${provider.fallbackModel}`
+      );
+      try {
+        upstream = await requestOnce(retryPayload);
+        if (upstream.ok && upstream.body) {
+          payload.model = provider.fallbackModel;
+        } else {
+          const retryErrText = await upstream.text().catch(() => '');
+          console.error('[chat] openai fallback-model error:', upstream.status, retryErrText.slice(0, 300));
+          provider.onFailure(upstream.status, retryErrText || errText);
+          return false;
+        }
+      } catch (retryErr) {
+        console.error('[chat] openai fallback-model network error:', retryErr.message);
+        return false;
+      }
+    } else {
+      console.error(`[chat] ${provider.name} error:`, upstream.status, errText.slice(0, 300));
+      provider.onFailure(upstream.status, errText);
+      return false;
+    }
   }
 
   // Begin SSE stream to client. From here on, we can't switch providers.
@@ -1206,6 +1239,10 @@ router.post('/', async (req, res) => {
   const groqReady = Boolean(GROQ.getKey()) && !isGroqCoolingDown();
   const openrouterReady = Boolean(OPENROUTER.getKey()) && !isOpenRouterCoolingDown();
   const geminiReady = Boolean(GEMINI.getKey()) && !isGeminiCoolingDown();
+  res.setHeader(
+    'X-Providers-Ready',
+    `openai:${Number(openaiReady)},groq:${Number(groqReady)},openrouter:${Number(openrouterReady)},gemini:${Number(geminiReady)}`
+  );
 
   // If all providers are unavailable (cooldown or no key), skip straight to
   // memory/offline fallback.
