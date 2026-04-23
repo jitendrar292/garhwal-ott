@@ -99,6 +99,44 @@ function isRedisEnabled() {
   return UPSTASH_ENABLED;
 }
 
+// =====================================================================
+// Redis Set operations (for tracking signups, etc.)
+// =====================================================================
+
+// Add member to a set, returns 1 if new, 0 if already exists
+async function redisSetAdd(key, member) {
+  if (!UPSTASH_ENABLED) return 0;
+  try {
+    return await redisCmd('SADD', key, member);
+  } catch (err) {
+    console.error('[store] redisSetAdd error:', err.message);
+    return 0;
+  }
+}
+
+// Get all members of a set
+async function redisSetMembers(key) {
+  if (!UPSTASH_ENABLED) return [];
+  try {
+    return await redisCmd('SMEMBERS', key) || [];
+  } catch (err) {
+    console.error('[store] redisSetMembers error:', err.message);
+    return [];
+  }
+}
+
+// Get count of members in a set
+async function redisSetCount(key) {
+  if (!UPSTASH_ENABLED) return 0;
+  try {
+    const count = await redisCmd('SCARD', key);
+    return parseInt(count || '0', 10);
+  } catch (err) {
+    console.error('[store] redisSetCount error:', err.message);
+    return 0;
+  }
+}
+
 async function getVisits() {
   if (UPSTASH_ENABLED) {
     try {
@@ -454,5 +492,5 @@ async function seedAndDeduplicateVisitors() {
   }
 }
 
-module.exports = { getVisits, incrementVisits, getOpens, incrementOpens, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback, redisGetJSON, redisSetJSON, isRedisEnabled, logChatExchange, getChatHistory, getFavorites, saveFavorites, addFavorite, removeFavorite };
+module.exports = { getVisits, incrementVisits, getOpens, incrementOpens, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback, redisGetJSON, redisSetJSON, isRedisEnabled, redisSetAdd, redisSetMembers, redisSetCount, logChatExchange, getChatHistory, getFavorites, saveFavorites, addFavorite, removeFavorite };
 

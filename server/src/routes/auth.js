@@ -1,16 +1,18 @@
 const express = require('express');
 const crypto = require('crypto');
-const { redisGetJSON, redisSetJSON, isRedisEnabled } = require('../services/store');
+const { redisGetJSON, redisSetJSON, isRedisEnabled, redisSetAdd, redisSetMembers, redisSetCount } = require('../services/store');
 
 const router = express.Router();
 
 // Redis keys for auth data
 const USERS_KEY = 'pahadi_users'; // Hash: email -> user JSON
 const SESSIONS_PREFIX = 'pahadi_session:'; // session:<token> -> session JSON
+const SIGNUPS_SET = 'pahadi_signups'; // Set of all registered user emails
 
 // In-memory fallback (used when Redis is not configured)
 const memUsers = new Map(); // email -> user
 const memSessions = new Map(); // token -> session
+const memSignups = new Set(); // set of registered emails
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
@@ -77,6 +79,50 @@ async function deleteSession(token) {
   }
 }
 
+// Track a new signup in the signups set
+async function trackSignup(email) {
+  memSignups.add(email);
+  if (isRedisEnabled()) {
+    await redisSetAdd(SIGNUPS_SET, email);
+  }
+}
+
+// Get all registered user emails
+async function getAllSignups() {
+  if (isRedisEnabled()) {
+    return await redisSetMembers(SIGNUPS_SET);
+  }
+  return Array.from(memSignups);
+}
+
+// Get signup count
+async function getSignupCount() {
+  if (isRedisEnabled()) {
+    return await redisSetCount(SIGNUPS_SET);
+  }
+  return memSignups.size;
+}
+
+// Get all users with full details (for admin)
+async function getAllUsers() {
+  const emails = await getAllSignups();
+  const users = [];
+  for (const email of emails) {
+    const user = await getUser(email);
+    if (user) {
+      users.push({
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        picture: user.picture,
+        createdAt: user.createdAt,
+      });
+    }
+  }
+  // Sort by signup date (newest first)
+  return users.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+}
+
 // Verify Google ID token
 async function verifyGoogleToken(idToken) {
   if (!GOOGLE_CLIENT_ID) {
@@ -136,7 +182,7 @@ router.post('/google', async (req, res) => {
     const isNewUser = !user;
     
     if (!user) {
-      // Create new user
+      // Create new user (signup)
       user = {
         id: crypto.randomUUID(),
         email: googleUser.email,
@@ -145,7 +191,8 @@ router.post('/google', async (req, res) => {
         createdAt: new Date().toISOString(),
       };
       await setUser(googleUser.email, user);
-      console.log(`[auth] new user registered: ${user.email}` + (isRedisEnabled() ? ' (Redis)' : ' (memory)'));
+      await trackSignup(googleUser.email); // Track in signups set
+      console.log(`[auth] new signup: ${user.email}` + (isRedisEnabled() ? ' (Redis)' : ' (memory)'));
     } else {
       // Update profile info on each login
       user.name = googleUser.name;
@@ -257,6 +304,51 @@ function cleanupExpiredMemSessions() {
     }
   }
 }
+
+// =====================================================================
+// Admin endpoints - view signups and user stats
+// =====================================================================
+const ADMIN_KEY = process.env.FEEDBACK_ADMIN_KEY || 'pahadi2026';
+
+function requireAdminKey(req, res) {
+  if (req.query.key !== ADMIN_KEY) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return false;
+  }
+  return true;
+}
+
+// GET /api/auth/admin/stats?key=xxx - Get signup statistics
+router.get('/admin/stats', async (req, res) => {
+  if (!requireAdminKey(req, res)) return;
+  
+  try {
+    const count = await getSignupCount();
+    res.json({
+      totalSignups: count,
+      storageType: isRedisEnabled() ? 'redis' : 'memory',
+    });
+  } catch (err) {
+    console.error('[auth] admin stats error:', err.message);
+    res.status(500).json({ error: 'Failed to fetch stats' });
+  }
+});
+
+// GET /api/auth/admin/users?key=xxx - List all registered users
+router.get('/admin/users', async (req, res) => {
+  if (!requireAdminKey(req, res)) return;
+  
+  try {
+    const users = await getAllUsers();
+    res.json({
+      count: users.length,
+      users,
+    });
+  } catch (err) {
+    console.error('[auth] admin users error:', err.message);
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
+});
 
 module.exports = router;
 module.exports.requireAuth = requireAuth;
