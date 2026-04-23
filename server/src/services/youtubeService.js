@@ -1,5 +1,5 @@
 const NodeCache = require('node-cache');
-const { redisGetJSON, redisSetJSON, isRedisEnabled } = require('./store');
+const { redisGetJSON, redisSetJSON, isRedisEnabled, redisHashGet, redisHashSet } = require('./store');
 
 const YOUTUBE_API_BASE = 'https://www.googleapis.com/youtube/v3';
 const API_KEY = process.env.YOUTUBE_API_KEY;
@@ -19,6 +19,11 @@ const REDIS_TTL_SECONDS = 24 * 60 * 60;
 // server cold-start (where in-memory fallbackCache is empty).
 const REDIS_LONGTERM_TTL_SECONDS = 30 * 24 * 60 * 60;
 const longtermKey = (k) => `yt:lt:${k}`;
+
+// Permanent storage key for videos that never expire
+// Videos are stored in Redis Hash: pahadi_videos (category -> videos JSON)
+const PERMANENT_VIDEOS_KEY = 'pahadi_videos';
+const MAX_PERMANENT_VIDEOS = 100; // Max videos to keep per category
 
 // Quota circuit breaker — once YouTube returns 403 quotaExceeded, skip the API
 // entirely until the configured cooldown elapses. YouTube quota resets daily
@@ -259,6 +264,50 @@ function getStaticFallback(category) {
   return STATIC_FALLBACK[category] || { videos: [], nextPageToken: null, prevPageToken: null, totalResults: 0 };
 }
 
+// =====================================================================
+// Permanent video storage (never expires)
+// New videos go on top, old videos pushed back, deduped by ID
+// =====================================================================
+
+// Get all permanent videos for a category
+async function getPermanentVideos(category) {
+  if (isRedisEnabled()) {
+    try {
+      const data = await redisHashGet(PERMANENT_VIDEOS_KEY, category);
+      if (data && Array.isArray(data)) return data;
+    } catch (err) {
+      console.error('[youtube] getPermanentVideos error:', err.message);
+    }
+  }
+  // Fallback to static data
+  return getStaticFallback(category).videos || [];
+}
+
+// Merge new videos with existing permanent storage
+// New videos go to top, existing videos pushed back, deduped by ID
+async function mergeAndStorePermanentVideos(category, newVideos) {
+  if (!newVideos || newVideos.length === 0) return;
+  
+  try {
+    const existingVideos = await getPermanentVideos(category);
+    
+    // Deduplicate: new videos on top, then existing videos not in new list
+    const newIds = new Set(newVideos.map(v => v.id));
+    const mergedVideos = [
+      ...newVideos,
+      ...existingVideos.filter(v => !newIds.has(v.id))
+    ].slice(0, MAX_PERMANENT_VIDEOS); // Limit total videos
+    
+    // Store in Redis Hash (no TTL - permanent)
+    if (isRedisEnabled()) {
+      await redisHashSet(PERMANENT_VIDEOS_KEY, category, mergedVideos);
+      console.log(`[youtube] Stored ${mergedVideos.length} videos for ${category} (${newVideos.length} new)`);
+    }
+  } catch (err) {
+    console.error('[youtube] mergeAndStorePermanentVideos error:', err.message);
+  }
+}
+
 // Deterministic shuffle: same seed string → same order. Keeps cache stable
 // while making different tabs/queries yield visibly different orderings.
 function seededShuffle(arr, seed) {
@@ -426,6 +475,13 @@ async function searchVideos(query, pageToken = '', maxResults = 12) {
 
   try {
     const result = await fetchFromYouTube(query, pageToken, maxResults);
+    
+    // Store search results permanently using a query-based key
+    if (result.videos && result.videos.length > 0) {
+      const searchCategory = `search:${query.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 50)}`;
+      mergeAndStorePermanentVideos(searchCategory, result.videos).catch(() => {});
+    }
+    
     cache.set(cacheKey, result);
     fallbackCache.set(cacheKey, result);
     redisSetJSON(`yt:${cacheKey}`, result, REDIS_TTL_SECONDS).catch(() => {});
@@ -474,12 +530,17 @@ async function getVideosByCategoryRaw(category, pageToken = '', maxResults = 12)
     return fromRedis;
   }
 
-  // Quota breaker: skip API; serve any older copy we have.
+  // Quota breaker: skip API; serve permanent storage or static fallback.
   if (isQuotaCoolingDown()) {
     const lt = await redisGetJSON(longtermKey(cacheKey));
     if (lt) return lt;
     const fb = fallbackCache.get(cacheKey);
     if (fb) return fb;
+    // Try permanent storage first
+    const permVideos = await getPermanentVideos(category);
+    if (permVideos.length > 0) {
+      return { videos: permVideos.slice(0, maxResults), nextPageToken: null, prevPageToken: null, totalResults: permVideos.length };
+    }
     return getStaticFallback(category);
   }
 
@@ -493,6 +554,12 @@ async function getVideosByCategoryRaw(category, pageToken = '', maxResults = 12)
     } else {
       result = await fetchFromYouTube(query, pageToken, maxResults);
     }
+    
+    // Store new videos permanently (new on top, old pushed back)
+    if (result.videos && result.videos.length > 0) {
+      mergeAndStorePermanentVideos(category, result.videos).catch(() => {});
+    }
+    
     // Pin curated videos at the top (first page only).
     if (!pageToken) result = withPinned(category, result);
     cache.set(cacheKey, result);
@@ -510,6 +577,12 @@ async function getVideosByCategoryRaw(category, pageToken = '', maxResults = 12)
     if (fallback) {
       console.log('Serving in-memory fallback for:', cacheKey);
       return fallback;
+    }
+    // Try permanent storage as fallback
+    const permVideos = await getPermanentVideos(category);
+    if (permVideos.length > 0) {
+      console.log('Serving permanent storage for:', category);
+      return { videos: permVideos.slice(0, maxResults), nextPageToken: null, prevPageToken: null, totalResults: permVideos.length };
     }
     if (err.message === 'QUOTA_EXCEEDED') {
       console.log('Serving static fallback for category:', category);
