@@ -226,6 +226,8 @@ router.post('/google', async (req, res) => {
       user.name = googleUser.name;
       user.picture = googleUser.picture;
       await setUser(googleUser.email, user);
+      // Ensure user is in signups set (for users created before tracking was added)
+      await trackSignup(googleUser.email);
     }
     
     // Create session (Redis-backed)
@@ -317,6 +319,8 @@ router.post('/google/callback', async (req, res) => {
       user.name = googleUser.name;
       user.picture = googleUser.picture;
       await setUser(googleUser.email, user);
+      // Ensure user is in signups set (for users created before tracking was added)
+      await trackSignup(googleUser.email);
     }
     
     // Create session
