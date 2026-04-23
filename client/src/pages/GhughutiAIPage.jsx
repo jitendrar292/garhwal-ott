@@ -424,7 +424,7 @@ export default function GhughutiAIPage() {
 
         {/* Initial character row: Dadi + funny Bhula */}
         <div className="mb-5">
-          <p className="text-xs text-white/70 text-center mb-2">किस्सै बात करणी छ?</p>
+          <p className="text-xs text-white/70 text-center mb-2">कैं दगड़ी बात करणी छ?</p>
           <div className="grid grid-cols-2 gap-3 max-w-lg mx-auto">
             {CHARACTERS.map((c) => {
               const selected = c.id === activeCharacter;
