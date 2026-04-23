@@ -17,6 +17,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [gsiLoaded, setGsiLoaded] = useState(false);
+  const [buttonMounted, setButtonMounted] = useState(false);
   const googleButtonRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -55,7 +56,7 @@ export default function LoginPage() {
 
   // Initialize Google Sign-In button (skip in PWA mode - popups don't work)
   useEffect(() => {
-    if (!gsiLoaded || !GOOGLE_CLIENT_ID || !googleButtonRef.current) return;
+    if (!gsiLoaded || !GOOGLE_CLIENT_ID || !googleButtonRef.current || !buttonMounted) return;
     // Skip Google Sign-In initialization in PWA standalone mode
     if (isStandalonePWA) return;
 
@@ -92,7 +93,7 @@ export default function LoginPage() {
     } catch (err) {
       console.error('Google Sign-In init error:', err);
     }
-  }, [gsiLoaded, signInWithGoogle, navigate, from]);
+  }, [gsiLoaded, buttonMounted, signInWithGoogle, navigate, from]);
 
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
@@ -253,7 +254,13 @@ export default function LoginPage() {
           {/* Google Sign-In - hidden in PWA mode due to popup restrictions */}
           {GOOGLE_CLIENT_ID && !isStandalonePWA ? (
             <div className="flex flex-col items-center gap-2">
-              <div ref={googleButtonRef} className="min-h-[44px]" />
+              <div 
+                ref={(el) => {
+                  googleButtonRef.current = el;
+                  if (el && !buttonMounted) setButtonMounted(true);
+                }} 
+                className="min-h-[44px]" 
+              />
             </div>
           ) : !isStandalonePWA && (
             <p className="text-xs text-gray-500 text-center">
