@@ -7,9 +7,16 @@ import SEO from '../components/SEO';
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 // Detect if running as installed PWA (standalone mode)
+// Only true when actually launched from home screen, not in regular mobile browser
 const isStandalonePWA = typeof window !== 'undefined' &&
-  (window.matchMedia?.('(display-mode: standalone)').matches ||
+  (window.matchMedia?.('(display-mode: standalone)').matches === true ||
     window.navigator.standalone === true);
+
+// Debug: log PWA detection status
+if (typeof window !== 'undefined') {
+  console.log('[Login] isStandalonePWA:', isStandalonePWA);
+  console.log('[Login] GOOGLE_CLIENT_ID set:', !!GOOGLE_CLIENT_ID);
+}
 
 export default function LoginPage() {
   const { signInWithGoogle, signIn, signUp, isAuthenticated, loading: authLoading } = useAuth();
@@ -245,14 +252,12 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Divider - only show when Google Sign-In is available */}
-          {GOOGLE_CLIENT_ID && !isStandalonePWA && (
-            <div className="flex items-center gap-3 my-5">
-              <div className="flex-1 h-px bg-white/10" />
-              <span className="text-xs text-gray-500">या</span>
-              <div className="flex-1 h-px bg-white/10" />
-            </div>
-          )}
+          {/* Divider */}
+          <div className="flex items-center gap-3 my-5">
+            <div className="flex-1 h-px bg-white/10" />
+            <span className="text-xs text-gray-500">या</span>
+            <div className="flex-1 h-px bg-white/10" />
+          </div>
 
           {/* Google Sign-In - hidden in PWA mode */}
           {GOOGLE_CLIENT_ID && !isStandalonePWA ? (
@@ -270,7 +275,11 @@ export default function LoginPage() {
               </svg>
               Continue with Google
             </button>
-          ) : !isStandalonePWA && !GOOGLE_CLIENT_ID && (
+          ) : isStandalonePWA ? (
+            <p className="text-xs text-amber-400/80 text-center">
+              📱 PWA में Google Sign-In नहीं चलता। Email/Password से login करो।
+            </p>
+          ) : (
             <p className="text-xs text-gray-500 text-center">
               Google Sign-In not configured
             </p>
