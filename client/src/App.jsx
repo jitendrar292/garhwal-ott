@@ -24,6 +24,7 @@ import YouTubeAdminPage from './pages/YouTubeAdminPage';
 import FolkStoryPage from './pages/FolkStoryPage';
 import FolkStoriesIndexPage from './pages/FolkStoriesIndexPage';
 import LoginPage from './pages/LoginPage';
+import AdminPage from './pages/AdminPage';
 
 // Protected route wrapper - redirects to login if not authenticated
 function RequireAuth({ children }) {
@@ -61,6 +62,7 @@ export default function App() {
               <Route path="/feedback" element={<FeedbackPage />} />
               <Route path="/feedback/admin" element={<FeedbackAdminPage />} />
               <Route path="/youtube/admin" element={<YouTubeAdminPage />} />
+              <Route path="/admin" element={<AdminPage />} />
               <Route path="/music" element={<MusicPage />} />
               <Route path="/shorts" element={<ShortsPage />} />
               <Route path="/podcast" element={<PodcastPage />} />
