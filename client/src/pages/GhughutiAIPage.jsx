@@ -32,6 +32,25 @@ const TOPIC_CARDS = [
   { emoji: '🛤️',  label: 'यात्रा\nसवाल',           bg: 'bg-rose-700',    prompt: 'मीं उत्तराखंड की यात्रा करण चांदु — चार धाम, हेमकुण्ड, औली, फूलों की घाटी जना ठिकाणा का बारा मा बता: कब जाण, कन पौंछण, अर क्या-क्या देखण।' },
 ];
 
+const CHARACTERS = [
+  {
+    id: 'dadi',
+    name: 'Bheji Didi',
+    subtitle: 'प्यार भरि सलाह',
+    emoji: '👵',
+    avatar: '/ghughuti-ai-logo.png',
+    tone: 'warm',
+  },
+  {
+    id: 'bhula',
+    name: 'Pahadi Bhula',
+    subtitle: 'मजेदार अंदाज़',
+    emoji: '😎',
+    avatar: '/characters/pahadi-bhula.png',
+    tone: 'funny',
+  },
+];
+
 export default function GhughutiAIPage() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -39,6 +58,7 @@ export default function GhughutiAIPage() {
   const [error, setError] = useState('');
   const [listening, setListening] = useState(false);
   const [speakingIdx, setSpeakingIdx] = useState(-1);
+  const [activeCharacter, setActiveCharacter] = useState('dadi');
   const abortRef = useRef(null);
   const scrollRef = useRef(null);
   const textareaRef = useRef(null);
@@ -112,6 +132,7 @@ export default function GhughutiAIPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: [...messages, userMsg].map(({ role, content }) => ({ role, content })),
+          character: activeCharacter,
         }),
         signal: controller.signal,
       });
@@ -169,7 +190,7 @@ export default function GhughutiAIPage() {
       setStreaming(false);
       abortRef.current = null;
     }
-  }, [messages, streaming]);
+  }, [messages, streaming, activeCharacter]);
 
   const stop = () => {
     if (abortRef.current) abortRef.current.abort();
@@ -276,6 +297,7 @@ export default function GhughutiAIPage() {
 
   const isEmpty = messages.length === 0;
   const showHero = isEmpty && !streaming;
+  const characterMeta = CHARACTERS.find((c) => c.id === activeCharacter) || CHARACTERS[0];
 
   return (
     <div className="relative min-h-screen overflow-hidden text-white">
@@ -400,6 +422,47 @@ export default function GhughutiAIPage() {
           </div>
         )}
 
+        {/* Initial character row: Dadi + funny Bhula */}
+        <div className="mb-5">
+          <p className="text-xs text-white/70 text-center mb-2">किस्सै बात करणी छ?</p>
+          <div className="grid grid-cols-2 gap-3 max-w-lg mx-auto">
+            {CHARACTERS.map((c) => {
+              const selected = c.id === activeCharacter;
+              return (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => setActiveCharacter(c.id)}
+                  className={`rounded-2xl p-3 border transition-all text-left ${
+                    selected
+                      ? 'bg-amber-500/20 border-amber-300/80 ring-2 ring-amber-300/40'
+                      : 'bg-white/5 border-white/15 hover:bg-white/10'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl overflow-hidden bg-white/10 border border-white/20 shrink-0">
+                      <img
+                        src={c.avatar}
+                        alt={c.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = '/ghughuti-ai-logo.png';
+                        }}
+                      />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-white truncate">
+                        {c.emoji} {c.name}
+                      </p>
+                      <p className="text-xs text-white/70">{c.subtitle}</p>
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         {/* === Topic cards (when empty) OR Chat panel === */}
         {showHero ? (
           <div className="mt-6">
@@ -479,6 +542,9 @@ export default function GhughutiAIPage() {
                   ⚠️ {error}
                 </div>
               )}
+            </div>
+            <div className="px-4 sm:px-6 pb-4 -mt-1 text-[11px] text-white/65">
+              Active character: <span className="text-amber-300 font-semibold">{characterMeta.name}</span>
             </div>
           </div>
         )}

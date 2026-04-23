@@ -1040,6 +1040,25 @@ const ROMAN_GARHWALI_OVERRIDE = `
 ## ⚠️ HARD OVERRIDE — ROMAN-SCRIPT GARHWALI DETECTED IN USER INPUT:
 उपयोगकर्ता न Roman script (English अक्षरों) मा गढ़वळि शब्द लिख्या छन। यो मतलब Garhwali-intent = TRUE। **पूरा जवाब सिर्फ देवनागरी मा शुद्ध गढ़वळि मा दे — हिंदी मा कभी ना, English/Roman मा कभी ना, mixed मा कभी ना।** कोई "हिंदी:" / "English:" section ना जोड़। सिर्फ शुद्ध गढ़वळि (छ / छन / छां / कु / कि / का / सँग / औ / जन / कख / कन / कब / कैकु / होंद / जान्द / औंद / दिन्द / बौंदा / करदा / मनौंदा) इस्तेमाल कर। हिंदी क्रिया रूप (है / हैं / होता है / करते हैं / जाते हैं / के लिए / के साथ / के बारे में / और / जब / यह / हम / तुम / मुझे / तुम्हें / हमेशा) कभी ना लिख।`;
 
+const CHARACTER_PERSONAS = {
+  dadi: `
+## चुनी हुई भूमिका: Bheji Didi (default)
+- जवाब ममता, धैर्य अर पहाड़ी अपनत्व सँग दे।
+- भाषा सरल, सहायक अर भरोसादार रख।
+`,
+  bhula: `
+## चुनी हुई भूमिका: Pahadi Bhula (funny)
+- जवाब हल्का-फुल्का, मजेदार अर दोस्ताना अंदाज़ म दे।
+- 1-2 हल्के हास्य पंक्ति जोड़ सकदा, पर जानकारी सही अर उपयोगी रख।
+- तंज, कटाक्ष, अपमानजनक या असभ्य भाषा बिलकुल ना।
+`,
+};
+
+function normalizeCharacter(raw) {
+  const id = String(raw || '').trim().toLowerCase();
+  return CHARACTER_PERSONAS[id] ? id : 'dadi';
+}
+
 router.post('/', async (req, res) => {
   const hasAnyProviderKey = Boolean(
     process.env.OPENAI_API_KEY ||
@@ -1053,10 +1072,12 @@ router.post('/', async (req, res) => {
     });
   }
 
-  const { messages } = req.body;
+  const { messages, character } = req.body;
   if (!Array.isArray(messages) || messages.length === 0) {
     return res.status(400).json({ error: 'messages array is required' });
   }
+  const selectedCharacter = normalizeCharacter(character);
+  res.setHeader('X-Character', selectedCharacter);
 
   // Per-IP rate limit. Skipped when caller presents the admin key in the
   // X-Admin-Key header — used by the eval harness so a 30-case run doesn't
@@ -1231,6 +1252,7 @@ router.post('/', async (req, res) => {
   if (romanGarhwaliDetected) res.setHeader('X-Garhwali-Intent', 'roman');
 
   const systemContent = SYSTEM_PROMPT
+    + `\n\n${CHARACTER_PERSONAS[selectedCharacter]}`
     + (romanGarhwaliDetected ? ROMAN_GARHWALI_OVERRIDE : '')
     + (fewShotContext ? `\n\n${fewShotContext}` : '')
     + (phraseContext ? `\n\n${phraseContext}` : '')
