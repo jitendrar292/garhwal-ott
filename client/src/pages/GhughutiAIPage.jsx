@@ -34,8 +34,8 @@ const TOPIC_CARDS = [
 
 const CHARACTERS = [
   {
-    id: 'dadi',
-    name: 'Bheji Didi',
+    id: 'bheji',
+    name: 'भेजी दीदी',
     subtitle: 'प्यार भरि सलाह',
     emoji: '👵',
     avatar: '/ghughuti-ai-logo.png',
@@ -43,7 +43,7 @@ const CHARACTERS = [
   },
   {
     id: 'bhula',
-    name: 'Pahadi Bhula',
+    name: 'पहाड़ी भुला',
     subtitle: 'मजेदार अंदाज़',
     emoji: '😎',
     avatar: '/characters/pahadi-bhula.png',
@@ -58,7 +58,7 @@ export default function GhughutiAIPage() {
   const [error, setError] = useState('');
   const [listening, setListening] = useState(false);
   const [speakingIdx, setSpeakingIdx] = useState(-1);
-  const [activeCharacter, setActiveCharacter] = useState('dadi');
+  const [activeCharacter, setActiveCharacter] = useState('bheji');
   const abortRef = useRef(null);
   const scrollRef = useRef(null);
   const textareaRef = useRef(null);
@@ -422,7 +422,7 @@ export default function GhughutiAIPage() {
           </div>
         )}
 
-        {/* Initial character row: Dadi + funny Bhula */}
+        {/* Initial character row: Bheji + funny Bhula */}
         <div className="mb-5">
           <p className="text-xs text-white/70 text-center mb-2">कैं दगड़ी बात करणी छ?</p>
           <div className="grid grid-cols-2 gap-3 max-w-lg mx-auto">

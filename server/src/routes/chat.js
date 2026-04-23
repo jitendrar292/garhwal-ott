@@ -1041,22 +1041,24 @@ const ROMAN_GARHWALI_OVERRIDE = `
 उपयोगकर्ता न Roman script (English अक्षरों) मा गढ़वळि शब्द लिख्या छन। यो मतलब Garhwali-intent = TRUE। **पूरा जवाब सिर्फ देवनागरी मा शुद्ध गढ़वळि मा दे — हिंदी मा कभी ना, English/Roman मा कभी ना, mixed मा कभी ना।** कोई "हिंदी:" / "English:" section ना जोड़। सिर्फ शुद्ध गढ़वळि (छ / छन / छां / कु / कि / का / सँग / औ / जन / कख / कन / कब / कैकु / होंद / जान्द / औंद / दिन्द / बौंदा / करदा / मनौंदा) इस्तेमाल कर। हिंदी क्रिया रूप (है / हैं / होता है / करते हैं / जाते हैं / के लिए / के साथ / के बारे में / और / जब / यह / हम / तुम / मुझे / तुम्हें / हमेशा) कभी ना लिख।`;
 
 const CHARACTER_PERSONAS = {
-  dadi: `
-## चुनी हुई भूमिका: Bheji Didi (default)
+  bheji: `
+## चुनी हुई भूमिका: भेजी दीदी (default)
 - जवाब ममता, धैर्य अर पहाड़ी अपनत्व सँग दे।
 - भाषा सरल, सहायक अर भरोसादार रख।
 `,
   bhula: `
-## चुनी हुई भूमिका: Pahadi Bhula (funny)
+## चुनी हुई भूमिका: पहाड़ी भुला (funny)
 - जवाब हल्का-फुल्का, मजेदार अर दोस्ताना अंदाज़ म दे।
-- 1-2 हल्के हास्य पंक्ति जोड़ सकदा, पर जानकारी सही अर उपयोगी रख।
+- हर जवाब म 1 छोटु मजेदार पहाड़ी तड़को जरूर जोड़ (जन: "अरे भुला, यो त मजेदार बात छ!")।
+- जवाब शुरुआत दोस्ताना-हास्य पंक्ति सी कर, फेर मुख्य जानकारी साफ बिंदु म दे।
+- हास्य राख पर factual जानकारी कभी ना बिगाड़।
 - तंज, कटाक्ष, अपमानजनक या असभ्य भाषा बिलकुल ना।
 `,
 };
 
 function normalizeCharacter(raw) {
   const id = String(raw || '').trim().toLowerCase();
-  return CHARACTER_PERSONAS[id] ? id : 'dadi';
+  return CHARACTER_PERSONAS[id] ? id : 'bheji';
 }
 
 router.post('/', async (req, res) => {
@@ -1106,8 +1108,15 @@ router.post('/', async (req, res) => {
     return res.status(400).json({ error: e.message });
   }
 
+  // Keep response-cache persona-aware: same question with different character
+  // should not replay the other character's cached tone/style.
+  const cacheMessages = [
+    { role: 'user', content: `__character__:${selectedCharacter}` },
+    ...safeMessages,
+  ];
+
   // ===== 1. Exact-match cache lookup =====
-  const cached = getCached(safeMessages);
+  const cached = getCached(cacheMessages);
   if (cached) {
     return streamCachedReply(res, cached);
   }
@@ -1170,10 +1179,15 @@ router.post('/', async (req, res) => {
     res.setHeader('X-Vector-Hits', String(memoryHits.length));
   }
 
-  const semanticHit = memoryHits.find((h) => {
-    if (!h.a || h.score < SEMANTIC_CACHE_THRESHOLD) return false;
-    return overlapRatio(lastUser.content, h.q) >= SEMANTIC_MIN_OVERLAP;
-  });
+  // Semantic shortcut is currently persona-agnostic (stored history doesn't
+  // carry character id), so for non-default characters it can replay a valid
+  // but wrong-tone answer. Keep it for default "bheji"; bypass for others.
+  const semanticHit = selectedCharacter === 'bheji'
+    ? memoryHits.find((h) => {
+      if (!h.a || h.score < SEMANTIC_CACHE_THRESHOLD) return false;
+      return overlapRatio(lastUser.content, h.q) >= SEMANTIC_MIN_OVERLAP;
+    })
+    : null;
 
   // Log near-misses — helps tune the threshold if real cache hits are being
   // rejected by a sliver. Only logs when there's a strong vector match that
@@ -1192,7 +1206,7 @@ router.post('/', async (req, res) => {
     console.log(`[chat] semantic cache HIT (score=${semanticHit.score.toFixed(3)})`);
     res.setHeader('X-Cache', 'SEMANTIC');
     res.setHeader('X-Cache-Score', semanticHit.score.toFixed(3));
-    setCached(safeMessages, semanticHit.a);
+    setCached(cacheMessages, semanticHit.a);
     return streamCachedReply(res, semanticHit.a);
   }
 
@@ -1296,22 +1310,22 @@ router.post('/', async (req, res) => {
 
   // Try providers in priority order.
   if (openaiReady) {
-    const openaiOk = await tryStreamProvider(OPENAI, payload, res, safeMessages, lastUser);
+    const openaiOk = await tryStreamProvider(OPENAI, payload, res, cacheMessages, lastUser);
     if (openaiOk) return;
   }
 
   if (!res.headersSent && groqReady) {
-    const groqOk = await tryStreamProvider(GROQ, payload, res, safeMessages, lastUser);
+    const groqOk = await tryStreamProvider(GROQ, payload, res, cacheMessages, lastUser);
     if (groqOk) return;
   }
 
   if (!res.headersSent && openrouterReady) {
-    const orOk = await tryStreamProvider(OPENROUTER, payload, res, safeMessages, lastUser);
+    const orOk = await tryStreamProvider(OPENROUTER, payload, res, cacheMessages, lastUser);
     if (orOk) return;
   }
 
   if (!res.headersSent && geminiReady) {
-    const gemOk = await tryStreamGemini(payload, res, safeMessages, lastUser);
+    const gemOk = await tryStreamGemini(payload, res, cacheMessages, lastUser);
     if (gemOk) return;
   }
 
