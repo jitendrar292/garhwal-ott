@@ -249,6 +249,97 @@ router.post('/google', async (req, res) => {
   }
 });
 
+// POST /api/auth/google/callback - Handle OAuth redirect flow (code exchange)
+router.post('/google/callback', async (req, res) => {
+  const { code, redirectUri } = req.body;
+  
+  if (!code) {
+    return res.status(400).json({ error: 'Missing authorization code' });
+  }
+  
+  if (!GOOGLE_CLIENT_ID) {
+    return res.status(500).json({ error: 'Google OAuth not configured' });
+  }
+  
+  const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+  if (!GOOGLE_CLIENT_SECRET) {
+    return res.status(500).json({ error: 'Google OAuth secret not configured' });
+  }
+  
+  try {
+    // Exchange code for tokens
+    console.log('[auth] Exchanging Google auth code for tokens...');
+    const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        code,
+        client_id: GOOGLE_CLIENT_ID,
+        client_secret: GOOGLE_CLIENT_SECRET,
+        redirect_uri: redirectUri,
+        grant_type: 'authorization_code',
+      }),
+    });
+    
+    if (!tokenRes.ok) {
+      const errText = await tokenRes.text();
+      console.error('[auth] Token exchange failed:', errText);
+      throw new Error('Failed to exchange authorization code');
+    }
+    
+    const tokens = await tokenRes.json();
+    console.log('[auth] Got tokens, verifying ID token...');
+    
+    // Verify ID token and get user info
+    const googleUser = await verifyGoogleToken(tokens.id_token);
+    
+    if (!googleUser.emailVerified) {
+      return res.status(400).json({ error: 'Email not verified with Google' });
+    }
+    
+    // Find or create user (same logic as /google endpoint)
+    let user = await getUser(googleUser.email);
+    const isNewUser = !user;
+    
+    if (!user) {
+      user = {
+        id: crypto.randomUUID(),
+        email: googleUser.email,
+        name: googleUser.name,
+        picture: googleUser.picture,
+        authType: 'google',
+        createdAt: new Date().toISOString(),
+      };
+      await setUser(googleUser.email, user);
+      await trackSignup(googleUser.email);
+      console.log(`[auth] new Google signup (OAuth flow): ${user.email}`);
+    } else {
+      user.name = googleUser.name;
+      user.picture = googleUser.picture;
+      await setUser(googleUser.email, user);
+    }
+    
+    // Create session
+    const sessionToken = generateSessionToken();
+    const expiresAt = Date.now() + SESSION_TTL_MS;
+    await setSession(sessionToken, { email: user.email, expiresAt });
+    
+    res.json({
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        picture: user.picture,
+      },
+      token: sessionToken,
+      isNewUser,
+    });
+  } catch (err) {
+    console.error('[auth] Google OAuth callback error:', err.message);
+    res.status(401).json({ error: err.message || 'Authentication failed' });
+  }
+});
+
 // =====================================================================
 // Email/Password Authentication
 // =====================================================================

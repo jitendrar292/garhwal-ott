@@ -30,6 +30,55 @@ export default function LoginPage() {
   // Redirect destination after login
   const from = location.state?.from?.pathname || '/ghughuti-ai';
 
+  // Handle OAuth redirect callback (when Google redirects back with ?code=xxx)
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const code = params.get('code');
+    const state = params.get('state');
+    
+    if (!code) return;
+    
+    const exchangeCode = async () => {
+      setLoading(true);
+      setError('');
+      
+      try {
+        console.log('[GoogleAuth] Exchanging code for token...');
+        const res = await fetch('/api/auth/google/callback', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            code, 
+            redirectUri: window.location.origin + '/login' 
+          }),
+        });
+        
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.error || 'Authentication failed');
+        }
+        
+        const { user, token } = await res.json();
+        localStorage.setItem('pahaditube_auth_token', token);
+        localStorage.setItem('pahaditube_user', JSON.stringify(user));
+        
+        // Clean URL and redirect
+        const redirectTo = state || from;
+        navigate(redirectTo, { replace: true });
+        window.location.reload(); // Refresh to update auth state
+      } catch (err) {
+        console.error('[GoogleAuth] Code exchange error:', err);
+        setError(err.message || 'Google sign-in failed');
+        // Clean URL
+        navigate('/login', { replace: true });
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    exchangeCode();
+  }, [location.search, navigate, from]);
+
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated && !authLoading) {
@@ -85,6 +134,9 @@ export default function LoginPage() {
         callback: handleCredentialResponse,
         auto_select: false,
         cancel_on_tap_outside: true,
+        ux_mode: 'popup',
+        // Use FedCM API which works better with modern browsers
+        use_fedcm_for_prompt: true,
       });
       console.log('[GoogleAuth] Initialized successfully');
 
@@ -261,7 +313,7 @@ export default function LoginPage() {
 
           {/* Google Sign-In - hidden in PWA mode due to popup restrictions */}
           {GOOGLE_CLIENT_ID && !isStandalonePWA ? (
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-3">
               <div 
                 ref={(el) => {
                   googleButtonRef.current = el;
@@ -269,6 +321,21 @@ export default function LoginPage() {
                 }} 
                 className="min-h-[44px]" 
               />
+              {/* Fallback link if popup doesn't work */}
+              <button
+                type="button"
+                onClick={() => {
+                  // Manual OAuth redirect as fallback
+                  const redirectUri = encodeURIComponent(window.location.origin + '/login');
+                  const scope = encodeURIComponent('openid email profile');
+                  const state = encodeURIComponent(from);
+                  const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&state=${state}&prompt=select_account`;
+                  window.location.href = url;
+                }}
+                className="text-xs text-gray-400 hover:text-primary-400 underline"
+              >
+                Google popup not working? Click here
+              </button>
             </div>
           ) : !isStandalonePWA && (
             <p className="text-xs text-gray-500 text-center">
