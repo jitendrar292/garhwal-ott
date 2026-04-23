@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const TABS = [
   { name: 'Home', path: '/', emoji: '🏠' },
@@ -21,10 +22,26 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [listening, setListening] = useState(false);
   const [micError, setMicError] = useState('');
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const inputRef = useRef(null);
   const recognitionRef = useRef(null);
+  const userMenuRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, isAuthenticated, signOut } = useAuth();
+
+  // Close user menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
+        setUserMenuOpen(false);
+      }
+    };
+    if (userMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [userMenuOpen]);
 
   // Speech recognition support (skip iOS — webkit impl is unreliable)
   const SpeechRecognition = typeof window !== 'undefined' &&
@@ -257,6 +274,69 @@ export default function Navbar() {
                   d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
             </Link>
+
+            {/* User Profile / Login */}
+            {isAuthenticated ? (
+              <div className="relative" ref={userMenuRef}>
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className="flex items-center gap-2 p-1 rounded-full hover:bg-white/5 transition-all"
+                  aria-label="User menu"
+                >
+                  {user?.picture ? (
+                    <img
+                      src={user.picture}
+                      alt={user.name}
+                      className="w-8 h-8 rounded-full border-2 border-primary-500/50"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-primary-500/20 border-2 border-primary-500/50 flex items-center justify-center text-primary-300 text-sm font-medium">
+                      {user?.name?.[0]?.toUpperCase() || '?'}
+                    </div>
+                  )}
+                </button>
+
+                {/* Dropdown menu */}
+                {userMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-56 bg-dark-800 border border-white/10 rounded-xl shadow-xl shadow-black/30 py-2 z-50">
+                    <div className="px-4 py-2 border-b border-white/5">
+                      <p className="text-sm font-medium text-white truncate">{user?.name}</p>
+                      <p className="text-xs text-gray-400 truncate">{user?.email}</p>
+                    </div>
+                    <Link
+                      to="/ghughuti-ai"
+                      onClick={() => setUserMenuOpen(false)}
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5"
+                    >
+                      <span>🤖</span> Ghughuti AI
+                    </Link>
+                    <button
+                      onClick={() => {
+                        signOut();
+                        setUserMenuOpen(false);
+                      }}
+                      className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                      </svg>
+                      साइन आउट
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-primary-300 hover:text-white bg-primary-500/10 hover:bg-primary-500/20 rounded-full transition-all"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <span className="hidden sm:inline">Login</span>
+              </Link>
+            )}
           </div>
         </div>
 

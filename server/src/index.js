@@ -12,6 +12,7 @@ const chatRoutes = require('./routes/chat');
 const favoritesRoutes = require('./routes/favorites');
 const newsRoutes = require('./routes/news');
 const pushRoutes = require('./routes/push');
+const authRoutes = require('./routes/auth');
 const { getVisits, incrementVisits, getOpens, incrementOpens, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback } = require('./services/store');
 const { startTrendingRefresh } = require('./services/youtubeService');
 
@@ -43,17 +44,17 @@ app.use((req, res, next) => {
   next();
 });
 
-// Security middleware - configure CSP to allow YouTube embeds
+// Security middleware - configure CSP to allow YouTube embeds and Google Sign-In
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "https://www.youtube.com", "https://www.youtube-nocookie.com", "https://s.ytimg.com", "https://www.instagram.com", "https://platform.instagram.com"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://www.instagram.com", "https://platform.instagram.com"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://www.youtube.com", "https://www.youtube-nocookie.com", "https://s.ytimg.com", "https://www.instagram.com", "https://platform.instagram.com", "https://accounts.google.com", "https://apis.google.com"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://www.instagram.com", "https://platform.instagram.com", "https://accounts.google.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      imgSrc: ["'self'", "https://i.ytimg.com", "https://*.ytimg.com", "https://*.cdninstagram.com", "https://*.fbcdn.net", "https://www.instagram.com", "https://upload.wikimedia.org", "https://commons.wikimedia.org", "data:"],
-      frameSrc: ["'self'", "https://www.youtube.com", "https://youtube.com", "https://www.youtube-nocookie.com", "https://www.instagram.com"],
-      connectSrc: ["'self'", "https://www.youtube.com", "https://www.youtube-nocookie.com", "https://*.googlevideo.com", "https://ipapi.co", "https://www.instagram.com", "https://graph.instagram.com"],
+      imgSrc: ["'self'", "https://i.ytimg.com", "https://*.ytimg.com", "https://*.cdninstagram.com", "https://*.fbcdn.net", "https://www.instagram.com", "https://upload.wikimedia.org", "https://commons.wikimedia.org", "https://lh3.googleusercontent.com", "https://*.googleusercontent.com", "data:"],
+      frameSrc: ["'self'", "https://www.youtube.com", "https://youtube.com", "https://www.youtube-nocookie.com", "https://www.instagram.com", "https://accounts.google.com"],
+      connectSrc: ["'self'", "https://www.youtube.com", "https://www.youtube-nocookie.com", "https://*.googlevideo.com", "https://ipapi.co", "https://www.instagram.com", "https://graph.instagram.com", "https://accounts.google.com", "https://oauth2.googleapis.com"],
       mediaSrc: ["'self'", "https://*.googlevideo.com", "https://www.youtube.com", "https://www.youtube-nocookie.com", "https://*.cdninstagram.com", "blob:"],
     },
   },
@@ -125,6 +126,7 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/favorites', favoritesRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/push', pushRoutes);
+app.use('/api/auth', authRoutes);
 
 // Captions endpoint — tries hi, a.hi (auto Hindi), en, a.en in order
 app.get('/api/captions/:videoId', async (req, res) => {
