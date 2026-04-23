@@ -7,13 +7,19 @@ import SEO from '../components/SEO';
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 export default function LoginPage() {
-  const { signInWithGoogle, isAuthenticated, loading: authLoading } = useAuth();
+  const { signInWithGoogle, signIn, signUp, isAuthenticated, loading: authLoading } = useAuth();
+  const [mode, setMode] = useState('login'); // 'login' or 'signup'
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [gsiLoaded, setGsiLoaded] = useState(false);
   const googleButtonRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Form state
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
 
   // Redirect destination after login
   const from = location.state?.from?.pathname || '/ghughuti-ai';
@@ -27,12 +33,8 @@ export default function LoginPage() {
 
   // Load Google Sign-In script
   useEffect(() => {
-    if (!GOOGLE_CLIENT_ID) {
-      setError('Google Sign-In is not configured. Please contact the administrator.');
-      return;
-    }
+    if (!GOOGLE_CLIENT_ID) return;
 
-    // Check if already loaded
     if (window.google?.accounts?.id) {
       setGsiLoaded(true);
       return;
@@ -43,12 +45,7 @@ export default function LoginPage() {
     script.async = true;
     script.defer = true;
     script.onload = () => setGsiLoaded(true);
-    script.onerror = () => setError('Failed to load Google Sign-In');
     document.head.appendChild(script);
-
-    return () => {
-      // Cleanup not needed - script stays loaded
-    };
   }, []);
 
   // Initialize Google Sign-In button
@@ -80,19 +77,38 @@ export default function LoginPage() {
       window.google.accounts.id.renderButton(googleButtonRef.current, {
         theme: 'filled_black',
         size: 'large',
-        width: 300,
+        width: 280,
         text: 'continue_with',
         shape: 'rectangular',
         logo_alignment: 'left',
       });
-
-      // Also show One Tap prompt
-      window.google.accounts.id.prompt();
     } catch (err) {
       console.error('Google Sign-In init error:', err);
-      setError('Failed to initialize Google Sign-In');
     }
   }, [gsiLoaded, signInWithGoogle, navigate, from]);
+
+  const handleEmailSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      if (mode === 'signup') {
+        await signUp(email, password, name);
+      } else {
+        await signIn(email, password);
+      }
+      navigate(from, { replace: true });
+    } catch (err) {
+      if (err.authType === 'google') {
+        setError('This email uses Google Sign-In. Please use the Google button below.');
+      } else {
+        setError(err.message);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (authLoading) {
     return (
@@ -103,81 +119,138 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-[80vh] flex flex-col items-center justify-center px-4">
+    <div className="min-h-[80vh] flex flex-col items-center justify-center px-4 py-8">
       <SEO
-        title="Login - Ghughuti AI"
+        title={mode === 'signup' ? 'Sign Up - Ghughuti AI' : 'Login - Ghughuti AI'}
         description="Sign in to access Ghughuti AI, your Garhwali language assistant"
         path="/login"
       />
 
       <div className="w-full max-w-md">
         {/* Logo & Header */}
-        <div className="text-center mb-8">
-          <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center shadow-lg shadow-primary-500/30">
+        <div className="text-center mb-6">
+          <div className="w-20 h-20 mx-auto mb-3 rounded-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center shadow-lg shadow-primary-500/30">
             <img
               src="/ghughuti-ai-logo.png"
               alt="Ghughuti AI"
-              className="w-16 h-16 object-contain"
+              className="w-14 h-14 object-contain"
               onError={(e) => {
                 e.target.style.display = 'none';
-                e.target.parentElement.innerHTML = '<span class="text-4xl">🐦</span>';
+                e.target.parentElement.innerHTML = '<span class="text-3xl">🐦</span>';
               }}
             />
           </div>
-          <h1 className="text-2xl font-bold text-white mb-2">घुघुती AI में स्वागत है</h1>
-          <p className="text-gray-400">
-            Ghughuti AI - तुम्हरो गढ़वाली भाषा सहायक
-          </p>
+          <h1 className="text-xl font-bold text-white">घुघुती AI में स्वागत है</h1>
+          <p className="text-gray-400 text-sm mt-1">तुम्हरो गढ़वाली भाषा सहायक</p>
         </div>
 
-        {/* Login Card */}
-        <div className="bg-dark-800 rounded-2xl p-6 sm:p-8 border border-white/5">
-          <h2 className="text-lg font-semibold text-white mb-2 text-center">
-            साइन इन करो
-          </h2>
-          <p className="text-sm text-gray-400 mb-6 text-center">
-            Ghughuti AI का उपयोग करण खातिर Google सी साइन इन करो
-          </p>
+        {/* Login/Signup Card */}
+        <div className="bg-dark-800 rounded-2xl p-6 border border-white/5">
+          {/* Mode Toggle */}
+          <div className="flex bg-dark-700 rounded-lg p-1 mb-6">
+            <button
+              onClick={() => { setMode('login'); setError(''); }}
+              className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
+                mode === 'login'
+                  ? 'bg-primary-500 text-white'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              Login
+            </button>
+            <button
+              onClick={() => { setMode('signup'); setError(''); }}
+              className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
+                mode === 'signup'
+                  ? 'bg-primary-500 text-white'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              Sign Up
+            </button>
+          </div>
 
-          {/* Google Sign-In Button */}
-          <div className="flex justify-center mb-4">
-            {loading ? (
-              <div className="flex items-center gap-3 px-6 py-3 bg-dark-700 rounded-lg">
-                <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full" />
-                <span className="text-gray-300">Signing in...</span>
+          {/* Email/Password Form */}
+          <form onSubmit={handleEmailSubmit} className="space-y-4">
+            {mode === 'signup' && (
+              <div>
+                <label className="block text-sm text-gray-400 mb-1">Name</label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="तुम्हरो नाम"
+                  className="w-full bg-dark-700 border border-dark-500 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-primary-500"
+                  required
+                  minLength={2}
+                />
               </div>
-            ) : (
-              <div ref={googleButtonRef} className="min-h-[44px]" />
             )}
-          </div>
 
-          {/* Error Message */}
-          {error && (
-            <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-              <p className="text-red-400 text-sm text-center">{error}</p>
+            <div>
+              <label className="block text-sm text-gray-400 mb-1">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="email@example.com"
+                className="w-full bg-dark-700 border border-dark-500 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-primary-500"
+                required
+              />
             </div>
-          )}
 
-          {/* Features */}
-          <div className="mt-6 pt-6 border-t border-white/5">
-            <p className="text-xs text-gray-500 text-center mb-4">
-              साइन इन करकै तुम पाओगे:
-            </p>
-            <ul className="space-y-2 text-sm text-gray-400">
-              <li className="flex items-center gap-2">
-                <span className="text-primary-400">✓</span>
-                गढ़वाली भाषा मा बात करो
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="text-primary-400">✓</span>
-                संस्कृति अर इतिहास जानो
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="text-primary-400">✓</span>
-                नया गढ़वाली शब्द सिखो
-              </li>
-            </ul>
+            <div>
+              <label className="block text-sm text-gray-400 mb-1">Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder={mode === 'signup' ? 'कम से कम 6 अक्षर' : '••••••••'}
+                className="w-full bg-dark-700 border border-dark-500 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-primary-500"
+                required
+                minLength={6}
+              />
+            </div>
+
+            {error && (
+              <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                <p className="text-red-400 text-sm">{error}</p>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full btn-primary py-2.5 disabled:opacity-50"
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
+                  {mode === 'signup' ? 'Creating Account...' : 'Signing In...'}
+                </span>
+              ) : (
+                mode === 'signup' ? 'Create Account' : 'Sign In'
+              )}
+            </button>
+          </form>
+
+          {/* Divider */}
+          <div className="flex items-center gap-3 my-5">
+            <div className="flex-1 h-px bg-white/10" />
+            <span className="text-xs text-gray-500">या</span>
+            <div className="flex-1 h-px bg-white/10" />
           </div>
+
+          {/* Google Sign-In */}
+          {GOOGLE_CLIENT_ID ? (
+            <div className="flex justify-center">
+              <div ref={googleButtonRef} className="min-h-[44px]" />
+            </div>
+          ) : (
+            <p className="text-xs text-gray-500 text-center">
+              Google Sign-In not configured
+            </p>
+          )}
         </div>
 
         {/* Back Link */}
@@ -189,7 +262,7 @@ export default function LoginPage() {
 
         {/* Privacy Note */}
         <p className="text-xs text-gray-500 text-center mt-4">
-          साइन इन करकै तुम हमारी{' '}
+          {mode === 'signup' ? 'खाता बनाकै' : 'साइन इन करकै'} तुम हमारी{' '}
           <a href="/privacy" className="text-primary-400 hover:underline">
             गोपनीयता नीति
           </a>{' '}

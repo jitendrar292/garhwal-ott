@@ -81,6 +81,68 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
+  const signUp = useCallback(async (email, password, name) => {
+    setError(null);
+    setLoading(true);
+    
+    try {
+      const res = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, name }),
+      });
+      
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.error || 'Signup failed');
+      }
+      
+      localStorage.setItem(TOKEN_KEY, data.token);
+      localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+      setUser(data.user);
+      
+      return { user: data.user, isNewUser: true };
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const signIn = useCallback(async (email, password) => {
+    setError(null);
+    setLoading(true);
+    
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      
+      const data = await res.json();
+      
+      if (!res.ok) {
+        const err = new Error(data.error || 'Login failed');
+        err.authType = data.authType;
+        throw err;
+      }
+      
+      localStorage.setItem(TOKEN_KEY, data.token);
+      localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+      setUser(data.user);
+      
+      return { user: data.user, isNewUser: false };
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   const signOut = useCallback(async () => {
     const token = localStorage.getItem(TOKEN_KEY);
     
@@ -108,6 +170,8 @@ export function AuthProvider({ children }) {
     error,
     isAuthenticated: !!user,
     signInWithGoogle,
+    signUp,
+    signIn,
     signOut,
     getAuthToken,
   };

@@ -116,11 +116,38 @@ async function getAllUsers() {
         name: user.name,
         picture: user.picture,
         createdAt: user.createdAt,
+        authType: user.authType || 'google',
       });
     }
   }
   // Sort by signup date (newest first)
   return users.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+}
+
+// =====================================================================
+// Password hashing (using built-in crypto - no external dependencies)
+// =====================================================================
+const SALT_LENGTH = 16;
+const HASH_ITERATIONS = 100000;
+const HASH_KEYLEN = 64;
+const HASH_DIGEST = 'sha512';
+
+function hashPassword(password) {
+  const salt = crypto.randomBytes(SALT_LENGTH).toString('hex');
+  const hash = crypto.pbkdf2Sync(password, salt, HASH_ITERATIONS, HASH_KEYLEN, HASH_DIGEST).toString('hex');
+  return `${salt}:${hash}`;
+}
+
+function verifyPassword(password, storedHash) {
+  const [salt, hash] = storedHash.split(':');
+  if (!salt || !hash) return false;
+  const verifyHash = crypto.pbkdf2Sync(password, salt, HASH_ITERATIONS, HASH_KEYLEN, HASH_DIGEST).toString('hex');
+  return hash === verifyHash;
+}
+
+// Email validation
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
 // Verify Google ID token
@@ -188,11 +215,12 @@ router.post('/google', async (req, res) => {
         email: googleUser.email,
         name: googleUser.name,
         picture: googleUser.picture,
+        authType: 'google',
         createdAt: new Date().toISOString(),
       };
       await setUser(googleUser.email, user);
       await trackSignup(googleUser.email); // Track in signups set
-      console.log(`[auth] new signup: ${user.email}` + (isRedisEnabled() ? ' (Redis)' : ' (memory)'));
+      console.log(`[auth] new Google signup: ${user.email}` + (isRedisEnabled() ? ' (Redis)' : ' (memory)'));
     } else {
       // Update profile info on each login
       user.name = googleUser.name;
@@ -218,6 +246,123 @@ router.post('/google', async (req, res) => {
   } catch (err) {
     console.error('[auth] Google sign-in error:', err.message);
     res.status(401).json({ error: 'Authentication failed' });
+  }
+});
+
+// =====================================================================
+// Email/Password Authentication
+// =====================================================================
+
+// POST /api/auth/signup - Create new account with email/password
+router.post('/signup', async (req, res) => {
+  const { email, password, name } = req.body;
+  
+  // Validate input
+  if (!email || !password || !name) {
+    return res.status(400).json({ error: 'Email, password, and name are required' });
+  }
+  
+  if (!isValidEmail(email)) {
+    return res.status(400).json({ error: 'Invalid email format' });
+  }
+  
+  if (password.length < 6) {
+    return res.status(400).json({ error: 'Password must be at least 6 characters' });
+  }
+  
+  if (name.trim().length < 2) {
+    return res.status(400).json({ error: 'Name must be at least 2 characters' });
+  }
+  
+  try {
+    // Check if user already exists
+    const existingUser = await getUser(email.toLowerCase());
+    if (existingUser) {
+      return res.status(400).json({ error: 'Email already registered' });
+    }
+    
+    // Create new user
+    const user = {
+      id: crypto.randomUUID(),
+      email: email.toLowerCase(),
+      name: name.trim(),
+      picture: null,
+      passwordHash: hashPassword(password),
+      authType: 'email',
+      createdAt: new Date().toISOString(),
+    };
+    
+    await setUser(user.email, user);
+    await trackSignup(user.email);
+    console.log(`[auth] new email signup: ${user.email}` + (isRedisEnabled() ? ' (Redis)' : ' (memory)'));
+    
+    // Create session
+    const sessionToken = generateSessionToken();
+    const expiresAt = Date.now() + SESSION_TTL_MS;
+    await setSession(sessionToken, { email: user.email, expiresAt });
+    
+    res.json({
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        picture: user.picture,
+      },
+      token: sessionToken,
+      isNewUser: true,
+    });
+  } catch (err) {
+    console.error('[auth] signup error:', err.message);
+    res.status(500).json({ error: 'Failed to create account' });
+  }
+});
+
+// POST /api/auth/login - Login with email/password
+router.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+  
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email and password are required' });
+  }
+  
+  try {
+    const user = await getUser(email.toLowerCase());
+    
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
+    
+    // Check if user signed up with Google (no password)
+    if (!user.passwordHash) {
+      return res.status(401).json({ 
+        error: 'This email is registered with Google. Please use Google Sign-In.',
+        authType: 'google'
+      });
+    }
+    
+    // Verify password
+    if (!verifyPassword(password, user.passwordHash)) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
+    
+    // Create session
+    const sessionToken = generateSessionToken();
+    const expiresAt = Date.now() + SESSION_TTL_MS;
+    await setSession(sessionToken, { email: user.email, expiresAt });
+    
+    res.json({
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        picture: user.picture,
+      },
+      token: sessionToken,
+      isNewUser: false,
+    });
+  } catch (err) {
+    console.error('[auth] login error:', err.message);
+    res.status(500).json({ error: 'Login failed' });
   }
 });
 
