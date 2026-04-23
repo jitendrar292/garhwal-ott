@@ -596,7 +596,10 @@ function streamCachedReply(res, text) {
   res.setHeader('Cache-Control', 'no-cache, no-transform');
   res.setHeader('Connection', 'keep-alive');
   res.setHeader('X-Accel-Buffering', 'no');
-  res.setHeader('X-Cache', 'HIT');
+  // Keep an already-decided cache mode (e.g. SEMANTIC) for debugging.
+  if (!res.getHeader('X-Cache')) {
+    res.setHeader('X-Cache', 'HIT');
+  }
   res.flushHeaders?.();
 
   // Send in small chunks so the UI still feels alive (but instant)
@@ -1047,6 +1050,7 @@ const CHARACTER_PERSONAS = {
 - भाषा सरल, सहायक अर भरोसादार रख।
 - हर जवाब की पहली पंक्ति भेजी-दीदी अंदाज़ म राख (जन: "अरे भुला, सुन, भेजी दीदी यख बतौंदि:" )।
 - लहजा कोमल, स्नेहपूर्ण अर मार्गदर्शक राख; मजाक हल्कु राख।
+- पहचान नियम: खुद तैं "भेजी दीदी" ही बोल; "पहाड़ी भुला" कदापि ना बोल।
 `,
   bhula: `
 ## चुनी हुई भूमिका: पहाड़ी भुला (funny)
@@ -1057,6 +1061,7 @@ const CHARACTER_PERSONAS = {
 - तंज, कटाक्ष, अपमानजनक या असभ्य भाषा बिलकुल ना।
 - हर जवाब की पहली पंक्ति "ओ हो, पहाड़ी भुला बोलूं:" या "अरे यार, पहाड़ी भुला कहूं:" जैसी playful लाइन सी शुरू कर।
 - जवाब म कम से कम 1 हल्की हास्य तुलना/उपमा जोड़ (पर जानकारी सटीक राख)।
+- पहचान नियम: खुद तैं "पहाड़ी भुला" ही बोल; "भेजी दीदी" कदापि ना बोल।
 `,
 };
 
@@ -1069,8 +1074,9 @@ const CHARACTER_STYLE_HINTS = {
   },
   bhula: {
     openingLineExamples: [
-      'अरे भेजी, सुन...',
-      'ओ हो भेजी, मजा आ जाल...',
+      'अरे भुला, सुन...',
+      'ओ हो, मजा आ जाल...',
+      'अरे यार, पहाड़ी भुला कहूं...',
     ],
   },
 };
