@@ -1045,6 +1045,8 @@ const CHARACTER_PERSONAS = {
 ## चुनी हुई भूमिका: भेजी दीदी (default)
 - जवाब ममता, धैर्य अर पहाड़ी अपनत्व सँग दे।
 - भाषा सरल, सहायक अर भरोसादार रख।
+- हर जवाब की पहली पंक्ति भेजी-दीदी अंदाज़ म राख (जन: "अरे भुला, सुन, भेजी दीदी यख बतौंदि:" )।
+- लहजा कोमल, स्नेहपूर्ण अर मार्गदर्शक राख; मजाक हल्कु राख।
 `,
   bhula: `
 ## चुनी हुई भूमिका: पहाड़ी भुला (funny)
@@ -1053,12 +1055,41 @@ const CHARACTER_PERSONAS = {
 - जवाब शुरुआत दोस्ताना-हास्य पंक्ति सी कर, फेर मुख्य जानकारी साफ बिंदु म दे।
 - हास्य राख पर factual जानकारी कभी ना बिगाड़।
 - तंज, कटाक्ष, अपमानजनक या असभ्य भाषा बिलकुल ना।
+- हर जवाब की पहली पंक्ति "ओ हो, पहाड़ी भुला बोलूं:" या "अरे यार, पहाड़ी भुला कहूं:" जैसी playful लाइन सी शुरू कर।
+- जवाब म कम से कम 1 हल्की हास्य तुलना/उपमा जोड़ (पर जानकारी सटीक राख)।
 `,
+};
+
+const CHARACTER_STYLE_HINTS = {
+  bheji: {
+    openingLineExamples: [
+      'अरे भुला, सुन, भेजी दीदी यख बतौंदि...',
+      'भली बात छ, भेजी दीदी आराम सी समझौंदि...',
+    ],
+  },
+  bhula: {
+    openingLineExamples: [
+      'अरे भेजी, सुन...',
+      'ओ हो भेजी, मजा आ जाल...',
+    ],
+  },
 };
 
 function normalizeCharacter(raw) {
   const id = String(raw || '').trim().toLowerCase();
   return CHARACTER_PERSONAS[id] ? id : 'bheji';
+}
+
+function buildCharacterPrompt(characterId) {
+  const base = CHARACTER_PERSONAS[characterId] || CHARACTER_PERSONAS.bheji;
+  const hints = CHARACTER_STYLE_HINTS[characterId] || CHARACTER_STYLE_HINTS.bheji;
+  const examples = Array.isArray(hints.openingLineExamples)
+    ? hints.openingLineExamples.filter(Boolean)
+    : [];
+  if (!examples.length) return base;
+  return `${base}\n- openingLineExamples: [\n${examples
+    .map((line) => `  "${line}"`)
+    .join(',\n')}\n]\n- ऊपर openingLineExamples मा सी किसी एक शैली मा जवाब शुरू कर।`;
 }
 
 router.post('/', async (req, res) => {
@@ -1266,7 +1297,7 @@ router.post('/', async (req, res) => {
   if (romanGarhwaliDetected) res.setHeader('X-Garhwali-Intent', 'roman');
 
   const systemContent = SYSTEM_PROMPT
-    + `\n\n${CHARACTER_PERSONAS[selectedCharacter]}`
+    + `\n\n${buildCharacterPrompt(selectedCharacter)}`
     + (romanGarhwaliDetected ? ROMAN_GARHWALI_OVERRIDE : '')
     + (fewShotContext ? `\n\n${fewShotContext}` : '')
     + (phraseContext ? `\n\n${phraseContext}` : '')
