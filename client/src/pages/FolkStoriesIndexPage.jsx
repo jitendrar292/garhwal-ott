@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { folkStories } from '../data/folkStories';
 import SEO from '../components/SEO';
+import UttarakhandSpecialtiesGrid from '../components/PahadiCuisineGrid';
 
 // Grid index for /folk-stories — shows every Garhwali folk-tale card so the
 // "लोक-गाथा" Explore tile has a real destination. Cards reuse the same
@@ -72,6 +73,11 @@ export default function FolkStoriesIndexPage() {
             </div>
           </Link>
         ))}
+      </div>
+
+      {/* District-wise Famous Things from Uttarakhand */}
+      <div className="mt-16">
+        <UttarakhandSpecialtiesGrid />
       </div>
     </div>
   );
