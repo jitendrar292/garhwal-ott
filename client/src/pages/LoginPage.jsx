@@ -60,7 +60,11 @@ export default function LoginPage() {
     // Skip Google Sign-In initialization in PWA standalone mode
     if (isStandalonePWA) return;
 
+    console.log('[GoogleAuth] Initializing with client_id:', GOOGLE_CLIENT_ID?.slice(0, 20) + '...');
+    console.log('[GoogleAuth] Current origin:', window.location.origin);
+
     const handleCredentialResponse = async (response) => {
+      console.log('[GoogleAuth] Got credential response:', response?.credential ? 'token received' : 'no token');
       setLoading(true);
       setError('');
 
@@ -68,6 +72,7 @@ export default function LoginPage() {
         await signInWithGoogle(response.credential);
         navigate(from, { replace: true });
       } catch (err) {
+        console.error('[GoogleAuth] Sign-in error:', err);
         setError(err.message || 'Sign in failed. Please try again.');
       } finally {
         setLoading(false);
@@ -81,6 +86,7 @@ export default function LoginPage() {
         auto_select: false,
         cancel_on_tap_outside: true,
       });
+      console.log('[GoogleAuth] Initialized successfully');
 
       window.google.accounts.id.renderButton(googleButtonRef.current, {
         theme: 'filled_black',
@@ -90,8 +96,10 @@ export default function LoginPage() {
         shape: 'rectangular',
         logo_alignment: 'left',
       });
+      console.log('[GoogleAuth] Button rendered');
     } catch (err) {
       console.error('Google Sign-In init error:', err);
+      setError('Google Sign-In failed to initialize: ' + err.message);
     }
   }, [gsiLoaded, buttonMounted, signInWithGoogle, navigate, from]);
 
