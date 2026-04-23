@@ -6,6 +6,11 @@ import SEO from '../components/SEO';
 // Google Client ID - set via environment variable
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
+// Detect if running as installed PWA (standalone mode)
+const isStandalonePWA = typeof window !== 'undefined' &&
+  (window.matchMedia?.('(display-mode: standalone)').matches ||
+    window.navigator.standalone === true);
+
 export default function LoginPage() {
   const { signInWithGoogle, signIn, signUp, isAuthenticated, loading: authLoading } = useAuth();
   const [mode, setMode] = useState('login'); // 'login' or 'signup'
@@ -67,12 +72,22 @@ export default function LoginPage() {
     };
 
     try {
-      window.google.accounts.id.initialize({
+      // In PWA standalone mode, use redirect flow to avoid popup issues
+      const initOptions = {
         client_id: GOOGLE_CLIENT_ID,
         callback: handleCredentialResponse,
         auto_select: false,
         cancel_on_tap_outside: true,
-      });
+      };
+
+      // For PWA standalone mode, try FedCM-based flow which works better
+      // Also disable intermediate_iframe_close_callback to avoid popup issues
+      if (isStandalonePWA) {
+        initOptions.use_fedcm_for_prompt = true;
+        initOptions.itp_support = true;
+      }
+
+      window.google.accounts.id.initialize(initOptions);
 
       window.google.accounts.id.renderButton(googleButtonRef.current, {
         theme: 'filled_black',
@@ -243,8 +258,13 @@ export default function LoginPage() {
 
           {/* Google Sign-In */}
           {GOOGLE_CLIENT_ID ? (
-            <div className="flex justify-center">
+            <div className="flex flex-col items-center gap-2">
               <div ref={googleButtonRef} className="min-h-[44px]" />
+              {isStandalonePWA && (
+                <p className="text-xs text-amber-400/80 text-center mt-2">
+                  💡 PWA में Google Sign-In नहीं चल रहा? ऊपर Email से login करो।
+                </p>
+              )}
             </div>
           ) : (
             <p className="text-xs text-gray-500 text-center">
