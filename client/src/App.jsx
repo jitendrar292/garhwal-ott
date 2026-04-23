@@ -25,6 +25,7 @@ import FolkStoryPage from './pages/FolkStoryPage';
 import FolkStoriesIndexPage from './pages/FolkStoriesIndexPage';
 import LoginPage from './pages/LoginPage';
 import AdminPage from './pages/AdminPage';
+import VoiceRecordingPage from './pages/VoiceRecordingPage';
 
 // Protected route wrapper - redirects to login if not authenticated
 function RequireAuth({ children }) {
@@ -81,6 +82,7 @@ export default function App() {
               <Route path="/news/admin" element={<NewsAdminPage />} />
               <Route path="/folk-story/:slug" element={<FolkStoryPage />} />
               <Route path="/folk-stories" element={<FolkStoriesIndexPage />} />
+              <Route path="/voice-recording" element={<VoiceRecordingPage />} />
             </Routes>
           </main>
           <Footer />

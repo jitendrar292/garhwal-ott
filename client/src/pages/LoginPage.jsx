@@ -53,9 +53,11 @@ export default function LoginPage() {
     document.head.appendChild(script);
   }, []);
 
-  // Initialize Google Sign-In button
+  // Initialize Google Sign-In button (skip in PWA mode - popups don't work)
   useEffect(() => {
     if (!gsiLoaded || !GOOGLE_CLIENT_ID || !googleButtonRef.current) return;
+    // Skip Google Sign-In initialization in PWA standalone mode
+    if (isStandalonePWA) return;
 
     const handleCredentialResponse = async (response) => {
       setLoading(true);
@@ -72,22 +74,12 @@ export default function LoginPage() {
     };
 
     try {
-      // In PWA standalone mode, use redirect flow to avoid popup issues
-      const initOptions = {
+      window.google.accounts.id.initialize({
         client_id: GOOGLE_CLIENT_ID,
         callback: handleCredentialResponse,
         auto_select: false,
         cancel_on_tap_outside: true,
-      };
-
-      // For PWA standalone mode, try FedCM-based flow which works better
-      // Also disable intermediate_iframe_close_callback to avoid popup issues
-      if (isStandalonePWA) {
-        initOptions.use_fedcm_for_prompt = true;
-        initOptions.itp_support = true;
-      }
-
-      window.google.accounts.id.initialize(initOptions);
+      });
 
       window.google.accounts.id.renderButton(googleButtonRef.current, {
         theme: 'filled_black',
@@ -249,24 +241,21 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Divider */}
-          <div className="flex items-center gap-3 my-5">
-            <div className="flex-1 h-px bg-white/10" />
-            <span className="text-xs text-gray-500">या</span>
-            <div className="flex-1 h-px bg-white/10" />
-          </div>
+          {/* Divider - only show when Google Sign-In is available */}
+          {!isStandalonePWA && (
+            <div className="flex items-center gap-3 my-5">
+              <div className="flex-1 h-px bg-white/10" />
+              <span className="text-xs text-gray-500">या</span>
+              <div className="flex-1 h-px bg-white/10" />
+            </div>
+          )}
 
-          {/* Google Sign-In */}
-          {GOOGLE_CLIENT_ID ? (
+          {/* Google Sign-In - hidden in PWA mode due to popup restrictions */}
+          {GOOGLE_CLIENT_ID && !isStandalonePWA ? (
             <div className="flex flex-col items-center gap-2">
               <div ref={googleButtonRef} className="min-h-[44px]" />
-              {isStandalonePWA && (
-                <p className="text-xs text-amber-400/80 text-center mt-2">
-                  💡 PWA में Google Sign-In नहीं चल रहा? ऊपर Email से login करो।
-                </p>
-              )}
             </div>
-          ) : (
+          ) : !isStandalonePWA && (
             <p className="text-xs text-gray-500 text-center">
               Google Sign-In not configured
             </p>

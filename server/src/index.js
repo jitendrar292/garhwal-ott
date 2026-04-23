@@ -13,6 +13,7 @@ const favoritesRoutes = require('./routes/favorites');
 const newsRoutes = require('./routes/news');
 const pushRoutes = require('./routes/push');
 const authRoutes = require('./routes/auth');
+const ttsRoutes = require('./routes/tts');
 const { getVisits, incrementVisits, getOpens, incrementOpens, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback } = require('./services/store');
 const { startTrendingRefresh } = require('./services/youtubeService');
 
@@ -127,6 +128,7 @@ app.use('/api/favorites', favoritesRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/push', pushRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/tts', ttsRoutes);
 
 // Captions endpoint — tries hi, a.hi (auto Hindi), en, a.en in order
 app.get('/api/captions/:videoId', async (req, res) => {
