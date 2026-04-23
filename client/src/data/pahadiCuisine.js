@@ -437,6 +437,86 @@ const UTTARAKHAND_SPECIALTIES = [
     description:
       'हरिद्वार गंगा के किनारे स्थित एक पवित्र शहर है। यहां गुड़ का उत्पादन और परंपरागत कारीगरी प्रसिद्ध है।',
   },
+
+  {
+    id: 'champawat-specialty',
+    district: 'Champawat',
+    districtLocal: 'चम्पावत',
+    sequence: 13,
+    region: 'Kumaon',
+    emoji: '🐯',
+    bg: 'from-rose-700 to-pink-900',
+    title: 'Tiger Land & Purnagiri',
+    titleLocal: 'बाघ की भूमि',
+    items: [
+      {
+        name: 'Purnagiri Temple',
+        nameLocal: 'पूर्णागिरी मंदिर',
+        category: 'Pilgrimage',
+        icon: '🛕',
+      },
+      {
+        name: 'Tiger & Wildlife',
+        nameLocal: 'बाघ अभयारण्य',
+        category: 'Nature Reserve',
+        icon: '🐯',
+      },
+      {
+        name: 'Chhotidhara Waterfall',
+        nameLocal: 'छोटीधारा जलप्रपात',
+        category: 'Natural Beauty',
+        icon: '💧',
+      },
+      {
+        name: 'Local Sweets (Achar)',
+        nameLocal: 'अचार और आलू तिक्कू',
+        category: 'Food Specialty',
+        icon: '🥒',
+      },
+    ],
+    description:
+      'चम्पावत सीमांत जिला जहां बाघ और जंगली जानवर मिलते हैं। माता पूर्णागिरी देवी का प्रसिद्ध सिद्धपीठ यहीं स्थित है। स्थानीय अचार और आलू तिक्कू प्रसिद्ध हैं।',
+  },
+
+  {
+    id: 'udham-singh-nagar-specialty',
+    district: 'Udham Singh Nagar',
+    districtLocal: 'उधम सिंह नगर',
+    sequence: 14,
+    region: 'Foothills',
+    emoji: '🌾',
+    bg: 'from-green-600 to-teal-800',
+    title: 'Rice Bowl & Agricultural Hub',
+    titleLocal: 'चावल की खेती',
+    items: [
+      {
+        name: 'Rice Production',
+        nameLocal: 'चावल की खेती',
+        category: 'Agriculture',
+        icon: '🌾',
+      },
+      {
+        name: 'Sugarcane & Jaggery',
+        nameLocal: 'गन्ना और गुड़',
+        category: 'Agro Product',
+        icon: '🍯',
+      },
+      {
+        name: 'Kosi River',
+        nameLocal: 'कोसी नदी',
+        category: 'River',
+        icon: '🌊',
+      },
+      {
+        name: 'Fruit Gardens',
+        nameLocal: 'फल बाग़',
+        category: 'Agricultural',
+        icon: '🍎',
+      },
+    ],
+    description:
+      'उधम सिंह नगर उत्तराखंड का चावल का कटोरा है। यहां चावल, गन्ना, और विभिन्न फल की खेती होती है। कोसी नदी इस जिले का जीवन है और सिंचाई का मुख्य स्रोत।',
+  },
 ];
 
 export default UTTARAKHAND_SPECIALTIES;
