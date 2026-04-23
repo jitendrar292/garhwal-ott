@@ -6,15 +6,8 @@ import SEO from '../components/SEO';
 // Google Client ID - set via environment variable
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
-// Detect if running as installed PWA (standalone mode)
-// Only true when actually launched from home screen, not in regular mobile browser
-const isStandalonePWA = typeof window !== 'undefined' &&
-  (window.matchMedia?.('(display-mode: standalone)').matches === true ||
-    window.navigator.standalone === true);
-
-// Debug: log PWA detection status
+// Debug: log Google Sign-In status
 if (typeof window !== 'undefined') {
-  console.log('[Login] isStandalonePWA:', isStandalonePWA);
   console.log('[Login] GOOGLE_CLIENT_ID set:', !!GOOGLE_CLIENT_ID);
 }
 
@@ -259,8 +252,8 @@ export default function LoginPage() {
             <div className="flex-1 h-px bg-white/10" />
           </div>
 
-          {/* Google Sign-In - hidden in PWA mode */}
-          {GOOGLE_CLIENT_ID && !isStandalonePWA ? (
+          {/* Google Sign-In - now enabled in PWA mode too */}
+          {GOOGLE_CLIENT_ID ? (
             <button
               type="button"
               onClick={handleGoogleSignIn}
@@ -275,10 +268,6 @@ export default function LoginPage() {
               </svg>
               Continue with Google
             </button>
-          ) : isStandalonePWA ? (
-            <p className="text-xs text-amber-400/80 text-center">
-              📱 PWA में Google Sign-In नहीं चलता। Email/Password से login करो।
-            </p>
           ) : (
             <p className="text-xs text-gray-500 text-center">
               Google Sign-In not configured
