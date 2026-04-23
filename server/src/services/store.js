@@ -137,6 +137,80 @@ async function redisSetCount(key) {
   }
 }
 
+// =====================================================================
+// Redis Hash operations (for storing users in pahadi_users table)
+// =====================================================================
+
+// Get a field from a hash
+async function redisHashGet(key, field) {
+  if (!UPSTASH_ENABLED) return null;
+  try {
+    const raw = await redisCmd('HGET', key, field);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (err) {
+    console.error('[store] redisHashGet error:', err.message);
+    return null;
+  }
+}
+
+// Set a field in a hash (uses POST for large values)
+async function redisHashSet(key, field, value) {
+  if (!UPSTASH_ENABLED) return false;
+  try {
+    const body = JSON.stringify(value);
+    const res = await fetch(UPSTASH_URL, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${UPSTASH_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(['HSET', key, field, body]),
+    });
+    if (!res.ok) throw new Error(`Upstash HSET error ${res.status}`);
+    return true;
+  } catch (err) {
+    console.error('[store] redisHashSet error:', err.message);
+    return false;
+  }
+}
+
+// Get all fields and values from a hash
+async function redisHashGetAll(key) {
+  if (!UPSTASH_ENABLED) return {};
+  try {
+    const result = await redisCmd('HGETALL', key);
+    if (!result || !Array.isArray(result)) return {};
+    // HGETALL returns [field1, value1, field2, value2, ...]
+    const obj = {};
+    for (let i = 0; i < result.length; i += 2) {
+      const field = result[i];
+      const value = result[i + 1];
+      try {
+        obj[field] = JSON.parse(value);
+      } catch {
+        obj[field] = value;
+      }
+    }
+    return obj;
+  } catch (err) {
+    console.error('[store] redisHashGetAll error:', err.message);
+    return {};
+  }
+}
+
+// Get count of fields in a hash
+async function redisHashLen(key) {
+  if (!UPSTASH_ENABLED) return 0;
+  try {
+    const count = await redisCmd('HLEN', key);
+    return parseInt(count || '0', 10);
+  } catch (err) {
+    console.error('[store] redisHashLen error:', err.message);
+    return 0;
+  }
+}
+
 async function getVisits() {
   if (UPSTASH_ENABLED) {
     try {
@@ -492,5 +566,5 @@ async function seedAndDeduplicateVisitors() {
   }
 }
 
-module.exports = { getVisits, incrementVisits, getOpens, incrementOpens, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback, redisGetJSON, redisSetJSON, isRedisEnabled, redisSetAdd, redisSetMembers, redisSetCount, logChatExchange, getChatHistory, getFavorites, saveFavorites, addFavorite, removeFavorite };
+module.exports = { getVisits, incrementVisits, getOpens, incrementOpens, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback, redisGetJSON, redisSetJSON, isRedisEnabled, redisSetAdd, redisSetMembers, redisSetCount, redisHashGet, redisHashSet, redisHashGetAll, redisHashLen, logChatExchange, getChatHistory, getFavorites, saveFavorites, addFavorite, removeFavorite };
 

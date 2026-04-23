@@ -1,13 +1,13 @@
 const express = require('express');
 const crypto = require('crypto');
-const { redisGetJSON, redisSetJSON, isRedisEnabled, redisSetAdd, redisSetMembers, redisSetCount } = require('../services/store');
+const { redisGetJSON, redisSetJSON, isRedisEnabled, redisSetAdd, redisSetMembers, redisSetCount, redisHashGet, redisHashSet, redisHashGetAll, redisHashLen } = require('../services/store');
 
 const router = express.Router();
 
 // Redis keys for auth data
-const USERS_KEY = 'pahadi_users'; // Hash: email -> user JSON
+const USERS_TABLE = 'pahadi_users'; // Hash table: field=email, value=user JSON
 const SESSIONS_PREFIX = 'pahadi_session:'; // session:<token> -> session JSON
-const SIGNUPS_SET = 'pahadi_signups'; // Set of all registered user emails
+const SIGNUPS_SET = 'pahadi_signups'; // Set of all registered user emails (for backward compat)
 
 // In-memory fallback (used when Redis is not configured)
 const memUsers = new Map(); // email -> user
@@ -25,7 +25,8 @@ const SESSION_TTL_SECONDS = 7 * 24 * 60 * 60; // 7 days in seconds
 async function getUser(email) {
   if (isRedisEnabled()) {
     try {
-      return await redisGetJSON(`${USERS_KEY}:${email}`);
+      // Use Hash table for users
+      return await redisHashGet(USERS_TABLE, email);
     } catch (err) {
       console.error('[auth] Redis getUser error:', err.message);
     }
@@ -37,8 +38,8 @@ async function setUser(email, user) {
   memUsers.set(email, user); // Always keep in memory too
   if (isRedisEnabled()) {
     try {
-      // Users don't expire - use 1 year TTL (effectively permanent)
-      await redisSetJSON(`${USERS_KEY}:${email}`, user, 365 * 24 * 60 * 60);
+      // Store in Hash table
+      await redisHashSet(USERS_TABLE, email, user);
     } catch (err) {
       console.error('[auth] Redis setUser error:', err.message);
     }
@@ -95,16 +96,39 @@ async function getAllSignups() {
   return Array.from(memSignups);
 }
 
-// Get signup count
+// Get signup count - prefer hash table length
 async function getSignupCount() {
   if (isRedisEnabled()) {
+    const hashLen = await redisHashLen(USERS_TABLE);
+    if (hashLen > 0) return hashLen;
+    // Fallback to signups set for backward compat
     return await redisSetCount(SIGNUPS_SET);
   }
-  return memSignups.size;
+  return memUsers.size || memSignups.size;
 }
 
 // Get all users with full details (for admin)
 async function getAllUsers() {
+  if (isRedisEnabled()) {
+    try {
+      // Get all users directly from the Hash table
+      const usersHash = await redisHashGetAll(USERS_TABLE);
+      const users = Object.values(usersHash).map(user => ({
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        picture: user.picture,
+        createdAt: user.createdAt,
+        authType: user.authType || 'google',
+      }));
+      // Sort by signup date (newest first)
+      return users.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    } catch (err) {
+      console.error('[auth] getAllUsers from hash error:', err.message);
+    }
+  }
+  
+  // Fallback: use signups set + individual lookups (or memory)
   const emails = await getAllSignups();
   const users = [];
   for (const email of emails) {
