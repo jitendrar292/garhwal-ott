@@ -127,7 +127,8 @@ export default function GovtJobsRow() {
         const res = await fetch('/api/jobs');
         if (res.ok) {
           const data = await res.json();
-          setJobs(data.jobs || []);
+          const list = data.jobs || [];
+          setJobs(list.length > 0 ? list : GOVT_JOBS);
         } else {
           // Fallback to local data
           setJobs(GOVT_JOBS);

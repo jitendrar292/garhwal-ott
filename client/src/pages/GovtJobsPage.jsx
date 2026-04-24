@@ -163,7 +163,8 @@ export default function GovtJobsPage() {
         const res = await fetch('/api/jobs');
         if (res.ok) {
           const data = await res.json();
-          setJobs(data.jobs || []);
+          const list = data.jobs || [];
+          setJobs(list.length > 0 ? list : GOVT_JOBS);
         } else {
           setJobs(GOVT_JOBS);
         }
