@@ -11,8 +11,7 @@ const router = express.Router();
 
 // GET /api/youtube/search?q=query&pageToken=xxx&maxResults=10
 //
-// maxResults is clamped to the 1–10 range — keeps each YouTube quota unit
-// cheap and matches the client's per-page rendering budget.
+// maxResults is clamped to the 1–50 range.
 router.get('/search', async (req, res) => {
   try {
     const { q, pageToken, maxResults } = req.query;
@@ -23,7 +22,7 @@ router.get('/search', async (req, res) => {
       return res.status(400).json({ error: 'Query too long' });
     }
     const requested = parseInt(maxResults, 10) || 10;
-    const clamped = Math.min(Math.max(requested, 1), 10);
+    const clamped = Math.min(Math.max(requested, 1), 50);
     const data = await searchVideos(
       q.trim(),
       pageToken || '',
@@ -46,7 +45,7 @@ router.get('/category/:category', async (req, res) => {
       return res.status(400).json({ error: 'Invalid category' });
     }
     const requested = parseInt(maxResults, 10) || 10;
-    const clamped = Math.min(Math.max(requested, 1), 10);
+    const clamped = Math.min(Math.max(requested, 1), 50);
     const data = await getVideosByCategory(
       category,
       pageToken || '',

@@ -294,7 +294,7 @@ export default function GovtJobsPage() {
             ⚠️ यो जानकारी सिर्फ मदद कु लिए च। आधिकारिक notification जरूर देखा।
           </p>
           <p>
-            कुई नौकरी add करणी च? <a href="mailto:contact@pahaditube.in" className="text-amber-400 hover:underline">संपर्क करा</a>
+            कुई नौकरी add करणी च? <a href="mailto:info@pahaditube.in" className="text-amber-400 hover:underline">संपर्क करा</a>
           </p>
         </div>
       </div>

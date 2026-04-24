@@ -35,7 +35,7 @@ export default function CategoryPage() {
     async function load() {
       setState({ videos: [], loading: true, error: null, nextPageToken: null, loadingMore: false });
       try {
-        const data = await getVideosByCategory(category, '', 12);
+        const data = await getVideosByCategory(category, '', 24);
         if (!cancelled) {
           setState({ videos: data.videos, loading: false, error: null, nextPageToken: data.nextPageToken, loadingMore: false });
         }
@@ -53,7 +53,7 @@ export default function CategoryPage() {
     if (!state.nextPageToken || state.loadingMore) return;
     setState((s) => ({ ...s, loadingMore: true }));
     try {
-      const data = await getVideosByCategory(category, state.nextPageToken, 12);
+      const data = await getVideosByCategory(category, state.nextPageToken, 24);
       setState((s) => ({
         ...s,
         videos: [...s.videos, ...data.videos],

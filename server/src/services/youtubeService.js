@@ -23,7 +23,7 @@ const longtermKey = (k) => `yt:lt:${k}`;
 // Permanent storage key for videos that never expire
 // Videos are stored in Redis Hash: pahadi_videos (category -> videos JSON)
 const PERMANENT_VIDEOS_KEY = 'pahadi_videos';
-const MAX_PERMANENT_VIDEOS = 100; // Max videos to keep per category
+const MAX_PERMANENT_VIDEOS = 500; // Max videos to keep per category (grows over time)
 
 // Quota circuit breaker — once YouTube returns 403 quotaExceeded, skip the API
 // entirely until the configured cooldown elapses. YouTube quota resets daily
@@ -514,9 +514,28 @@ async function getVideosByCategory(category, pageToken = '', maxResults = 12) {
   return pageToken ? result : withPinned(category, result);
 }
 
+// Helper: build a paginated response from permanent storage
+function permPageResponse(permVideos, offset, maxResults) {
+  const page = permVideos.slice(offset, offset + maxResults);
+  const hasMore = offset + maxResults < permVideos.length;
+  return {
+    videos: page,
+    nextPageToken: hasMore ? `perm:${offset + maxResults}` : null,
+    prevPageToken: null,
+    totalResults: permVideos.length,
+  };
+}
+
 async function getVideosByCategoryRaw(category, pageToken = '', maxResults = 12) {
   const query = CATEGORY_QUERIES[category];
   if (!query) throw new Error('Unknown category');
+
+  // Pagination over accumulated permanent storage ("Load More" pages)
+  if (pageToken && pageToken.startsWith('perm:')) {
+    const offset = parseInt(pageToken.slice(5), 10) || 0;
+    const permVideos = await getPermanentVideos(category);
+    return permPageResponse(permVideos, offset, maxResults);
+  }
 
   const cacheKey = `category:${category}:${pageToken}:${maxResults}`;
   const cached = cache.get(cacheKey);
@@ -530,16 +549,15 @@ async function getVideosByCategoryRaw(category, pageToken = '', maxResults = 12)
     return fromRedis;
   }
 
-  // Quota breaker: skip API; serve permanent storage or static fallback.
+  // Quota breaker: skip API; serve from accumulated permanent storage.
   if (isQuotaCoolingDown()) {
     const lt = await redisGetJSON(longtermKey(cacheKey));
     if (lt) return lt;
     const fb = fallbackCache.get(cacheKey);
     if (fb) return fb;
-    // Try permanent storage first
     const permVideos = await getPermanentVideos(category);
     if (permVideos.length > 0) {
-      return { videos: permVideos.slice(0, maxResults), nextPageToken: null, prevPageToken: null, totalResults: permVideos.length };
+      return permPageResponse(permVideos, 0, maxResults);
     }
     return getStaticFallback(category);
   }
@@ -548,20 +566,31 @@ async function getVideosByCategoryRaw(category, pageToken = '', maxResults = 12)
     const handle = CATEGORY_CHANNEL_HANDLES[category];
     let result;
     if (handle) {
-      // Channel-scoped category — newest uploads from a specific channel.
       const channelId = await resolveChannelId(handle);
       result = await fetchFromYouTube('', pageToken, maxResults, { channelId, order: 'date' });
     } else {
       result = await fetchFromYouTube(query, pageToken, maxResults);
     }
-    
-    // Store new videos permanently (new on top, old pushed back)
+
+    // Merge new videos into permanent storage (accumulates over time)
     if (result.videos && result.videos.length > 0) {
-      mergeAndStorePermanentVideos(category, result.videos).catch(() => {});
+      await mergeAndStorePermanentVideos(category, result.videos);
     }
-    
-    // Pin curated videos at the top (first page only).
-    if (!pageToken) result = withPinned(category, result);
+
+    // For page 1: serve from the full accumulated permanent storage
+    if (!pageToken) {
+      const permVideos = await getPermanentVideos(category);
+      if (permVideos.length > 0) {
+        const response = permPageResponse(permVideos, 0, maxResults);
+        cache.set(cacheKey, response);
+        fallbackCache.set(cacheKey, response);
+        redisSetJSON(`yt:${cacheKey}`, response, REDIS_TTL_SECONDS).catch(() => {});
+        redisSetJSON(longtermKey(cacheKey), response, REDIS_LONGTERM_TTL_SECONDS).catch(() => {});
+        return response;
+      }
+    }
+
+    // Fallback: return API result directly
     cache.set(cacheKey, result);
     fallbackCache.set(cacheKey, result);
     redisSetJSON(`yt:${cacheKey}`, result, REDIS_TTL_SECONDS).catch(() => {});
@@ -578,11 +607,10 @@ async function getVideosByCategoryRaw(category, pageToken = '', maxResults = 12)
       console.log('Serving in-memory fallback for:', cacheKey);
       return fallback;
     }
-    // Try permanent storage as fallback
     const permVideos = await getPermanentVideos(category);
     if (permVideos.length > 0) {
       console.log('Serving permanent storage for:', category);
-      return { videos: permVideos.slice(0, maxResults), nextPageToken: null, prevPageToken: null, totalResults: permVideos.length };
+      return permPageResponse(permVideos, 0, maxResults);
     }
     if (err.message === 'QUOTA_EXCEEDED') {
       console.log('Serving static fallback for category:', category);
@@ -655,6 +683,10 @@ async function refreshTrending() {
       const query = CATEGORY_QUERIES[cat];
       if (!query) continue;
       const result = await fetchFromYouTube(query, '', 12);
+      // Accumulate into permanent storage so the list grows daily
+      if (result.videos && result.videos.length > 0) {
+        await mergeAndStorePermanentVideos(cat, result.videos);
+      }
       cache.set(cacheKey, result);
       fallbackCache.set(cacheKey, result);
       await redisSetJSON(`yt:${cacheKey}`, result, REDIS_TTL_SECONDS);
@@ -713,6 +745,10 @@ async function refreshCategory(category) {
   const cacheKey = `category:${category}::12`;
   // Bypass quota breaker on manual refresh — admin explicitly asked for it.
   const result = await fetchFromYouTube(query, '', 12);
+  // Accumulate into permanent storage so the list grows daily
+  if (result.videos && result.videos.length > 0) {
+    await mergeAndStorePermanentVideos(category, result.videos);
+  }
   cache.set(cacheKey, result);
   fallbackCache.set(cacheKey, result);
   redisSetJSON(`yt:${cacheKey}`, result, REDIS_TTL_SECONDS).catch(() => {});
