@@ -286,17 +286,17 @@ export default function LoginPage() {
         {/* Back Link */}
         <div className="text-center mt-6">
           <Link to="/" className="text-sm text-gray-400 hover:text-white transition-colors">
-            ← घर वापस जाओ
+            ← घौर वापस जा
           </Link>
         </div>
 
         {/* Privacy Note */}
         <p className="text-xs text-gray-500 text-center mt-4">
-          {mode === 'signup' ? 'खाता बनाकै' : 'साइन इन करकै'} तुम हमारी{' '}
+          {mode === 'signup' ? 'खाता बनाई कि' : 'साइन इन करि कि'} तुम हमरी{' '}
           <a href="/privacy" className="text-primary-400 hover:underline">
             गोपनीयता नीति
           </a>{' '}
-          स्वीकार करदे।
+          स्वीकार करदन.
         </p>
       </div>
     </div>

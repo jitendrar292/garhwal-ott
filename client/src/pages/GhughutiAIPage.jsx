@@ -416,6 +416,9 @@ export default function GhughutiAIPage() {
             <h2 className="text-xl sm:text-2xl font-bold text-white">
               नमस्कार, ज्यूँ रै, जियाण रै, खुश रै।
             </h2>
+            <p className="mt-2 text-base sm:text-lg text-amber-200/90 font-medium">
+              नमस्कार! घुघुती ऐआई मा त्वांकु स्वागत छ. मी त्वांकु गढ़वळि भाषा सहायक छू. मैं दगड़ि बात करणा मा क्या मदद चोंद?
+            </p>
             <p className="mt-1 text-sm text-white/70">
               गढ़वळि मा कुछ भि पुछा — खाना, गीत, त्योहार, यात्रा या कविता।
             </p>
