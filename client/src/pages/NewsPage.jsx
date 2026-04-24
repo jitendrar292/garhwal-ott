@@ -19,6 +19,7 @@ export default function NewsPage() {
   const [category, setCategory] = useState('all');
   const [expanded, setExpanded] = useState(null); // article id
   const [fullBodies, setFullBodies] = useState({}); // id -> body text
+  const [showAll, setShowAll] = useState(false); // false = only last 1 day
 
   useEffect(() => {
     let alive = true;
@@ -59,6 +60,13 @@ export default function NewsPage() {
   const filtered = category === 'all'
     ? articles
     : articles.filter((a) => a.category === category);
+
+  // Show only last 1 day's articles initially, rest behind "Load More"
+  const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
+  const recentArticles = filtered.filter((a) => a.createdAt >= oneDayAgo);
+  const olderArticles = filtered.filter((a) => a.createdAt < oneDayAgo);
+  const displayArticles = showAll ? filtered : (recentArticles.length > 0 ? recentArticles : filtered.slice(0, 3));
+  const hasOlder = !showAll && olderArticles.length > 0;
 
   const formatDate = (ts) => {
     if (!ts) return '';
@@ -102,7 +110,7 @@ export default function NewsPage() {
         {CATEGORIES.map((cat) => (
           <button
             key={cat.id}
-            onClick={() => { setCategory(cat.id); setExpanded(null); }}
+            onClick={() => { setCategory(cat.id); setExpanded(null); setShowAll(false); }}
             className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
               category === cat.id
                 ? 'bg-white text-black shadow-md'
@@ -138,7 +146,7 @@ export default function NewsPage() {
 
       {/* Articles */}
       <div className="space-y-5">
-        {filtered.map((article) => (
+        {displayArticles.map((article) => (
           <article
             key={article.id}
             className="rounded-2xl bg-dark-800 border border-white/[0.06] overflow-hidden hover:border-primary-500/30 transition-colors"
@@ -215,6 +223,21 @@ export default function NewsPage() {
           </article>
         ))}
       </div>
+
+      {/* Load More button for older articles */}
+      {hasOlder && (
+        <div className="flex justify-center mt-8">
+          <button
+            onClick={() => setShowAll(true)}
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold text-sm hover:from-blue-500 hover:to-indigo-500 transition-all shadow-lg shadow-blue-500/20 flex items-center gap-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+            और समाचार दिखाएं · Load More ({olderArticles.length} older)
+          </button>
+        </div>
+      )}
     </div>
   );
 }
