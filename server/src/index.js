@@ -11,6 +11,7 @@ const youtubeRoutes = require('./routes/youtube');
 const chatRoutes = require('./routes/chat');
 const favoritesRoutes = require('./routes/favorites');
 const newsRoutes = require('./routes/news');
+const jobsRoutes = require('./routes/jobs');
 const pushRoutes = require('./routes/push');
 const authRoutes = require('./routes/auth');
 const ttsRoutes = require('./routes/tts');
@@ -103,6 +104,7 @@ app.use('/api/visits', visitLimiter);
 app.use('/api/feedback', visitLimiter);
 app.use('/api/favorites', visitLimiter);
 app.use('/api/news', visitLimiter);
+app.use('/api/jobs', visitLimiter);
 
 // Tighter limit for AI chat (paid upstream)
 const chatLimiter = rateLimit({
@@ -126,6 +128,7 @@ app.use('/api/youtube', youtubeRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/favorites', favoritesRoutes);
 app.use('/api/news', newsRoutes);
+app.use('/api/jobs', jobsRoutes);
 app.use('/api/push', pushRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/tts', ttsRoutes);

@@ -92,6 +92,13 @@ module.exports = [
   { gw: 'गढ़वाल', hi: 'गढ़वाल मंडल', en: 'Garhwal region of Uttarakhand', tags: ['गढ़वाल', 'garhwal'] },
   { gw: 'कुमाऊँ', hi: 'कुमाऊँ मंडल', en: 'Kumaon region of Uttarakhand', tags: ['कुमाऊँ', 'kumaon', 'kumaoni'] },
 
+  // ===== Flowers & Plants (पहाड़ी फूल अर पौधा) =====
+  { gw: 'फ्यूँली', hi: 'फ्यूँली — छोटू पीळू फूल, बसंत ऋतु मा पहाड़ का डांडि-कांठु पर खिलदू; गढ़वळि लोकगीतुं मा प्यार अर सुंदरता कु प्रतीक', en: 'Phyunli — small yellow spring flower blooming on Pahadi slopes; symbol of love & beauty in Garhwali folk songs', tags: ['फ्यूँली', 'phyunli', 'fyunli', 'flower', 'फूल', 'spring', 'बसंत'] },
+  { gw: 'ब्रह्मकमल', hi: 'ब्रह्मकमल — उत्तराखंड कु राजकी फूल; भौत ऊंचाई मा मिलदू, देवताओं कु फूल मान्द छन', en: 'Brahmakamal — state flower of Uttarakhand; found at high altitudes, considered the flower of gods', tags: ['ब्रह्मकमल', 'brahmakamal', 'brahma kamal', 'state flower', 'राजकी फूल'] },
+  { gw: 'बुरांश', hi: 'बुरांश (Rhododendron) — लाल रंग कु फूल, बसंत ऋतु मा पहाड़ु मा चारु तरफ खिलदू; येका जूस भी बणान्द छन', en: 'Buransh (Rhododendron) — red flower blooming across mountains in spring; juice is made from it', tags: ['बुरांश', 'buransh', 'burans', 'rhododendron', 'flower', 'जूस'] },
+  { gw: 'कंडली / बिच्छू घास', hi: 'कंडली / बिच्छू घास (Stinging Nettle) — कांटेदार पौधा; येका साग भौत प्रसिद्ध अर पौष्टिक च', en: 'Kandali / Stinging Nettle — thorny plant; its saag (greens) is very famous and nutritious', tags: ['कंडली', 'बिच्छू घास', 'kandali', 'stinging nettle', 'साग', 'saag'] },
+  { gw: 'किंगगोड़', hi: 'किंगगोड़ (Berberis Aristata) — औषधीय पौधा; येका फल अर फूल दुयनु इस्तेमाल होंदन', en: 'Kingor (Berberis Aristata) — medicinal plant; both fruit and flower are used', tags: ['किंगगोड़', 'kingor', 'kingod', 'berberis', 'औषधीय', 'medicinal'] },
+
   // ===== Literature: notable writers (sourced from Wikipedia: Garhwali language) =====
   { gw: 'अबोध बंधु बहुगुणा', hi: 'अबोध बंधु बहुगुणा (1927–2004) — आधुनिक गढ़वाली लेखन के स्तंभ; प्रसिद्ध रचनाएँ: "गाड़", "म्यतेकि गंगा", "भूम्याल", "पार्वती", "घोल", "दैसत", "कंखिला", "शैलवाणी"', en: 'Abodh Bandhu Bahuguna (1927–2004) — pillar of modern Garhwali writing; works: Gaad, Myateki Ganga, Bhumyal, Parvati, Ghol, Daisat, Kankhila, Shailvani', tags: ['अबोध बंधु बहुगुणा', 'abodh bandhu bahuguna', 'bahuguna', 'literature', 'साहित्य', 'गाड़', 'भूम्याल'] },
   { gw: 'तारा दत्त गैरोला', hi: 'तारा दत्त गैरोला (1875–1940) — गढ़वाल लोक-साहित्य के संग्राहक; प्रसिद्ध काव्य "सदेई"', en: 'Taradutt Gairola (1875–1940) — collector of Garhwal folklore; famous poem "Sadei"', tags: ['तारा दत्त गैरोला', 'taradutt gairola', 'sadei', 'सदेई', 'folklore'] },

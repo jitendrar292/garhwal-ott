@@ -3,6 +3,7 @@ import ImageSlider from '../components/ImageSlider';
 import GenreGrid from '../components/GenreGrid';
 import VideoRow from '../components/VideoRow';
 import FolkStoriesRow from '../components/FolkStoriesRow';
+import GovtJobsRow from '../components/GovtJobsRow';
 import UpcomingHappenings from '../components/UpcomingHappenings';
 import AboutSection from '../components/AboutSection';
 import { getVideosByCategory } from '../api/youtube';
@@ -69,6 +70,9 @@ export default function HomePage() {
 
         {/* Garhwali folk-stories — Devanagari narratives sourced from himlingo.com */}
         <FolkStoriesRow />
+
+        {/* Govt Jobs — recent job postings for Uttarakhand */}
+        <GovtJobsRow />
 
         {/* Trending */}
         <VideoRow

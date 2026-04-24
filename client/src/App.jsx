@@ -23,6 +23,8 @@ import NewsAdminPage from './pages/NewsAdminPage';
 import YouTubeAdminPage from './pages/YouTubeAdminPage';
 import FolkStoryPage from './pages/FolkStoryPage';
 import FolkStoriesIndexPage from './pages/FolkStoriesIndexPage';
+import GovtJobsPage from './pages/GovtJobsPage';
+import JobsAdminPage from './pages/JobsAdminPage';
 import LoginPage from './pages/LoginPage';
 import AdminPage from './pages/AdminPage';
 import VoiceRecordingPage from './pages/VoiceRecordingPage';
@@ -82,6 +84,8 @@ export default function App() {
               <Route path="/news/admin" element={<NewsAdminPage />} />
               <Route path="/folk-story/:slug" element={<FolkStoryPage />} />
               <Route path="/folk-stories" element={<FolkStoriesIndexPage />} />
+              <Route path="/jobs" element={<GovtJobsPage />} />
+              <Route path="/jobs/admin" element={<JobsAdminPage />} />
               <Route path="/voice-recording" element={<VoiceRecordingPage />} />
             </Routes>
           </main>
