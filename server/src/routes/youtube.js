@@ -14,7 +14,7 @@ const router = express.Router();
 // maxResults is clamped to the 1–50 range.
 router.get('/search', async (req, res) => {
   try {
-    const { q, pageToken, maxResults } = req.query;
+    const { q, pageToken, maxResults, order } = req.query;
     if (!q || typeof q !== 'string' || q.trim().length === 0) {
       return res.status(400).json({ error: 'Query parameter "q" is required' });
     }
@@ -23,10 +23,13 @@ router.get('/search', async (req, res) => {
     }
     const requested = parseInt(maxResults, 10) || 10;
     const clamped = Math.min(Math.max(requested, 1), 50);
+    const allowedOrders = ['relevance', 'date', 'rating', 'viewCount', 'title'];
+    const safeOrder = allowedOrders.includes(order) ? order : 'relevance';
     const data = await searchVideos(
       q.trim(),
       pageToken || '',
-      clamped
+      clamped,
+      { order: safeOrder }
     );
     res.json(data);
   } catch (err) {

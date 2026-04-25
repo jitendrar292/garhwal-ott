@@ -18,16 +18,27 @@ export default function MusicPage() {
   const [activeTab, setActiveTab] = useState(0);
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [nextPageToken, setNextPageToken] = useState(null);
   const { playTrack, currentTrack } = useMusic();
+
+  // Dedupe by video id — protects against overlap between pages.
+  const mergeUnique = (existing, incoming) => {
+    const seen = new Set(existing.map((t) => t.id));
+    return [...existing, ...incoming.filter((t) => !seen.has(t.id))];
+  };
 
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    // 10 tracks per tab — fits the 5–10 max page-size policy.
-    searchVideos(MUSIC_QUERIES[activeTab].query, '', 10)
+    setTracks([]);
+    setNextPageToken(null);
+    // First page: latest uploads first (order=date), 10 per fetch.
+    searchVideos(MUSIC_QUERIES[activeTab].query, '', 10, 'date')
       .then((data) => {
         if (!cancelled) {
           setTracks(data.videos || []);
+          setNextPageToken(data.nextPageToken || null);
           setLoading(false);
         }
       })
@@ -36,6 +47,19 @@ export default function MusicPage() {
       });
     return () => { cancelled = true; };
   }, [activeTab]);
+
+  const handleLoadMore = () => {
+    if (!nextPageToken || loadingMore) return;
+    setLoadingMore(true);
+    searchVideos(MUSIC_QUERIES[activeTab].query, nextPageToken, 10, 'date')
+      .then((data) => {
+        // Append older results after the latest ones already shown.
+        setTracks((prev) => mergeUnique(prev, data.videos || []));
+        setNextPageToken(data.nextPageToken || null);
+      })
+      .catch(() => {})
+      .finally(() => setLoadingMore(false));
+  };
 
   const handlePlay = (track) => {
     playTrack(track, tracks);
@@ -191,6 +215,19 @@ export default function MusicPage() {
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* Load more — appends older tracks after the latest ones */}
+      {!loading && tracks.length > 0 && nextPageToken && (
+        <div className="flex justify-center mt-6">
+          <button
+            onClick={handleLoadMore}
+            disabled={loadingMore}
+            className="px-6 py-2.5 rounded-full bg-dark-700 hover:bg-dark-600 text-sm font-medium text-white transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {loadingMore ? 'Loading…' : 'Load more'}
+          </button>
         </div>
       )}
     </div>

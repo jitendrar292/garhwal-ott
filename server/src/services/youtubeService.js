@@ -451,8 +451,9 @@ async function fetchFromYouTube(query, pageToken = '', maxResults = 12, options 
   };
 }
 
-async function searchVideos(query, pageToken = '', maxResults = 12) {
-  const cacheKey = `search:${query}:${pageToken}:${maxResults}`;
+async function searchVideos(query, pageToken = '', maxResults = 12, options = {}) {
+  const order = options.order || 'relevance';
+  const cacheKey = `search:${query}:${pageToken}:${maxResults}:${order}`;
   const cached = cache.get(cacheKey);
   if (cached) return cached;
 
@@ -474,7 +475,7 @@ async function searchVideos(query, pageToken = '', maxResults = 12) {
   }
 
   try {
-    const result = await fetchFromYouTube(query, pageToken, maxResults);
+    const result = await fetchFromYouTube(query, pageToken, maxResults, { order });
     
     // Store search results permanently using a query-based key
     if (result.videos && result.videos.length > 0) {
