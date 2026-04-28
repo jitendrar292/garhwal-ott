@@ -256,22 +256,4 @@ app.listen(PORT, () => {
   seedAndDeduplicateVisitors().catch(() => {});
   // Pre-warm music tabs + key categories now and every 24h
   startTrendingRefresh();
-
-  // Keep-alive self-ping — Render's free tier sleeps after ~15 min of
-  // inactivity. Hit our own /api/health every 10 min so the dyno stays warm.
-  // Only runs in production and when an explicit public URL is configured
-  // (avoids hitting localhost in dev or pinging from inside the build).
-  const pingUrl = process.env.KEEPALIVE_URL || process.env.RENDER_EXTERNAL_URL;
-  if (process.env.NODE_ENV === 'production' && pingUrl) {
-    const target = `${pingUrl.replace(/\/$/, '')}/api/health`;
-    const PING_INTERVAL_MS = 10 * 60 * 1000;
-    const ping = () => {
-      fetch(target, { method: 'GET' })
-        .then((r) => console.log(`[keepalive] ${target} → ${r.status}`))
-        .catch((e) => console.log(`[keepalive] failed: ${e.message}`));
-    };
-    setInterval(ping, PING_INTERVAL_MS);
-    // First ping shortly after boot so we don't wait a full interval.
-    setTimeout(ping, 30 * 1000);
-  }
 });
