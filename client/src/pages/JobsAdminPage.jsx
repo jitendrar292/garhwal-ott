@@ -321,7 +321,7 @@ export default function JobsAdminPage() {
                 value={link}
                 onChange={(e) => setLink(e.target.value)}
                 className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
-                placeholder="https://ukpsc.gov.in"
+                placeholder="https://psc.uk.gov.in"
               />
             </div>
           </div>
