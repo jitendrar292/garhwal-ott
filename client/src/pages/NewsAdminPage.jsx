@@ -59,6 +59,11 @@ export default function NewsAdminPage() {
   const [devicesLoading, setDevicesLoading] = useState(false);
   const formRef = useRef(null);
 
+  // News Agent state
+  const [agentRunning, setAgentRunning] = useState(false);
+  const [agentStatus, setAgentStatus] = useState(null);
+  const [selectedNews, setSelectedNews] = useState(new Set());
+
   const fetchArticles = useCallback(async () => {
     setLoading(true);
     setError('');
@@ -275,11 +280,7 @@ export default function NewsAdminPage() {
     }
   };
 
-  // ── News Agent state ──
-  const [agentRunning, setAgentRunning] = useState(false);
-  const [agentStatus, setAgentStatus] = useState(null);
-  const [selectedNews, setSelectedNews] = useState(new Set()); // indices of selected preview articles
-
+  // ── News Agent functions ──
   const runNewsAgent = async (dryRun = false) => {
     setError('');
     setSuccess('');
