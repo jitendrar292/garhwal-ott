@@ -278,11 +278,13 @@ export default function NewsAdminPage() {
   // ── News Agent state ──
   const [agentRunning, setAgentRunning] = useState(false);
   const [agentStatus, setAgentStatus] = useState(null);
+  const [selectedNews, setSelectedNews] = useState(new Set()); // indices of selected preview articles
 
   const runNewsAgent = async (dryRun = false) => {
     setError('');
     setSuccess('');
     setAgentRunning(true);
+    setSelectedNews(new Set());
     try {
       const res = await fetch(`/api/news-agent/run?key=${encodeURIComponent(key)}`, {
         method: 'POST',
@@ -322,6 +324,64 @@ export default function NewsAdminPage() {
       const data = await res.json();
       setAgentStatus(data.lastRun);
     } catch { /* ignore */ }
+  };
+
+  const toggleNewsSelection = (idx) => {
+    setSelectedNews((prev) => {
+      const next = new Set(prev);
+      if (next.has(idx)) next.delete(idx);
+      else next.add(idx);
+      return next;
+    });
+  };
+
+  const selectAllNews = () => {
+    if (!agentStatus?.preview) return;
+    if (selectedNews.size === agentStatus.preview.length) {
+      setSelectedNews(new Set());
+    } else {
+      setSelectedNews(new Set(agentStatus.preview.map((_, i) => i)));
+    }
+  };
+
+  const publishSelectedNews = async () => {
+    if (!agentStatus?.preview || selectedNews.size === 0) return;
+    const chosen = agentStatus.preview.filter((_, i) => selectedNews.has(i));
+    setError('');
+    setSuccess('');
+    setAgentRunning(true);
+    try {
+      const res = await fetch(`/api/news-agent/publish-selected?key=${encodeURIComponent(key)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ articles: chosen }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || `Failed (${res.status})`);
+      setSuccess(`Translating & publishing ${chosen.length} selected articles...`);
+      setSelectedNews(new Set());
+      // Poll status
+      const poll = setInterval(async () => {
+        try {
+          const sr = await fetch(`/api/news-agent/status?key=${encodeURIComponent(key)}`);
+          const sd = await sr.json();
+          setAgentStatus(sd.lastRun);
+          if (sd.lastRun.status !== 'running') {
+            clearInterval(poll);
+            setAgentRunning(false);
+            if (sd.lastRun.status === 'completed') {
+              setSuccess(`Published ${sd.lastRun.articlesPublished} selected articles in Garhwali!`);
+              fetchArticles();
+            } else if (sd.lastRun.status === 'error') {
+              setError(`Agent error: ${sd.lastRun.errors?.join(', ')}`);
+            }
+          }
+        } catch { /* ignore */ }
+      }, 5000);
+    } catch (err) {
+      setError(`Publish failed: ${err.message}`);
+      setAgentRunning(false);
+    }
   };
 
   const sendHappeningPush = async () => {
@@ -505,14 +565,43 @@ export default function NewsAdminPage() {
             )}
             {agentStatus.preview && (
               <div className="mt-2">
-                <div className="text-indigo-300 font-medium mb-1">Preview (not published):</div>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-indigo-300 font-medium">Top 5 crawled articles — select to publish:</div>
+                  <button
+                    onClick={selectAllNews}
+                    className="text-[10px] px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500/30"
+                  >
+                    {selectedNews.size === agentStatus.preview.length ? 'Deselect all' : 'Select all'}
+                  </button>
+                </div>
                 {agentStatus.preview.map((p, i) => (
-                  <div key={i} className="mb-2 p-2 bg-dark-700 rounded">
-                    <div className="font-medium text-white">{p.title}</div>
-                    <div className="text-gray-400">{p.summary}</div>
-                    <div className="text-gray-500 mt-1">Source: {p.source}</div>
-                  </div>
+                  <label key={i} className={`mb-2 p-2 bg-dark-700 rounded flex gap-3 cursor-pointer border transition-colors ${selectedNews.has(i) ? 'border-indigo-500/60 bg-indigo-950/30' : 'border-transparent'}`}>
+                    <input
+                      type="checkbox"
+                      checked={selectedNews.has(i)}
+                      onChange={() => toggleNewsSelection(i)}
+                      className="mt-1 accent-indigo-500 shrink-0"
+                    />
+                    <div className="min-w-0">
+                      <div className="font-medium text-white">{p.title}</div>
+                      <div className="text-gray-400">{p.summary}</div>
+                      <div className="text-gray-500 mt-1 flex gap-3 flex-wrap">
+                        <span>📰 {p.source}</span>
+                        <span>🌐 {p.lang === 'hi' ? 'Hindi' : 'English'}</span>
+                        {p.pubDate && <span>🕐 {new Date(p.pubDate).toLocaleString('en-IN')}</span>}
+                      </div>
+                    </div>
+                  </label>
                 ))}
+                {selectedNews.size > 0 && (
+                  <button
+                    onClick={publishSelectedNews}
+                    disabled={agentRunning}
+                    className="mt-2 w-full text-sm px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {agentRunning ? '⏳ Publishing...' : `🚀 Translate & Publish ${selectedNews.size} Selected`}
+                  </button>
+                )}
               </div>
             )}
           </div>
