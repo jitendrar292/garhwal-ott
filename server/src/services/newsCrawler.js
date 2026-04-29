@@ -2,8 +2,10 @@
 //
 // Uses rss-parser to pull articles, deduplicates against already-published
 // CMS articles, and returns cleaned { title, summary, body, source, link }.
+// After RSS parsing, scrapes full article text from source URLs.
 
 const Parser = require('rss-parser');
+const { URL } = require('url');
 
 const parser = new Parser({
   timeout: 15_000,
@@ -56,7 +58,23 @@ async function crawlNews({ maxPerFeed = 5, maxAge = 24 } = {}) {
           pubDate: item.pubDate ? new Date(item.pubDate).getTime() : Date.now(),
         }));
 
-      return items;
+      // Try to fetch full article text from source URLs
+      const enriched = await Promise.all(
+        items.map(async (item) => {
+          if (!item.sourceUrl) return item;
+          try {
+            const fullBody = await scrapeArticleBody(item.sourceUrl);
+            if (fullBody && fullBody.length > item.body.length) {
+              return { ...item, body: fullBody.slice(0, 5000) };
+            }
+          } catch (e) {
+            // Fall back to RSS content
+          }
+          return item;
+        })
+      );
+
+      return enriched;
     } catch (err) {
       console.warn(`[newsCrawler] Failed to fetch ${feed.source}: ${err.message}`);
       return [];
@@ -104,6 +122,88 @@ function deduplicateArticles(crawled, existing) {
     }
     return true;
   });
+}
+
+// ── Full article scraper ──
+
+/**
+ * Scrape the full article text from a news page.
+ * Uses plain fetch + regex extraction — no heavy browser deps.
+ */
+async function scrapeArticleBody(url) {
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10_000);
+
+    const resp = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; PahadiTube-Bot/1.0)',
+        Accept: 'text/html',
+      },
+      signal: controller.signal,
+      redirect: 'follow',
+    });
+    clearTimeout(timeout);
+
+    if (!resp.ok) return null;
+    const html = await resp.text();
+
+    // Strategy: extract from common article body selectors via regex
+    // Look for <article>, article-body, story-detail, etc.
+    let body = '';
+
+    // Try JSON-LD first (many Hindi news sites embed structured data)
+    const jsonLdMatch = html.match(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi);
+    if (jsonLdMatch) {
+      for (const block of jsonLdMatch) {
+        try {
+          const jsonStr = block.replace(/<\/?script[^>]*>/gi, '');
+          const ld = JSON.parse(jsonStr);
+          const articleBody = ld.articleBody || ld.description;
+          if (articleBody && articleBody.length > 100) {
+            body = articleBody;
+            break;
+          }
+        } catch { /* ignore parse errors */ }
+      }
+    }
+
+    // Fallback: extract <p> tags from article/story containers
+    if (!body || body.length < 100) {
+      // Match common article container patterns
+      const containerMatch = html.match(
+        /<(?:article|div)[^>]*(?:class|id)="[^"]*(?:article[_-]?body|story[_-]?detail|content[_-]?area|post[_-]?content|entry[_-]?content|article[_-]?content|story[_-]?content|main[_-]?content)[^"]*"[^>]*>([\s\S]*?)<\/(?:article|div)>/i
+      );
+
+      const searchArea = containerMatch ? containerMatch[1] : html;
+
+      // Extract all <p> tag contents
+      const paragraphs = [];
+      const pRegex = /<p[^>]*>([\s\S]*?)<\/p>/gi;
+      let pMatch;
+      while ((pMatch = pRegex.exec(searchArea)) !== null) {
+        const text = cleanText(pMatch[1]);
+        // Filter out short/junk paragraphs (ads, captions, etc.)
+        if (text.length > 30 && !text.match(/^(also read|ये भी पढ़ें|और पढ़ें|photo|image|advertisement|विज्ञापन)/i)) {
+          paragraphs.push(text);
+        }
+      }
+
+      if (paragraphs.length > 0) {
+        body = paragraphs.join('\n\n');
+      }
+    }
+
+    if (body && body.length > 100) {
+      console.log(`[newsCrawler] Scraped ${body.length} chars from ${new URL(url).hostname}`);
+      return cleanText(body);
+    }
+
+    return null;
+  } catch (err) {
+    console.warn(`[newsCrawler] Scrape failed for ${url}: ${err.message}`);
+    return null;
+  }
 }
 
 // ── Helpers ──
