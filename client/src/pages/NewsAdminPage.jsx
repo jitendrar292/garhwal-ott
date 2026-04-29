@@ -275,6 +275,55 @@ export default function NewsAdminPage() {
     }
   };
 
+  // ── News Agent state ──
+  const [agentRunning, setAgentRunning] = useState(false);
+  const [agentStatus, setAgentStatus] = useState(null);
+
+  const runNewsAgent = async (dryRun = false) => {
+    setError('');
+    setSuccess('');
+    setAgentRunning(true);
+    try {
+      const res = await fetch(`/api/news-agent/run?key=${encodeURIComponent(key)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ maxPerFeed: 3, maxAge: 24, maxArticles: 5, dryRun }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || `Failed (${res.status})`);
+      setSuccess(`News agent started${dryRun ? ' (dry run)' : ''}! Check status for results.`);
+      // Poll status every 5s until done
+      const poll = setInterval(async () => {
+        try {
+          const sr = await fetch(`/api/news-agent/status?key=${encodeURIComponent(key)}`);
+          const sd = await sr.json();
+          setAgentStatus(sd.lastRun);
+          if (sd.lastRun.status !== 'running') {
+            clearInterval(poll);
+            setAgentRunning(false);
+            if (sd.lastRun.status === 'completed') {
+              setSuccess(`Agent done! Found: ${sd.lastRun.articlesFound}, New: ${sd.lastRun.articlesNew}, Translated: ${sd.lastRun.articlesTranslated}, Published: ${sd.lastRun.articlesPublished}`);
+              fetchArticles(); // refresh article list
+            } else if (sd.lastRun.status === 'error') {
+              setError(`Agent error: ${sd.lastRun.errors?.join(', ')}`);
+            }
+          }
+        } catch { /* ignore poll errors */ }
+      }, 5000);
+    } catch (err) {
+      setError(`Agent failed: ${err.message}`);
+      setAgentRunning(false);
+    }
+  };
+
+  const fetchAgentStatus = async () => {
+    try {
+      const res = await fetch(`/api/news-agent/status?key=${encodeURIComponent(key)}`);
+      const data = await res.json();
+      setAgentStatus(data.lastRun);
+    } catch { /* ignore */ }
+  };
+
   const sendHappeningPush = async () => {
     setError('');
     setSuccess('');
@@ -405,6 +454,70 @@ export default function NewsAdminPage() {
           )}
         </div>
       )}
+
+      {/* News Agent Panel */}
+      <div className="mb-6 p-4 bg-dark-800 border border-indigo-500/30 rounded-lg">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-semibold text-white">🤖 News Agent — Auto Crawl + Translate to Garhwali</h2>
+          <button
+            onClick={fetchAgentStatus}
+            className="text-xs text-gray-400 hover:text-white"
+          >
+            Refresh status
+          </button>
+        </div>
+        <p className="text-xs text-gray-400 mb-3">
+          Crawls Uttarakhand news from RSS feeds, translates to Garhwali via AI, and auto-publishes.
+        </p>
+        <div className="flex gap-2 mb-3 flex-wrap">
+          <button
+            onClick={() => runNewsAgent(false)}
+            disabled={agentRunning}
+            className="text-sm px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {agentRunning ? '⏳ Running...' : '🚀 Run Agent (Publish)'}
+          </button>
+          <button
+            onClick={() => runNewsAgent(true)}
+            disabled={agentRunning}
+            className="text-sm px-4 py-2 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 border border-indigo-500/30 font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {agentRunning ? '⏳ Running...' : '🔍 Dry Run (Preview)'}
+          </button>
+        </div>
+        {agentStatus && (
+          <div className="text-xs space-y-1 p-3 bg-black/30 rounded-lg">
+            <div className="flex gap-4 flex-wrap">
+              <span>Status: <span className={`font-medium ${agentStatus.status === 'completed' ? 'text-green-400' : agentStatus.status === 'error' ? 'text-red-400' : agentStatus.status === 'running' ? 'text-yellow-400' : 'text-gray-400'}`}>{agentStatus.status}</span></span>
+              <span>Found: {agentStatus.articlesFound}</span>
+              <span>New: {agentStatus.articlesNew}</span>
+              <span>Translated: {agentStatus.articlesTranslated}</span>
+              <span>Published: {agentStatus.articlesPublished}</span>
+            </div>
+            {agentStatus.startedAt && (
+              <div className="text-gray-500">
+                Started: {new Date(agentStatus.startedAt).toLocaleString('en-IN')}
+                {agentStatus.completedAt && ` · Completed: ${new Date(agentStatus.completedAt).toLocaleString('en-IN')}`}
+              </div>
+            )}
+            {agentStatus.errors?.length > 0 && (
+              <div className="text-red-400 mt-1">Errors: {agentStatus.errors.join(', ')}</div>
+            )}
+            {agentStatus.preview && (
+              <div className="mt-2">
+                <div className="text-indigo-300 font-medium mb-1">Preview (not published):</div>
+                {agentStatus.preview.map((p, i) => (
+                  <div key={i} className="mb-2 p-2 bg-dark-700 rounded">
+                    <div className="font-medium text-white">{p.title}</div>
+                    <div className="text-gray-400">{p.summary}</div>
+                    <div className="text-gray-500 mt-1">Source: {p.source}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
 
       {/* Create / Edit Article Form */}
       <form
