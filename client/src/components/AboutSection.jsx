@@ -54,6 +54,9 @@ export default function AboutSection() {
               { icon: '💨', label: 'Lightweight & smooth' },
               { icon: '🚫', label: 'बिल्कुल Ad-Free अनुभव', highlight: true },
               { icon: '📱', label: 'Mobile friendly' },
+              { icon: '🤖', label: 'Ghughuti AI Chat' },
+              { icon: '📰', label: 'पहाड़ी News in Garhwali' },
+              { icon: '💼', label: 'Govt Jobs & Alerts' },
             ].map((feat, i) => (
               <motion.div
                 key={i}
