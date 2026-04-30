@@ -63,6 +63,10 @@ export default function NewsAdminPage() {
   const [agentRunning, setAgentRunning] = useState(false);
   const [agentStatus, setAgentStatus] = useState(null);
   const [selectedNews, setSelectedNews] = useState(new Set());
+  const [translatedPreviews, setTranslatedPreviews] = useState([]); // Garhwali previews
+  const [translating, setTranslating] = useState(false);
+  const [publishingTranslated, setPublishingTranslated] = useState(false);
+  const [selectedTranslated, setSelectedTranslated] = useState(new Set());
 
   const fetchArticles = useCallback(async () => {
     setLoading(true);
@@ -350,38 +354,73 @@ export default function NewsAdminPage() {
     const chosen = agentStatus.preview.filter((_, i) => selectedNews.has(i));
     setError('');
     setSuccess('');
-    setAgentRunning(true);
+    setTranslating(true);
+    setTranslatedPreviews([]);
+    setSelectedTranslated(new Set());
     try {
-      const res = await fetch(`/api/news-agent/publish-selected?key=${encodeURIComponent(key)}`, {
+      // Step 2: Translate selected articles and show preview (don't publish yet)
+      const res = await fetch(`/api/news-agent/translate-preview?key=${encodeURIComponent(key)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ articles: chosen }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || `Failed (${res.status})`);
-      setSuccess(`Translating & publishing ${chosen.length} selected articles...`);
+      if (data.translated && data.translated.length > 0) {
+        setTranslatedPreviews(data.translated);
+        setSelectedTranslated(new Set(data.translated.map((_, i) => i)));
+        setSuccess(`✅ Translated ${data.translated.length} articles to Garhwali! Review below and publish.`);
+      } else {
+        setError('Translation returned no results. Try again or check API keys.');
+      }
+    } catch (err) {
+      setError(`Translation failed: ${err.message}`);
+    } finally {
+      setTranslating(false);
+    }
+  };
+
+  // Step 3: Publish the reviewed translations
+  const publishTranslatedNews = async () => {
+    if (translatedPreviews.length === 0 || selectedTranslated.size === 0) return;
+    const chosen = translatedPreviews.filter((_, i) => selectedTranslated.has(i));
+    setError('');
+    setSuccess('');
+    setPublishingTranslated(true);
+    try {
+      const res = await fetch(`/api/news-agent/publish-translated?key=${encodeURIComponent(key)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ articles: chosen }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || `Failed (${res.status})`);
+      setSuccess(`🎉 Published ${data.published || chosen.length} Garhwali articles!`);
+      setTranslatedPreviews([]);
+      setSelectedTranslated(new Set());
       setSelectedNews(new Set());
-      // Poll status
-      const poll = setInterval(async () => {
-        try {
-          const sr = await fetch(`/api/news-agent/status?key=${encodeURIComponent(key)}`);
-          const sd = await sr.json();
-          setAgentStatus(sd.lastRun);
-          if (sd.lastRun.status !== 'running') {
-            clearInterval(poll);
-            setAgentRunning(false);
-            if (sd.lastRun.status === 'completed') {
-              setSuccess(`Published ${sd.lastRun.articlesPublished} selected articles in Garhwali!`);
-              fetchArticles();
-            } else if (sd.lastRun.status === 'error') {
-              setError(`Agent error: ${sd.lastRun.errors?.join(', ')}`);
-            }
-          }
-        } catch { /* ignore */ }
-      }, 5000);
+      fetchArticles();
     } catch (err) {
       setError(`Publish failed: ${err.message}`);
-      setAgentRunning(false);
+    } finally {
+      setPublishingTranslated(false);
+    }
+  };
+
+  const toggleTranslatedSelection = (idx) => {
+    setSelectedTranslated((prev) => {
+      const next = new Set(prev);
+      if (next.has(idx)) next.delete(idx);
+      else next.add(idx);
+      return next;
+    });
+  };
+
+  const selectAllTranslated = () => {
+    if (selectedTranslated.size === translatedPreviews.length) {
+      setSelectedTranslated(new Set());
+    } else {
+      setSelectedTranslated(new Set(translatedPreviews.map((_, i) => i)));
     }
   };
 
@@ -519,7 +558,7 @@ export default function NewsAdminPage() {
       {/* News Agent Panel */}
       <div className="mb-6 p-4 bg-dark-800 border border-indigo-500/30 rounded-lg">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-semibold text-white">🤖 News Agent — Auto Crawl + Translate to Garhwali</h2>
+          <h2 className="text-sm font-semibold text-white">🤖 News Agent — Pull → Translate → Preview → Publish</h2>
           <button
             onClick={fetchAgentStatus}
             className="text-xs text-gray-400 hover:text-white"
@@ -528,22 +567,23 @@ export default function NewsAdminPage() {
           </button>
         </div>
         <p className="text-xs text-gray-400 mb-3">
-          Crawls Uttarakhand news from RSS feeds, translates to Garhwali via AI, and auto-publishes.
+          Step 1: Pull news from Uttarakhand RSS feeds. Step 2: Select & translate to Garhwali. Step 3: Review preview & publish.
         </p>
         <div className="flex gap-2 mb-3 flex-wrap">
           <button
-            onClick={() => runNewsAgent(false)}
-            disabled={agentRunning}
+            onClick={() => runNewsAgent(true)}
+            disabled={agentRunning || translating}
             className="text-sm px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            {agentRunning ? '⏳ Running...' : '🚀 Run Agent (Publish)'}
+            {agentRunning ? '⏳ Pulling...' : '📥 Step 1: Pull News'}
           </button>
           <button
-            onClick={() => runNewsAgent(true)}
-            disabled={agentRunning}
-            className="text-sm px-4 py-2 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 border border-indigo-500/30 font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            onClick={() => runNewsAgent(false)}
+            disabled={agentRunning || translating}
+            className="text-sm px-4 py-2 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            title="Skip preview — directly translate and publish (use with caution)"
           >
-            {agentRunning ? '⏳ Running...' : '🔍 Dry Run (Preview)'}
+            {agentRunning ? '⏳ Running...' : '⚡ Auto-Publish (Skip Preview)'}
           </button>
         </div>
         {agentStatus && (
@@ -565,9 +605,9 @@ export default function NewsAdminPage() {
               <div className="text-red-400 mt-1">Errors: {agentStatus.errors.join(', ')}</div>
             )}
             {agentStatus.preview && (
-              <div className="mt-2">
+              <div className="mt-3">
                 <div className="flex items-center justify-between mb-2">
-                  <div className="text-indigo-300 font-medium">Top 5 crawled articles — select to publish:</div>
+                  <div className="text-indigo-300 font-medium">📰 Step 2: Select articles to translate to Garhwali:</div>
                   <button
                     onClick={selectAllNews}
                     className="text-[10px] px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500/30"
@@ -597,14 +637,71 @@ export default function NewsAdminPage() {
                 {selectedNews.size > 0 && (
                   <button
                     onClick={publishSelectedNews}
-                    disabled={agentRunning}
-                    className="mt-2 w-full text-sm px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    disabled={translating}
+                    className="mt-2 w-full text-sm px-4 py-2 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
-                    {agentRunning ? '⏳ Publishing...' : `🚀 Translate & Publish ${selectedNews.size} Selected`}
+                    {translating ? '⏳ Translating to Garhwali...' : `🔄 Translate ${selectedNews.size} Selected → Preview in Garhwali`}
                   </button>
                 )}
               </div>
             )}
+          </div>
+        )}
+
+        {/* Step 3: Garhwali Translation Preview */}
+        {translatedPreviews.length > 0 && (
+          <div className="mt-4 p-4 bg-green-950/20 border border-green-500/30 rounded-lg">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold text-green-300">✅ Step 3: Review Garhwali Preview & Publish</h3>
+              <button
+                onClick={selectAllTranslated}
+                className="text-[10px] px-2 py-0.5 rounded bg-green-500/20 text-green-300 hover:bg-green-500/30"
+              >
+                {selectedTranslated.size === translatedPreviews.length ? 'Deselect all' : 'Select all'}
+              </button>
+            </div>
+            <p className="text-xs text-gray-400 mb-3">Review the Garhwali translations below. Uncheck any you don't want to publish.</p>
+            <div className="space-y-3">
+              {translatedPreviews.map((t, i) => (
+                <label key={i} className={`block p-3 rounded-lg cursor-pointer border transition-all ${selectedTranslated.has(i) ? 'border-green-500/50 bg-green-950/30' : 'border-dark-600 bg-dark-800/50 opacity-60'}`}>
+                  <div className="flex items-start gap-3">
+                    <input
+                      type="checkbox"
+                      checked={selectedTranslated.has(i)}
+                      onChange={() => toggleTranslatedSelection(i)}
+                      className="mt-1 accent-green-500 shrink-0"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="font-bold text-white text-sm">{t.title}</div>
+                      <div className="text-green-200/80 text-xs mt-1">{t.summary}</div>
+                      <div className="mt-2 p-2 bg-dark-900/70 rounded text-xs text-gray-300 whitespace-pre-wrap max-h-48 overflow-y-auto leading-relaxed">
+                        {t.body}
+                      </div>
+                      <div className="text-[10px] text-gray-500 mt-2 flex gap-3 flex-wrap">
+                        <span>📁 {t.category}</span>
+                        {t.source && <span>📰 {t.source}</span>}
+                        {t.sourceUrl && <a href={t.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:underline">🔗 Original</a>}
+                      </div>
+                    </div>
+                  </div>
+                </label>
+              ))}
+            </div>
+            {selectedTranslated.size > 0 && (
+              <button
+                onClick={publishTranslatedNews}
+                disabled={publishingTranslated}
+                className="mt-3 w-full text-sm px-4 py-2.5 rounded-lg bg-green-600 hover:bg-green-700 text-white font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {publishingTranslated ? '⏳ Publishing...' : `🚀 Publish ${selectedTranslated.size} Garhwali Article${selectedTranslated.size > 1 ? 's' : ''}`}
+              </button>
+            )}
+            <button
+              onClick={() => { setTranslatedPreviews([]); setSelectedTranslated(new Set()); }}
+              className="mt-2 w-full text-xs px-3 py-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-dark-700 transition-colors"
+            >
+              ✕ Discard translations
+            </button>
           </div>
         )}
       </div>
