@@ -67,6 +67,8 @@ export default function NewsAdminPage() {
   const [translating, setTranslating] = useState(false);
   const [publishingTranslated, setPublishingTranslated] = useState(false);
   const [selectedTranslated, setSelectedTranslated] = useState(new Set());
+  const [editingPreviewIndex, setEditingPreviewIndex] = useState(null);
+  const [previewEditData, setPreviewEditData] = useState({});
 
   const fetchArticles = useCallback(async () => {
     setLoading(true);
@@ -424,6 +426,71 @@ export default function NewsAdminPage() {
     }
   };
 
+  const startEditingPreview = (index) => {
+    const item = translatedPreviews[index];
+    setEditingPreviewIndex(index);
+    setPreviewEditData({
+      title: item.title || '',
+      summary: item.summary || '',
+      body: item.body || '',
+      category: item.category || 'general',
+      imageFile: null,
+      imagePreview: item.imageUrl || '',
+      imageDirty: false,
+    });
+  };
+
+  const cancelEditingPreview = () => {
+    setEditingPreviewIndex(null);
+    setPreviewEditData({});
+  };
+
+  const saveEditedPreview = () => {
+    if (editingPreviewIndex === null) return;
+    const updated = [...translatedPreviews];
+    updated[editingPreviewIndex] = {
+      ...updated[editingPreviewIndex],
+      title: previewEditData.title,
+      summary: previewEditData.summary,
+      body: previewEditData.body,
+      category: previewEditData.category,
+      image: previewEditData.imageDirty && previewEditData.imagePreview?.startsWith('data:') 
+        ? previewEditData.imagePreview 
+        : undefined,
+      imageUrl: !previewEditData.imageDirty ? previewEditData.imagePreview : undefined,
+    };
+    setTranslatedPreviews(updated);
+    cancelEditingPreview();
+  };
+
+  const handlePreviewImageChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      setError('Image must be under 2 MB');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setPreviewEditData((prev) => ({
+        ...prev,
+        imageFile: file,
+        imagePreview: reader.result,
+        imageDirty: true,
+      }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removePreviewImage = () => {
+    setPreviewEditData((prev) => ({
+      ...prev,
+      imageFile: null,
+      imagePreview: '',
+      imageDirty: true,
+    }));
+  };
+
   const sendHappeningPush = async () => {
     setError('');
     setSuccess('');
@@ -662,30 +729,139 @@ export default function NewsAdminPage() {
             </div>
             <p className="text-xs text-gray-400 mb-3">Review the Garhwali translations below. Uncheck any you don't want to publish.</p>
             <div className="space-y-3">
-              {translatedPreviews.map((t, i) => (
-                <label key={i} className={`block p-3 rounded-lg cursor-pointer border transition-all ${selectedTranslated.has(i) ? 'border-green-500/50 bg-green-950/30' : 'border-dark-600 bg-dark-800/50 opacity-60'}`}>
-                  <div className="flex items-start gap-3">
-                    <input
-                      type="checkbox"
-                      checked={selectedTranslated.has(i)}
-                      onChange={() => toggleTranslatedSelection(i)}
-                      className="mt-1 accent-green-500 shrink-0"
-                    />
-                    <div className="min-w-0 flex-1">
-                      <div className="font-bold text-white text-sm">{t.title}</div>
-                      <div className="text-green-200/80 text-xs mt-1">{t.summary}</div>
-                      <div className="mt-2 p-2 bg-dark-900/70 rounded text-xs text-gray-300 whitespace-pre-wrap max-h-48 overflow-y-auto leading-relaxed">
-                        {t.body}
+              {translatedPreviews.map((t, i) => {
+                const isEditing = editingPreviewIndex === i;
+                return isEditing ? (
+                  // Edit mode
+                  <div key={i} className="block p-4 rounded-lg border border-amber-500/50 bg-amber-950/30">
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="text-sm font-semibold text-amber-300">✏️ Editing Preview #{i + 1}</h4>
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={saveEditedPreview}
+                          className="text-xs px-3 py-1 rounded bg-green-600 hover:bg-green-700 text-white font-medium"
+                        >
+                          ✓ Save
+                        </button>
+                        <button
+                          type="button"
+                          onClick={cancelEditingPreview}
+                          className="text-xs px-3 py-1 rounded bg-dark-700 hover:bg-dark-600 text-gray-300"
+                        >
+                          Cancel
+                        </button>
                       </div>
-                      <div className="text-[10px] text-gray-500 mt-2 flex gap-3 flex-wrap">
-                        <span>📁 {t.category}</span>
-                        {t.source && <span>📰 {t.source}</span>}
-                        {t.sourceUrl && <a href={t.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:underline">🔗 Original</a>}
+                    </div>
+                    <div className="space-y-3">
+                      <input
+                        type="text"
+                        value={previewEditData.title || ''}
+                        onChange={(e) => setPreviewEditData((prev) => ({ ...prev, title: e.target.value }))}
+                        placeholder="Title *"
+                        maxLength={300}
+                        className="w-full px-3 py-2 rounded-lg bg-dark-900 border border-dark-600 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm"
+                      />
+                      <input
+                        type="text"
+                        value={previewEditData.summary || ''}
+                        onChange={(e) => setPreviewEditData((prev) => ({ ...prev, summary: e.target.value }))}
+                        placeholder="Summary"
+                        maxLength={1000}
+                        className="w-full px-3 py-2 rounded-lg bg-dark-900 border border-dark-600 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm"
+                      />
+                      <textarea
+                        value={previewEditData.body || ''}
+                        onChange={(e) => setPreviewEditData((prev) => ({ ...prev, body: e.target.value }))}
+                        placeholder="Full article body *"
+                        rows={8}
+                        maxLength={20000}
+                        className="w-full px-3 py-2 rounded-lg bg-dark-900 border border-dark-600 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500 resize-y text-sm"
+                      />
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <select
+                          value={previewEditData.category || 'general'}
+                          onChange={(e) => setPreviewEditData((prev) => ({ ...prev, category: e.target.value }))}
+                          className="px-3 py-2 rounded-lg bg-dark-900 border border-dark-600 text-white focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm"
+                        >
+                          {CATEGORIES.map((c) => (
+                            <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
+                          ))}
+                        </select>
+                        <label className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-lg bg-dark-900 border border-dark-600 text-gray-300 hover:text-white text-sm">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                          <span className="text-xs">
+                            {previewEditData.imageFile
+                              ? previewEditData.imageFile.name
+                              : previewEditData.imagePreview
+                                ? 'Replace image'
+                                : 'Add image (max 2MB)'}
+                          </span>
+                          <input type="file" accept="image/*" onChange={handlePreviewImageChange} className="hidden" />
+                        </label>
+                      </div>
+                      {previewEditData.imagePreview && (
+                        <div className="relative inline-block">
+                          <img src={previewEditData.imagePreview} alt="Preview" className="h-24 rounded-lg object-cover" />
+                          <button
+                            type="button"
+                            onClick={removePreviewImage}
+                            className="absolute -top-2 -right-2 w-6 h-6 bg-red-600 rounded-full flex items-center justify-center text-xs"
+                            title="Remove image"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  // View mode
+                  <div key={i} className={`block p-3 rounded-lg border transition-all ${selectedTranslated.has(i) ? 'border-green-500/50 bg-green-950/30' : 'border-dark-600 bg-dark-800/50 opacity-60'}`}>
+                    <div className="flex items-start gap-3">
+                      <input
+                        type="checkbox"
+                        checked={selectedTranslated.has(i)}
+                        onChange={() => toggleTranslatedSelection(i)}
+                        className="mt-1 accent-green-500 shrink-0"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex-1">
+                            <div className="font-bold text-white text-sm">{t.title}</div>
+                            <div className="text-green-200/80 text-xs mt-1">{t.summary}</div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => startEditingPreview(i)}
+                            className="text-xs px-2 py-1 rounded bg-amber-600/20 text-amber-300 hover:bg-amber-600/30 border border-amber-500/30 flex items-center gap-1 shrink-0"
+                            title="Edit this preview"
+                          >
+                            ✏️ Edit
+                          </button>
+                        </div>
+                        <div className="mt-2 p-2 bg-dark-900/70 rounded text-xs text-gray-300 whitespace-pre-wrap max-h-48 overflow-y-auto leading-relaxed">
+                          {t.body}
+                        </div>
+                        {(t.imageUrl || t.image) && (
+                          <img 
+                            src={t.image || t.imageUrl} 
+                            alt={t.title} 
+                            className="mt-2 h-24 rounded-lg object-cover" 
+                          />
+                        )}
+                        <div className="text-[10px] text-gray-500 mt-2 flex gap-3 flex-wrap">
+                          <span>📁 {t.category}</span>
+                          {t.source && <span>📰 {t.source}</span>}
+                          {t.sourceUrl && <a href={t.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:underline">🔗 Original</a>}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </label>
-              ))}
+                );
+              })}
             </div>
             {selectedTranslated.size > 0 && (
               <button
@@ -697,7 +873,12 @@ export default function NewsAdminPage() {
               </button>
             )}
             <button
-              onClick={() => { setTranslatedPreviews([]); setSelectedTranslated(new Set()); }}
+              onClick={() => { 
+                setTranslatedPreviews([]); 
+                setSelectedTranslated(new Set()); 
+                setEditingPreviewIndex(null);
+                setPreviewEditData({});
+              }}
               className="mt-2 w-full text-xs px-3 py-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-dark-700 transition-colors"
             >
               ✕ Discard translations
