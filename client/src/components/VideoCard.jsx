@@ -37,13 +37,13 @@ export default function VideoCard({ video, compact }) {
 
   return (
     <motion.div
-      whileHover={{ y: -4, scale: 1.02 }}
-      whileTap={{ scale: 0.97 }}
+      whileHover={{ y: -6, scale: 1.03 }}
+      whileTap={{ scale: 0.96 }}
       transition={{ type: 'spring', stiffness: 300, damping: 22 }}
     >
     <Link
       to={`/watch/${video.id}`}
-      className="group block rounded-xl overflow-hidden bg-dark-800"
+      className="group block rounded-xl overflow-hidden glass-card card-shine glow-hover"
     >
       {/* Thumbnail */}
       <div className="relative aspect-video overflow-hidden rounded-xl">
@@ -96,10 +96,10 @@ export default function VideoCard({ video, compact }) {
       </div>
       {/* Info */}
       <div className="p-3">
-        <h3 className="text-sm font-semibold text-white line-clamp-2 group-hover:text-primary-400 transition-colors">
+        <h3 className="text-sm font-semibold text-white line-clamp-2 group-hover:text-primary-400 transition-colors duration-300">
           {video.title}
         </h3>
-        <p className="text-xs text-gray-400 mt-1 truncate">{video.channelTitle}</p>
+        <p className="text-xs text-gray-500 mt-1.5 truncate group-hover:text-gray-400 transition-colors">{video.channelTitle}</p>
       </div>
     </Link>
     </motion.div>

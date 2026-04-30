@@ -16,16 +16,16 @@ export default function VideoRow({ title, subtitle, videos, loading, error, cate
   return (
     <motion.section
       className="mb-10 group/section"
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.1 }}
-      transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+      viewport={{ once: true, amount: 0.05 }}
+      transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
           <h2 className="text-lg font-bold flex items-center gap-2">
-            {title}
+            <span className="neon-underline">{title}</span>
             {categoryLink && (
               <Link to={categoryLink} className="text-gray-500 hover:text-primary-400 transition-colors">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

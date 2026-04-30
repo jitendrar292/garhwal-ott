@@ -83,7 +83,7 @@ export default function BottomNav() {
 
   return (
     <motion.nav
-      className="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-dark-900/95 backdrop-blur-xl border-t border-white/5"
+      className="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-dark-900/90 backdrop-blur-2xl border-t border-white/[0.08] shadow-[0_-4px_30px_rgba(0,0,0,0.3)]"
       initial={{ y: 80 }}
       animate={{ y: 0 }}
       transition={{ type: 'spring', stiffness: 300, damping: 30, delay: 0.3 }}
@@ -93,7 +93,7 @@ export default function BottomNav() {
           <Link
             key={tab.path}
             to={tab.path}
-            className={`relative flex flex-col items-center gap-0.5 px-1.5 py-1 rounded-lg transition-colors min-w-0 flex-1
+            className={`relative flex flex-col items-center gap-0.5 px-1.5 py-1 rounded-lg transition-all duration-300 min-w-0 flex-1
               ${isActive(tab.path)
                 ? 'text-primary-400'
                 : 'text-gray-500 hover:text-gray-300'
@@ -102,12 +102,19 @@ export default function BottomNav() {
             {isActive(tab.path) && (
               <motion.div
                 layoutId="bottomNavIndicator"
-                className="absolute -top-1 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-primary-400 rounded-full"
+                className="absolute -top-1 left-1/2 -translate-x-1/2 w-8 h-1 bg-gradient-to-r from-primary-400 to-primary-500 rounded-full shadow-[0_0_10px_rgba(0,188,212,0.5)]"
                 transition={{ type: 'spring', stiffness: 400, damping: 30 }}
               />
             )}
-            {tab.icon}
-            <span className="text-[10px] font-medium truncate">{tab.name}</span>
+            {isActive(tab.path) && (
+              <motion.div
+                layoutId="bottomNavGlow"
+                className="absolute inset-0 bg-primary-500/5 rounded-lg"
+                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+              />
+            )}
+            <span className="relative">{tab.icon}</span>
+            <span className="relative text-[10px] font-medium truncate">{tab.name}</span>
           </Link>
         ))}
       </div>

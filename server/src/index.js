@@ -67,7 +67,9 @@ app.use(helmet({
 // CORS
 const allowedOrigins = [
   process.env.CLIENT_URL || 'http://localhost:5173',
+  'http://localhost:5173',
   'http://localhost:4173', // Vite preview
+  'http://127.0.0.1:5173',
   'https://garhwali-stream.onrender.com',
   'https://pahaditube.in',
   'https://www.pahaditube.in',
@@ -78,6 +80,7 @@ app.use(cors({
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      console.error(`CORS blocked origin: ${origin}`);
       callback(new Error('Not allowed by CORS'));
     }
   },

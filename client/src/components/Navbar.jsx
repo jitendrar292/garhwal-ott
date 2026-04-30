@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, Transition } from '@headlessui/react';
 import { useAuth } from '../context/AuthContext';
 
 const TABS = [
@@ -24,26 +25,11 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [listening, setListening] = useState(false);
   const [micError, setMicError] = useState('');
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const inputRef = useRef(null);
   const recognitionRef = useRef(null);
-  const userMenuRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { user, isAuthenticated, signOut } = useAuth();
-
-  // Close user menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
-        setUserMenuOpen(false);
-      }
-    };
-    if (userMenuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-    }
-  }, [userMenuOpen]);
 
   // Speech recognition support (skip iOS — webkit impl is unreliable)
   const SpeechRecognition = typeof window !== 'undefined' &&
@@ -279,17 +265,16 @@ export default function Navbar() {
 
             {/* User Profile / Login */}
             {isAuthenticated ? (
-              <div className="relative" ref={userMenuRef}>
-                <button
-                  onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className="flex items-center gap-2 p-1 rounded-full hover:bg-white/5 transition-all"
+              <Menu as="div" className="relative">
+                <Menu.Button
+                  className="flex items-center gap-2 p-1 rounded-full hover:bg-white/5 transition-all focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:ring-offset-2 focus:ring-offset-dark-900"
                   aria-label="User menu"
                 >
                   {user?.picture ? (
                     <img
                       src={user.picture}
                       alt={user.name}
-                      className="w-8 h-8 rounded-full border-2 border-primary-500/50"
+                      className="w-8 h-8 rounded-full border-2 border-primary-500/50 transition-all hover:border-primary-400"
                       referrerPolicy="no-referrer"
                     />
                   ) : (
@@ -297,44 +282,77 @@ export default function Navbar() {
                       {user?.name?.[0]?.toUpperCase() || '?'}
                     </div>
                   )}
-                </button>
+                </Menu.Button>
 
-                {/* Dropdown menu */}
-                <AnimatePresence>
-                {userMenuOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9, y: -8 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.9, y: -8 }}
-                    transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-                    className="absolute right-0 mt-2 w-56 bg-dark-800 border border-white/10 rounded-xl shadow-xl shadow-black/30 py-2 z-50">
-                    <div className="px-4 py-2 border-b border-white/5">
+                <Transition
+                  enter="transition duration-200 ease-out"
+                  enterFrom="opacity-0 scale-90 -translate-y-2"
+                  enterTo="opacity-100 scale-100 translate-y-0"
+                  leave="transition duration-150 ease-in"
+                  leaveFrom="opacity-100 scale-100 translate-y-0"
+                  leaveTo="opacity-0 scale-90 -translate-y-2"
+                >
+                  <Menu.Items className="absolute right-0 mt-2 w-56 glass-card rounded-xl shadow-xl shadow-black/40 py-2 z-50 focus:outline-none border-glow">
+                    <div className="px-4 py-3 border-b border-white/5">
                       <p className="text-sm font-medium text-white truncate">{user?.name}</p>
                       <p className="text-xs text-gray-400 truncate">{user?.email}</p>
                     </div>
-                    <Link
-                      to="/ghughuti-ai"
-                      onClick={() => setUserMenuOpen(false)}
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5"
-                    >
-                      <span>🤖</span> Ghughuti AI
-                    </Link>
-                    <button
-                      onClick={() => {
-                        signOut();
-                        setUserMenuOpen(false);
-                      }}
-                      className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                      </svg>
-                      साइन आउट
-                    </button>
-                  </motion.div>
-                )}
-                </AnimatePresence>
-              </div>
+                    <Menu.Item>
+                      {({ active }) => (
+                        <Link
+                          to="/ghughuti-ai"
+                          className={`flex items-center gap-2 px-4 py-2.5 text-sm transition-all ${
+                            active ? 'text-white bg-primary-500/10' : 'text-gray-300'
+                          }`}
+                        >
+                          <span>🤖</span> Ghughuti AI
+                        </Link>
+                      )}
+                    </Menu.Item>
+                    <Menu.Item>
+                      {({ active }) => (
+                        <Link
+                          to="/favorites"
+                          className={`flex items-center gap-2 px-4 py-2.5 text-sm transition-all ${
+                            active ? 'text-white bg-primary-500/10' : 'text-gray-300'
+                          }`}
+                        >
+                          <span>❤️</span> Favorites
+                        </Link>
+                      )}
+                    </Menu.Item>
+                    <Menu.Item>
+                      {({ active }) => (
+                        <Link
+                          to="/feedback"
+                          className={`flex items-center gap-2 px-4 py-2.5 text-sm transition-all ${
+                            active ? 'text-white bg-primary-500/10' : 'text-gray-300'
+                          }`}
+                        >
+                          <span>💬</span> Feedback
+                        </Link>
+                      )}
+                    </Menu.Item>
+                    <div className="border-t border-white/5 mt-1 pt-1">
+                      <Menu.Item>
+                        {({ active }) => (
+                          <button
+                            onClick={signOut}
+                            className={`w-full flex items-center gap-2 px-4 py-2.5 text-sm transition-all ${
+                              active ? 'text-red-300 bg-red-500/10' : 'text-red-400'
+                            }`}
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                            साइन आउट
+                          </button>
+                        )}
+                      </Menu.Item>
+                    </div>
+                  </Menu.Items>
+                </Transition>
+              </Menu>
             ) : (
               <Link
                 to="/login"
@@ -349,20 +367,27 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Tab bar — scrollable, pill-style */}
+        {/* Tab bar — scrollable, pill-style with animated indicator */}
         <div className="hidden sm:flex items-center gap-1 pb-2 -mx-1 overflow-x-auto scroll-row">
           {TABS.map((tab) => (
             <Link
               key={tab.path}
               to={tab.path}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 text-[13px] font-medium whitespace-nowrap rounded-full transition-all duration-200
+              className={`relative flex items-center gap-1.5 px-3.5 py-1.5 text-[13px] font-medium whitespace-nowrap rounded-full transition-all duration-300
                 ${isActive(tab.path)
-                  ? 'bg-primary-500/15 text-primary-300 ring-1 ring-primary-500/30'
+                  ? 'text-white'
                   : 'text-gray-400 hover:text-white hover:bg-white/5'
                 }`}
             >
-              <span className="text-sm">{tab.emoji}</span>
-              {tab.name}
+              {isActive(tab.path) && (
+                <motion.div
+                  layoutId="navTabIndicator"
+                  className="absolute inset-0 bg-primary-500/15 ring-1 ring-primary-500/30 rounded-full shadow-glow-sm"
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
+              <span className="relative text-sm">{tab.emoji}</span>
+              <span className="relative">{tab.name}</span>
             </Link>
           ))}
         </div>

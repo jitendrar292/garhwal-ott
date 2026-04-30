@@ -3,12 +3,12 @@ import { motion } from 'framer-motion';
 
 const containerVariants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.05 } },
+  visible: { transition: { staggerChildren: 0.06, delayChildren: 0.1 } },
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, scale: 0.8, y: 20 },
-  visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] } },
+  hidden: { opacity: 0, scale: 0.7, y: 30, rotate: -3 },
+  visible: { opacity: 1, scale: 1, y: 0, rotate: 0, transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] } },
 };
 
 // Card style matches the Ghughuti AI topic tiles: solid colour, centred
@@ -109,23 +109,28 @@ export default function GenreGrid() {
   return (
     <section className="mb-10">
       <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-        खोजा (Explore)
+        <span className="gradient-text">खोजा (Explore)</span>
         <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
       </h2>
       <motion.div
-        className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-2.5"
+        className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-2.5 sm:gap-3"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.1 }}
       >
         {GENRES.map((g) => (
-          <motion.div key={g.path} variants={cardVariants}>
+          <motion.div
+            key={g.path}
+            variants={cardVariants}
+            whileHover={{ y: -5, scale: 1.06 }}
+            whileTap={{ scale: 0.94 }}
+          >
           <Link
             to={g.path}
-            className={`group relative ${g.bg} rounded-xl p-2 text-center shadow-md shadow-black/30 ring-1 ring-white/10 hover:scale-[1.03] hover:ring-white/30 transition-all overflow-hidden block`}
+            className={`group relative ${g.bg} rounded-xl p-2 text-center shadow-lg shadow-black/30 ring-1 ring-white/10 hover:ring-white/30 hover:shadow-xl transition-all duration-300 overflow-hidden block card-shine`}
           >
             {/* subtle dot pattern overlay (matches Ghughuti AI cards) */}
             <div
