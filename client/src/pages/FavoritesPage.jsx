@@ -6,9 +6,9 @@ export default function FavoritesPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
-      <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-        <div className="w-1 h-8 bg-gradient-to-b from-red-400 to-red-600 rounded-full" />
-        ♥ Your Favorites
+      <h2 className="page-header mb-6 flex items-center gap-3">
+        <div className="w-1.5 h-8 bg-gradient-to-b from-red-400 to-red-600 rounded-full" />
+        ♥ Your <span className="gradient-text">Favorites</span>
       </h2>
 
       {favorites.length === 0 ? (

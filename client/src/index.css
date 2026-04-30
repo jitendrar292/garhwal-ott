@@ -30,6 +30,24 @@
 }
 
 @layer components {
+  /* ── Consistent page headers ── */
+  .page-header {
+    @apply text-2xl sm:text-3xl font-extrabold tracking-tight text-white;
+    text-shadow: 0 0 30px rgba(0, 188, 212, 0.15);
+  }
+
+  .section-header {
+    @apply text-lg sm:text-xl font-bold text-white flex items-center gap-2;
+  }
+
+  .section-header-accent {
+    @apply text-lg sm:text-xl font-bold flex items-center gap-2;
+    background: linear-gradient(135deg, #fff 0%, #26c6da 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
   .card-hover {
     @apply transition-all duration-300 ease-out;
   }

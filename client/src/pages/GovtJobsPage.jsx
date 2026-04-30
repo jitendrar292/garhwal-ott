@@ -226,8 +226,8 @@ export default function GovtJobsPage() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold mb-2 flex items-center justify-center gap-3">
-            💼 सरकारी नौकरी
+          <h1 className="page-header mb-2 flex items-center justify-center gap-3">
+            💼 <span className="gradient-text">सरकारी नौकरी</span>
             <span className="text-lg sm:text-xl font-normal text-white/60">Govt Jobs</span>
           </h1>
           <p className="text-white/60 text-sm">

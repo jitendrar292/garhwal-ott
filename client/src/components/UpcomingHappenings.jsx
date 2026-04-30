@@ -256,8 +256,8 @@ export default function UpcomingHappenings() {
   return (
     <section className="my-8">
       <div className="flex items-center justify-between mb-3 gap-3">
-        <h2 className="text-lg font-bold text-white">
-          🎉 उत्तराखण्ड मा आणे वाला
+        <h2 className="section-header">
+          🎉 <span className="gradient-text">उत्तराखण्ड मा आणे वाला</span>
         </h2>
         <NotifyButton />
       </div>

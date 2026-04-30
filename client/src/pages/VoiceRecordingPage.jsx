@@ -159,7 +159,7 @@ export default function VoiceRecordingPage() {
 
       {/* Header */}
       <div className="text-center mb-6">
-        <h1 className="text-2xl font-bold text-white mb-2">🎙️ गढ़वाली आवाज रिकॉर्डिंग</h1>
+        <h1 className="page-header mb-2">🎙️ गढ़वाली <span className="gradient-text">आवाज रिकॉर्डिंग</span></h1>
         <p className="text-gray-400">
           Help us create a Garhwali voice model by recording these sentences
         </p>

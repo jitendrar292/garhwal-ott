@@ -24,8 +24,8 @@ export default function VideoRow({ title, subtitle, videos, loading, error, cate
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h2 className="text-lg font-bold flex items-center gap-2">
-            <span className="neon-underline">{title}</span>
+          <h2 className="section-header">
+            <span className="neon-underline gradient-text">{title}</span>
             {categoryLink && (
               <Link to={categoryLink} className="text-gray-500 hover:text-primary-400 transition-colors">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -53,9 +53,9 @@ export default function FeedbackPage() {
         Back to Home
       </Link>
 
-      <h1 className="text-3xl font-bold mb-2 flex items-center gap-3">
-        <div className="w-1 h-8 bg-gradient-to-b from-primary-400 to-primary-600 rounded-full" />
-        Share Your Feedback
+      <h1 className="page-header mb-2 flex items-center gap-3">
+        <div className="w-1.5 h-8 bg-gradient-to-b from-primary-400 to-primary-600 rounded-full" />
+        Share Your <span className="gradient-text">Feedback</span>
       </h1>
       <p className="text-gray-400 mb-8">
         We&apos;d love to hear from you! Tell us what you think about PahadiTube.

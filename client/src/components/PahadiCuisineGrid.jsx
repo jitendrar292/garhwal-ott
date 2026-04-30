@@ -59,7 +59,7 @@ const UttarakhandSpecialtiesGrid = () => {
           <div className="text-5xl drop-shadow-lg">🏔️</div>
           <div>
             <h2 className="text-2xl font-black text-white leading-tight">
-              उत्तराखंड की खोज
+              <span className="gradient-text">उत्तराखंड की खोज</span>
             </h2>
             <p className="text-amber-300 font-bold text-base">
               जिलेवार प्रसिद्ध चीज़ें

@@ -191,8 +191,8 @@ export default function ShortsPage() {
       />
       {/* Header */}
       <div className="w-full max-w-md px-4 pt-4 pb-2 flex items-center gap-3">
-        <div className="w-1 h-6 bg-gradient-to-b from-pink-400 to-red-500 rounded-full" />
-        <h1 className="text-lg font-bold">📱 Pahadi Reels</h1>
+        <div className="w-1 h-7 bg-gradient-to-b from-pink-400 to-red-500 rounded-full" />
+        <h1 className="page-header">📱 Pahadi <span className="gradient-text">Reels</span></h1>
         <span className="text-xs text-gray-500 ml-auto">Tap to play</span>
       </div>
 

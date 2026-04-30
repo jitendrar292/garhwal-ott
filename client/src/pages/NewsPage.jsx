@@ -99,7 +99,7 @@ export default function NewsPage() {
           </svg>
         </div>
         <div className="flex-1">
-          <h1 className="text-xl font-bold">पहाड़ी समाचार</h1>
+          <h1 className="page-header">पहाड़ी <span className="gradient-text">समाचार</span></h1>
           <p className="text-sm text-gray-400">Local News from Devbhoomi Uttarakhand</p>
         </div>
         <NotifyButton />

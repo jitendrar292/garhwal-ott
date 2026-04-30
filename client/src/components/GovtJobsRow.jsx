@@ -161,8 +161,8 @@ export default function GovtJobsRow() {
     return (
       <section className="mt-10">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
-            💼 सरकारी नौकरी · Govt Jobs
+          <h2 className="section-header">
+            💼 <span className="gradient-text">सरकारी नौकरी · Govt Jobs</span>
           </h2>
         </div>
         <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-white/20">
@@ -184,8 +184,8 @@ export default function GovtJobsRow() {
   return (
     <section className="mt-10">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
-          💼 सरकारी नौकरी · Govt Jobs
+        <h2 className="section-header">
+          💼 <span className="gradient-text">सरकारी नौकरी · Govt Jobs</span>
         </h2>
         <Link
           to="/jobs"

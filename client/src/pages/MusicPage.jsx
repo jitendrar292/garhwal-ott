@@ -89,7 +89,7 @@ export default function MusicPage() {
           </svg>
         </div>
         <div>
-          <h1 className="text-xl font-bold">Pahadi Music</h1>
+          <h1 className="page-header">Pahadi <span className="gradient-text">Music</span></h1>
           <p className="text-sm text-gray-400">Garhwali & Kumaoni songs — tap to play</p>
         </div>
       </div>

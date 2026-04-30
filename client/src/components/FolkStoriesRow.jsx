@@ -17,8 +17,8 @@ export default function FolkStoriesRow() {
     <section className="mb-10 group/section">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h2 className="text-lg font-bold flex items-center gap-2">
-            📖 गढ़वाली लोक-गाथा
+          <h2 className="section-header">
+            📖 <span className="gradient-text">गढ़वाली लोक-गाथा</span>
           </h2>
           <p className="text-xs text-gray-500 mt-0.5">
             Folk tales of Garhwali heroes — Jagdev Panwar, Tilu Rauteli, Jeetu Bagdwal &amp; more

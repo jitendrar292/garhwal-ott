@@ -4,8 +4,8 @@ export default function VideoGrid({ videos, title, loading, error, onLoadMore, h
   return (
     <section className="mb-12">
       {title && (
-        <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-          <div className="w-1 h-8 bg-gradient-to-b from-primary-400 to-primary-600 rounded-full" />
+        <h2 className="page-header mb-6 flex items-center gap-3">
+          <div className="w-1.5 h-8 bg-gradient-to-b from-primary-400 to-primary-600 rounded-full" />
           {title}
         </h2>
       )}
