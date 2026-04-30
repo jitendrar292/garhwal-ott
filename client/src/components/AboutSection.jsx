@@ -1,6 +1,14 @@
+import { motion } from 'framer-motion';
+
 export default function AboutSection() {
   return (
-    <section className="mb-10">
+    <motion.section
+      className="mb-10"
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.1 }}
+      transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+    >
       <div className="bg-gradient-to-br from-dark-800 via-dark-700 to-dark-800 rounded-2xl border border-white/5 overflow-hidden">
         {/* Header */}
         <div className="bg-gradient-to-r from-primary-700/30 to-emerald-700/20 px-6 py-5 sm:px-8 sm:py-6">
@@ -82,6 +90,6 @@ export default function AboutSection() {
           </div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import ImageSlider from '../components/ImageSlider';
 import GenreGrid from '../components/GenreGrid';
 import VideoRow from '../components/VideoRow';
@@ -66,13 +67,34 @@ export default function HomePage() {
         <GenreGrid />
 
         {/* Festivals · Melas · Theatre / Events — unified row with type filters */}
-        <UpcomingHappenings />
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.1 }}
+          transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
+          <UpcomingHappenings />
+        </motion.div>
 
         {/* Garhwali folk-stories — Devanagari narratives sourced from himlingo.com */}
-        <FolkStoriesRow />
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.1 }}
+          transition={{ duration: 0.5, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
+          <FolkStoriesRow />
+        </motion.div>
 
         {/* Govt Jobs — recent job postings for Uttarakhand */}
-        <GovtJobsRow />
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.1 }}
+          transition={{ duration: 0.5, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
+          <GovtJobsRow />
+        </motion.div>
 
         {/* Trending */}
         <VideoRow

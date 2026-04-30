@@ -1,4 +1,15 @@
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+
+const containerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.05 } },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, scale: 0.8, y: 20 },
+  visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] } },
+};
 
 // Card style matches the Ghughuti AI topic tiles: solid colour, centred
 // emoji, two-line Garhwali label, dotted texture overlay.
@@ -103,12 +114,18 @@ export default function GenreGrid() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
       </h2>
-      <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-2.5">
+      <motion.div
+        className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-2.5"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+      >
         {GENRES.map((g) => (
+          <motion.div key={g.path} variants={cardVariants}>
           <Link
-            key={g.path}
             to={g.path}
-            className={`group relative ${g.bg} rounded-xl p-2 text-center shadow-md shadow-black/30 ring-1 ring-white/10 hover:scale-[1.03] hover:ring-white/30 transition-all overflow-hidden`}
+            className={`group relative ${g.bg} rounded-xl p-2 text-center shadow-md shadow-black/30 ring-1 ring-white/10 hover:scale-[1.03] hover:ring-white/30 transition-all overflow-hidden block`}
           >
             {/* subtle dot pattern overlay (matches Ghughuti AI cards) */}
             <div
@@ -141,8 +158,9 @@ export default function GenreGrid() {
               </div>
             </div>
           </Link>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </section>
   );
 }

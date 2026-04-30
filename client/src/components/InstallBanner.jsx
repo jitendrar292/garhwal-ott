@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // Module-level flag — survives client-side route changes within the same
 // page session, but resets on full reload. We deliberately avoid localStorage
@@ -29,7 +30,14 @@ export default function InstallBanner() {
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-20 sm:bottom-6 left-3 right-3 sm:left-auto sm:right-6 sm:w-80 z-50 animate-fade-in">
+    <AnimatePresence>
+    <motion.div
+      className="fixed bottom-20 sm:bottom-6 left-3 right-3 sm:left-auto sm:right-6 sm:w-80 z-50"
+      initial={{ opacity: 0, y: 50, scale: 0.9 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 50, scale: 0.9 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+    >
       <div className="bg-dark-800 border border-primary-500/40 rounded-2xl shadow-2xl p-4">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
@@ -81,6 +89,7 @@ export default function InstallBanner() {
           <p className="text-yellow-400/80 mt-2">⚠️ कोई APK फ़ाइल इंस्टाल न करें — वो हमारी नहीं है!</p>
         </div>
       </div>
-    </div>
+    </motion.div>
+    </AnimatePresence>
   );
 }

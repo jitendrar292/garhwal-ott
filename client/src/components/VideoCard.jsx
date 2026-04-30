@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useFavorites } from '../hooks/useFavorites';
 
 export default function VideoCard({ video, compact }) {
@@ -35,9 +36,14 @@ export default function VideoCard({ video, compact }) {
   };
 
   return (
+    <motion.div
+      whileHover={{ y: -4, scale: 1.02 }}
+      whileTap={{ scale: 0.97 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 22 }}
+    >
     <Link
       to={`/watch/${video.id}`}
-      className="group block card-hover rounded-xl overflow-hidden bg-dark-800 animate-fade-in-up"
+      className="group block rounded-xl overflow-hidden bg-dark-800"
     >
       {/* Thumbnail */}
       <div className="relative aspect-video overflow-hidden rounded-xl">
@@ -96,5 +102,6 @@ export default function VideoCard({ video, compact }) {
         <p className="text-xs text-gray-400 mt-1 truncate">{video.channelTitle}</p>
       </div>
     </Link>
+    </motion.div>
   );
 }

@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import Navbar from './components/Navbar';
 import BottomNav from './components/BottomNav';
 import Footer from './components/Footer';
@@ -56,38 +57,7 @@ export default function App() {
         <div className="min-h-screen flex flex-col text-white" style={{ backgroundColor: '#14122a' }}>
           <Navbar />
           <main className="flex-1 pb-24 sm:pb-8">
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/category/:category" element={<CategoryPage />} />
-              <Route path="/search" element={<SearchPage />} />
-              <Route path="/watch/:videoId" element={<PlayerPage />} />
-              <Route path="/favorites" element={<FavoritesPage />} />
-              <Route path="/feedback" element={<FeedbackPage />} />
-              <Route path="/feedback/admin" element={<FeedbackAdminPage />} />
-              <Route path="/youtube/admin" element={<YouTubeAdminPage />} />
-              <Route path="/admin" element={<AdminPage />} />
-              <Route path="/music" element={<MusicPage />} />
-              <Route path="/shorts" element={<ShortsPage />} />
-              <Route path="/podcast" element={<PodcastPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route
-                path="/ghughuti-ai"
-                element={
-                  <RequireAuth>
-                    <GhughutiAIPage />
-                  </RequireAuth>
-                }
-              />
-              {/* Legacy URL — keep so old bookmarks/sitemap entries don't 404. */}
-              <Route path="/pahadi-ai" element={<Navigate to="/ghughuti-ai" replace />} />
-              <Route path="/news" element={<NewsPage />} />
-              <Route path="/news/admin" element={<NewsAdminPage />} />
-              <Route path="/folk-story/:slug" element={<FolkStoryPage />} />
-              <Route path="/folk-stories" element={<FolkStoriesIndexPage />} />
-              <Route path="/jobs" element={<GovtJobsPage />} />
-              <Route path="/jobs/admin" element={<JobsAdminPage />} />
-              <Route path="/voice-recording" element={<VoiceRecordingPage />} />
-            </Routes>
+            <AnimatedRoutes />
           </main>
           <Footer />
           <FloatingPlayer />
@@ -97,5 +67,53 @@ export default function App() {
         </div>
       </MusicProvider>
     </AuthProvider>
+  );
+}
+
+function AnimatedRoutes() {
+  const location = useLocation();
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location.pathname}
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -8 }}
+        transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+      >
+        <Routes location={location}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/category/:category" element={<CategoryPage />} />
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/watch/:videoId" element={<PlayerPage />} />
+          <Route path="/favorites" element={<FavoritesPage />} />
+          <Route path="/feedback" element={<FeedbackPage />} />
+          <Route path="/feedback/admin" element={<FeedbackAdminPage />} />
+          <Route path="/youtube/admin" element={<YouTubeAdminPage />} />
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/music" element={<MusicPage />} />
+          <Route path="/shorts" element={<ShortsPage />} />
+          <Route path="/podcast" element={<PodcastPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route
+            path="/ghughuti-ai"
+            element={
+              <RequireAuth>
+                <GhughutiAIPage />
+              </RequireAuth>
+            }
+          />
+          {/* Legacy URL — keep so old bookmarks/sitemap entries don't 404. */}
+          <Route path="/pahadi-ai" element={<Navigate to="/ghughuti-ai" replace />} />
+          <Route path="/news" element={<NewsPage />} />
+          <Route path="/news/admin" element={<NewsAdminPage />} />
+          <Route path="/folk-story/:slug" element={<FolkStoryPage />} />
+          <Route path="/folk-stories" element={<FolkStoriesIndexPage />} />
+          <Route path="/jobs" element={<GovtJobsPage />} />
+          <Route path="/jobs/admin" element={<JobsAdminPage />} />
+          <Route path="/voice-recording" element={<VoiceRecordingPage />} />
+        </Routes>
+      </motion.div>
+    </AnimatePresence>
   );
 }

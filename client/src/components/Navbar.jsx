@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 
 const TABS = [
@@ -299,8 +300,14 @@ export default function Navbar() {
                 </button>
 
                 {/* Dropdown menu */}
+                <AnimatePresence>
                 {userMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-dark-800 border border-white/10 rounded-xl shadow-xl shadow-black/30 py-2 z-50">
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9, y: -8 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.9, y: -8 }}
+                    transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+                    className="absolute right-0 mt-2 w-56 bg-dark-800 border border-white/10 rounded-xl shadow-xl shadow-black/30 py-2 z-50">
                     <div className="px-4 py-2 border-b border-white/5">
                       <p className="text-sm font-medium text-white truncate">{user?.name}</p>
                       <p className="text-xs text-gray-400 truncate">{user?.email}</p>
@@ -324,8 +331,9 @@ export default function Navbar() {
                       </svg>
                       साइन आउट
                     </button>
-                  </div>
+                  </motion.div>
                 )}
+                </AnimatePresence>
               </div>
             ) : (
               <Link
@@ -361,11 +369,19 @@ export default function Navbar() {
       </div>
 
       {/* Mic error toast */}
+      <AnimatePresence>
       {micError && (
-        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-4 py-2 bg-red-500/90 text-white text-xs font-medium rounded-full shadow-lg backdrop-blur-sm z-50 whitespace-nowrap">
+        <motion.div
+          initial={{ opacity: 0, y: -10, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -10, scale: 0.9 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+          className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-4 py-2 bg-red-500/90 text-white text-xs font-medium rounded-full shadow-lg backdrop-blur-sm z-50 whitespace-nowrap"
+        >
           ⚠️ {micError}
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </nav>
   );
 }

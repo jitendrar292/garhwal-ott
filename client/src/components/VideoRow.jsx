@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import VideoCard from './VideoCard';
 
 export default function VideoRow({ title, subtitle, videos, loading, error, categoryLink }) {
@@ -13,7 +14,13 @@ export default function VideoRow({ title, subtitle, videos, loading, error, cate
   };
 
   return (
-    <section className="mb-10 group/section">
+    <motion.section
+      className="mb-10 group/section"
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.1 }}
+      transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+    >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
@@ -88,6 +95,6 @@ export default function VideoRow({ title, subtitle, videos, loading, error, cate
           ))}
         </div>
       )}
-    </section>
+    </motion.section>
   );
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useMusic } from '../context/MusicContext';
 
 /* ── helpers ────────────────────────────────────────── */
@@ -417,7 +418,13 @@ export default function FloatingPlayer() {
 
       {/* ═══════ MINI PLAYER BAR ═══════ */}
       {!expanded && (
-        <div className="fixed bottom-16 sm:bottom-0 left-0 right-0 z-50">
+        <motion.div
+          className="fixed bottom-16 sm:bottom-0 left-0 right-0 z-50"
+          initial={{ y: 80, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 80, opacity: 0 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+        >
           {duration > 0 && (
             <div className="h-[2px] bg-white/5">
               <div className="h-full bg-primary-500 transition-[width] duration-500 ease-linear" style={{ width: `${progress}%` }} />
@@ -457,7 +464,7 @@ export default function FloatingPlayer() {
               </button>
             </div>
           </div>
-        </div>
+        </motion.div>
       )}
     </>
   );

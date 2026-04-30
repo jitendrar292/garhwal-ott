@@ -1,4 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 const TABS = [
   {
@@ -81,23 +82,35 @@ export default function BottomNav() {
   };
 
   return (
-    <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-dark-900/95 backdrop-blur-xl border-t border-white/5">
+    <motion.nav
+      className="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-dark-900/95 backdrop-blur-xl border-t border-white/5"
+      initial={{ y: 80 }}
+      animate={{ y: 0 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 30, delay: 0.3 }}
+    >
       <div className="flex items-center justify-around h-16 px-1">
         {TABS.map((tab) => (
           <Link
             key={tab.path}
             to={tab.path}
-            className={`flex flex-col items-center gap-0.5 px-1.5 py-1 rounded-lg transition-colors min-w-0 flex-1
+            className={`relative flex flex-col items-center gap-0.5 px-1.5 py-1 rounded-lg transition-colors min-w-0 flex-1
               ${isActive(tab.path)
                 ? 'text-primary-400'
                 : 'text-gray-500 hover:text-gray-300'
               }`}
           >
+            {isActive(tab.path) && (
+              <motion.div
+                layoutId="bottomNavIndicator"
+                className="absolute -top-1 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-primary-400 rounded-full"
+                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+              />
+            )}
             {tab.icon}
             <span className="text-[10px] font-medium truncate">{tab.name}</span>
           </Link>
         ))}
       </div>
-    </nav>
+    </motion.nav>
   );
 }
