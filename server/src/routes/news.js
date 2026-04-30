@@ -54,29 +54,47 @@ async function saveNews(list) {
 // Strips the (potentially multi-MB) base64 image data URI from each entry
 // and replaces it with a thin URL that the browser fetches separately and
 // caches for a year. Cuts list-response size from MBs to KBs.
-router.get('/', async (_req, res) => {
+// Supports pagination: ?limit=10&offset=0
+router.get('/', async (req, res) => {
   try {
-    if (listCache && Date.now() - listCache.at < LIST_TTL_MS) {
+    const limit = Math.min(parseInt(req.query.limit) || 20, 100); // max 100 per request
+    const offset = Math.max(parseInt(req.query.offset) || 0, 0);
+
+    // Only cache full list (no pagination params)
+    const isCacheable = !req.query.limit && !req.query.offset;
+    if (isCacheable && listCache && Date.now() - listCache.at < LIST_TTL_MS) {
       res.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=60');
       return res.json(listCache.payload);
     }
 
     const articles = await loadNews();
     // Return newest first, strip large fields for list view
-    const list = articles
-      .sort((a, b) => b.createdAt - a.createdAt)
-      .map(({ id, title, summary, imageUrl, category, createdAt }) => ({
-        id,
-        title,
-        summary,
-        // Replace base64 data URI with a URL the browser can cache.
-        imageUrl: imageUrl ? `/api/news/${id}/image` : '',
-        category,
-        createdAt,
-      }));
+    const sorted = articles.sort((a, b) => b.createdAt - a.createdAt);
+    const total = sorted.length;
+    const paginated = sorted.slice(offset, offset + limit);
+    
+    const list = paginated.map(({ id, title, summary, imageUrl, category, createdAt }) => ({
+      id,
+      title,
+      summary,
+      // Replace base64 data URI with a URL the browser can cache.
+      imageUrl: imageUrl ? `/api/news/${id}/image` : '',
+      category,
+      createdAt,
+    }));
 
-    const payload = { articles: list };
-    listCache = { at: Date.now(), payload };
+    const payload = { 
+      articles: list,
+      total,
+      offset,
+      limit,
+      hasMore: offset + limit < total
+    };
+    
+    if (isCacheable) {
+      listCache = { at: Date.now(), payload };
+    }
+    
     res.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=60');
     res.json(payload);
   } catch (err) {

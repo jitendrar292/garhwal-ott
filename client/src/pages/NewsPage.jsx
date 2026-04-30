@@ -16,22 +16,39 @@ const CATEGORIES = [
 export default function NewsPage() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [category, setCategory] = useState('all');
   const [expanded, setExpanded] = useState(null); // article id
   const [fullBodies, setFullBodies] = useState({}); // id -> body text
-  const [showAll, setShowAll] = useState(false); // false = only last 1 day
+  const [hasMore, setHasMore] = useState(false);
+  const [offset, setOffset] = useState(0);
+  const limit = 20; // items per page
+
+  const loadArticles = (reset = false) => {
+    const currentOffset = reset ? 0 : offset;
+    const loadingState = reset ? setLoading : setLoadingMore;
+    
+    loadingState(true);
+    fetch(`/api/news?limit=${limit}&offset=${currentOffset}`, { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((data) => {
+        if (reset) {
+          setArticles(data.articles || []);
+          setOffset(limit);
+        } else {
+          setArticles((prev) => [...prev, ...(data.articles || [])]);
+          setOffset((prev) => prev + limit);
+        }
+        setHasMore(data.hasMore || false);
+      })
+      .catch(() => {})
+      .finally(() => loadingState(false));
+  };
 
   useEffect(() => {
     let alive = true;
     const load = () => {
-      setLoading(true);
-      fetch('/api/news', { cache: 'no-store' })
-        .then((r) => r.json())
-        .then((data) => {
-          if (alive) setArticles(data.articles || []);
-        })
-        .catch(() => {})
-        .finally(() => alive && setLoading(false));
+      loadArticles(true);
     };
     load();
 
@@ -55,18 +72,12 @@ export default function NewsPage() {
       }
       document.removeEventListener('visibilitychange', onVisible);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const filtered = category === 'all'
     ? articles
     : articles.filter((a) => a.category === category);
-
-  // Show only last 1 day's articles initially, rest behind "Load More"
-  const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
-  const recentArticles = filtered.filter((a) => a.createdAt >= oneDayAgo);
-  const olderArticles = filtered.filter((a) => a.createdAt < oneDayAgo);
-  const displayArticles = showAll ? filtered : (recentArticles.length > 0 ? recentArticles : filtered.slice(0, 3));
-  const hasOlder = !showAll && olderArticles.length > 0;
 
   const formatDate = (ts) => {
     if (!ts) return '';
@@ -110,7 +121,7 @@ export default function NewsPage() {
         {CATEGORIES.map((cat) => (
           <button
             key={cat.id}
-            onClick={() => { setCategory(cat.id); setExpanded(null); setShowAll(false); }}
+            onClick={() => { setCategory(cat.id); setExpanded(null); }}
             className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
               category === cat.id
                 ? 'bg-white text-black shadow-md'
@@ -146,7 +157,7 @@ export default function NewsPage() {
 
       {/* Articles */}
       <div className="space-y-5">
-        {displayArticles.map((article) => (
+        {filtered.map((article) => (
           <article
             key={article.id}
             className="rounded-2xl bg-dark-800 border border-white/[0.06] overflow-hidden hover:border-primary-500/30 transition-colors"
@@ -224,17 +235,30 @@ export default function NewsPage() {
         ))}
       </div>
 
-      {/* Load More button for older articles */}
-      {hasOlder && (
+      {/* Load More button - lazy load from Redis */}
+      {hasMore && (
         <div className="flex justify-center mt-8">
           <button
-            onClick={() => setShowAll(true)}
-            className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold text-sm hover:from-blue-500 hover:to-indigo-500 transition-all shadow-lg shadow-blue-500/20 flex items-center gap-2"
+            onClick={() => loadArticles(false)}
+            disabled={loadingMore}
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold text-sm hover:from-blue-500 hover:to-indigo-500 transition-all shadow-lg shadow-blue-500/20 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-            और समाचार दिखाएं · Load More ({olderArticles.length} older)
+            {loadingMore ? (
+              <>
+                <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                </svg>
+                Loading...
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+                और समाचार दिखाएं · Load More
+              </>
+            )}
           </button>
         </div>
       )}
