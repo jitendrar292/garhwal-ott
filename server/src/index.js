@@ -125,6 +125,12 @@ app.use(express.json({ limit: '8mb' }));
 // Serve static files from React build in production
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../../client/dist')));
+
+  // Explicit route for ads.txt — ensures Google AdSense crawler always finds it
+  // even if express.static ordering causes issues
+  app.get('/ads.txt', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../client/dist/ads.txt'));
+  });
 }
 
 // API routes
