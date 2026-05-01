@@ -5,6 +5,9 @@ Allow: /
 Disallow: /feedback/admin
 Disallow: /youtube/admin
 Disallow: /news/admin
+Disallow: /jobs/admin
+Disallow: /admin
+Disallow: /login
 Disallow: /api/
 
 Sitemap: https://pahaditube.in/sitemap.xml
