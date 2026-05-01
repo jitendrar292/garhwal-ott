@@ -57,44 +57,57 @@ async function saveNews(list) {
 // Supports pagination: ?limit=10&offset=0
 router.get('/', async (req, res) => {
   try {
-    const limit = Math.min(parseInt(req.query.limit) || 20, 100); // max 100 per request
+    const limit = Math.min(parseInt(req.query.limit) || 20, 100);
     const offset = Math.max(parseInt(req.query.offset) || 0, 0);
+    // ?recent=true → only today + yesterday (last 48 h); used for initial page load
+    const recentOnly = req.query.recent === 'true';
 
-    // Only cache full list (no pagination params)
-    const isCacheable = !req.query.limit && !req.query.offset;
+    // Only cache the recent-only request (what every first load hits)
+    const isCacheable = recentOnly && !req.query.offset;
     if (isCacheable && listCache && Date.now() - listCache.at < LIST_TTL_MS) {
       res.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=60');
       return res.json(listCache.payload);
     }
 
     const articles = await loadNews();
-    // Return newest first, strip large fields for list view
+    // Return newest first
     const sorted = articles.sort((a, b) => b.createdAt - a.createdAt);
-    const total = sorted.length;
-    const paginated = sorted.slice(offset, offset + limit);
-    
+
+    let pool;
+    if (recentOnly) {
+      // Articles from the last 48 hours (today + yesterday)
+      const cutoff = Date.now() - 48 * 60 * 60 * 1000;
+      pool = sorted.filter((a) => a.createdAt >= cutoff);
+    } else {
+      // Older articles only (everything outside the recent 48 h window)
+      const cutoff = Date.now() - 48 * 60 * 60 * 1000;
+      pool = sorted.filter((a) => a.createdAt < cutoff);
+    }
+
+    const total = pool.length;
+    const paginated = recentOnly ? pool : pool.slice(offset, offset + limit);
+
     const list = paginated.map(({ id, title, summary, imageUrl, category, createdAt }) => ({
       id,
       title,
       summary,
-      // Replace base64 data URI with a URL the browser can cache.
       imageUrl: imageUrl ? `/api/news/${id}/image` : '',
       category,
       createdAt,
     }));
 
-    const payload = { 
+    const payload = {
       articles: list,
       total,
       offset,
       limit,
-      hasMore: offset + limit < total
+      hasMore: recentOnly ? false : offset + limit < total,
     };
-    
+
     if (isCacheable) {
       listCache = { at: Date.now(), payload };
     }
-    
+
     res.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=60');
     res.json(payload);
   } catch (err) {

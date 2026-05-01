@@ -15,51 +15,55 @@ const CATEGORIES = [
 ];
 
 export default function NewsPage() {
-  const [articles, setArticles] = useState([]);
+  const [articles, setArticles] = useState([]);       // today + yesterday
+  const [olderArticles, setOlderArticles] = useState([]); // lazy-loaded older ones
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [category, setCategory] = useState('all');
   const [expanded, setExpanded] = useState(null); // article id
   const [fullBodies, setFullBodies] = useState({}); // id -> body text
-  const [hasMore, setHasMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);  // assume more until proven otherwise
   const [offset, setOffset] = useState(0);
-  const limit = 20; // items per page
+  const limit = 20;
 
-  const loadArticles = (reset = false) => {
-    const currentOffset = reset ? 0 : offset;
-    const loadingState = reset ? setLoading : setLoadingMore;
-    
-    loadingState(true);
-    fetch(`/api/news?limit=${limit}&offset=${currentOffset}`, { cache: 'no-store' })
+  // Initial load — only today + yesterday
+  const loadRecent = () => {
+    setLoading(true);
+    fetch('/api/news?recent=true', { cache: 'no-store' })
       .then((r) => r.json())
       .then((data) => {
-        if (reset) {
-          setArticles(data.articles || []);
-          setOffset(limit);
-        } else {
-          setArticles((prev) => [...prev, ...(data.articles || [])]);
-          setOffset((prev) => prev + limit);
-        }
+        setArticles(data.articles || []);
+        setOffset(0); // older pagination starts from 0
+        setHasMore(true); // always show Load More until exhausted
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  };
+
+  // Load More — paginated older articles (not in the last 48 h)
+  const loadMore = () => {
+    setLoadingMore(true);
+    fetch(`/api/news?limit=${limit}&offset=${offset}`, { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((data) => {
+        setOlderArticles((prev) => [...prev, ...(data.articles || [])]);
+        setOffset((prev) => prev + limit);
         setHasMore(data.hasMore || false);
       })
       .catch(() => {})
-      .finally(() => loadingState(false));
+      .finally(() => setLoadingMore(false));
   };
 
   useEffect(() => {
-    let alive = true;
-    const load = () => {
-      loadArticles(true);
-    };
-    load();
+    loadRecent();
 
     // Refetch when the user clicks a push notification (handled in sw.js)
     // or when the tab becomes visible again — ensures latest news is shown.
     const onSwMessage = (event) => {
-      if (event.data?.type === 'NOTIFICATION_CLICK') load();
+      if (event.data?.type === 'NOTIFICATION_CLICK') loadRecent();
     };
     const onVisible = () => {
-      if (document.visibilityState === 'visible') load();
+      if (document.visibilityState === 'visible') loadRecent();
     };
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.addEventListener('message', onSwMessage);
@@ -67,7 +71,6 @@ export default function NewsPage() {
     document.addEventListener('visibilitychange', onVisible);
 
     return () => {
-      alive = false;
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.removeEventListener('message', onSwMessage);
       }
@@ -76,9 +79,11 @@ export default function NewsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Combine recent + older for display
+  const allArticles = [...articles, ...olderArticles];
   const filtered = category === 'all'
-    ? articles
-    : articles.filter((a) => a.category === category);
+    ? allArticles
+    : allArticles.filter((a) => a.category === category);
 
   const formatDate = (ts) => {
     if (!ts) return '';
@@ -158,8 +163,24 @@ export default function NewsPage() {
 
       {/* Articles */}
       <div className="space-y-5">
-        {filtered.map((article, idx) => (
+        {/* Today & Yesterday label */}
+        {!loading && articles.length > 0 && (
+          <div className="flex items-center gap-3 py-1">
+            <span className="text-xs font-semibold text-emerald-400 uppercase tracking-widest">🟢 आज का समाचार</span>
+            <div className="flex-1 h-px bg-white/10" />
+          </div>
+        )}
+        {filtered.map((article, idx) => {
+          // Show divider before the first older article
+          const isFirstOlder = olderArticles.length > 0 && article.id === olderArticles[0].id && idx > 0;
+          return (
           <div key={article.id}>
+            {isFirstOlder && (
+              <div className="flex items-center gap-3 py-3">
+                <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">📅 पुराने समाचार</span>
+                <div className="flex-1 h-px bg-white/10" />
+              </div>
+            )}
             <article
               className="rounded-2xl bg-dark-800 border border-white/[0.06] overflow-hidden hover:border-primary-500/30 transition-colors"
             >
@@ -236,36 +257,37 @@ export default function NewsPage() {
           {/* Ad after every 5th article */}
           {(idx + 1) % 5 === 0 && <AdUnit />}
         </div>
-        ))}
+          );
+        })}
       </div>
 
-      {/* Load More button - lazy load from Redis */}
-      {hasMore && (
-        <div className="flex justify-center mt-8">
-          <button
-            onClick={() => loadArticles(false)}
-            disabled={loadingMore}
-            className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold text-sm hover:from-blue-500 hover:to-indigo-500 transition-all shadow-lg shadow-blue-500/20 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loadingMore ? (
-              <>
-                <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
-                </svg>
-                Loading...
-              </>
-            ) : (
-              <>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-                और समाचार दिखाएं · Load More
-              </>
-            )}
-          </button>
-        </div>
-      )}
+      {/* Load More — lazy loads older articles from Redis */}
+      <div className="flex justify-center mt-8">
+        <button
+          onClick={loadMore}
+          disabled={loadingMore || !hasMore}
+          className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold text-sm hover:from-blue-500 hover:to-indigo-500 transition-all shadow-lg shadow-blue-500/20 flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          {loadingMore ? (
+            <>
+              <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+              </svg>
+              Loading...
+            </>
+          ) : !hasMore ? (
+            'सभी समाचार दिखाए गए ✓'
+          ) : (
+            <>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+              पुराने समाचार · Load More
+            </>
+          )}
+        </button>
+      </div>
     </div>
   );
 }
