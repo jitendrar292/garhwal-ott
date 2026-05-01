@@ -95,6 +95,38 @@ function launchBrowser() {
   });
 }
 
+async function renderRoute(browser, route, PORT) {
+  let page;
+  try {
+    page = await browser.newPage();
+    await page.setRequestInterception(true);
+    page.on('request', (req) => {
+      const u = req.url();
+      const isLocalAsset =
+        u.startsWith(`http://localhost:${PORT}/`) &&
+        !u.startsWith(`http://localhost:${PORT}/api/`);
+      if (isLocalAsset) req.continue();
+      else req.abort();
+    });
+    page.on('pageerror', () => {});
+
+    await page.goto(`http://localhost:${PORT}${route}`, {
+      waitUntil: 'domcontentloaded',
+      timeout: 30000,
+    });
+    // Helmet writes to <head> in an effect after hydration — give React
+    // time to mount and Helmet to flush. 800ms is plenty for SPA boot.
+    await page.evaluate(() => new Promise((r) => setTimeout(r, 800)));
+
+    const html = await page.content();
+    const outDir = resolve(DIST, '.' + (route === '/' ? '' : route));
+    mkdirSync(outDir, { recursive: true });
+    writeFileSync(resolve(outDir, 'index.html'), html, 'utf8');
+  } finally {
+    if (page) { try { await page.close(); } catch {} }
+  }
+}
+
 async function prerender() {
   const PORT = 4321;
   const server = await startServer(PORT);
@@ -104,54 +136,29 @@ async function prerender() {
   let fail = 0;
 
   for (const route of ROUTES) {
-    let page;
+    // Relaunch browser if previous session was lost (e.g. OOM crash)
+    if (!browser.connected) {
+      console.warn('Browser disconnected — relaunching…');
+      try { await browser.close(); } catch {}
+      browser = await launchBrowser();
+    }
+
     try {
-      // Relaunch browser if previous session was lost (e.g. OOM crash)
-      if (!browser.connected) {
-        console.warn('Browser disconnected — relaunching…');
-        try { await browser.close(); } catch {}
-        browser = await launchBrowser();
-      }
-
-      page = await browser.newPage();
-
-      // Block API + any third-party requests so prerender doesn't hang waiting
-      // for the backend (it isn't running during build) or YouTube/Instagram
-      // embeds. We only need the React shell + Helmet head tags.
-      await page.setRequestInterception(true);
-      page.on('request', (req) => {
-        const u = req.url();
-        const isLocalAsset =
-          u.startsWith(`http://localhost:${PORT}/`) &&
-          !u.startsWith(`http://localhost:${PORT}/api/`);
-        if (isLocalAsset) {
-          req.continue();
-        } else {
-          req.abort();
-        }
-      });
-      page.on('pageerror', () => {}); // ignore SPA runtime errors during prerender
-
-      await page.goto(`http://localhost:${PORT}${route}`, {
-        waitUntil: 'domcontentloaded',
-        timeout: 30000,
-      });
-      // Helmet writes to <head> in an effect after hydration — give React
-      // time to mount and Helmet to flush. 800ms is plenty for SPA boot.
-      await page.evaluate(() => new Promise((r) => setTimeout(r, 800)));
-
-      const html = await page.content();
-      const outDir = resolve(DIST, '.' + (route === '/' ? '' : route));
-      mkdirSync(outDir, { recursive: true });
-      writeFileSync(resolve(outDir, 'index.html'), html, 'utf8');
+      await renderRoute(browser, route, PORT);
       ok++;
       console.log(`✓ prerendered ${route}`);
-    } catch (err) {
-      fail++;
-      console.warn(`✗ failed ${route}: ${err.message}`);
-    } finally {
-      if (page) {
-        try { await page.close(); } catch {}
+    } catch (firstErr) {
+      // Session may have died on this very route — relaunch and retry once
+      console.warn(`  retrying ${route} after error: ${firstErr.message}`);
+      try { await browser.close(); } catch {}
+      browser = await launchBrowser();
+      try {
+        await renderRoute(browser, route, PORT);
+        ok++;
+        console.log(`✓ prerendered ${route} (retry)`);
+      } catch (retryErr) {
+        fail++;
+        console.warn(`✗ failed ${route}: ${retryErr.message}`);
       }
     }
   }
