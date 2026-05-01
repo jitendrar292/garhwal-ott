@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import NotifyButton from '../components/NotifyButton';
 import SEO from '../components/SEO';
+import AdUnit from '../components/AdUnit';
 
 const CATEGORIES = [
   { id: 'all', label: 'सब / All', emoji: '📰' },
@@ -157,11 +158,11 @@ export default function NewsPage() {
 
       {/* Articles */}
       <div className="space-y-5">
-        {filtered.map((article) => (
-          <article
-            key={article.id}
-            className="rounded-2xl bg-dark-800 border border-white/[0.06] overflow-hidden hover:border-primary-500/30 transition-colors"
-          >
+        {filtered.map((article, idx) => (
+          <div key={article.id}>
+            <article
+              className="rounded-2xl bg-dark-800 border border-white/[0.06] overflow-hidden hover:border-primary-500/30 transition-colors"
+            >
             {article.imageUrl && (
               <div className="aspect-[16/9] sm:aspect-[2.4/1] overflow-hidden">
                 <img
@@ -232,6 +233,9 @@ export default function NewsPage() {
               )}
             </div>
           </article>
+          {/* Ad after every 5th article */}
+          {(idx + 1) % 5 === 0 && <AdUnit />}
+        </div>
         ))}
       </div>
 
