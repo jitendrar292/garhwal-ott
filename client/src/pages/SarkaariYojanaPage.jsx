@@ -98,14 +98,32 @@ function YojanaCard({ yojana }) {
       </div>
 
       {/* CTA */}
-      <a
-        href={yojana.link}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="block w-full text-center text-sm font-semibold text-white bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg py-2 transition-colors"
-      >
-        आवेदन / अधिक जानकारी →
-      </a>
+      <div className="flex gap-2">
+        <a
+          href={yojana.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex-1 text-center text-sm font-semibold text-white bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg py-2 transition-colors"
+        >
+          आवेदन / अधिक जानकारी →
+        </a>
+        <button
+          onClick={() => {
+            const text = `${yojana.titleLocal}\n${yojana.benefit}\n\nअधिक जानें: ${yojana.link}`;
+            if (navigator.share) {
+              navigator.share({ title: yojana.titleLocal, text: yojana.benefit, url: yojana.link }).catch(() => {});
+            } else {
+              navigator.clipboard.writeText(text).then(() => alert('Link copied!')).catch(() => {});
+            }
+          }}
+          className="shrink-0 p-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg transition-colors"
+          title="Share"
+        >
+          <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+          </svg>
+        </button>
+      </div>
     </div>
   );
 }

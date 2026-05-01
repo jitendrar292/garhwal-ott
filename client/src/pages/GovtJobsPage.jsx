@@ -132,19 +132,39 @@ function JobCard({ job, isHighlighted }) {
         <div className="text-[10px] text-white/50">
           पोस्ट: {formatDate(job.postedDate)}
         </div>
-        {job.link && !isExpired && (
-          <a
-            href={job.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-white bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 px-4 py-2 rounded-lg transition-all shadow-lg shadow-amber-500/20"
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              const url = `${window.location.origin}/jobs#${job.id}`;
+              const text = `${job.titleLocal || job.title}\n${job.department}\nपद: ${job.vacancies} | अंतिम तिथि: ${formatDate(job.lastDate)}\n\nआवेदन: ${url}`;
+              if (navigator.share) {
+                navigator.share({ title: job.titleLocal || job.title, text, url }).catch(() => {});
+              } else {
+                navigator.clipboard.writeText(text).then(() => alert('Link copied!')).catch(() => {});
+              }
+            }}
+            className="inline-flex items-center gap-1 text-sm text-white/70 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-2 rounded-lg transition-colors"
+            title="Share"
           >
-            आवेदन करा
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
             </svg>
-          </a>
-        )}
+            Share
+          </button>
+          {job.link && !isExpired && (
+            <a
+              href={job.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-white bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 px-4 py-2 rounded-lg transition-all shadow-lg shadow-amber-500/20"
+            >
+              आवेदन करा
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+          )}
+        </div>
       </div>
     </div>
   );
