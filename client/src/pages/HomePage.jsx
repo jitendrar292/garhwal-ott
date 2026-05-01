@@ -8,6 +8,7 @@ import GovtJobsRow from '../components/GovtJobsRow';
 import SarkaariYojanaRow from '../components/SarkaariYojanaRow';
 import UpcomingHappenings from '../components/UpcomingHappenings';
 import AboutSection from '../components/AboutSection';
+import AdUnit from '../components/AdUnit';
 import { getVideosByCategory } from '../api/youtube';
 
 export default function HomePage() {
@@ -117,6 +118,9 @@ export default function HomePage() {
           categoryLink="/category/trending"
         />
 
+        {/* Ad — after Trending */}
+        <AdUnit />
+
         {/* Movies */}
         <VideoRow
           title="🎬 Latest Movies"
@@ -134,6 +138,9 @@ export default function HomePage() {
           error={songs.error}
           categoryLink="/category/songs"
         />
+
+        {/* Ad — after Songs */}
+        <AdUnit />
 
         {/* Comedy */}
         <VideoRow
@@ -170,6 +177,9 @@ export default function HomePage() {
           error={folkdance.error}
           categoryLink="/category/folkdance"
         />
+
+        {/* Ad — after Folk Dances */}
+        <AdUnit />
 
         {/* Jaagar & Devotional */}
         <VideoRow
