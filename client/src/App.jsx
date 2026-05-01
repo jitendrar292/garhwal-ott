@@ -26,6 +26,7 @@ import FolkStoryPage from './pages/FolkStoryPage';
 import FolkStoriesIndexPage from './pages/FolkStoriesIndexPage';
 import GovtJobsPage from './pages/GovtJobsPage';
 import JobsAdminPage from './pages/JobsAdminPage';
+import SarkaariYojanaPage from './pages/SarkaariYojanaPage';
 import LoginPage from './pages/LoginPage';
 import AdminPage from './pages/AdminPage';
 import VoiceRecordingPage from './pages/VoiceRecordingPage';
@@ -111,6 +112,7 @@ function AnimatedRoutes() {
           <Route path="/folk-stories" element={<FolkStoriesIndexPage />} />
           <Route path="/jobs" element={<GovtJobsPage />} />
           <Route path="/jobs/admin" element={<JobsAdminPage />} />
+          <Route path="/yojana" element={<SarkaariYojanaPage />} />
           <Route path="/voice-recording" element={<VoiceRecordingPage />} />
         </Routes>
       </motion.div>

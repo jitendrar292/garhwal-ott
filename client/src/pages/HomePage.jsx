@@ -5,6 +5,7 @@ import GenreGrid from '../components/GenreGrid';
 import VideoRow from '../components/VideoRow';
 import FolkStoriesRow from '../components/FolkStoriesRow';
 import GovtJobsRow from '../components/GovtJobsRow';
+import SarkaariYojanaRow from '../components/SarkaariYojanaRow';
 import UpcomingHappenings from '../components/UpcomingHappenings';
 import AboutSection from '../components/AboutSection';
 import { getVideosByCategory } from '../api/youtube';
@@ -94,6 +95,16 @@ export default function HomePage() {
           transition={{ duration: 0.5, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
         >
           <GovtJobsRow />
+        </motion.div>
+
+        {/* Sarkaari Yojana — current govt schemes for Uttarakhand */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.1 }}
+          transition={{ duration: 0.5, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
+          <SarkaariYojanaRow />
         </motion.div>
 
         {/* Trending */}
