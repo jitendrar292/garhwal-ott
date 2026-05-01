@@ -26,6 +26,8 @@ const STATIC_ROUTES = [
   '/ghughuti-ai',
   '/favorites',
   '/feedback',
+  '/jobs',
+  '/yojana',
   '/category/movies',
   '/category/songs',
   '/category/comedy',
@@ -80,37 +82,56 @@ function startServer(port) {
   return new Promise((resolveP) => server.listen(port, () => resolveP(server)));
 }
 
+function launchBrowser() {
+  return puppeteer.launch({
+    headless: 'new',
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-gpu',
+      '--single-process',
+    ],
+  });
+}
+
 async function prerender() {
   const PORT = 4321;
   const server = await startServer(PORT);
-  const browser = await puppeteer.launch({
-    headless: 'new',
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  });
+  let browser = await launchBrowser();
 
   let ok = 0;
   let fail = 0;
 
   for (const route of ROUTES) {
-    const page = await browser.newPage();
-    // Block API + any third-party requests so prerender doesn't hang waiting
-    // for the backend (it isn't running during build) or YouTube/Instagram
-    // embeds. We only need the React shell + Helmet head tags.
-    await page.setRequestInterception(true);
-    page.on('request', (req) => {
-      const u = req.url();
-      const isLocalAsset =
-        u.startsWith(`http://localhost:${PORT}/`) &&
-        !u.startsWith(`http://localhost:${PORT}/api/`);
-      if (isLocalAsset) {
-        req.continue();
-      } else {
-        req.abort();
-      }
-    });
-    page.on('pageerror', () => {}); // ignore SPA runtime errors during prerender
-
+    let page;
     try {
+      // Relaunch browser if previous session was lost (e.g. OOM crash)
+      if (!browser.connected) {
+        console.warn('Browser disconnected — relaunching…');
+        try { await browser.close(); } catch {}
+        browser = await launchBrowser();
+      }
+
+      page = await browser.newPage();
+
+      // Block API + any third-party requests so prerender doesn't hang waiting
+      // for the backend (it isn't running during build) or YouTube/Instagram
+      // embeds. We only need the React shell + Helmet head tags.
+      await page.setRequestInterception(true);
+      page.on('request', (req) => {
+        const u = req.url();
+        const isLocalAsset =
+          u.startsWith(`http://localhost:${PORT}/`) &&
+          !u.startsWith(`http://localhost:${PORT}/api/`);
+        if (isLocalAsset) {
+          req.continue();
+        } else {
+          req.abort();
+        }
+      });
+      page.on('pageerror', () => {}); // ignore SPA runtime errors during prerender
+
       await page.goto(`http://localhost:${PORT}${route}`, {
         waitUntil: 'domcontentloaded',
         timeout: 30000,
@@ -129,11 +150,13 @@ async function prerender() {
       fail++;
       console.warn(`✗ failed ${route}: ${err.message}`);
     } finally {
-      await page.close();
+      if (page) {
+        try { await page.close(); } catch {}
+      }
     }
   }
 
-  await browser.close();
+  try { await browser.close(); } catch {}
   server.close();
   console.log(`\nPrerender complete: ${ok} ok, ${fail} failed (${ROUTES.length} total)`);
   if (fail > 0) process.exit(1);
