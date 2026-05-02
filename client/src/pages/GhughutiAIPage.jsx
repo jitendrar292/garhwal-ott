@@ -300,7 +300,7 @@ export default function GhughutiAIPage() {
   const characterMeta = CHARACTERS.find((c) => c.id === activeCharacter) || CHARACTERS[0];
 
   return (
-    <div className="relative h-screen overflow-hidden text-white flex flex-col">
+    <div className="relative min-h-screen text-white">
       <SEO
         title="Ghughuti AI - Garhwali Chatbot & Language Assistant"
         description="Ghughuti AI is a Garhwali-speaking chatbot — ask about Uttarakhand culture, festivals, food, travel, folk songs and learn new Garhwali words with everyday examples."
@@ -317,8 +317,8 @@ export default function GhughutiAIPage() {
           isPartOf: { '@id': 'https://pahaditube.in/#website' },
         }}
       />
-      {/* ===== Background: deep navy + mandala ===== */}
-      <div className="absolute inset-0 -z-10 bg-[#0a1228]">
+      {/* ===== Background: deep navy + mandala (fixed so it never scrolls) ===== */}
+      <div className="fixed inset-0 -z-10 bg-[#0a1228]">
         {/* radial accent glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[700px] -translate-y-1/3 rounded-full bg-amber-500/10 blur-3xl" />
         <div className="absolute bottom-0 right-0 w-[500px] h-[500px] translate-x-1/3 translate-y-1/3 rounded-full bg-emerald-500/10 blur-3xl" />
@@ -370,7 +370,7 @@ export default function GhughutiAIPage() {
       </div>
 
       {/* ===== Content ===== */}
-      <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 pt-4 pb-32 flex flex-col flex-1 min-h-0 overflow-y-auto">
+      <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 pt-4 pb-40 flex flex-col">
         {/* Brand header */}
         <div className="flex flex-col items-center mb-4">
           <img
@@ -496,7 +496,7 @@ export default function GhughutiAIPage() {
             </div>
           </div>
         ) : (
-          <div className="mt-4 relative rounded-3xl border border-amber-300/20 bg-[#0f1a36]/80 backdrop-blur shadow-2xl shadow-black/40 overflow-hidden flex-1 flex flex-col min-h-0">
+          <div className="mt-4 relative rounded-3xl border border-amber-300/20 bg-[#0f1a36]/80 backdrop-blur shadow-2xl shadow-black/40 overflow-hidden">
             <div
               className="h-1.5 w-full"
               style={{
@@ -514,7 +514,8 @@ export default function GhughutiAIPage() {
             )}
             <div
               ref={scrollRef}
-              className="flex-1 min-h-0 overflow-y-auto px-4 sm:px-6 py-5 space-y-4"
+              className="overflow-y-auto px-4 sm:px-6 py-5 space-y-4"
+              style={{ maxHeight: 'calc(100svh - 300px)', minHeight: '260px' }}
             >
               {messages.map((m, i) => (
                 <MessageBubble
