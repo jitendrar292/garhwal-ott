@@ -274,7 +274,14 @@ async function getPermanentVideos(category) {
   if (isRedisEnabled()) {
     try {
       const data = await redisHashGet(PERMANENT_VIDEOS_KEY, category);
-      if (data && Array.isArray(data)) return data;
+      if (data && Array.isArray(data)) {
+        // Sort newest first so the freshest content always leads
+        return data.slice().sort((a, b) => {
+          const da = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
+          const db = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
+          return db - da;
+        });
+      }
     } catch (err) {
       console.error('[youtube] getPermanentVideos error:', err.message);
     }
@@ -565,12 +572,15 @@ async function getVideosByCategoryRaw(category, pageToken = '', maxResults = 12)
 
   try {
     const handle = CATEGORY_CHANNEL_HANDLES[category];
+    // For shorts/reels use date order so latest content surfaces first
+    const dateOrderCategories = ['shorts', 'reels', 'trending'];
+    const defaultOrder = dateOrderCategories.includes(category) ? 'date' : 'relevance';
     let result;
     if (handle) {
       const channelId = await resolveChannelId(handle);
       result = await fetchFromYouTube('', pageToken, maxResults, { channelId, order: 'date' });
     } else {
-      result = await fetchFromYouTube(query, pageToken, maxResults);
+      result = await fetchFromYouTube(query, pageToken, maxResults, { order: defaultOrder });
     }
 
     // Merge new videos into permanent storage (accumulates over time)
