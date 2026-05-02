@@ -97,7 +97,14 @@ function AnimatedRoutes() {
           <Route path="/shorts" element={<ShortsPage />} />
           <Route path="/podcast" element={<PodcastPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/ghughuti-ai" element={<GhughutiAIPage />} />
+          <Route
+            path="/ghughuti-ai"
+            element={
+              <RequireAuth>
+                <GhughutiAIPage />
+              </RequireAuth>
+            }
+          />
           {/* Legacy URL — keep so old bookmarks/sitemap entries don't 404. */}
           <Route path="/pahadi-ai" element={<Navigate to="/ghughuti-ai" replace />} />
           <Route path="/news" element={<NewsPage />} />
