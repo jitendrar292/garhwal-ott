@@ -300,7 +300,7 @@ export default function GhughutiAIPage() {
   const characterMeta = CHARACTERS.find((c) => c.id === activeCharacter) || CHARACTERS[0];
 
   return (
-    <div className="relative min-h-screen overflow-hidden text-white">
+    <div className="relative h-screen overflow-hidden text-white flex flex-col">
       <SEO
         title="Ghughuti AI - Garhwali Chatbot & Language Assistant"
         description="Ghughuti AI is a Garhwali-speaking chatbot — ask about Uttarakhand culture, festivals, food, travel, folk songs and learn new Garhwali words with everyday examples."
@@ -370,7 +370,7 @@ export default function GhughutiAIPage() {
       </div>
 
       {/* ===== Content ===== */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-6 pb-48 flex flex-col" style={{ minHeight: '100vh' }}>
+      <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 pt-4 pb-32 flex flex-col flex-1 min-h-0 overflow-y-auto">
         {/* Brand header */}
         <div className="flex flex-col items-center mb-4">
           <img
@@ -496,7 +496,7 @@ export default function GhughutiAIPage() {
             </div>
           </div>
         ) : (
-          <div className="mt-6 relative rounded-3xl border border-amber-300/20 bg-[#0f1a36]/80 backdrop-blur shadow-2xl shadow-black/40 overflow-hidden">
+          <div className="mt-4 relative rounded-3xl border border-amber-300/20 bg-[#0f1a36]/80 backdrop-blur shadow-2xl shadow-black/40 overflow-hidden flex-1 flex flex-col min-h-0">
             <div
               className="h-1.5 w-full"
               style={{
@@ -514,8 +514,7 @@ export default function GhughutiAIPage() {
             )}
             <div
               ref={scrollRef}
-              className="overflow-y-auto px-4 sm:px-6 py-5 space-y-4"
-              style={{ maxHeight: 'calc(100vh - 280px)', minHeight: '320px' }}
+              className="flex-1 min-h-0 overflow-y-auto px-4 sm:px-6 py-5 space-y-4"
             >
               {messages.map((m, i) => (
                 <MessageBubble
