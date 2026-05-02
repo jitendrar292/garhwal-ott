@@ -61,7 +61,7 @@ function YojanaModal({ yojana, onClose }) {
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full sm:max-w-lg bg-dark-900 border border-white/10 rounded-t-2xl sm:rounded-2xl shadow-2xl overflow-y-auto max-h-[90vh]">
+      <div className="relative w-full sm:max-w-lg bg-dark-900 border border-white/10 rounded-t-2xl sm:rounded-2xl shadow-2xl overflow-y-auto max-h-[85vh]">
         {/* Drag handle */}
         <div className="flex justify-center pt-3 pb-1 sm:hidden">
           <div className="w-10 h-1 rounded-full bg-white/20" />
@@ -134,7 +134,7 @@ function YojanaModal({ yojana, onClose }) {
         </div>
 
         {/* Actions */}
-        <div className="flex gap-2 px-5 pb-6">
+        <div className="flex gap-2 px-5 pb-24 sm:pb-8">
           <a
             href={yojana.link}
             target="_blank"

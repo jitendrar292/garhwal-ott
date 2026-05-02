@@ -77,7 +77,7 @@ function YojanaModal({ yojana, onClose }) {
       <div
         className={`relative w-full sm:max-w-lg rounded-t-2xl sm:rounded-2xl border ${
           categoryColors[yojana.category] || 'border-white/20 bg-dark-800'
-        } bg-dark-900 shadow-2xl overflow-y-auto max-h-[90vh] pb-safe`}
+        } bg-dark-900 shadow-2xl overflow-y-auto max-h-[85vh] pb-safe`}
       >
         {/* Drag handle */}
         <div className="flex justify-center pt-3 pb-1 sm:hidden">
@@ -154,7 +154,7 @@ function YojanaModal({ yojana, onClose }) {
         </div>
 
         {/* Action buttons */}
-        <div className="flex gap-2 px-5 pb-6">
+        <div className="flex gap-2 px-5 pb-24 sm:pb-8">
           <a
             href={yojana.link}
             target="_blank"
