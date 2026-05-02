@@ -34,12 +34,12 @@ const TOPIC_CARDS = [
 
 const CHARACTERS = [
   {
-    id: 'bheji',
-    name: 'भेजी दीदी',
-    subtitle: 'प्यार भरि सलाह',
-    emoji: '👵',
-    avatar: '/ghughuti-ai-logo.png',
-    tone: 'warm',
+    id: 'boda',
+    name: 'पहाड़ी बोड़ा',
+    subtitle: 'बुजुर्ग की समझदारी',
+    emoji: '🧔',
+    avatar: '/characters/pahadi-boda.png',
+    tone: 'wise',
   },
   {
     id: 'bhula',
@@ -58,7 +58,7 @@ export default function GhughutiAIPage() {
   const [error, setError] = useState('');
   const [listening, setListening] = useState(false);
   const [speakingIdx, setSpeakingIdx] = useState(-1);
-  const [activeCharacter, setActiveCharacter] = useState('bheji');
+  const [activeCharacter, setActiveCharacter] = useState('boda');
   const abortRef = useRef(null);
   const scrollRef = useRef(null);
   const textareaRef = useRef(null);
