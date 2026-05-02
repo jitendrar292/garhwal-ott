@@ -30,6 +30,7 @@ import SarkaariYojanaPage from './pages/SarkaariYojanaPage';
 import LoginPage from './pages/LoginPage';
 import AdminPage from './pages/AdminPage';
 import VoiceRecordingPage from './pages/VoiceRecordingPage';
+import GarhwaliSikhaPage from './pages/GarhwaliSikhaPage';
 
 // Protected route wrapper - redirects to login if not authenticated
 function RequireAuth({ children }) {
@@ -114,6 +115,7 @@ function AnimatedRoutes() {
           <Route path="/jobs/admin" element={<JobsAdminPage />} />
           <Route path="/yojana" element={<SarkaariYojanaPage />} />
           <Route path="/voice-recording" element={<VoiceRecordingPage />} />
+          <Route path="/garhwali-sikha" element={<GarhwaliSikhaPage />} />
         </Routes>
       </motion.div>
     </AnimatePresence>

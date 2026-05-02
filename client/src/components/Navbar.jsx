@@ -16,6 +16,7 @@ const TABS = [
   { name: 'Reels', path: '/shorts', emoji: '⚡' },
   { name: 'Podcast', path: '/podcast', emoji: '🎙️' },
   { name: 'Jobs', path: '/jobs', emoji: '💼' },
+  { name: 'Garhwali Sikha', path: '/garhwali-sikha', emoji: '📖' },
   { name: 'Ghughuti AI', path: '/ghughuti-ai', emoji: '🤖' },
 ];
 
