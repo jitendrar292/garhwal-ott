@@ -39,7 +39,7 @@ function RequireAuth({ children }) {
 
   if (loading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-[#14122a]">
         <div className="animate-spin w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full" />
       </div>
     );

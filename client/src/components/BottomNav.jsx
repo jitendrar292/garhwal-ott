@@ -1,5 +1,6 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useAuth } from '../context/AuthContext';
 
 const TABS = [
   {
@@ -75,10 +76,19 @@ const TABS = [
 
 export default function BottomNav() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   const isActive = (path) => {
     if (path === '/') return location.pathname === '/';
     return location.pathname.startsWith(path);
+  };
+
+  const handleTabClick = (e, path) => {
+    if (path === '/ghughuti-ai' && !isAuthenticated) {
+      e.preventDefault();
+      navigate('/login', { state: { from: { pathname: '/ghughuti-ai' } } });
+    }
   };
 
   return (
@@ -93,6 +103,7 @@ export default function BottomNav() {
           <Link
             key={tab.path}
             to={tab.path}
+            onClick={(e) => handleTabClick(e, tab.path)}
             className={`relative flex flex-col items-center gap-0.5 px-1.5 py-1 rounded-lg transition-all duration-300 min-w-0 flex-1
               ${isActive(tab.path)
                 ? 'text-primary-400'
