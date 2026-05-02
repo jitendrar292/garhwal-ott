@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import EVENTS from '../data/events';
 import FESTIVALS from '../data/festivals';
 import MELAS from '../data/melas';
@@ -134,7 +134,7 @@ function normaliseEvent(e) {
   };
 }
 
-function HappeningCard({ item, isPast }) {
+function HappeningCard({ item, isPast, onClick }) {
   const days = daysUntil(item.date);
   const tag = TYPES[item.type];
   const dateLabel = formatRange(item.date, item.endDate);
@@ -143,71 +143,253 @@ function HappeningCard({ item, isPast }) {
 
   return (
     <article
-      className={`relative w-[260px] sm:w-[280px] rounded-2xl ${solidBg} p-4 shadow-lg shadow-black/30 ring-1 ring-white/10 hover:scale-[1.02] hover:ring-white/30 transition-all overflow-hidden ${isPast ? 'opacity-80' : ''}`}
+      onClick={() => onClick(item)}
+      className={`relative w-[260px] sm:w-[280px] rounded-2xl ${solidBg} p-4 shadow-lg shadow-black/30 ring-1 ring-white/10 hover:scale-[1.02] hover:ring-white/30 transition-all overflow-hidden cursor-pointer ${isPast ? 'opacity-80' : ''}`}
     >
-      {/* dot pattern overlay (matches Ghughuti AI card style) */}
+      {/* dot pattern overlay */}
       <div
         className="absolute inset-0 opacity-10 pointer-events-none"
         style={{
-          backgroundImage:
-            'radial-gradient(circle at 30% 20%, #fff 1px, transparent 1px)',
+          backgroundImage: 'radial-gradient(circle at 30% 20%, #fff 1px, transparent 1px)',
           backgroundSize: '10px 10px',
         }}
       />
       <div className="relative">
-      <div className="flex items-start justify-between mb-2 gap-2">
-        <div className="text-4xl drop-shadow">{item.emoji}</div>
-        <div className="text-right">
-          <div className="text-[10px] uppercase tracking-wider font-bold text-white/90 bg-black/35 rounded-full px-2 py-0.5">
-            {timeLabel}
+        <div className="flex items-start justify-between mb-2 gap-2">
+          <div className="text-4xl drop-shadow">{item.emoji}</div>
+          <div className="text-right">
+            <div className="text-[10px] uppercase tracking-wider font-bold text-white/90 bg-black/35 rounded-full px-2 py-0.5">
+              {timeLabel}
+            </div>
+            <div className="mt-1 text-[11px] text-white/85">{dateLabel}</div>
           </div>
-          <div className="mt-1 text-[11px] text-white/85">{dateLabel}</div>
         </div>
-      </div>
 
-      <div className="flex items-center gap-1.5 mb-1 flex-wrap">
-        {tag && (
-          <span className={`text-[10px] font-bold text-white px-2 py-0.5 rounded-full ${tag.cls}`}>
-            {tag.label}
-          </span>
-        )}
-        {isPast && (
-          <span className="text-[10px] font-bold text-white/90 px-2 py-0.5 rounded-full bg-black/45">
-            हाल का
-          </span>
-        )}
-      </div>
+        <div className="flex items-center gap-1.5 mb-1 flex-wrap">
+          {tag && (
+            <span className={`text-[10px] font-bold text-white px-2 py-0.5 rounded-full ${tag.cls}`}>
+              {tag.label}
+            </span>
+          )}
+          {isPast && (
+            <span className="text-[10px] font-bold text-white/90 px-2 py-0.5 rounded-full bg-black/45">
+              हाल का
+            </span>
+          )}
+        </div>
 
-      <h3 className="text-base font-bold text-white leading-tight">{item.name}</h3>
-      {item.nameLocal && (
-        <div className="text-sm text-white/90 font-medium">{item.nameLocal}</div>
-      )}
-      {item.location && (
-        <div className="mt-1 text-[11px] text-white/80 font-medium">📍 {item.location}</div>
-      )}
-      {item.organizer && (
-        <div className="text-[11px] text-white/70">{item.organizer}</div>
-      )}
-      <p className="mt-2 text-[12px] text-white/85 leading-snug line-clamp-3">
-        {item.description}
-      </p>
-      {item.link && (
-        <a
-          href={item.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-2 inline-block text-[11px] font-semibold text-white/95 underline underline-offset-2 hover:text-white"
-        >
-          और जाणा →
-        </a>
-      )}
+        <h3 className="text-base font-bold text-white leading-tight">{item.name}</h3>
+        {item.nameLocal && (
+          <div className="text-sm text-white/90 font-medium">{item.nameLocal}</div>
+        )}
+        {item.location && (
+          <div className="mt-1 text-[11px] text-white/80 font-medium">📍 {item.location}</div>
+        )}
+        <p className="mt-2 text-[12px] text-white/85 leading-snug line-clamp-2">
+          {item.description}
+        </p>
+        <div className="mt-3 text-[11px] text-white/70 font-semibold flex items-center gap-1">
+          <span>विवरण देखें</span>
+          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </div>
       </div>
     </article>
   );
 }
 
+// ── Detail Modal ──
+function HappeningModal({ item, onClose }) {
+  const days = daysUntil(item.date);
+  const tag = TYPES[item.type];
+  const dateLabel = formatRange(item.date, item.endDate);
+  const timeLabel = days >= 0 ? countdownLabel(days) : pastLabel(days);
+  const solidBg = (tag && tag.solid) || 'bg-slate-700';
+  const mapsQuery = encodeURIComponent(item.location + ', Uttarakhand, India');
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`;
+
+  // Close on Escape
+  useEffect(() => {
+    const handler = (e) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [onClose]);
+
+  // Prevent body scroll while open
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, []);
+
+  const handleShare = () => {
+    const text = `${item.emoji} ${item.name}${item.nameLocal ? ' · ' + item.nameLocal : ''}\n📅 ${dateLabel}\n📍 ${item.location}\n\n${item.description}`;
+    if (navigator.share) {
+      navigator.share({ title: item.name, text, url: item.link || window.location.href }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(text).then(() => alert('Copied!')).catch(() => {});
+    }
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
+      onClick={onClose}
+    >
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+
+      {/* Sheet / Modal */}
+      <div
+        className="relative w-full sm:max-w-lg rounded-t-3xl sm:rounded-2xl overflow-hidden shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Gradient header */}
+        <div className={`relative ${solidBg} px-5 pt-5 pb-6`}>
+          <div
+            className="absolute inset-0 opacity-10 pointer-events-none"
+            style={{
+              backgroundImage: 'radial-gradient(circle at 20% 30%, #fff 1px, transparent 1px)',
+              backgroundSize: '12px 12px',
+            }}
+          />
+          {/* Drag handle (mobile) */}
+          <div className="sm:hidden absolute top-2 left-1/2 -translate-x-1/2 w-10 h-1 bg-white/30 rounded-full" />
+
+          <div className="relative flex items-start justify-between gap-3">
+            <div className="text-5xl drop-shadow">{item.emoji}</div>
+            <button
+              onClick={onClose}
+              className="mt-1 p-1.5 rounded-full bg-black/30 hover:bg-black/50 text-white transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <div className="relative mt-2">
+            <div className="flex items-center gap-2 flex-wrap mb-1">
+              {tag && (
+                <span className={`text-[10px] font-bold text-white px-2 py-0.5 rounded-full ${tag.cls}`}>
+                  {tag.label}
+                </span>
+              )}
+              <span className="text-[10px] font-bold text-white/90 bg-black/30 px-2 py-0.5 rounded-full">
+                {timeLabel}
+              </span>
+            </div>
+            <h2 className="text-xl font-bold text-white leading-tight">{item.name}</h2>
+            {item.nameLocal && (
+              <p className="text-base text-white/90 font-medium">{item.nameLocal}</p>
+            )}
+          </div>
+        </div>
+
+        {/* Body */}
+        <div className="bg-dark-900 px-5 py-5 space-y-4 max-h-[60vh] overflow-y-auto">
+
+          {/* Date & Time */}
+          <div className="flex items-start gap-3">
+            <div className="w-9 h-9 rounded-xl bg-indigo-500/20 flex items-center justify-center text-lg shrink-0">📅</div>
+            <div>
+              <p className="text-xs text-gray-400 font-semibold uppercase tracking-widest">तारीख</p>
+              <p className="text-white font-semibold">{dateLabel}</p>
+              {item.endDate && item.endDate !== item.date && (
+                <p className="text-xs text-gray-400 mt-0.5">
+                  {Math.round((new Date(item.endDate + 'T00:00:00') - new Date(item.date + 'T00:00:00')) / 86400000) + 1} दिन का आयोजन
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Location */}
+          {item.location && (
+            <div className="flex items-start gap-3">
+              <div className="w-9 h-9 rounded-xl bg-emerald-500/20 flex items-center justify-center text-lg shrink-0">📍</div>
+              <div className="flex-1">
+                <p className="text-xs text-gray-400 font-semibold uppercase tracking-widest">स्थान / Venue</p>
+                <p className="text-white font-semibold">{item.location}</p>
+                <p className="text-xs text-gray-400">Uttarakhand, India</p>
+                <a
+                  href={mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 mt-2 text-xs font-semibold text-emerald-400 hover:text-emerald-300 transition-colors"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  Google Maps पर देखें
+                </a>
+              </div>
+            </div>
+          )}
+
+          {/* Organizer */}
+          {item.organizer && (
+            <div className="flex items-start gap-3">
+              <div className="w-9 h-9 rounded-xl bg-amber-500/20 flex items-center justify-center text-lg shrink-0">🏛️</div>
+              <div>
+                <p className="text-xs text-gray-400 font-semibold uppercase tracking-widest">आयोजक</p>
+                <p className="text-white font-semibold">{item.organizer}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Description */}
+          <div className="flex items-start gap-3">
+            <div className="w-9 h-9 rounded-xl bg-purple-500/20 flex items-center justify-center text-lg shrink-0">📝</div>
+            <div>
+              <p className="text-xs text-gray-400 font-semibold uppercase tracking-widest">विवरण</p>
+              <p className="text-gray-200 text-sm leading-relaxed mt-1">{item.description}</p>
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex gap-3 pt-2">
+            {item.link && (
+              <a
+                href={item.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 text-center py-2.5 rounded-xl bg-white text-dark-950 font-bold text-sm hover:bg-gray-100 transition-colors"
+              >
+                और जाणा →
+              </a>
+            )}
+            <button
+              onClick={handleShare}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-dark-700 hover:bg-dark-600 text-white text-sm font-medium transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+              </svg>
+              Share
+            </button>
+            <a
+              href={mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white text-sm font-medium transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Map
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function UpcomingHappenings() {
   const [filter, setFilter] = useState('all');
+  const [selectedItem, setSelectedItem] = useState(null);
 
   const { upcoming, past, presentTypes } = useMemo(() => {
     const today = new Date();
@@ -288,12 +470,16 @@ export default function UpcomingHappenings() {
 
       <div className="scroll-row -mx-4 px-4 sm:mx-0 sm:px-0">
         {visibleUpcoming.map((i) => (
-          <HappeningCard key={i.id} item={i} isPast={false} />
+          <HappeningCard key={i.id} item={i} isPast={false} onClick={setSelectedItem} />
         ))}
         {visiblePast.map((i) => (
-          <HappeningCard key={i.id} item={i} isPast={true} />
+          <HappeningCard key={i.id} item={i} isPast={true} onClick={setSelectedItem} />
         ))}
       </div>
+
+      {selectedItem && (
+        <HappeningModal item={selectedItem} onClose={() => setSelectedItem(null)} />
+      )}
     </section>
   );
 }
