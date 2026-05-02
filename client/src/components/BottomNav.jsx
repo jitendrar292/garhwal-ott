@@ -102,7 +102,7 @@ export default function BottomNav() {
             {isActive(tab.path) && (
               <motion.div
                 layoutId="bottomNavIndicator"
-                className="absolute -top-1 left-1/2 -translate-x-1/2 w-8 h-1 bg-gradient-to-r from-primary-400 to-primary-500 rounded-full shadow-[0_0_10px_rgba(0,188,212,0.5)]"
+                className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-[3px] bg-gradient-to-r from-primary-400 to-primary-500 rounded-b-full shadow-[0_0_8px_rgba(0,188,212,0.6)]"
                 transition={{ type: 'spring', stiffness: 400, damping: 30 }}
               />
             )}
