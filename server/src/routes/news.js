@@ -61,9 +61,12 @@ router.get('/', async (req, res) => {
     const offset = Math.max(parseInt(req.query.offset) || 0, 0);
     // ?recent=true → only today + yesterday (last 48 h); used for initial page load
     const recentOnly = req.query.recent === 'true';
+    // ?all=true&key=<adminKey> → return every article (admin use only)
+    const adminKey = process.env.FEEDBACK_ADMIN_KEY || 'pahadi2026';
+    const fetchAll = req.query.all === 'true' && req.query.key === adminKey;
 
     // Only cache the recent-only request (what every first load hits)
-    const isCacheable = recentOnly && !req.query.offset;
+    const isCacheable = recentOnly && !req.query.offset && !fetchAll;
     if (isCacheable && listCache && Date.now() - listCache.at < LIST_TTL_MS) {
       res.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=60');
       return res.json(listCache.payload);
@@ -74,7 +77,10 @@ router.get('/', async (req, res) => {
     const sorted = articles.sort((a, b) => b.createdAt - a.createdAt);
 
     let pool;
-    if (recentOnly) {
+    if (fetchAll) {
+      // Admin: return all articles regardless of age
+      pool = sorted;
+    } else if (recentOnly) {
       // Articles from the last 48 hours (today + yesterday)
       const cutoff = Date.now() - 48 * 60 * 60 * 1000;
       pool = sorted.filter((a) => a.createdAt >= cutoff);
@@ -85,13 +91,13 @@ router.get('/', async (req, res) => {
     }
 
     const total = pool.length;
-    const paginated = recentOnly ? pool : pool.slice(offset, offset + limit);
+    const paginated = (recentOnly || fetchAll) ? pool : pool.slice(offset, offset + limit);
 
-    const list = paginated.map(({ id, title, summary, imageUrl, category, createdAt }) => ({
+    const list = paginated.map(({ id, title, summary, imageUrl, category, createdAt, updatedAt }) => ({
       id,
       title,
       summary,
-      imageUrl: imageUrl ? `/api/news/${id}/image` : '',
+      imageUrl: imageUrl ? `/api/news/${id}/image?v=${updatedAt || createdAt}` : '',
       category,
       createdAt,
     }));
@@ -101,14 +107,14 @@ router.get('/', async (req, res) => {
       total,
       offset,
       limit,
-      hasMore: recentOnly ? false : offset + limit < total,
+      hasMore: (recentOnly || fetchAll) ? false : offset + limit < total,
     };
 
     if (isCacheable) {
       listCache = { at: Date.now(), payload };
     }
 
-    res.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=60');
+    res.set('Cache-Control', fetchAll ? 'no-store' : 'public, max-age=30, stale-while-revalidate=60');
     res.json(payload);
   } catch (err) {
     console.error('[news] list error:', err.message);
@@ -149,9 +155,10 @@ router.get('/:id', async (req, res) => {
     if (!article) return res.status(404).json({ error: 'Article not found' });
     // Same trick as the list endpoint: send a thin URL instead of the full
     // base64 data URI so the browser can cache the image independently.
+    // Include a version param so edits bust the browser's image cache.
     const safe = {
       ...article,
-      imageUrl: article.imageUrl ? `/api/news/${article.id}/image` : '',
+      imageUrl: article.imageUrl ? `/api/news/${article.id}/image?v=${article.updatedAt || article.createdAt}` : '',
     };
     res.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=60');
     res.json({ article: safe });
@@ -296,9 +303,10 @@ router.put('/:id', async (req, res) => {
     await saveNews(articles);
 
     // Return the article with the URL-style image (matches GET /:id shape).
+    // Version param ensures the browser re-fetches the updated image.
     const safe = {
       ...updated,
-      imageUrl: updated.imageUrl ? `/api/news/${updated.id}/image` : '',
+      imageUrl: updated.imageUrl ? `/api/news/${updated.id}/image?v=${updated.updatedAt || updated.createdAt}` : '',
     };
     res.json({ article: safe });
   } catch (err) {

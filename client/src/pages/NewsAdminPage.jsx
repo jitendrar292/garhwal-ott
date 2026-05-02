@@ -74,7 +74,7 @@ export default function NewsAdminPage() {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('/api/news', { cache: 'no-store' });
+      const res = await fetch(`/api/news?all=true&key=${encodeURIComponent(key)}`, { cache: 'no-store' });
       if (!res.ok) throw new Error('Failed to fetch');
       const data = await res.json();
       setArticles(data.articles || []);
@@ -83,7 +83,7 @@ export default function NewsAdminPage() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [key]);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -101,9 +101,11 @@ export default function NewsAdminPage() {
       return;
     }
     setImageFile(file);
-    setImageDirty(true);
     const reader = new FileReader();
-    reader.onload = () => setImagePreview(reader.result);
+    reader.onload = () => {
+      setImagePreview(reader.result);
+      setImageDirty(true); // set dirty only after data URI is ready
+    };
     reader.readAsDataURL(file);
   };
 
