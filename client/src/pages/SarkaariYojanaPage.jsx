@@ -153,116 +153,120 @@ export default function SarkaariYojanaPage() {
   }, {});
 
   return (
-    <>
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 pb-28">
       <SEO
         title="सरकारी योजनाएं | उत्तराखंड | Pahadi Tube"
         description="उत्तराखंड में चल रही प्रमुख सरकारी योजनाओं की जानकारी — स्वास्थ्य, शिक्षा, कृषि, महिला, रोजगार, आवास और अधिक।"
         keywords="सरकारी योजनाएं उत्तराखंड, government schemes uttarakhand, atal ayushman, nanda devi kanya dhan, mukhyamantri yojana"
       />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-        {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">
-            🏛️ सरकारी योजनाएं
-          </h1>
-          <p className="text-white/60 text-sm">
-            उत्तराखंड सरकार की प्रमुख चल रही योजनाएं — सभी नागरिकों के लिए
-          </p>
+      {/* Page Header */}
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 flex items-center justify-center shadow-lg shadow-amber-500/20 text-2xl shrink-0">
+          🏛️
         </div>
-
-        {/* Stats bar */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
-          {[
-            { label: 'कुल योजनाएं', value: SARKAARI_YOJANA.length, icon: '📋' },
-            {
-              label: 'सक्रिय / जारी',
-              value: SARKAARI_YOJANA.filter((y) => y.status === 'active' || y.status === 'ongoing').length,
-              icon: '✅',
-            },
-            {
-              label: 'नई योजनाएं',
-              value: SARKAARI_YOJANA.filter((y) => y.status === 'new').length,
-              icon: '🆕',
-            },
-            {
-              label: 'रजिस्ट्रेशन खुला',
-              value: SARKAARI_YOJANA.filter((y) => y.status === 'registration-open').length,
-              icon: '📝',
-            },
-          ].map((stat) => (
-            <div
-              key={stat.label}
-              className="bg-white/5 border border-white/10 rounded-xl p-4 text-center"
-            >
-              <div className="text-2xl mb-1">{stat.icon}</div>
-              <div className="text-2xl font-bold text-white">{stat.value}</div>
-              <div className="text-white/50 text-xs">{stat.label}</div>
-            </div>
-          ))}
+        <div>
+          <h1 className="page-header">सरकारी <span className="gradient-text">योजनाएं</span></h1>
+          <p className="text-sm text-gray-400">उत्तराखंड सरकार की प्रमुख चल रही योजनाएं</p>
         </div>
-
-        {/* Search */}
-        <div className="relative mb-5">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-lg">🔍</span>
-          <input
-            type="text"
-            placeholder="योजना खोजें... (नाम, लाभार्थी, लाभ)"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-white placeholder-white/30 text-sm focus:outline-none focus:border-primary-500 transition-colors"
-          />
-        </div>
-
-        {/* Category filters */}
-        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide mb-6">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setActiveCategory(cat.id)}
-              className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
-                activeCategory === cat.id
-                  ? 'bg-primary-600 text-white shadow-lg shadow-primary-900/40'
-                  : 'bg-white/5 text-white/60 hover:bg-white/10 border border-white/10'
-              }`}
-            >
-              <span>{cat.emoji}</span>
-              <span>{cat.label}</span>
-              {counts[cat.id] > 0 && (
-                <span
-                  className={`text-[10px] rounded-full px-1.5 py-0.5 ${
-                    activeCategory === cat.id
-                      ? 'bg-white/20 text-white'
-                      : 'bg-white/10 text-white/50'
-                  }`}
-                >
-                  {counts[cat.id]}
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
-
-        {/* Results */}
-        {filtered.length === 0 ? (
-          <div className="text-center py-16 text-white/40">
-            <div className="text-5xl mb-3">🔍</div>
-            <p className="text-lg font-medium">कोई योजना नहीं मिली</p>
-            <p className="text-sm mt-1">अपनी खोज बदलकर देखें</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filtered.map((yojana) => (
-              <YojanaCard key={yojana.id} yojana={yojana} />
-            ))}
-          </div>
-        )}
-
-        {/* Disclaimer */}
-        <p className="text-center text-white/30 text-xs mt-10">
-          * यह जानकारी सार्वजनिक स्रोतों से ली गई है। आधिकारिक जानकारी के लिए संबंधित विभाग की वेबसाइट पर जाएं।
-        </p>
       </div>
-    </>
+
+      {/* Stats bar */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+        {[
+          { label: 'कुल योजनाएं', value: SARKAARI_YOJANA.length, icon: '📋' },
+          {
+            label: 'सक्रिय / जारी',
+            value: SARKAARI_YOJANA.filter((y) => y.status === 'active' || y.status === 'ongoing').length,
+            icon: '✅',
+          },
+          {
+            label: 'नई योजनाएं',
+            value: SARKAARI_YOJANA.filter((y) => y.status === 'new').length,
+            icon: '🆕',
+          },
+          {
+            label: 'रजिस्ट्रेशन खुला',
+            value: SARKAARI_YOJANA.filter((y) => y.status === 'registration-open').length,
+            icon: '📝',
+          },
+        ].map((stat) => (
+          <div
+            key={stat.label}
+            className="bg-dark-800 border border-white/10 rounded-xl p-4 text-center"
+          >
+            <div className="text-2xl mb-1">{stat.icon}</div>
+            <div className="text-2xl font-bold text-white">{stat.value}</div>
+            <div className="text-gray-400 text-xs">{stat.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Search */}
+      <div className="relative mb-5">
+        <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input
+          type="text"
+          placeholder="योजना खोजें... (नाम, लाभार्थी, लाभ)"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-dark-800 border border-dark-600 text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors"
+        />
+        {search && (
+          <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white">✕</button>
+        )}
+      </div>
+
+      {/* Category filters */}
+      <div className="flex gap-2 overflow-x-auto pb-3 mb-6 scroll-row">
+        {CATEGORIES.map((cat) => (
+          <button
+            key={cat.id}
+            onClick={() => setActiveCategory(cat.id)}
+            className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
+              activeCategory === cat.id
+                ? 'bg-amber-500 text-black shadow-md'
+                : 'bg-dark-700 text-gray-300 hover:bg-dark-600'
+            }`}
+          >
+            <span>{cat.emoji}</span>
+            <span>{cat.label}</span>
+            {counts[cat.id] > 0 && (
+              <span
+                className={`text-[10px] rounded-full px-1.5 py-0.5 ${
+                  activeCategory === cat.id
+                    ? 'bg-black/20 text-black'
+                    : 'bg-dark-600 text-gray-400'
+                }`}
+              >
+                {counts[cat.id]}
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
+
+      {/* Results */}
+      {filtered.length === 0 ? (
+        <div className="text-center py-16 text-gray-500">
+          <div className="text-5xl mb-3">🔍</div>
+          <p className="text-lg font-medium">कोई योजना नहीं मिली</p>
+          <p className="text-sm mt-1">अपनी खोज बदलकर देखें</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filtered.map((yojana) => (
+            <YojanaCard key={yojana.id} yojana={yojana} />
+          ))}
+        </div>
+      )}
+
+      {/* Disclaimer */}
+      <p className="text-center text-gray-600 text-xs mt-10">
+        * यह जानकारी सार्वजनिक स्रोतों से ली गई है। आधिकारिक जानकारी के लिए संबंधित विभाग की वेबसाइट पर जाएं।
+      </p>
+    </div>
   );
 }
