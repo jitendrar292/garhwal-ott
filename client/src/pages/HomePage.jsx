@@ -4,6 +4,7 @@ import ImageSlider from '../components/ImageSlider';
 import GenreGrid from '../components/GenreGrid';
 import VideoRow from '../components/VideoRow';
 import FolkStoriesRow from '../components/FolkStoriesRow';
+import GarhwaliSikhaRow from '../components/GarhwaliSikhaRow';
 import GovtJobsRow from '../components/GovtJobsRow';
 import SarkaariYojanaRow from '../components/SarkaariYojanaRow';
 import UpcomingHappenings from '../components/UpcomingHappenings';
@@ -86,6 +87,16 @@ export default function HomePage() {
           transition={{ duration: 0.5, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
         >
           <FolkStoriesRow />
+        </motion.div>
+
+        {/* Garhwali Sikha — Learn Garhwali language */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.1 }}
+          transition={{ duration: 0.5, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
+          <GarhwaliSikhaRow />
         </motion.div>
 
         {/* Govt Jobs — recent job postings for Uttarakhand */}
