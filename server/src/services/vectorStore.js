@@ -35,8 +35,19 @@ async function vectorRequest(endpoint, body) {
 
 /**
  * Upsert a chat exchange into the vector index.
- * The `data` field is what gets embedded — we embed the user question only,
- * keeping the answer in metadata so we can return it on retrieval.
+ *
+ * The `data` field is what gets embedded — pass the NORMALIZED query here
+ * (via `question`) so stored vectors are in the same canonical space as
+ * future lookups.  The original raw query can be preserved for human-readable
+ * display by setting `extraMeta.displayQ`; it is stored in `metadata.q` but
+ * never embedded.
+ *
+ * @param {number|string} id         Unique exchange ID (typically Date.now())
+ * @param {string}        question   Normalized query — used for embedding
+ * @param {string}        answer     Assistant reply — stored in metadata only
+ * @param {object}        extraMeta  Optional: { displayQ, at }
+ *   displayQ — original raw user query (stored as metadata.q for display)
+ *   at       — ISO timestamp override
  */
 async function upsertExchange(id, question, answer, extraMeta = {}) {
   if (!VECTOR_ENABLED) return false;
@@ -44,9 +55,11 @@ async function upsertExchange(id, question, answer, extraMeta = {}) {
   try {
     await vectorRequest('upsert-data', {
       id: String(id),
+      // Embed the normalized form — this is the text the vector represents.
       data: String(question).slice(0, 1500),
       metadata: {
-        q: String(question).slice(0, 1000),
+        // Store the original raw query for display; fall back to normalized.
+        q: String(extraMeta.displayQ || question).slice(0, 1000),
         a: String(answer).slice(0, 2000),
         at: extraMeta.at || new Date().toISOString(),
       },

@@ -30,6 +30,7 @@ const {
   vectorInfo,
   resetNamespace,
 } = require('../services/vectorStore');
+const { normalizeQuery } = require('../services/queryNormalizer');
 
 // =====================================================================
 // Quota protection: per-IP rate limit + global circuit breaker
@@ -890,7 +891,10 @@ function persistExchange(userMsg, assistantMsg) {
     console.error('[chat] logChatExchange failed:', err.message);
   });
   if (isVectorEnabled()) {
-    upsertExchange(id, userMsg, assistantMsg).catch((err) => {
+    // Embed the normalized form so stored vectors align with normalized lookups.
+    // Pass the raw query as displayQ so metadata.q stays human-readable.
+    const normalizedQ = normalizeQuery(userMsg);
+    upsertExchange(id, normalizedQ, assistantMsg, { displayQ: userMsg }).catch((err) => {
       console.error('[chat] upsertExchange failed:', err.message);
     });
   }
@@ -941,7 +945,7 @@ async function findFallbackReply(userText) {
   // 1. Try semantic vector search first
   if (isVectorEnabled()) {
     try {
-      const hits = await querySimilar(userText, { topK: 3, minScore: MIN_SCORE });
+      const hits = await querySimilar(normalizeQuery(userText), { topK: 3, minScore: MIN_SCORE });
       const good = hits.find((h) => h.a && fallbackOverlap(userText, h.q) >= MIN_OVERLAP);
       if (good) return { text: good.a, source: 'vector' };
       if (hits[0]) {
@@ -1226,7 +1230,10 @@ router.post('/', async (req, res) => {
   let memoryHits = [];
   if (lastUser && isVectorEnabled()) {
     try {
-      memoryHits = await querySimilar(lastUser.content, { topK: 4, minScore: 0.72 });
+      // Normalize before embedding so the lookup is in the same canonical
+      // vector space as stored exchanges (see persistExchange above).
+      const normalizedUserText = normalizeQuery(lastUser.content);
+      memoryHits = await querySimilar(normalizedUserText, { topK: 4, minScore: 0.72 });
     } catch (err) {
       console.error('[chat] vector query error:', err.message);
     }
