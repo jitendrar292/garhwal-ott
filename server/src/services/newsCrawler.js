@@ -25,6 +25,12 @@ const RSS_FEEDS = [
   { url: 'https://www.hindustantimes.com/feeds/rss/cities/dehradun/rssfeed.xml', source: 'Hindustan Times', lang: 'en' },
   // Live Hindustan Uttarakhand
   { url: 'https://feed.livehindustan.com/rss/4430', source: 'Live Hindustan', lang: 'hi' },
+  // The Times of India (English)
+  { url: 'https://timesofindia.indiatimes.com/rssfeeds/4118073.cms', source: 'Times of India', lang: 'en' },
+  // Navbharat Times (Hindi)
+  { url: 'https://navbharattimes.indiatimes.com/rssfeedstopstories.cms', source: 'Navbharat Times', lang: 'hi' },
+  // Aaj Tak (Hindi)
+  { url: 'https://www.aajtak.in/rss/uttarakhand.xml', source: 'Aaj Tak', lang: 'hi' },
 ];
 
 /**

@@ -298,7 +298,7 @@ export default function NewsAdminPage() {
       const res = await fetch(`/api/news-agent/run?key=${encodeURIComponent(key)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ maxPerFeed: 3, maxAge: 24, maxArticles: 5, dryRun }),
+        body: JSON.stringify({ maxPerFeed: 5, maxAge: 24, maxArticles: 15, dryRun }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || `Failed (${res.status})`);

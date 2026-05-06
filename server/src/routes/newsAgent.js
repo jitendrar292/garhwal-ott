@@ -64,7 +64,7 @@ router.post('/run', async (req, res) => {
   }
 
   // Accept optional overrides from request body
-  const { maxPerFeed = 3, maxAge = 24, maxArticles = 5, dryRun = false } = req.body || {};
+  const { maxPerFeed = 5, maxAge = 24, maxArticles = 15, dryRun = false } = req.body || {};
 
   // Start the pipeline asynchronously so we can respond immediately
   res.json({ message: 'News agent started', status: 'running' });
