@@ -40,6 +40,7 @@ const PAHADI_DISHES = [
       'जम्बू का तड़का ऊपर से डालकर भात या मंडुवे की रोटी के साथ परोसें।',
     ],
     tip: '💡 असली स्वाद के लिए लोहे की कढ़ाई और देसी जम्बू ज़रूर इस्तेमाल करें।',
+    video: 'https://www.youtube.com/shorts/62CanQqcDw4',
   },
   {
     id: 'phaanu',
@@ -79,6 +80,7 @@ const PAHADI_DISHES = [
       'गाढ़ा होने पर जम्बू का तड़का लगाएँ। चावल के साथ परोसें।',
     ],
     tip: '💡 फाणू जितनी देर पकेगा उतना स्वादिष्ट होगा। मिट्टी के बर्तन में पकाने से असली स्वाद आता है।',
+    video: 'https://www.youtube.com/@chefbhupikitchen/search?query=phaanu',
   },
   {
     id: 'chainsoo',
@@ -116,6 +118,7 @@ const PAHADI_DISHES = [
       'गाढ़ा होने पर जखिया का तड़का लगाएँ। चावल/रोटी के साथ खाएँ।',
     ],
     tip: '💡 दाल को अच्छे से भूनना सबसे ज़रूरी कदम है — इसी से चैंसू की असली खुशबू आती है।',
+    video: 'https://www.youtube.com/@chefbhupikitchen/search?query=chainsoo',
   },
   {
     id: 'aloo-ke-gutke',
@@ -152,6 +155,7 @@ const PAHADI_DISHES = [
       'हरी धनिया और नींबू डालकर परोसें।',
     ],
     tip: '💡 जखिया के बिना आलू के गुटके अधूरे हैं — यही असली पहाड़ी स्वाद देता है।',
+    video: 'https://www.youtube.com/@chefbhupikitchen/search?query=aloo+ke+gutke',
   },
   {
     id: 'mandua-roti',
@@ -184,6 +188,7 @@ const PAHADI_DISHES = [
       'घी लगाकर दाल/साग/कफुली के साथ परोसें।',
     ],
     tip: '💡 आटा सख्त न रखें वरना रोटी फटेगी। हाथ से थपथपाने में जितना अभ्यास उतनी अच्छी रोटी।',
+    video: 'https://www.youtube.com/@chefbhupikitchen/search?query=mandua+roti',
   },
   {
     id: 'bhang-chutney',
@@ -218,6 +223,7 @@ const PAHADI_DISHES = [
       'आलू के गुटके, मंडुवे की रोटी या भात के साथ परोसें।',
     ],
     tip: '💡 भांग के बीजों को ज़्यादा न भूनें — कड़वी हो जाएगी। ठंडी जगह 3-4 दिन तक रखी जा सकती है।',
+    video: 'https://www.youtube.com/@chefbhupikitchen/search?query=bhang+ki+chutney',
   },
   {
     id: 'gahat-soup',
@@ -254,6 +260,7 @@ const PAHADI_DISHES = [
       'जम्बू का तड़का लगाकर भात के साथ परोसें।',
     ],
     tip: '💡 बची हुई दाल का पानी (शोरबा) पथरी के मरीज़ों के लिए दवा माना जाता है।',
+    video: 'https://www.youtube.com/@chefbhupikitchen/search?query=gahat+ki+dal',
   },
   {
     id: 'jhangora-kheer',
@@ -286,6 +293,7 @@ const PAHADI_DISHES = [
       'गरम या ठंडी, दोनों तरह स्वादिष्ट।',
     ],
     tip: '💡 गुड़ डालते समय आँच बंद कर दें वरना दूध फट सकता है।',
+    video: 'https://www.youtube.com/@chefbhupikitchen/search?query=jhangora+kheer',
   },
   {
     id: 'singori',
@@ -318,6 +326,7 @@ const PAHADI_DISHES = [
       '2-3 घंटे ठंडा होने दें — फिर पत्ता खोलकर खाएँ।',
     ],
     tip: '💡 असली सिंगोरी मालू के पत्ते में ही बनती है — यह उसे ख़ास खुशबू देता है।',
+    video: 'https://www.youtube.com/@chefbhupikitchen/search?query=singori',
   },
   {
     id: 'thichwani',
@@ -354,6 +363,7 @@ const PAHADI_DISHES = [
       '20 मिनट धीमी आँच पर ढककर पकाएँ। भात के साथ परोसें।',
     ],
     tip: '💡 कूटने से सब्ज़ी मसाले अच्छे से सोख लेती है — यही इसकी ख़ासियत है।',
+    video: 'https://www.youtube.com/shorts/sSvsZe-qw-E',
   },
   {
     id: 'arsa',
@@ -386,6 +396,7 @@ const PAHADI_DISHES = [
       'गरम घी में सुनहरा होने तक धीमी आँच पर तलें।',
     ],
     tip: '💡 आटा बहुत सख्त या मुलायम न हो — चाशनी का तापमान सही होना ज़रूरी है।',
+    video: 'https://www.youtube.com/@chefbhupikitchen/search?query=arsa+garhwali',
   },
   {
     id: 'baadi',
@@ -417,6 +428,7 @@ const PAHADI_DISHES = [
       'गहत की दाल या भांग की चटनी के साथ खाएँ।',
     ],
     tip: '💡 लगातार चलाना सबसे ज़रूरी है — एक मिनट रुके तो गाँठ बन जाएगी।',
+    video: 'https://www.youtube.com/@chefbhupikitchen/search?query=baadi+garhwali',
   },
 ];
 

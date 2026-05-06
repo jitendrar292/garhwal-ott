@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import SEO from '../components/SEO';
 import PAHADI_DISHES from '../data/pahadiDishes';
@@ -247,13 +246,15 @@ export default function PahadiKhanoPage() {
                 )}
 
                 <div className="text-center pt-2">
-                  <Link
-                    to={`/category/cooking?q=${encodeURIComponent(opened.name + ' garhwali recipe')}`}
+                  <a
+                    href={opened.video}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     onClick={() => setOpenId(null)}
                     className="inline-block bg-white/15 hover:bg-white/25 text-white text-xs font-bold px-4 py-2 rounded-full transition-colors"
                   >
                     📺 Video देखें
-                  </Link>
+                  </a>
                 </div>
               </div>
             </motion.div>
