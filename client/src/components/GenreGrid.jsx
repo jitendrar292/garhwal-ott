@@ -73,14 +73,6 @@ const GENRES = [
     bg: 'bg-emerald-700',
   },
   {
-    name: 'रंगमंच',
-    sub: 'थियेटर\nHNBGU',
-    path: '/category/theatre',
-    emoji: '🎭',
-    bg: 'bg-purple-700',
-    badge: { text: '🆕', cls: 'bg-purple-500/85' },
-  },
-  {
     name: 'घुघुती AI',
     sub: 'गढ़वळि\nमा बच्या',
     path: '/ghughuti-ai',
@@ -102,6 +94,14 @@ const GENRES = [
     emoji: '📖',
     bg: 'bg-amber-700',
     badge: { text: '🆕', cls: 'bg-amber-500/85' },
+  },
+  {
+    name: 'पहाड़ी खाणू',
+    sub: 'रेसिपी\nव्यंजन',
+    path: '/pahadi-khano',
+    emoji: '🍲',
+    bg: 'bg-red-700',
+    badge: { text: '🆕', cls: 'bg-red-500/85' },
   },
 ];
 

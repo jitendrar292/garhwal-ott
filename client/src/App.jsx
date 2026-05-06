@@ -31,6 +31,7 @@ import LoginPage from './pages/LoginPage';
 import AdminPage from './pages/AdminPage';
 import VoiceRecordingPage from './pages/VoiceRecordingPage';
 import GarhwaliSikhaPage from './pages/GarhwaliSikhaPage';
+import PahadiKhanoPage from './pages/PahadiKhanoPage';
 
 // Protected route wrapper - redirects to login if not authenticated
 function RequireAuth({ children }) {
@@ -116,6 +117,7 @@ function AnimatedRoutes() {
           <Route path="/yojana" element={<SarkaariYojanaPage />} />
           <Route path="/voice-recording" element={<VoiceRecordingPage />} />
           <Route path="/garhwali-sikha" element={<GarhwaliSikhaPage />} />
+          <Route path="/pahadi-khano" element={<PahadiKhanoPage />} />
         </Routes>
       </motion.div>
     </AnimatePresence>
