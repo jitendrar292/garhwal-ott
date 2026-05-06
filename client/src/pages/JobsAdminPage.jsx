@@ -3,6 +3,9 @@
 
 import { useState, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import FESTIVALS from '../data/festivals';
+import MELAS from '../data/melas';
+import EVENTS from '../data/events';
 
 const CATEGORIES = [
   { id: 'state', label: 'राज्य सरकार' },
@@ -14,6 +17,35 @@ const CATEGORIES = [
 ];
 
 const EMOJIS = ['📋', '📚', '👮', '🌲', '🏛️', '🏘️', '🏔️', '🎖️', '🏭', '💼'];
+
+// Get upcoming happenings (festivals, melas, events)
+function getUpcomingHappenings(count = 10) {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const todayMs = today.getTime();
+  const all = [
+    ...FESTIVALS.map((f) => ({ type: 'Festival', name: f.name, nameLocal: f.nameLocal, date: f.date, location: f.region, description: f.description, emoji: f.emoji })),
+    ...MELAS.map((m) => ({ type: 'Mela', name: m.name, nameLocal: m.nameLocal, date: m.date, location: m.region || m.location, description: m.description, emoji: m.emoji })),
+    ...EVENTS.map((e) => ({ type: e.category === 'theatre' ? 'Theatre' : e.category === 'music' ? 'Music' : e.category === 'fashion' ? 'Fashion' : e.category === 'art' ? 'Art' : e.category === 'literary' ? 'Literary' : 'Event', name: e.name, nameLocal: e.nameLocal, date: e.date, location: e.location, description: e.description, emoji: e.emoji })),
+  ]
+    .filter((i) => new Date(i.date + 'T00:00:00').getTime() >= todayMs)
+    .sort((a, b) => a.date.localeCompare(b.date));
+  return all.slice(0, count);
+}
+
+function daysUntil(iso) {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  return Math.round((new Date(iso + 'T00:00:00') - today) / 86400000);
+}
+
+function whenLabel(d) {
+  if (d === 0) return 'aaj';
+  if (d === 1) return 'kal';
+  if (d <= 30) return `${d} din me`;
+  const w = Math.round(d / 7);
+  if (d <= 90) return `${w} hafte me`;
+  const m = Math.round(d / 30);
+  return `${m} mahine me`;
+}
 
 export default function JobsAdminPage() {
   const [key, setKey] = useState('');
@@ -39,6 +71,10 @@ export default function JobsAdminPage() {
   const [featured, setFeatured] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const formRef = useRef(null);
+  
+  // Push notification state
+  const [devices, setDevices] = useState(null);
+  const [devicesLoading, setDevicesLoading] = useState(false);
 
   const fetchJobs = useCallback(async () => {
     setLoading(true);
@@ -163,6 +199,138 @@ export default function JobsAdminPage() {
     }
   };
 
+  // Push notification functions
+  const sendTestPush = async () => {
+    if (!confirm('Send a test push notification to all subscribed devices?')) return;
+    setError('');
+    setSuccess('');
+    try {
+      const res = await fetch(`/api/push/test?key=${encodeURIComponent(key)}`, {
+        method: 'POST',
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || `Failed (${res.status})`);
+      setSuccess(`Test push sent — sent: ${data.sent ?? 0}, failed: ${data.failed ?? 0}`);
+    } catch (err) {
+      setError(`Test push failed: ${err.message}`);
+    }
+  };
+
+  const loadDevices = async () => {
+    setDevicesLoading(true);
+    setError('');
+    try {
+      const res = await fetch(`/api/push/list?key=${encodeURIComponent(key)}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to fetch devices');
+      setDevices(data);
+    } catch (err) {
+      setError(`Failed to load devices: ${err.message}`);
+    } finally {
+      setDevicesLoading(false);
+    }
+  };
+
+  const sendJobPush = async (job) => {
+    if (!job) {
+      setError('Please select a job to send notification about.');
+      return;
+    }
+    
+    const title = `${job.emoji || '💼'} ${job.title}`;
+    const bodyParts = [];
+    bodyParts.push(job.department);
+    if (job.vacancies) bodyParts.push(`${job.vacancies} Posts`);
+    if (job.lastDate) {
+      const lastDateObj = new Date(job.lastDate + 'T00:00:00');
+      const today = new Date(); today.setHours(0, 0, 0, 0);
+      const daysLeft = Math.ceil((lastDateObj - today) / 86400000);
+      if (daysLeft >= 0) bodyParts.push(`Apply by: ${job.lastDate}`);
+    }
+    const body = bodyParts.join(' • ');
+    
+    if (!confirm(`Send push notification to all devices?\n\n${title}\n${body}`)) return;
+    
+    setError('');
+    setSuccess('');
+    try {
+      const res = await fetch(`/api/push/send?key=${encodeURIComponent(key)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title,
+          body,
+          url: '/jobs',
+          tag: `job-${job.id}`,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || `Failed (${res.status})`);
+      setSuccess(`Job push sent — sent: ${data.sent ?? 0}, failed: ${data.failed ?? 0}`);
+    } catch (err) {
+      setError(`Job push failed: ${err.message}`);
+    }
+  };
+
+  const sendLatestJobPush = async () => {
+    if (jobs.length === 0) {
+      setError('No jobs available to send notification about.');
+      return;
+    }
+    // Send notification about the most recently added job (first in list)
+    const latestJob = jobs[0];
+    await sendJobPush(latestJob);
+  };
+
+  const sendEventPush = async (event) => {
+    if (!event) {
+      setError('No event selected.');
+      return;
+    }
+    const days = daysUntil(event.date);
+    const when = whenLabel(days);
+    const title = `${event.emoji || '🎉'} ${event.type}: ${event.name}`;
+    const bodyParts = [];
+    bodyParts.push(`${when} — ${event.location}`);
+    if (event.description) bodyParts.push(event.description);
+    const body = bodyParts.join(' • ');
+    
+    if (!confirm(`Send push notification to all devices?\n\n${title}\n${body}`)) return;
+    
+    setError('');
+    setSuccess('');
+    try {
+      const res = await fetch(`/api/push/send?key=${encodeURIComponent(key)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title,
+          body,
+          url: '/',
+          tag: `event-${event.date}-${event.name}`,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || `Failed (${res.status})`);
+      setSuccess(`Event push sent — sent: ${data.sent ?? 0}, failed: ${data.failed ?? 0}`);
+    } catch (err) {
+      setError(`Event push failed: ${err.message}`);
+    }
+  };
+
+  const sendNextEventPush = async (index = 0) => {
+    const upcomingEvents = getUpcomingHappenings(10);
+    if (upcomingEvents.length === 0) {
+      setError('No upcoming events to send notification about.');
+      return;
+    }
+    if (index >= upcomingEvents.length) {
+      setError('Not enough upcoming events.');
+      return;
+    }
+    await sendEventPush(upcomingEvents[index]);
+  };
+
   // Login screen
   if (!authenticated) {
     return (
@@ -193,16 +361,54 @@ export default function JobsAdminPage() {
     <div className="min-h-screen bg-gray-900 text-white p-4 sm:p-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
           <h1 className="text-xl font-bold flex items-center gap-2">
             💼 Jobs Admin
           </h1>
-          <Link
-            to="/jobs"
-            className="text-sm text-amber-400 hover:text-amber-300"
-          >
-            View Public Page →
-          </Link>
+          <div className="flex items-center gap-2 flex-wrap">
+            <button
+              onClick={sendLatestJobPush}
+              className="text-sm px-3 py-1.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30 hover:bg-amber-500/25"
+              title="Send a push notification about the latest job posting"
+            >
+              💼 Notify latest job
+            </button>
+            <button
+              onClick={() => sendNextEventPush(0)}
+              className="text-sm px-3 py-1.5 rounded-full bg-purple-500/15 text-purple-300 border border-purple-500/30 hover:bg-purple-500/25"
+              title="Send a push notification about the next upcoming event"
+            >
+              🎉 Notify next event
+            </button>
+            <button
+              onClick={() => sendNextEventPush(1)}
+              className="text-sm px-3 py-1.5 rounded-full bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-500/25"
+              title="Send a push notification about the 2nd upcoming event"
+            >
+              🎪 Notify 2nd event
+            </button>
+            <button
+              onClick={sendTestPush}
+              className="text-sm px-3 py-1.5 rounded-full bg-primary-500/15 text-primary-300 border border-primary-500/30 hover:bg-primary-500/25"
+              title="Send a test push notification to every subscribed device"
+            >
+              🔔 Send test push
+            </button>
+            <button
+              onClick={loadDevices}
+              disabled={devicesLoading}
+              className="text-sm px-3 py-1.5 rounded-full bg-sky-500/15 text-sky-300 border border-sky-500/30 hover:bg-sky-500/25 disabled:opacity-50"
+              title="View devices currently subscribed to push notifications"
+            >
+              {devicesLoading ? '…' : `📱 ${devices ? `Refresh (${devices.count})` : 'View devices'}`}
+            </button>
+            <Link
+              to="/jobs"
+              className="text-sm text-amber-400 hover:text-amber-300"
+            >
+              View Public Page →
+            </Link>
+          </div>
         </div>
 
         {/* Alerts */}
@@ -214,6 +420,91 @@ export default function JobsAdminPage() {
         {success && (
           <div className="mb-4 p-3 bg-green-500/20 border border-green-500/50 rounded-lg text-green-300 text-sm">
             {success}
+          </div>
+        )}
+
+        {/* Upcoming Events Preview */}
+        {(() => {
+          const upcomingEvents = getUpcomingHappenings(5);
+          if (upcomingEvents.length === 0) return null;
+          return (
+            <div className="mb-6 p-4 bg-gray-800 border border-gray-700 rounded-lg">
+              <h2 className="text-sm font-semibold text-white mb-3">
+                🎉 Upcoming Events ({upcomingEvents.length})
+              </h2>
+              <div className="space-y-2">
+                {upcomingEvents.slice(0, 5).map((event, i) => {
+                  const days = daysUntil(event.date);
+                  const when = whenLabel(days);
+                  return (
+                    <div key={i} className="flex items-center justify-between gap-3 p-2 bg-gray-700/50 rounded-lg">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg">{event.emoji}</span>
+                          <span className="text-xs bg-gray-700 px-2 py-0.5 rounded">{event.type}</span>
+                        </div>
+                        <p className="text-sm text-white mt-1 truncate">{event.name}</p>
+                        <p className="text-xs text-gray-400">{when} • {event.location}</p>
+                      </div>
+                      <button
+                        onClick={() => sendEventPush(event)}
+                        className="px-3 py-1 text-xs bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 rounded transition whitespace-nowrap"
+                      >
+                        🔔 Notify
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* Push Notification Devices */}
+        {devices && (
+          <div className="mb-6 p-4 bg-gray-800 border border-gray-700 rounded-lg">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-sm font-semibold text-white">
+                📱 Registered devices ({devices.count})
+              </h2>
+              <button
+                onClick={() => setDevices(null)}
+                className="text-xs text-gray-400 hover:text-white"
+              >
+                Hide
+              </button>
+            </div>
+            {!devices.enabled && (
+              <p className="text-xs text-amber-300 mb-2">
+                Push is not enabled on the server (VAPID keys missing).
+              </p>
+            )}
+            {devices.subscriptions?.length === 0 ? (
+              <p className="text-xs text-gray-400">No devices subscribed yet.</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead className="text-gray-400 border-b border-gray-700">
+                    <tr>
+                      <th className="text-left py-2 pr-4">Endpoint (last 40 chars)</th>
+                      <th className="text-left py-2 pr-4">Subscribed</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-gray-300">
+                    {devices.subscriptions?.map((sub, i) => (
+                      <tr key={i} className="border-b border-gray-700/50">
+                        <td className="py-2 pr-4 font-mono text-xs truncate max-w-xs">
+                          ...{sub.endpoint.slice(-40)}
+                        </td>
+                        <td className="py-2 text-gray-400">
+                          {new Date(sub.createdAt).toLocaleString()}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         )}
 
@@ -425,6 +716,13 @@ export default function JobsAdminPage() {
                       </div>
                     </div>
                     <div className="flex gap-2">
+                      <button
+                        onClick={() => sendJobPush(job)}
+                        className="px-3 py-1 text-sm bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 rounded transition"
+                        title="Send push notification about this job"
+                      >
+                        🔔 Notify
+                      </button>
                       <button
                         onClick={() => handleEdit(job)}
                         className="px-3 py-1 text-sm bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 rounded transition"
