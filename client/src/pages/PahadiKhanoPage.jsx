@@ -1,7 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import PAHADI_DISHES from '../data/pahadiDishes';
+import { getIngredientLinks } from '../data/pahadiIngredients';
 
 const TYPES = ['All', 'Main Course', 'Side Dish', 'Bread', 'Dal', 'Curry', 'Chutney', 'Dessert', 'Sweet'];
 
@@ -244,6 +246,55 @@ export default function PahadiKhanoPage() {
                     <p className="text-sm text-amber-100 leading-relaxed">{opened.tip}</p>
                   </div>
                 )}
+
+                {/* where to buy */}
+                {(() => {
+                  const links = getIngredientLinks(opened.ingredients);
+                  if (!links.length) return null;
+                  return (
+                    <div className="mb-5">
+                      <h3 className="text-amber-200 font-black text-base mb-3 flex items-center gap-2">
+                        🛍️ सामग्री कहाँ से खरीदें?
+                      </h3>
+                      <div className="space-y-3">
+                        {links.map((ing) => (
+                          <div key={ing.id} className="bg-black/30 rounded-xl p-3 border border-white/10">
+                            <div className="flex items-center gap-2 mb-1.5">
+                              <span className="text-xl">{ing.emoji}</span>
+                              <div>
+                                <p className="text-xs font-bold text-white">{ing.name}</p>
+                                <p className="text-[10px] text-slate-300">{ing.nameEn}</p>
+                              </div>
+                            </div>
+                            <div className="flex flex-wrap gap-1.5 mb-2">
+                              {ing.online.map((link) => (
+                                <a
+                                  key={link.label}
+                                  href={link.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-amber-500/20 hover:bg-amber-500/40 text-amber-200 border border-amber-400/30 transition-colors"
+                                >
+                                  🔗 {link.label}
+                                </a>
+                              ))}
+                            </div>
+                            <p className="text-[10px] text-slate-400 leading-relaxed">
+                              📍 {ing.localNote}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                      <Link
+                        to="/pahadi-store"
+                        onClick={() => setOpenId(null)}
+                        className="mt-3 inline-block text-[11px] font-bold text-amber-300 hover:text-amber-200 underline underline-offset-2"
+                      >
+                        सभी पहाड़ी सामग्री देखें →
+                      </Link>
+                    </div>
+                  );
+                })()}
 
                 <div className="text-center pt-2">
                   <a
