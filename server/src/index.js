@@ -57,7 +57,7 @@ app.use(helmet({
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
       imgSrc: ["'self'", "https://i.ytimg.com", "https://*.ytimg.com", "https://*.cdninstagram.com", "https://*.fbcdn.net", "https://www.instagram.com", "https://upload.wikimedia.org", "https://commons.wikimedia.org", "https://lh3.googleusercontent.com", "https://*.googleusercontent.com", "data:"],
       frameSrc: ["'self'", "https://www.youtube.com", "https://youtube.com", "https://www.youtube-nocookie.com", "https://www.instagram.com", "https://accounts.google.com"],
-      connectSrc: ["'self'", "https://www.youtube.com", "https://www.youtube-nocookie.com", "https://*.googlevideo.com", "https://ipapi.co", "https://www.instagram.com", "https://graph.instagram.com", "https://accounts.google.com", "https://oauth2.googleapis.com"],
+      connectSrc: ["'self'", "https://www.youtube.com", "https://www.youtube-nocookie.com", "https://*.googlevideo.com", "https://ipapi.co", "https://www.instagram.com", "https://graph.instagram.com", "https://accounts.google.com", "https://oauth2.googleapis.com", "https://api.elevenlabs.io"],
       mediaSrc: ["'self'", "https://*.googlevideo.com", "https://www.youtube.com", "https://www.youtube-nocookie.com", "https://*.cdninstagram.com", "blob:"],
     },
   },

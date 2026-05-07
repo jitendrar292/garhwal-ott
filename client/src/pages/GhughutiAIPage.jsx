@@ -63,6 +63,7 @@ export default function GhughutiAIPage() {
   const scrollRef = useRef(null);
   const textareaRef = useRef(null);
   const recognitionRef = useRef(null);
+  const audioRef = useRef(null);
 
   // Web Speech API capability checks
   const SpeechRecognition = typeof window !== 'undefined' &&
@@ -78,6 +79,10 @@ export default function GhughutiAIPage() {
       window.navigator.standalone === true);
 
   const speechSupported = !!SpeechRecognition && !isIOS;
+
+  // ElevenLabs TTS: true when the server endpoint is available
+  // (we assume it is; if not, we gracefully fall back to Web Speech)
+  const elevenLabsSupported = true;
   const ttsSupported = typeof window !== 'undefined' && 'speechSynthesis' in window;
 
   // Cleanup speech on unmount
@@ -85,6 +90,10 @@ export default function GhughutiAIPage() {
     return () => {
       if (recognitionRef.current) {
         try { recognitionRef.current.stop(); } catch { /* noop */ }
+      }
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.src = '';
       }
       if (ttsSupported) window.speechSynthesis.cancel();
     };
@@ -249,26 +258,61 @@ export default function GhughutiAIPage() {
     setListening(false);
   };
 
-  const speak = (text, idx) => {
-    if (!ttsSupported || !text) return;
-    window.speechSynthesis.cancel();
+  const speak = async (text, idx) => {
+    if (!text) return;
+
+    // Stop any currently playing audio
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.src = '';
+    }
+    if (ttsSupported) window.speechSynthesis.cancel();
+
+    // Toggle off if already speaking this message
     if (speakingIdx === idx) {
       setSpeakingIdx(-1);
       return;
     }
-    // Convert Hindi-leaning words to their Garhwali equivalents so the
-    // synthesizer (which only knows hi-IN phonemes) reads pahadi vocabulary.
+
+    setSpeakingIdx(idx);
+
+    // --- Try ElevenLabs first ---
+    try {
+      const res = await fetch('/api/tts/speak', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+      });
+      if (!res.ok) throw new Error(`ElevenLabs TTS failed (${res.status})`);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      audioRef.current = audio;
+      audio.onended = () => {
+        setSpeakingIdx((cur) => (cur === idx ? -1 : cur));
+        URL.revokeObjectURL(url);
+      };
+      audio.onerror = () => {
+        setSpeakingIdx(-1);
+        URL.revokeObjectURL(url);
+      };
+      audio.play();
+      return;
+    } catch (err) {
+      console.warn('ElevenLabs TTS unavailable, falling back to Web Speech:', err.message);
+    }
+
+    // --- Fallback: Web Speech API ---
+    if (!ttsSupported) { setSpeakingIdx(-1); return; }
     const spoken = toGarhwaliSpeech(text);
     const utter = new SpeechSynthesisUtterance(spoken);
     utter.lang = 'hi-IN';
-    utter.rate = PAHADI_RATE;   // slower for pahadi cadence
-    utter.pitch = PAHADI_PITCH; // slightly higher / sing-song
+    utter.rate = PAHADI_RATE;
+    utter.pitch = PAHADI_PITCH;
     const voice = pickPahadiVoice();
     if (voice) utter.voice = voice;
     utter.onend = () => setSpeakingIdx((cur) => (cur === idx ? -1 : cur));
     utter.onerror = () => setSpeakingIdx(-1);
-    setSpeakingIdx(idx);
-    // Some browsers populate voices async — if none were ready, retry once.
     if (!voice && window.speechSynthesis.getVoices().length === 0) {
       window.speechSynthesis.onvoiceschanged = () => {
         const v = pickPahadiVoice();
@@ -283,6 +327,7 @@ export default function GhughutiAIPage() {
 
   const clearChat = () => {
     if (streaming) stop();
+    if (audioRef.current) { audioRef.current.pause(); audioRef.current.src = ''; }
     if (ttsSupported) window.speechSynthesis.cancel();
     setSpeakingIdx(-1);
     setMessages([]);
@@ -523,7 +568,7 @@ export default function GhughutiAIPage() {
                   role={m.role}
                   content={m.content}
                   isStreaming={streaming && i === messages.length - 1 && m.role === 'assistant'}
-                  onSpeak={ttsSupported && m.role === 'assistant' && m.content ? () => speak(m.content, i) : null}
+                  onSpeak={(elevenLabsSupported || ttsSupported) && m.role === 'assistant' && m.content ? () => speak(m.content, i) : null}
                   isSpeaking={speakingIdx === i}
                   timeLabel={formatTime(i, messages.length)}
                 />

@@ -6,6 +6,7 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
+const rateLimit = require('express-rate-limit');
 const { uploadToR2, getR2Url } = require('../services/r2');
 const { redisGetJSON, redisSetJSON, redisSetAdd, redisSetMembers, redisSetCount } = require('../services/store');
 
@@ -199,6 +200,84 @@ router.get('/export', async (req, res) => {
     console.error('Error exporting recordings:', error);
     res.status(500).json({ error: 'Failed to export recordings' });
   }
+});
+
+/**
+ * POST /api/tts/speak
+ * Proxy text-to-speech via ElevenLabs and return audio bytes.
+ * Body: { text: string, voiceId?: string }
+ */
+const elevenLabsSpeakLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many TTS requests, please slow down.' },
+});
+
+const https = require('https');
+
+router.post('/speak', elevenLabsSpeakLimiter, async (req, res) => {
+  const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
+  if (!ELEVENLABS_API_KEY) {
+    return res.status(503).json({ error: 'ElevenLabs TTS is not configured on this server.' });
+  }
+
+  const { text, voiceId } = req.body;
+  if (!text || typeof text !== 'string') {
+    return res.status(400).json({ error: 'Missing or invalid text.' });
+  }
+  const cleanText = text.slice(0, 5000); // hard cap to avoid abuse
+
+  const voice = voiceId || process.env.ELEVENLABS_VOICE_ID || 'pNInz6obpgDQGcFmaJgB';
+  const model = process.env.ELEVENLABS_MODEL_ID || 'eleven_multilingual_v2';
+
+  const payload = JSON.stringify({
+    text: cleanText,
+    model_id: model,
+    voice_settings: {
+      stability: 0.55,
+      similarity_boost: 0.75,
+      style: 0.2,
+      use_speaker_boost: true,
+    },
+  });
+
+  const options = {
+    hostname: 'api.elevenlabs.io',
+    path: `/v1/text-to-speech/${encodeURIComponent(voice)}`,
+    method: 'POST',
+    headers: {
+      'xi-api-key': ELEVENLABS_API_KEY,
+      'Content-Type': 'application/json',
+      'Content-Length': Buffer.byteLength(payload),
+      Accept: 'audio/mpeg',
+    },
+  };
+
+  const upstream = https.request(options, (upRes) => {
+    if (upRes.statusCode !== 200) {
+      const chunks = [];
+      upRes.on('data', (c) => chunks.push(c));
+      upRes.on('end', () => {
+        const body = Buffer.concat(chunks).toString();
+        console.error('ElevenLabs error', upRes.statusCode, body);
+        res.status(upRes.statusCode || 500).json({ error: 'ElevenLabs request failed.', detail: body });
+      });
+      return;
+    }
+    res.setHeader('Content-Type', 'audio/mpeg');
+    res.setHeader('Cache-Control', 'no-store');
+    upRes.pipe(res);
+  });
+
+  upstream.on('error', (err) => {
+    console.error('ElevenLabs upstream error', err);
+    res.status(502).json({ error: 'Failed to reach ElevenLabs.' });
+  });
+
+  upstream.write(payload);
+  upstream.end();
 });
 
 module.exports = router;
