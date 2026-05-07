@@ -6,8 +6,7 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
-const rateLimit = require('express-rate-limit');
-const { uploadToR2, getR2Url } = require('../services/r2');
+const rateLimit = require('express-rate-limit');const { uploadToR2, getR2Url } = require('../services/r2');
 const { redisGetJSON, redisSetJSON, redisSetAdd, redisSetMembers, redisSetCount } = require('../services/store');
 
 const router = express.Router();
@@ -229,8 +228,6 @@ const elevenLabsSpeakLimiter = rateLimit({
   message: { error: 'Too many TTS requests, please slow down.' },
 });
 
-const https = require('https');
-
 router.post('/speak', elevenLabsSpeakLimiter, async (req, res) => {
   const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
   if (!ELEVENLABS_API_KEY) {
@@ -246,7 +243,7 @@ router.post('/speak', elevenLabsSpeakLimiter, async (req, res) => {
   const voice = voiceId || process.env.ELEVENLABS_VOICE_ID || 'pNInz6obpgDQGcFmaJgB';
   const model = process.env.ELEVENLABS_MODEL_ID || 'eleven_turbo_v2_5';
 
-  const payload = JSON.stringify({
+  const payload = {
     text: cleanText,
     model_id: model,
     voice_settings: {
@@ -255,43 +252,37 @@ router.post('/speak', elevenLabsSpeakLimiter, async (req, res) => {
       style: 0.2,
       use_speaker_boost: true,
     },
-  });
-
-  const options = {
-    hostname: 'api.elevenlabs.io',
-    path: `/v1/text-to-speech/${encodeURIComponent(voice)}`,
-    method: 'POST',
-    headers: {
-      'xi-api-key': ELEVENLABS_API_KEY,
-      'Content-Type': 'application/json',
-      'Content-Length': Buffer.byteLength(payload),
-      Accept: 'audio/mpeg',
-    },
   };
 
-  const upstream = https.request(options, (upRes) => {
-    if (upRes.statusCode !== 200) {
-      const chunks = [];
-      upRes.on('data', (c) => chunks.push(c));
-      upRes.on('end', () => {
-        const body = Buffer.concat(chunks).toString();
-        console.error('ElevenLabs error', upRes.statusCode, body);
-        res.status(upRes.statusCode || 500).json({ error: 'ElevenLabs request failed.', detail: body });
-      });
-      return;
-    }
-    res.setHeader('Content-Type', 'audio/mpeg');
-    res.setHeader('Cache-Control', 'no-store');
-    upRes.pipe(res);
-  });
+  let upstreamRes;
+  try {
+    upstreamRes = await fetch(
+      `https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(voice)}`,
+      {
+        method: 'POST',
+        headers: {
+          'xi-api-key': ELEVENLABS_API_KEY,
+          'Content-Type': 'application/json',
+          Accept: 'audio/mpeg',
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+  } catch (err) {
+    console.error('ElevenLabs fetch error', err);
+    return res.status(502).json({ error: 'Failed to reach ElevenLabs.' });
+  }
 
-  upstream.on('error', (err) => {
-    console.error('ElevenLabs upstream error', err);
-    res.status(502).json({ error: 'Failed to reach ElevenLabs.' });
-  });
+  if (!upstreamRes.ok) {
+    const detail = await upstreamRes.text().catch(() => '');
+    console.error('ElevenLabs error', upstreamRes.status, detail);
+    return res.status(upstreamRes.status).json({ error: 'ElevenLabs request failed.', detail });
+  }
 
-  upstream.write(payload);
-  upstream.end();
+  res.setHeader('Content-Type', 'audio/mpeg');
+  res.setHeader('Cache-Control', 'no-store');
+  const arrayBuffer = await upstreamRes.arrayBuffer();
+  return res.send(Buffer.from(arrayBuffer));
 });
 
 module.exports = router;
