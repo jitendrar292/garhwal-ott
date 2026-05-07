@@ -230,7 +230,7 @@ router.post('/speak', elevenLabsSpeakLimiter, async (req, res) => {
   const cleanText = text.slice(0, 5000); // hard cap to avoid abuse
 
   const voice = voiceId || process.env.ELEVENLABS_VOICE_ID || 'pNInz6obpgDQGcFmaJgB';
-  const model = process.env.ELEVENLABS_MODEL_ID || 'eleven_multilingual_v2';
+  const model = process.env.ELEVENLABS_MODEL_ID || 'eleven_turbo_v2_5';
 
   const payload = JSON.stringify({
     text: cleanText,
