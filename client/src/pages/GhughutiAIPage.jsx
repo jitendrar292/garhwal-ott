@@ -258,6 +258,10 @@ export default function GhughutiAIPage() {
     setListening(false);
   };
 
+  const ELEVEN_API_KEY = import.meta.env.VITE_ELEVENLABS_API_KEY;
+  const ELEVEN_VOICE   = import.meta.env.VITE_ELEVENLABS_VOICE_ID  || 'pNInz6obpgDQGcFmaJgB';
+  const ELEVEN_MODEL   = import.meta.env.VITE_ELEVENLABS_MODEL_ID  || 'eleven_turbo_v2_5';
+
   const speak = async (text, idx) => {
     if (!text) return;
 
@@ -276,30 +280,43 @@ export default function GhughutiAIPage() {
 
     setSpeakingIdx(idx);
 
-    // --- Try ElevenLabs first ---
-    try {
-      const res = await fetch('/api/tts/speak', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text }),
-      });
-      if (!res.ok) throw new Error(`ElevenLabs TTS failed (${res.status})`);
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const audio = new Audio(url);
-      audioRef.current = audio;
-      audio.onended = () => {
-        setSpeakingIdx((cur) => (cur === idx ? -1 : cur));
-        URL.revokeObjectURL(url);
-      };
-      audio.onerror = () => {
-        setSpeakingIdx(-1);
-        URL.revokeObjectURL(url);
-      };
-      audio.play();
-      return;
-    } catch (err) {
-      console.warn('ElevenLabs TTS unavailable, falling back to Web Speech:', err.message);
+    // --- Try ElevenLabs directly from the browser (free tier works from real user IPs) ---
+    if (ELEVEN_API_KEY) {
+      try {
+        const res = await fetch(
+          `https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(ELEVEN_VOICE)}`,
+          {
+            method: 'POST',
+            headers: {
+              'xi-api-key': ELEVEN_API_KEY,
+              'Content-Type': 'application/json',
+              Accept: 'audio/mpeg',
+            },
+            body: JSON.stringify({
+              text: text.slice(0, 5000),
+              model_id: ELEVEN_MODEL,
+              voice_settings: { stability: 0.55, similarity_boost: 0.75, style: 0.2, use_speaker_boost: true },
+            }),
+          }
+        );
+        if (!res.ok) throw new Error(`ElevenLabs ${res.status}`);
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const audio = new Audio(url);
+        audioRef.current = audio;
+        audio.onended = () => {
+          setSpeakingIdx((cur) => (cur === idx ? -1 : cur));
+          URL.revokeObjectURL(url);
+        };
+        audio.onerror = () => {
+          setSpeakingIdx(-1);
+          URL.revokeObjectURL(url);
+        };
+        audio.play();
+        return;
+      } catch (err) {
+        console.warn('ElevenLabs TTS failed, falling back to Web Speech:', err.message);
+      }
     }
 
     // --- Fallback: Web Speech API ---
