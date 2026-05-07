@@ -203,6 +203,20 @@ router.get('/export', async (req, res) => {
 });
 
 /**
+ * GET /api/tts/check
+ * Quick sanity-check — shows whether ELEVENLABS_API_KEY is set on this server
+ * and the first/last 4 chars so you can confirm it matches without exposing it.
+ */
+router.get('/check', (req, res) => {
+  const key = process.env.ELEVENLABS_API_KEY || '';
+  res.json({
+    set: !!key,
+    length: key.length,
+    preview: key.length >= 8 ? `${key.slice(0, 4)}...${key.slice(-4)}` : '(too short)',
+  });
+});
+
+/**
  * POST /api/tts/speak
  * Proxy text-to-speech via ElevenLabs and return audio bytes.
  * Body: { text: string, voiceId?: string }
