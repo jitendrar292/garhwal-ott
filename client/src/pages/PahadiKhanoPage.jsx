@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import PAHADI_DISHES from '../data/pahadiDishes';
 import { getIngredientLinks } from '../data/pahadiIngredients';
+import useNearbyStores from '../hooks/useNearbyStores';
 
 const TYPES = ['All', 'Main Course', 'Side Dish', 'Bread', 'Dal', 'Curry', 'Chutney', 'Dessert', 'Sweet'];
 
@@ -16,6 +17,7 @@ const REGION_BADGE = {
 export default function PahadiKhanoPage() {
   const [activeType, setActiveType] = useState('All');
   const [openId, setOpenId] = useState(null);
+  const { status: locStatus, store, city, detect } = useNearbyStores();
 
   const visible = useMemo(() => {
     if (activeType === 'All') return PAHADI_DISHES;
@@ -266,6 +268,24 @@ export default function PahadiKhanoPage() {
                                 <p className="text-[10px] text-slate-300">{ing.nameEn}</p>
                               </div>
                             </div>
+
+                            {/* Nearby store maps link */}
+                            {locStatus === 'found' && store && (
+                              <div className="flex flex-wrap gap-1.5 mb-2">
+                                {store.markets.slice(0, 2).map((m) => (
+                                  <a
+                                    key={m.nameEn}
+                                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${ing.nameEn} ${m.mapsQuery}`)}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-green-500/20 hover:bg-green-500/40 text-green-200 border border-green-400/30 transition-colors"
+                                  >
+                                    📍 {m.name}, {store.cityHi}
+                                  </a>
+                                ))}
+                              </div>
+                            )}
+
                             <div className="flex flex-wrap gap-1.5 mb-2">
                               {ing.online.map((link) => (
                                 <a
@@ -285,13 +305,29 @@ export default function PahadiKhanoPage() {
                           </div>
                         ))}
                       </div>
-                      <Link
-                        to="/pahadi-store"
-                        onClick={() => setOpenId(null)}
-                        className="mt-3 inline-block text-[11px] font-bold text-amber-300 hover:text-amber-200 underline underline-offset-2"
-                      >
-                        सभी पहाड़ी सामग्री देखें →
-                      </Link>
+                      <div className="flex items-center justify-between mt-3">
+                        <Link
+                          to="/pahadi-store"
+                          onClick={() => setOpenId(null)}
+                          className="text-[11px] font-bold text-amber-300 hover:text-amber-200 underline underline-offset-2"
+                        >
+                          सभी पहाड़ी सामग्री देखें →
+                        </Link>
+                        {locStatus === 'idle' && (
+                          <button
+                            onClick={detect}
+                            className="text-[10px] font-bold text-green-300 hover:text-green-200 underline underline-offset-2"
+                          >
+                            📍 नज़दीकी दुकान खोजें
+                          </button>
+                        )}
+                        {locStatus === 'locating' && (
+                          <span className="text-[10px] text-amber-300 animate-pulse">📍 ढूँढा जा रहा है…</span>
+                        )}
+                        {locStatus === 'found' && store && (
+                          <span className="text-[10px] text-green-300">📍 {city || store.city} के बाज़ार दिखाए</span>
+                        )}
+                      </div>
                     </div>
                   );
                 })()}
