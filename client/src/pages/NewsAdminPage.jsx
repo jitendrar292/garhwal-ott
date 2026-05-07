@@ -93,20 +93,45 @@ export default function NewsAdminPage() {
     }
   };
 
-  const handleImageChange = (e) => {
+  // Compress an image File to a JPEG data URI (max 900px wide, quality 0.75).
+  // Keeps base64 payload under ~200 KB so it fits Upstash's per-command limit.
+  const compressImage = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = reject;
+      reader.onload = () => {
+        const img = new Image();
+        img.onerror = reject;
+        img.onload = () => {
+          const MAX = 900;
+          let { width, height } = img;
+          if (width > MAX) { height = Math.round(height * MAX / width); width = MAX; }
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', 0.75));
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+  const handleImageChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 2 * 1024 * 1024) {
-      setError('Image must be under 2 MB');
+    if (file.size > 10 * 1024 * 1024) {
+      setError('Image must be under 10 MB');
       return;
     }
     setImageFile(file);
-    const reader = new FileReader();
-    reader.onload = () => {
-      setImagePreview(reader.result);
-      setImageDirty(true); // set dirty only after data URI is ready
-    };
-    reader.readAsDataURL(file);
+    try {
+      const compressed = await compressImage(file);
+      setImagePreview(compressed);
+      setImageDirty(true);
+    } catch {
+      setError('Failed to process image');
+    }
   };
 
   const resetForm = () => {
@@ -465,23 +490,24 @@ export default function NewsAdminPage() {
     cancelEditingPreview();
   };
 
-  const handlePreviewImageChange = (e) => {
+  const handlePreviewImageChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 2 * 1024 * 1024) {
-      setError('Image must be under 2 MB');
+    if (file.size > 10 * 1024 * 1024) {
+      setError('Image must be under 10 MB');
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
+    try {
+      const compressed = await compressImage(file);
       setPreviewEditData((prev) => ({
         ...prev,
         imageFile: file,
-        imagePreview: reader.result,
+        imagePreview: compressed,
         imageDirty: true,
       }));
-    };
-    reader.readAsDataURL(file);
+    } catch {
+      setError('Failed to process image');
+    }
   };
 
   const removePreviewImage = () => {

@@ -47,8 +47,8 @@ async function saveNews(list) {
   memNews = list; // keep in-memory cache in sync on every write
   invalidateListCache();
   if (isRedisEnabled()) {
-    // TTL 0 = no expiry (SETEX with huge TTL)
-    await redisSetJSON(REDIS_KEY, list, 365 * 24 * 3600);
+    const ok = await redisSetJSON(REDIS_KEY, list, 365 * 24 * 3600);
+    if (!ok) throw new Error('Redis save failed — article may not persist after a restart. Try again or reduce image size.');
   }
 }
 
