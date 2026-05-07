@@ -24,19 +24,27 @@ let memNews = [];
 // Short-lived cache for the public list endpoint. Avoids hitting Upstash on
 // every visit (which can be slow from cold or geographically distant regions).
 let listCache = null;       // { at: number, payload: { articles: [...] } }
-const LIST_TTL_MS = 60 * 1000; // 60 seconds
+const LIST_TTL_MS = 5 * 60 * 1000; // 5 minutes
 function invalidateListCache() { listCache = null; }
 
+// loadNews — uses memNews as a warm in-memory cache so that after the first
+// Redis fetch (on cold start) all subsequent requests are served from memory
+// without any network round-trip. This is safe because every write goes through
+// saveNews, which keeps memNews in sync.
 async function loadNews() {
+  if (memNews.length > 0) return memNews; // in-memory hit
   if (isRedisEnabled()) {
     const data = await redisGetJSON(REDIS_KEY);
-    if (data) return data;
+    if (data) {
+      memNews = data; // warm the in-memory cache from Redis
+      return memNews;
+    }
   }
-  return [...memNews];
+  return memNews;
 }
 
 async function saveNews(list) {
-  memNews = list;
+  memNews = list; // keep in-memory cache in sync on every write
   invalidateListCache();
   if (isRedisEnabled()) {
     // TTL 0 = no expiry (SETEX with huge TTL)
@@ -114,7 +122,7 @@ router.get('/', async (req, res) => {
       listCache = { at: Date.now(), payload };
     }
 
-    res.set('Cache-Control', fetchAll ? 'no-store' : 'public, max-age=30, stale-while-revalidate=60');
+    res.set('Cache-Control', fetchAll ? 'no-store' : 'public, max-age=60, stale-while-revalidate=300');
     res.json(payload);
   } catch (err) {
     console.error('[news] list error:', err.message);
@@ -160,7 +168,7 @@ router.get('/:id', async (req, res) => {
       ...article,
       imageUrl: article.imageUrl ? `/api/news/${article.id}/image?v=${article.updatedAt || article.createdAt}` : '',
     };
-    res.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=60');
+    res.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
     res.json({ article: safe });
   } catch (err) {
     console.error('[news] get error:', err.message);

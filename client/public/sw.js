@@ -70,15 +70,20 @@ self.addEventListener('fetch', (event) => {
 
   // Navigation / HTML requests: network-first with a hard timeout, cache fallback.
   // mode === 'navigate' covers top-level page loads; the Accept-text/html test
-  // catches client-side route fetches in some browsers.
+  // catches client-side route fetches in some browsers. The extension-less path
+  // test catches SPA routes (e.g. /news, /category/music) that arrive as
+  // programmatic fetches without the navigate mode (e.g. from client.navigate()
+  // inside the notificationclick handler or from PWA edge cases on Android).
   //
   // CRITICAL on mobile: without a timeout, reopening the PWA on a slow/flaky
   // network can hang forever waiting for the HTML response — user sees a frozen
   // blank screen. We race the network against a 3s timer and fall back to the
   // cached shell so the app can boot, then the in-page SW updater will refresh
   // once connectivity recovers.
+  const hasExtension = url.pathname.split('/').pop().includes('.');
   const isNavigation = request.mode === 'navigate'
-    || (request.headers.get('accept') || '').includes('text/html');
+    || (request.headers.get('accept') || '').includes('text/html')
+    || !hasExtension; // extension-less paths are SPA routes, not static assets
   if (isNavigation) {
     const NAV_TIMEOUT_MS = 3000;
     const networkFetch = fetch(request)
@@ -123,7 +128,7 @@ self.addEventListener('fetch', (event) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
         }
         return response;
-      }).catch(() => cached);
+      }).catch(() => cached || new Response('', { status: 503, statusText: 'Offline' }));
 
       return cached || fetched;
     })

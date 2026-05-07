@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import NotifyButton from '../components/NotifyButton';
 import SEO from '../components/SEO';
@@ -25,11 +25,14 @@ export default function NewsPage() {
   const [hasMore, setHasMore] = useState(true);  // assume more until proven otherwise
   const [offset, setOffset] = useState(0);
   const limit = 20;
+  const lastFetchRef = useRef(0); // timestamp of last loadRecent call
+  const REFETCH_THROTTLE_MS = 2 * 60 * 1000; // don't refetch if hidden < 2 min
 
   // Initial load — only today + yesterday
   const loadRecent = () => {
+    lastFetchRef.current = Date.now();
     setLoading(true);
-    fetch('/api/news?recent=true', { cache: 'no-store' })
+    fetch('/api/news?recent=true') // allow browser stale-while-revalidate cache
       .then((r) => r.json())
       .then((data) => {
         setArticles(data.articles || []);
@@ -43,7 +46,7 @@ export default function NewsPage() {
   // Load More — paginated older articles (not in the last 48 h)
   const loadMore = () => {
     setLoadingMore(true);
-    fetch(`/api/news?limit=${limit}&offset=${offset}`, { cache: 'no-store' })
+    fetch(`/api/news?limit=${limit}&offset=${offset}`) // allow browser stale-while-revalidate cache
       .then((r) => r.json())
       .then((data) => {
         setOlderArticles((prev) => [...prev, ...(data.articles || [])]);
@@ -63,7 +66,12 @@ export default function NewsPage() {
       if (event.data?.type === 'NOTIFICATION_CLICK') loadRecent();
     };
     const onVisible = () => {
-      if (document.visibilityState === 'visible') loadRecent();
+      if (
+        document.visibilityState === 'visible' &&
+        Date.now() - lastFetchRef.current > REFETCH_THROTTLE_MS
+      ) {
+        loadRecent();
+      }
     };
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.addEventListener('message', onSwMessage);
@@ -139,8 +147,8 @@ export default function NewsPage() {
         ))}
       </div>
 
-      {/* Loading */}
-      {loading && (
+      {/* Loading — only show skeleton on first load, not on background refetches */}
+      {loading && articles.length === 0 && (
         <div className="space-y-4">
           {Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="rounded-2xl bg-dark-800 p-4 space-y-3">
@@ -190,7 +198,8 @@ export default function NewsPage() {
                   src={article.imageUrl}
                   alt={article.title}
                   className="w-full h-full object-cover"
-                  loading="lazy"
+                  loading={idx === 0 ? 'eager' : 'lazy'}
+                  fetchPriority={idx === 0 ? 'high' : 'auto'}
                 />
               </div>
             )}
