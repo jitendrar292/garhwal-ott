@@ -28,11 +28,11 @@ const PHRASES = [
 
   // ── Family ──
   { id: 10, category: 'family', garhwali: 'बाबा',   hindi: 'पिताजी',   english: 'Father',       pronunciation: 'Baabaa' },
-  { id: 11, category: 'family', garhwali: 'ईजा',    hindi: 'माँ',      english: 'Mother',       pronunciation: 'Eejaa' },
+  { id: 11, category: 'family', garhwali: 'आमा',    hindi: 'माँ',      english: 'Mother',       pronunciation: 'Aama' },
   { id: 12, category: 'family', garhwali: 'बड़ो भाई', hindi: 'बड़े भाई', english: 'Elder Brother', pronunciation: 'Bado Bhaai' },
   { id: 13, category: 'family', garhwali: 'बड़ि दीदी', hindi: 'बड़ी बहन', english: 'Elder Sister', pronunciation: 'Badi Deedi' },
-  { id: 14, category: 'family', garhwali: 'भुला',   hindi: 'छोटे भाई/भाई', english: 'Younger Brother / Brother', pronunciation: 'Bhulaa' },
-  { id: 15, category: 'family', garhwali: 'भुलि',   hindi: 'छोटी बहन', english: 'Younger Sister', pronunciation: 'Bhuli' },
+  { id: 14, category: 'family', garhwali: 'छोटो भाई', hindi: 'छोटे भाई', english: 'Younger Brother', pronunciation: 'Chhoto Bhai' },
+  { id: 15, category: 'family', garhwali: 'नौनि',   hindi: 'छोटी बहन / बच्ची', english: 'Younger Sister / Young Girl', pronunciation: 'Nauni' },
   { id: 16, category: 'family', garhwali: 'बुबू',   hindi: 'दादाजी',   english: 'Grandfather',  pronunciation: 'Buboo' },
   { id: 17, category: 'family', garhwali: 'ब्वारी', hindi: 'बहू',      english: 'Daughter-in-law', pronunciation: 'Bwaari' },
   { id: 18, category: 'family', garhwali: 'घरैणी', hindi: 'पत्नी',     english: 'Wife',         pronunciation: 'Gharaini' },
@@ -76,7 +76,7 @@ const PHRASES = [
   { id: 50, category: 'nature', garhwali: 'आकाश',     hindi: 'आसमान',     english: 'Sky',           pronunciation: 'Aakaash' },
   { id: 51, category: 'nature', garhwali: 'सूरज',     hindi: 'सूरज',      english: 'Sun',           pronunciation: 'Sooraj' },
   { id: 52, category: 'nature', garhwali: 'चाँद',     hindi: 'चाँद',      english: 'Moon',          pronunciation: 'Chaand' },
-  { id: 53, category: 'nature', garhwali: 'तारा',     hindi: 'तारा',      english: 'Star',          pronunciation: 'Taara' },
+  { id: 53, category: 'nature', garhwali: 'गैणा',    hindi: 'तारा',      english: 'Star',          pronunciation: 'Gaina' },
   { id: 54, category: 'nature', garhwali: 'बारिश',    hindi: 'बारिश',     english: 'Rain',          pronunciation: 'Baarish' },
 
   // ── Daily Phrases ──
@@ -98,11 +98,11 @@ const PHRASES = [
   { id: 68, category: 'animals', garhwali: 'भैंस',   hindi: 'भैंस',   english: 'Buffalo', pronunciation: 'Bhains' },
   { id: 69, category: 'animals', garhwali: 'बाघ',    hindi: 'बाघ',    english: 'Tiger',   pronunciation: 'Baagh' },
   { id: 70, category: 'animals', garhwali: 'हिरन',   hindi: 'हिरण',   english: 'Deer',    pronunciation: 'Hiran' },
-  { id: 71, category: 'animals', garhwali: 'बन्दर',  hindi: 'बंदर',   english: 'Monkey',  pronunciation: 'Bandar' },
+  { id: 71, category: 'animals', garhwali: 'बाँदर',  hindi: 'बंदर',   english: 'Monkey',  pronunciation: 'Baandar' },
   { id: 72, category: 'animals', garhwali: 'घुघुती', hindi: 'कबूतर',  english: 'Dove / Pigeon (Pahadi icon)', pronunciation: 'Ghughuti' },
-  { id: 73, category: 'animals', garhwali: 'मछरी',   hindi: 'मछली',   english: 'Fish',    pronunciation: 'Machhari' },
-  { id: 74, category: 'animals', garhwali: 'काखड़',  hindi: 'भालू',   english: 'Bear',    pronunciation: 'Kaakhad' },
-  { id: 75, category: 'animals', garhwali: 'चिड़ी',  hindi: 'चिड़िया', english: 'Bird',   pronunciation: 'Chidi' },
+  { id: 73, category: 'animals', garhwali: 'माछ',    hindi: 'मछली',   english: 'Fish',    pronunciation: 'Maachh' },
+  { id: 74, category: 'animals', garhwali: 'रिख',    hindi: 'भालू',   english: 'Bear',    pronunciation: 'Rikh' },
+  { id: 75, category: 'animals', garhwali: 'बाखुलु', hindi: 'चिड़िया', english: 'Bird',   pronunciation: 'Baakhulu' },
 
   // ── Body Parts ──
   { id: 76, category: 'body', garhwali: 'सिर',  hindi: 'सिर',  english: 'Head',  pronunciation: 'Sir' },
@@ -118,7 +118,7 @@ const PHRASES = [
 
   // ── Colors ──
   { id: 86, category: 'colors', garhwali: 'लाल',     hindi: 'लाल',    english: 'Red',    pronunciation: 'Laal' },
-  { id: 87, category: 'colors', garhwali: 'नीलो',    hindi: 'नीला',   english: 'Blue',   pronunciation: 'Neelo' },
+  { id: 87, category: 'colors', garhwali: 'नीळू',    hindi: 'नीला',   english: 'Blue',   pronunciation: 'Neeluu' },
   { id: 88, category: 'colors', garhwali: 'हरो',     hindi: 'हरा',    english: 'Green',  pronunciation: 'Haro' },
   { id: 89, category: 'colors', garhwali: 'पीलो',    hindi: 'पीला',   english: 'Yellow', pronunciation: 'Peelo' },
   { id: 90, category: 'colors', garhwali: 'सफेद',    hindi: 'सफ़ेद',   english: 'White',  pronunciation: 'Safed' },
@@ -130,7 +130,7 @@ const PHRASES = [
   { id: 94,  category: 'time', garhwali: 'आज',      hindi: 'आज',      english: 'Today',     pronunciation: 'Aaj' },
   { id: 95,  category: 'time', garhwali: 'काल',     hindi: 'कल',      english: 'Yesterday / Tomorrow', pronunciation: 'Kaal' },
   { id: 96,  category: 'time', garhwali: 'परसों',   hindi: 'परसों',   english: 'Day after/before', pronunciation: 'Parson' },
-  { id: 97,  category: 'time', garhwali: 'सबेर',    hindi: 'सुबह',    english: 'Morning',   pronunciation: 'Saber' },
+  { id: 97,  category: 'time', garhwali: 'फजर / बिणसार', hindi: 'सुबह', english: 'Morning', pronunciation: 'Fajar / Binsaar' },
   { id: 98,  category: 'time', garhwali: 'सांझ',    hindi: 'शाम',     english: 'Evening',   pronunciation: 'Saanjh' },
   { id: 99,  category: 'time', garhwali: 'रात',     hindi: 'रात',     english: 'Night',     pronunciation: 'Raat' },
   { id: 100, category: 'time', garhwali: 'सोमवार',  hindi: 'सोमवार',  english: 'Monday',    pronunciation: 'Somvaar' },
@@ -140,6 +140,26 @@ const PHRASES = [
   { id: 104, category: 'time', garhwali: 'शुक्रवार', hindi: 'शुक्रवार', english: 'Friday',  pronunciation: 'Shukravaar' },
   { id: 105, category: 'time', garhwali: 'शनिवार',  hindi: 'शनिवार',  english: 'Saturday',  pronunciation: 'Shanivaar' },
   { id: 106, category: 'time', garhwali: 'रविवार',  hindi: 'रविवार',  english: 'Sunday',    pronunciation: 'Ravivaar' },
+
+  // ── Extra from Himlingo dictionary ──
+  // Greetings
+  { id: 107, category: 'greetings', garhwali: 'खुसाली छ?',    hindi: 'खुशी है?',         english: 'Are you happy / well?',   pronunciation: 'Khusaali chha?' },
+  { id: 108, category: 'greetings', garhwali: 'जय हो',         hindi: 'जय हो',            english: 'Victory / Blessings',     pronunciation: 'Jay ho' },
+  // Family (himlingo-sourced)
+  { id: 109, category: 'family', garhwali: 'भतार',    hindi: 'पति',     english: 'Husband',       pronunciation: 'Bhataar' },
+  { id: 110, category: 'family', garhwali: 'सुड्याणी', hindi: 'पत्नी',   english: 'Wife (alt.)',   pronunciation: 'Sudyaani' },
+  { id: 111, category: 'family', garhwali: 'नाति',    hindi: 'नाती / पोता', english: 'Grandson',   pronunciation: 'Naati' },
+  { id: 112, category: 'family', garhwali: 'लौडु',    hindi: 'लड़का / बच्चा', english: 'Boy / Child', pronunciation: 'Laaudu' },
+  // Nature (himlingo-sourced)
+  { id: 113, category: 'nature', garhwali: 'पाड़',     hindi: 'पहाड़',   english: 'Mountain (local)', pronunciation: 'Paad' },
+  { id: 114, category: 'nature', garhwali: 'खाळ',     hindi: 'नाला / खड्ड', english: 'Stream / Ravine', pronunciation: 'Khaal' },
+  { id: 115, category: 'nature', garhwali: 'बुरांस',  hindi: 'बुरांश',  english: 'Rhododendron (Uttarakhand flower)', pronunciation: 'Buraans' },
+  { id: 116, category: 'nature', garhwali: 'भ्यूँ',   hindi: 'ज़मीन',   english: 'Land / Earth',  pronunciation: 'Bhyoon' },
+  // Daily phrases (himlingo-sourced)
+  { id: 117, category: 'daily', garhwali: 'भलि तरां',  hindi: 'अच्छी तरह से', english: 'Properly / Well done', pronunciation: 'Bhali taraa' },
+  { id: 118, category: 'daily', garhwali: 'दगड़ी',    hindi: 'साथी / दोस्त', english: 'Friend / Companion', pronunciation: 'Dagdi' },
+  { id: 119, category: 'daily', garhwali: 'आज्ञा छ', hindi: 'आज्ञा है / ठीक है', english: 'As you say / Agreed', pronunciation: 'Aagna chha' },
+  { id: 120, category: 'daily', garhwali: 'कख रौन्दा?', hindi: 'कहाँ रहते हो?', english: 'Where do you live?', pronunciation: 'Kakh raunda?' },
 ];
 
 export default PHRASES;
