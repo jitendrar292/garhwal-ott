@@ -76,7 +76,7 @@ router.get('/', async (req, res) => {
     // Only cache the recent-only request (what every first load hits)
     const isCacheable = recentOnly && !req.query.offset && !fetchAll;
     if (isCacheable && listCache && Date.now() - listCache.at < LIST_TTL_MS) {
-      res.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=60');
+      res.set('Cache-Control', 'private, no-store');
       return res.json(listCache.payload);
     }
 
@@ -122,7 +122,10 @@ router.get('/', async (req, res) => {
       listCache = { at: Date.now(), payload };
     }
 
-    res.set('Cache-Control', fetchAll ? 'no-store' : 'public, max-age=60, stale-while-revalidate=300');
+    // recent=true: use private so browsers/CDNs don't cache the list. The
+    // server-side listCache already absorbs repeated Redis reads. Stale browser
+    // caches are what cause newly-posted articles to be invisible for minutes.
+    res.set('Cache-Control', fetchAll ? 'no-store' : 'private, no-store');
     res.json(payload);
   } catch (err) {
     console.error('[news] list error:', err.message);

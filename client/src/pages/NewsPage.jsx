@@ -32,7 +32,7 @@ export default function NewsPage() {
   const loadRecent = () => {
     lastFetchRef.current = Date.now();
     setLoading(true);
-    fetch('/api/news?recent=true') // allow browser stale-while-revalidate cache
+    fetch('/api/news?recent=true', { cache: 'no-store' })
       .then((r) => r.json())
       .then((data) => {
         setArticles(data.articles || []);
@@ -46,7 +46,7 @@ export default function NewsPage() {
   // Load More — paginated older articles (not in the last 48 h)
   const loadMore = () => {
     setLoadingMore(true);
-    fetch(`/api/news?limit=${limit}&offset=${offset}`) // allow browser stale-while-revalidate cache
+    fetch(`/api/news?limit=${limit}&offset=${offset}`, { cache: 'no-store' })
       .then((r) => r.json())
       .then((data) => {
         setOlderArticles((prev) => [...prev, ...(data.articles || [])]);
