@@ -12,7 +12,7 @@ export const LEARN_CATEGORIES = [
   { id: 'body',       label: 'शरीर',           emoji: '💪', labelEn: 'Body Parts' },
   { id: 'colors',     label: 'रंग',            emoji: '🎨', labelEn: 'Colors' },
   { id: 'time',       label: 'समय',            emoji: '⏰', labelEn: 'Time & Days' },
-  { id: 'muhavare',   label: 'मुहावरे',        emoji: '💬', labelEn: 'Idioms & Proverbs' },
+  { id: 'muhavare',   label: 'औखाण',          emoji: '💬', labelEn: 'Aaukhaand (Idioms)' },
 ];
 
 const PHRASES = [
@@ -162,7 +162,7 @@ const PHRASES = [
   { id: 119, category: 'daily', garhwali: 'आज्ञा छ', hindi: 'आज्ञा है / ठीक है', english: 'As you say / Agreed', pronunciation: 'Aagna chha' },
   { id: 120, category: 'daily', garhwali: 'कख रौन्दा?', hindi: 'कहाँ रहते हो?', english: 'Where do you live?', pronunciation: 'Kakh raunda?' },
 
-  // ── मुहावरे (Garhwali Idioms & Proverbs) ──
+  // ── औखाण (Garhwali Idioms & Proverbs) ──
   // Extra field: meaning = usage context shown in browse mode
   { id: 121, category: 'muhavare', garhwali: 'घी की लौड़ी, दोध को नाई ढालि', hindi: 'घी की लड़की दूध का नहीं ढालती', english: 'A pampered child avoids chores', pronunciation: 'Ghee ki laudi, dodh ko naai dhaali', meaning: 'जो हर चीज़ आराम से मिली हो, वो मेहनत नहीं करता — Said of someone spoilt.' },
   { id: 122, category: 'muhavare', garhwali: 'ऊंचो चढ़ना, गहरो गिरना', hindi: 'ऊंचाई चढ़ना, गहराई गिरना', english: 'The higher you climb, the harder you fall', pronunciation: 'Ooncho chadna, gehro girna', meaning: 'घमंड से जो उठता है, वो ज़ोर से गिरता है।' },
