@@ -566,5 +566,14 @@ async function seedAndDeduplicateVisitors() {
   }
 }
 
-module.exports = { getVisits, incrementVisits, getOpens, incrementOpens, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback, redisGetJSON, redisSetJSON, isRedisEnabled, redisSetAdd, redisSetMembers, redisSetCount, redisHashGet, redisHashSet, redisHashGetAll, redisHashLen, logChatExchange, getChatHistory, getFavorites, saveFavorites, addFavorite, removeFavorite };
+async function redisDelKey(key) {
+  if (!UPSTASH_ENABLED) return;
+  try {
+    await redisCmd('DEL', key);
+  } catch (err) {
+    console.error('[store] redisDelKey error:', err.message);
+  }
+}
+
+module.exports = { getVisits, incrementVisits, getOpens, incrementOpens, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback, redisGetJSON, redisSetJSON, redisDelKey, isRedisEnabled, redisSetAdd, redisSetMembers, redisSetCount, redisHashGet, redisHashSet, redisHashGetAll, redisHashLen, logChatExchange, getChatHistory, getFavorites, saveFavorites, addFavorite, removeFavorite };
 

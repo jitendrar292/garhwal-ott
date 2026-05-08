@@ -10,7 +10,11 @@
 
 const express = require('express');
 const router = express.Router();
-const { redisGetJSON, redisSetJSON, isRedisEnabled } = require('../services/store');
+const { redisGetJSON, redisSetJSON, redisDelKey, isRedisEnabled } = require('../services/store');
+
+// Each article's image is stored in its own Redis key to keep the main
+// pahadi_news list key small (Upstash free tier caps per-command at ~1 MB).
+const IMAGE_KEY_PREFIX = 'pahadi_news_img_';
 const { sendNotificationToAll } = require('../services/push');
 
 const REDIS_KEY = 'pahadi_news';
@@ -44,10 +48,21 @@ async function loadNews() {
 }
 
 async function saveNews(list) {
-  memNews = list; // keep in-memory cache in sync on every write
+  memNews = list; // keep full data (including imageUrl) in memory
   invalidateListCache();
   if (isRedisEnabled()) {
-    const ok = await redisSetJSON(REDIS_KEY, list, 365 * 24 * 3600);
+    // Strip inline base64 images from the list before writing to Redis.
+    // Each image is persisted in a separate key (pahadi_news_img_{id}) so
+    // the main pahadi_news key stays well under Upstash's ~1 MB command limit.
+    const forRedis = await Promise.all(list.map(async (a) => {
+      if (a.imageUrl && a.imageUrl.startsWith('data:')) {
+        await redisSetJSON(`${IMAGE_KEY_PREFIX}${a.id}`, a.imageUrl, 365 * 24 * 3600)
+          .catch((e) => console.error(`[news] image key save error for ${a.id}:`, e.message));
+        return { ...a, imageUrl: '' };
+      }
+      return a;
+    }));
+    const ok = await redisSetJSON(REDIS_KEY, forRedis, 365 * 24 * 3600);
     if (!ok) throw new Error('Redis save failed — article may not persist after a restart. Try again or reduce image size.');
   }
 }
@@ -134,18 +149,30 @@ router.get('/', async (req, res) => {
 });
 
 // ── Public: article image (binary, long-cached) ──
-// Decodes the base64 data URI stored with the article and serves the raw
-// bytes with a 1-year immutable cache header. The browser then never
-// re-downloads it, and the JSON list payload stays tiny.
+// 1. Check in-memory cache (data URI is there during current server session).
+// 2. Fall back to the separate Redis key pahadi_news_img_{id} (cold start,
+//    or articles posted in a previous server instance).
 router.get('/:id/image', async (req, res) => {
   try {
     const id = Number(req.params.id);
     if (!id || isNaN(id)) return res.status(400).send('Bad id');
-    const articles = await loadNews();
-    const article = articles.find((a) => a.id === id);
-    if (!article || !article.imageUrl) return res.status(404).send('Not found');
 
-    const m = article.imageUrl.match(/^data:(image\/[\w+.-]+);base64,(.+)$/);
+    // Warm memNews if cold, but don't overwrite it if already populated.
+    await loadNews();
+
+    // Try in-memory first — has the full data URI when the article was recently
+    // created/updated in this server instance.
+    const memArticle = memNews.find((a) => a.id === id);
+    let dataUri = (memArticle?.imageUrl || '').startsWith('data:') ? memArticle.imageUrl : null;
+
+    // Fall back to the separate Redis image key (post-migration / cold start).
+    if (!dataUri) {
+      dataUri = await redisGetJSON(`${IMAGE_KEY_PREFIX}${id}`);
+    }
+
+    if (!dataUri || !dataUri.startsWith('data:')) return res.status(404).send('Not found');
+
+    const m = dataUri.match(/^data:(image\/[\w+.-]+);base64,(.+)$/);
     if (!m) return res.status(404).send('Not found');
 
     const buf = Buffer.from(m[2], 'base64');
@@ -289,6 +316,8 @@ router.put('/:id', async (req, res) => {
     let nextImageUrl = existing.imageUrl || '';
     if (image === null || image === '') {
       nextImageUrl = '';
+      // Remove stale image key from Redis
+      await redisDelKey(`${IMAGE_KEY_PREFIX}${id}`).catch(() => {});
     } else if (typeof image === 'string' && image.startsWith('data:')) {
       const match = image.match(/^data:(image\/\w+);base64,(.+)$/);
       if (!match || !ALLOWED_MIME.has(match[1])) {
@@ -343,6 +372,8 @@ router.delete('/:id', async (req, res) => {
 
     articles.splice(idx, 1);
     await saveNews(articles);
+    // Clean up separate image key (best-effort)
+    await redisDelKey(`${IMAGE_KEY_PREFIX}${id}`).catch(() => {});
     res.json({ success: true, remaining: articles.length });
   } catch (err) {
     console.error('[news] delete error:', err.message);
