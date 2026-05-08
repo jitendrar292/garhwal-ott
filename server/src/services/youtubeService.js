@@ -260,6 +260,15 @@ function withPinned(category, result) {
   return { ...result, videos: [...pinned, ...rest] };
 }
 
+// Regex that matches video titles that are clearly full movies / films,
+// not songs. Used to sanitise results when videoCategoryId=10 can't be
+// applied (quota exhausted, cached data, static fallback).
+const MOVIE_TITLE_RE = /\bfull\s*movie\b|\bgarhwali\s+film\b|\bnew\s+garhwali\s+film\b|\bfilm\s+\d{4}\b/i;
+
+function filterMovies(videos) {
+  return videos.filter((v) => !MOVIE_TITLE_RE.test(v.title || ''));
+}
+
 function getStaticFallback(category) {
   return STATIC_FALLBACK[category] || { videos: [], nextPageToken: null, prevPageToken: null, totalResults: 0 };
 }
@@ -337,7 +346,8 @@ function pickFallbackForQuery(query) {
   let bucket = 'songs';
   if (/bhajan|devotional|jagar|jaagar|bhakti|stuti|aarti|mandir|temple/.test(q)) bucket = 'devotional';
   else if (/comedy|funny|hasi|hasna|kajyaan|polya|ghanna/.test(q)) bucket = 'comedy';
-  else if (/movie|film|chakrachal|gharjawain/.test(q)) bucket = 'movies';
+  // Only route to movies bucket when explicitly requesting movies — never for music searches
+  else if (/movie|film|chakrachal|gharjawain/.test(q) && !/song|music|bhajan|dj|remix|jaagar/.test(q)) bucket = 'movies';
   else if (/vlog|village|gaon|life|lifestyle|tour|trek/.test(q)) bucket = 'vlogs';
   else if (/podcast|baramasa|ghughuti|interview|documentary/.test(q)) bucket = 'podcast';
   else if (/jaagar|folk dance|chholiya|tandi|pandav/.test(q)) bucket = 'folkdance';
@@ -463,25 +473,34 @@ async function fetchFromYouTube(query, pageToken = '', maxResults = 12, options 
 async function searchVideos(query, pageToken = '', maxResults = 12, options = {}) {
   const order = options.order || 'relevance';
   const videoCategoryId = options.videoCategoryId || '';
+  // When caller requests music-only (videoCategoryId=10), strip movie titles
+  // from every result path (live API, Redis cache, fallback) because cached/
+  // fallback data was stored without the category filter.
+  const isMusicSearch = videoCategoryId === '10';
   const cacheKey = `search:${query}:${pageToken}:${maxResults}:${order}:${videoCategoryId}`;
+
+  const postProcess = (result) => {
+    if (!isMusicSearch || !result) return result;
+    return { ...result, videos: filterMovies(result.videos || []) };
+  };
   const cached = cache.get(cacheKey);
-  if (cached) return cached;
+  if (cached) return postProcess(cached);
 
   // Redis (Upstash) — survives restarts. Hydrate the in-memory cache on hit.
   const fromRedis = await redisGetJSON(`yt:${cacheKey}`);
   if (fromRedis) {
     cache.set(cacheKey, fromRedis);
     fallbackCache.set(cacheKey, fromRedis);
-    return fromRedis;
+    return postProcess(fromRedis);
   }
 
   // If quota breaker is tripped, skip the API call entirely.
   if (isQuotaCoolingDown()) {
     const lt = await redisGetJSON(longtermKey(cacheKey));
-    if (lt) return lt;
+    if (lt) return postProcess(lt);
     const fb = fallbackCache.get(cacheKey);
-    if (fb) return fb;
-    return pickFallbackForQuery(query);
+    if (fb) return postProcess(fb);
+    return postProcess(pickFallbackForQuery(query));
   }
 
   try {
@@ -497,22 +516,22 @@ async function searchVideos(query, pageToken = '', maxResults = 12, options = {}
     fallbackCache.set(cacheKey, result);
     redisSetJSON(`yt:${cacheKey}`, result, REDIS_TTL_SECONDS).catch(() => {});
     redisSetJSON(longtermKey(cacheKey), result, REDIS_LONGTERM_TTL_SECONDS).catch(() => {});
-    return result;
+    return postProcess(result);
   } catch (err) {
     // Long-term Redis mirror first (survives cold starts).
     const lt = await redisGetJSON(longtermKey(cacheKey));
     if (lt) {
       console.log('Serving long-term Redis fallback for:', cacheKey);
-      return lt;
+      return postProcess(lt);
     }
     const fallback = fallbackCache.get(cacheKey);
     if (fallback) {
       console.log('Serving in-memory fallback for:', cacheKey);
-      return fallback;
+      return postProcess(fallback);
     }
     if (err.message === 'QUOTA_EXCEEDED') {
       console.log('Serving keyword-matched static fallback for search:', query);
-      return pickFallbackForQuery(query);
+      return postProcess(pickFallbackForQuery(query));
     }
     throw err;
   }
