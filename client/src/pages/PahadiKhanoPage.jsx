@@ -302,17 +302,28 @@ export default function PahadiKhanoPage() {
                             )}
 
                             <div className="flex flex-wrap gap-1.5 mb-2">
-                              {ing.online.map((link) => (
-                                <a
-                                  key={link.label}
-                                  href={link.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-amber-500/20 hover:bg-amber-500/40 text-amber-200 border border-amber-400/30 transition-colors"
-                                >
-                                  🔗 {link.label}
-                                </a>
-                              ))}
+                              {ing.online.map((link) => {
+                                const isAmazon = link.url.includes('amazon.in');
+                                const isFlipkart = link.url.includes('flipkart.com');
+                                return (
+                                  <a
+                                    key={link.label}
+                                    href={link.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer sponsored"
+                                    className={`inline-flex items-center gap-1.5 text-[10px] font-bold px-3 py-1.5 rounded-xl transition-all
+                                      ${isAmazon
+                                        ? 'bg-[#FF9900]/20 hover:bg-[#FF9900]/40 text-[#FF9900] border border-[#FF9900]/40'
+                                        : isFlipkart
+                                        ? 'bg-blue-500/20 hover:bg-blue-500/40 text-blue-300 border border-blue-400/30'
+                                        : 'bg-amber-500/20 hover:bg-amber-500/40 text-amber-200 border border-amber-400/30'
+                                      }`}
+                                  >
+                                    {isAmazon ? '🛍️' : isFlipkart ? '🛒' : '🔗'}
+                                    {link.label}
+                                  </a>
+                                );
+                              })}
                             </div>
                             <p className="text-[10px] text-slate-400 leading-relaxed">
                               📍 {ing.localNote}
@@ -320,7 +331,10 @@ export default function PahadiKhanoPage() {
                           </div>
                         ))}
                       </div>
-                      <div className="flex items-center justify-between mt-3">
+                      <p className="mt-2 text-[9px] text-slate-500 text-center">
+                        🛍️ Amazon links affiliate हैं — same price, PahadiTube को support मिलता है।
+                      </p>
+                      <div className="flex items-center justify-between mt-2">
                         <Link
                           to="/pahadi-store"
                           onClick={() => setOpenId(null)}

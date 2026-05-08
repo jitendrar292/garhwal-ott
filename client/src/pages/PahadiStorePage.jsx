@@ -357,22 +357,35 @@ export default function PahadiStorePage() {
                   </div>
                 )}
 
+                {/* Affiliate buy section */}
                 <div className="mb-3">
-                  <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-1.5 font-bold">
+                  <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-2 font-bold">
                     🛒 ऑनलाइन खरीदें
                   </p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {ing.online.map((link) => (
-                      <a
-                        key={link.label}
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-amber-500/20 hover:bg-amber-500/40 text-amber-200 border border-amber-400/30 transition-colors"
-                      >
-                        🔗 {link.label}
-                      </a>
-                    ))}
+                  <div className="flex flex-col gap-1.5">
+                    {ing.online.map((link) => {
+                      const isAmazon = link.url.includes('amazon.in');
+                      const isFlipkart = link.url.includes('flipkart.com');
+                      return (
+                        <a
+                          key={link.label}
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer sponsored"
+                          className={`inline-flex items-center gap-2 text-xs font-bold px-3 py-2 rounded-xl transition-all
+                            ${isAmazon
+                              ? 'bg-[#FF9900]/20 hover:bg-[#FF9900]/40 text-[#FF9900] border border-[#FF9900]/40'
+                              : isFlipkart
+                              ? 'bg-blue-500/20 hover:bg-blue-500/40 text-blue-300 border border-blue-400/30'
+                              : 'bg-amber-500/20 hover:bg-amber-500/40 text-amber-200 border border-amber-400/30'
+                            }`}
+                        >
+                          {isAmazon ? '🛍️' : isFlipkart ? '🛒' : '🔗'}
+                          {link.label}
+                          {isAmazon && <span className="ml-auto text-[9px] opacity-60">affiliate</span>}
+                        </a>
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -387,9 +400,10 @@ export default function PahadiStorePage() {
           </div>
         )}
 
-        <div className="mt-8 rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-center">
-          <p className="text-xs text-slate-400">
-            ये affiliate links हैं — आपकी खरीद से PahadiTube को छोटा-सा support मिलता है, आपको कोई अतिरिक्त खर्च नहीं।
+        <div className="mt-8 rounded-xl bg-[#FF9900]/10 border border-[#FF9900]/20 px-4 py-3 text-center">
+          <p className="text-xs text-slate-300">
+            🛍️ <span className="text-[#FF9900] font-bold">Amazon Affiliate Disclosure:</span>{' '}
+            ये Amazon links affiliate हैं — आपकी खरीद पर PahadiTube को छोटा-सा commission मिलता है, आपकी price same रहती है।
           </p>
         </div>
       </div>
