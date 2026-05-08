@@ -91,6 +91,7 @@ export default function ShortsPage() {
         channelTitle: r.channel || 'Instagram',
         url: r.url,
         source: 'instagram',
+        own: !!r.own,
         _key: `ig-${i}`,
       })),
     []
@@ -240,9 +241,13 @@ export default function ShortsPage() {
                     href={video.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="shrink-0 text-xs bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90 text-white px-3 py-1.5 rounded-full font-medium transition-opacity"
+                    className={`shrink-0 text-xs text-white px-3 py-1.5 rounded-full font-medium transition-opacity hover:opacity-90 ${
+                      video.own
+                        ? 'bg-gradient-to-r from-amber-500 to-orange-500'
+                        : 'bg-gradient-to-r from-pink-500 to-purple-600'
+                    }`}
                   >
-                    Instagram
+                    {video.own ? '🏔️ PahadiTube' : 'Instagram'}
                   </a>
                 </div>
               </div>
