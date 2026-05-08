@@ -362,21 +362,32 @@ export default function GarhwaliSikhaPage() {
                 key={phrase.id}
                 className="rounded-xl bg-dark-800 border border-dark-700 hover:border-amber-500/40 transition-colors p-4"
               >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-lg font-bold text-white">{phrase.garhwali}</p>
-                    <p className="text-sm text-amber-300 font-mono mt-0.5">🔊 {phrase.pronunciation}</p>
-                    {phrase.meaning && (
-                      <p className="text-xs text-gray-400 mt-2 italic leading-relaxed border-t border-white/5 pt-2">
-                        💬 {phrase.meaning}
-                      </p>
-                    )}
-                  </div>
-                  <div className="text-right shrink-0">
-                    <p className="text-base font-semibold text-white">{phrase.hindi}</p>
+                {phrase.meaning ? (
+                  /* औखाण / muhavare — full-width stacked layout */
+                  <div>
+                    <div className="flex items-start justify-between gap-3">
+                      <p className="text-lg font-bold text-white leading-snug">{phrase.garhwali}</p>
+                      <p className="text-sm font-semibold text-white shrink-0 text-right">{phrase.hindi}</p>
+                    </div>
+                    <p className="text-sm text-amber-300 font-mono mt-1">🔊 {phrase.pronunciation}</p>
                     <p className="text-xs text-gray-400 mt-0.5">{phrase.english}</p>
+                    <p className="text-xs text-gray-400 mt-2 italic leading-relaxed border-t border-white/5 pt-2">
+                      💬 {phrase.meaning}
+                    </p>
                   </div>
-                </div>
+                ) : (
+                  /* regular vocab — side-by-side layout */
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-lg font-bold text-white">{phrase.garhwali}</p>
+                      <p className="text-sm text-amber-300 font-mono mt-0.5">🔊 {phrase.pronunciation}</p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="text-base font-semibold text-white">{phrase.hindi}</p>
+                      <p className="text-xs text-gray-400 mt-0.5">{phrase.english}</p>
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
 
