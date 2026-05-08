@@ -421,6 +421,8 @@ async function fetchFromYouTube(query, pageToken = '', maxResults = 12, options 
   });
   if (query) params.set('q', query);
   if (options.channelId) params.set('channelId', options.channelId);
+  // videoCategoryId=10 restricts results to the Music category on YouTube
+  if (options.videoCategoryId) params.set('videoCategoryId', String(options.videoCategoryId));
 
   if (pageToken) {
     params.set('pageToken', pageToken);
@@ -460,7 +462,8 @@ async function fetchFromYouTube(query, pageToken = '', maxResults = 12, options 
 
 async function searchVideos(query, pageToken = '', maxResults = 12, options = {}) {
   const order = options.order || 'relevance';
-  const cacheKey = `search:${query}:${pageToken}:${maxResults}:${order}`;
+  const videoCategoryId = options.videoCategoryId || '';
+  const cacheKey = `search:${query}:${pageToken}:${maxResults}:${order}:${videoCategoryId}`;
   const cached = cache.get(cacheKey);
   if (cached) return cached;
 
@@ -482,7 +485,7 @@ async function searchVideos(query, pageToken = '', maxResults = 12, options = {}
   }
 
   try {
-    const result = await fetchFromYouTube(query, pageToken, maxResults, { order });
+    const result = await fetchFromYouTube(query, pageToken, maxResults, { order, videoCategoryId: options.videoCategoryId });
     
     // Store search results permanently using a query-based key
     if (result.videos && result.videos.length > 0) {

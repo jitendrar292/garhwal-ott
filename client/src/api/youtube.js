@@ -11,10 +11,11 @@ async function fetchJSON(url) {
 
 // Default page size is 10 — keeps each fetch lightweight (5–10 max policy)
 // and limits how many thumbnails the browser has to decode/lay out per page.
-export async function searchVideos(query, pageToken = '', maxResults = 10, order = '') {
+export async function searchVideos(query, pageToken = '', maxResults = 10, order = '', videoCategoryId = '') {
   const params = new URLSearchParams({ q: query, maxResults: String(maxResults) });
   if (pageToken) params.set('pageToken', pageToken);
   if (order) params.set('order', order);
+  if (videoCategoryId) params.set('videoCategoryId', videoCategoryId);
   return fetchJSON(`${API_BASE}/search?${params}`);
 }
 
