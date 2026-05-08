@@ -10,6 +10,10 @@ const PAHADI_STORES = [
     state: 'Uttarakhand',
     aliases: ['dehradun', 'dehra dun', 'doon'],
     lat: 30.3165, lng: 78.0322,
+    patanjali: [
+      { name: 'Patanjali Mega Store – Rajpur Road', mapsQuery: 'Patanjali Mega Store Rajpur Road Dehradun' },
+      { name: 'Patanjali Arogya Kendra – Paltan Bazaar', mapsQuery: 'Patanjali Arogya Kendra Paltan Bazaar Dehradun' },
+    ],
     markets: [
       {
         name: 'पलटन बाज़ार',
@@ -37,6 +41,10 @@ const PAHADI_STORES = [
     state: 'Uttarakhand',
     aliases: ['haridwar', 'hardwar'],
     lat: 29.9457, lng: 78.1642,
+    patanjali: [
+      { name: 'Patanjali Headquarters Store', mapsQuery: 'Patanjali Yogpeeth store Haridwar' },
+      { name: 'Divya Pharmacy – Haridwar', mapsQuery: 'Divya Pharmacy Patanjali Haridwar' },
+    ],
     markets: [
       {
         name: 'बड़ा बाज़ार',
@@ -58,6 +66,9 @@ const PAHADI_STORES = [
     state: 'Uttarakhand',
     aliases: ['rishikesh', 'hrishikesh'],
     lat: 30.0869, lng: 78.2676,
+    patanjali: [
+      { name: 'Patanjali Store – Rishikesh', mapsQuery: 'Patanjali store Rishikesh' },
+    ],
     markets: [
       {
         name: 'त्रिवेणी घाट बाज़ार',
@@ -79,6 +90,9 @@ const PAHADI_STORES = [
     state: 'Uttarakhand',
     aliases: ['nainital'],
     lat: 29.3919, lng: 79.4542,
+    patanjali: [
+      { name: 'Patanjali Store – Mallital', mapsQuery: 'Patanjali store Nainital' },
+    ],
     markets: [
       {
         name: 'माल रोड बाज़ार',
@@ -94,6 +108,9 @@ const PAHADI_STORES = [
     state: 'Uttarakhand',
     aliases: ['haldwani', 'kathgodam'],
     lat: 29.2183, lng: 79.5130,
+    patanjali: [
+      { name: 'Patanjali Mega Store – Haldwani', mapsQuery: 'Patanjali Mega Store Haldwani' },
+    ],
     markets: [
       {
         name: 'बनभूलपुरा बाज़ार',
@@ -109,6 +126,9 @@ const PAHADI_STORES = [
     state: 'Uttarakhand',
     aliases: ['pauri', 'pauri garhwal'],
     lat: 30.1503, lng: 78.7793,
+    patanjali: [
+      { name: 'Patanjali Chikitsalaya – Pauri', mapsQuery: 'Patanjali store Pauri Garhwal' },
+    ],
     markets: [
       {
         name: 'पौड़ी मुख्य बाज़ार',
@@ -124,6 +144,9 @@ const PAHADI_STORES = [
     state: 'Uttarakhand',
     aliases: ['srinagar garhwal', 'srinagar uttarakhand'],
     lat: 30.2204, lng: 78.7815,
+    patanjali: [
+      { name: 'Patanjali Store – Srinagar', mapsQuery: 'Patanjali store Srinagar Garhwal Uttarakhand' },
+    ],
     markets: [
       {
         name: 'श्रीनगर मुख्य बाज़ार',
@@ -141,6 +164,10 @@ const PAHADI_STORES = [
     aliases: ['delhi', 'new delhi'],
     lat: 28.6139, lng: 77.2090,
     nearestUK: 'Dehradun',
+    patanjali: [
+      { name: 'Patanjali Mega Store – Connaught Place', mapsQuery: 'Patanjali Mega Store Connaught Place Delhi' },
+      { name: 'Patanjali Store – Karol Bagh', mapsQuery: 'Patanjali store Karol Bagh Delhi' },
+    ],
     markets: [
       {
         name: 'खान मार्केट / INA मार्केट',
@@ -163,6 +190,10 @@ const PAHADI_STORES = [
     aliases: ['mumbai', 'bombay'],
     lat: 19.0760, lng: 72.8777,
     nearestUK: 'Dehradun',
+    patanjali: [
+      { name: 'Patanjali Store – Andheri', mapsQuery: 'Patanjali store Andheri Mumbai' },
+      { name: 'Patanjali Store – Dadar', mapsQuery: 'Patanjali store Dadar Mumbai' },
+    ],
     markets: [
       {
         name: 'क्रॉफर्ड मार्केट',
@@ -179,6 +210,10 @@ const PAHADI_STORES = [
     aliases: ['bengaluru', 'bangalore'],
     lat: 12.9716, lng: 77.5946,
     nearestUK: 'Dehradun',
+    patanjali: [
+      { name: 'Patanjali Store – Jayanagar', mapsQuery: 'Patanjali store Jayanagar Bengaluru' },
+      { name: 'Patanjali Store – Koramangala', mapsQuery: 'Patanjali store Koramangala Bengaluru' },
+    ],
     markets: [
       {
         name: 'KR मार्केट',

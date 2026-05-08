@@ -19,6 +19,7 @@ export default function useNearbyStores() {
   const [city, setCity] = useState('');
   const [distKm, setDistKm] = useState(null);
   const [isUttarakhand, setIsUttarakhand] = useState(false);
+  const [coords, setCoords] = useState(null); // { lat, lng }
 
   const detect = useCallback(() => {
     if (!navigator.geolocation) {
@@ -30,6 +31,7 @@ export default function useNearbyStores() {
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         const { latitude: lat, longitude: lng } = pos.coords;
+        setCoords({ lat, lng });
         try {
           // Nominatim reverse geocode — free, no API key needed.
           // We set a custom User-Agent as required by their usage policy.
@@ -74,5 +76,5 @@ export default function useNearbyStores() {
     );
   }, []);
 
-  return { status, store, city, distKm, isUttarakhand, detect };
+  return { status, store, city, distKm, isUttarakhand, coords, detect };
 }
