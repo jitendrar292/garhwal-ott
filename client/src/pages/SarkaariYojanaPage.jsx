@@ -15,6 +15,7 @@ const CATEGORIES = [
   { id: 'youth', label: 'युवा', emoji: '🧑' },
   { id: 'housing', label: 'आवास', emoji: '🏡' },
   { id: 'infrastructure', label: 'अवसंरचना', emoji: '⛑️' },
+  { id: 'social-welfare', label: 'समाज कल्याण', emoji: '🤲' },
 ];
 
 const categoryColors = {
@@ -26,6 +27,7 @@ const categoryColors = {
   housing: 'border-cyan-500/50 bg-cyan-900/20',
   employment: 'border-blue-500/50 bg-blue-900/20',
   infrastructure: 'border-slate-500/50 bg-slate-800/30',
+  'social-welfare': 'border-teal-500/50 bg-teal-900/20',
 };
 
 const categoryLabels = {
@@ -37,6 +39,7 @@ const categoryLabels = {
   housing: 'आवास',
   employment: 'रोजगार',
   infrastructure: 'अवसंरचना',
+  'social-welfare': 'समाज कल्याण',
 };
 
 const statusConfig = {

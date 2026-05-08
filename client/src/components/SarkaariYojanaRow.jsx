@@ -13,6 +13,7 @@ const categoryColors = {
   housing: 'from-cyan-600 to-sky-700',
   employment: 'from-blue-600 to-indigo-700',
   infrastructure: 'from-slate-600 to-gray-700',
+  'social-welfare': 'from-teal-600 to-cyan-700',
 };
 
 const categoryLabels = {
@@ -24,6 +25,7 @@ const categoryLabels = {
   housing: 'आवास',
   employment: 'रोजगार',
   infrastructure: 'अवसंरचना',
+  'social-welfare': 'समाज कल्याण',
 };
 
 const statusConfig = {
