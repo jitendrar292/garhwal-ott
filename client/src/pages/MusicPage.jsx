@@ -5,7 +5,8 @@ import SEO from '../components/SEO';
 
 const MUSIC_QUERIES = [
   { label: '🔥 Trending', query: 'garhwali trending hit songs 2026' },
-  { label: '🎶 Classic', query: 'old garhwali evergreen songs Narendra Singh Negi' },
+  { label: '�️ NSN', query: 'Narendra Singh Negi songs garhwali' },
+  { label: '🎶 Classic', query: 'old garhwali evergreen songs' },
   { label: '🏔️ Kumaoni', query: 'kumaoni hit songs uttarakhand' },
   { label: '🎧 DJ Mix', query: 'garhwali DJ remix nonstop dance' },
   { label: '🙏 Bhajan', query: 'garhwali bhajan devotional aarti' },
