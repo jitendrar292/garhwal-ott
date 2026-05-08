@@ -137,6 +137,21 @@ export default function PahadiKhanoPage() {
           ))}
         </div>
 
+        {/* ── PAHADI SAMAGRI LINK ── */}
+        <Link
+          to="/pahadi-store"
+          className="flex items-center gap-4 rounded-2xl border border-amber-500/30 bg-gradient-to-r from-amber-900/30 to-yellow-900/20 px-5 py-4 mb-5 hover:border-amber-400/60 transition-all group"
+        >
+          <span className="text-3xl shrink-0">🛒</span>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-black text-amber-200 group-hover:text-amber-100">पहाड़ी सामग्री कहाँ मिलेगी?</p>
+            <p className="text-xs text-slate-400 mt-0.5">
+              इन dishes की सामग्री के लिए पहाड़ी stores और online shops देखें →
+            </p>
+          </div>
+          <span className="text-amber-400 font-black text-lg shrink-0 group-hover:translate-x-1 transition-transform">›</span>
+        </Link>
+
         {/* ── INFO STRIP ── */}
         <div className="rounded-2xl bg-dark-800/70 border border-white/10 p-5 text-center mb-10">
           <p className="text-amber-300 font-black text-base mb-1">🌄 स्वाद देवभूमि का</p>
