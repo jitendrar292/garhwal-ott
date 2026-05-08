@@ -331,9 +331,7 @@ export default function PahadiKhanoPage() {
                           </div>
                         ))}
                       </div>
-                      <p className="mt-2 text-[9px] text-slate-500 text-center">
-                        🛍️ Amazon links affiliate हैं — same price, PahadiTube को support मिलता है।
-                      </p>
+
                       <div className="flex items-center justify-between mt-2">
                         <Link
                           to="/pahadi-store"

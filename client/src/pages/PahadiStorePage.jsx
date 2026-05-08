@@ -382,7 +382,7 @@ export default function PahadiStorePage() {
                         >
                           {isAmazon ? '🛍️' : isFlipkart ? '🛒' : '🔗'}
                           {link.label}
-                          {isAmazon && <span className="ml-auto text-[9px] opacity-60">affiliate</span>}
+
                         </a>
                       );
                     })}
@@ -400,10 +400,9 @@ export default function PahadiStorePage() {
           </div>
         )}
 
-        <div className="mt-8 rounded-xl bg-[#FF9900]/10 border border-[#FF9900]/20 px-4 py-3 text-center">
-          <p className="text-xs text-slate-300">
-            🛍️ <span className="text-[#FF9900] font-bold">Amazon Affiliate Disclosure:</span>{' '}
-            ये Amazon links affiliate हैं — आपकी खरीद पर PahadiTube को छोटा-सा commission मिलता है, आपकी price same रहती है।
+        <div className="mt-8 rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-center">
+          <p className="text-xs text-slate-400">
+            इन links से खरीदने पर PahadiTube को support मिलता है — आपकी price same रहती है।
           </p>
         </div>
       </div>
