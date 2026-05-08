@@ -52,9 +52,24 @@ export default function PahadiStorePage() {
             <p className="text-slate-300 text-sm max-w-xl">
               गहत, भट्ट, मंडुवा, जखिया — ऑनलाइन खरीदें या नज़दीकी बाज़ार में ढूँढें।
             </p>
-            <Link to="/pahadi-khano" className="mt-2 inline-block text-xs font-bold text-amber-300 hover:text-amber-200 underline underline-offset-2">
-              ← पहाड़ी रेसिपी देखें
-            </Link>
+            <div className="mt-2 flex items-center gap-3 flex-wrap">
+              <Link to="/pahadi-khano" className="text-xs font-bold text-amber-300 hover:text-amber-200 underline underline-offset-2">
+                ← पहाड़ी रेसिपी देखें
+              </Link>
+              <button
+                onClick={() => {
+                  const url = `${window.location.origin}/pahadi-store`;
+                  if (navigator.share) {
+                    navigator.share({ title: 'पहाड़ी सामग्री – PahadiTube', text: 'गहत, भट्ट, मंडुवा, जखिया जैसी पहाड़ी सामग्री ऑनलाइन या नज़दीकी बाज़ार से खरीदें।', url });
+                  } else {
+                    navigator.clipboard.writeText(url).then(() => alert('Link copied! 📋'));
+                  }
+                }}
+                className="flex items-center gap-1.5 text-xs font-bold text-white/70 hover:text-white bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full transition-colors"
+              >
+                🔗 Share
+              </button>
+            </div>
           </div>
         </div>
 
