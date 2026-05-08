@@ -19,6 +19,7 @@
 //     shipping — placeholders will render as empty/broken IG cards.
 
 const INSTAGRAM_REELS = [
+  { url: 'https://www.instagram.com/p/DYETYRNxW_7/',      title: 'Pahadi reel',        channel: 'Instagram'     },
   { url: 'https://www.instagram.com/p/DQooACwiVYR/',      title: 'Karishma Shah reel', channel: '@karishmashah' },
   { url: 'https://www.instagram.com/reel/DXOeNr8B1RL/',   title: 'Pahadi reel',        channel: 'Instagram'     },
   { url: 'https://www.instagram.com/reel/DWy5_dFiQs8/',   title: 'Pahadi reel',        channel: 'Instagram'     },
