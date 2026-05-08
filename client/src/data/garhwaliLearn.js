@@ -33,12 +33,11 @@ const PHRASES = [
   { id: 12, category: 'family', garhwali: 'बड़ो भाई', hindi: 'बड़े भाई', english: 'Elder Brother', pronunciation: 'Bado Bhaai' },
   { id: 13, category: 'family', garhwali: 'बड़ि दीदी', hindi: 'बड़ी बहन', english: 'Elder Sister', pronunciation: 'Badi Deedi' },
   { id: 14, category: 'family', garhwali: 'छोटो भाई', hindi: 'छोटे भाई', english: 'Younger Brother', pronunciation: 'Chhoto Bhai' },
-  { id: 15, category: 'family', garhwali: 'नौनि',   hindi: 'छोटी बहन / बच्ची', english: 'Younger Sister / Young Girl', pronunciation: 'Nauni' },
+  { id: 15, category: 'family', garhwali: 'नौनि',   hindi: 'बेटी / लड़की', english: 'Daughter / Girl',  pronunciation: 'Nauni' },
   { id: 16, category: 'family', garhwali: 'बुबू',   hindi: 'दादाजी',   english: 'Grandfather',  pronunciation: 'Buboo' },
   { id: 17, category: 'family', garhwali: 'ब्वारी', hindi: 'बहू',      english: 'Daughter-in-law', pronunciation: 'Bwaari' },
   { id: 18, category: 'family', garhwali: 'घरैणी', hindi: 'पत्नी',     english: 'Wife',         pronunciation: 'Gharaini' },
-  { id: 19, category: 'family', garhwali: 'छौं',    hindi: 'बेटा',     english: 'Son',          pronunciation: 'Chhon' },
-  { id: 20, category: 'family', garhwali: 'छ्वीं',  hindi: 'बेटी',     english: 'Daughter',     pronunciation: 'Chhween' },
+  { id: 19, category: 'family', garhwali: 'लौंडु',  hindi: 'बेटा / लड़का', english: 'Son / Boy', pronunciation: 'Laaudu' },
 
   // ── Numbers ──
   { id: 21, category: 'numbers', garhwali: 'एक',    hindi: 'एक',    english: 'One',    pronunciation: 'Ek' },
@@ -147,10 +146,7 @@ const PHRASES = [
   { id: 107, category: 'greetings', garhwali: 'खुसाली छ?',    hindi: 'खुशी है?',         english: 'Are you happy / well?',   pronunciation: 'Khusaali chha?' },
   { id: 108, category: 'greetings', garhwali: 'जय हो',         hindi: 'जय हो',            english: 'Victory / Blessings',     pronunciation: 'Jay ho' },
   // Family (himlingo-sourced)
-  { id: 109, category: 'family', garhwali: 'भतार',    hindi: 'पति',     english: 'Husband',       pronunciation: 'Bhataar' },
-  { id: 110, category: 'family', garhwali: 'सुड्याणी', hindi: 'पत्नी',   english: 'Wife (alt.)',   pronunciation: 'Sudyaani' },
   { id: 111, category: 'family', garhwali: 'नाति',    hindi: 'नाती / पोता', english: 'Grandson',   pronunciation: 'Naati' },
-  { id: 112, category: 'family', garhwali: 'लौडु',    hindi: 'लड़का / बच्चा', english: 'Boy / Child', pronunciation: 'Laaudu' },
   // Nature (himlingo-sourced)
   { id: 113, category: 'nature', garhwali: 'पाड़',     hindi: 'पहाड़',   english: 'Mountain (local)', pronunciation: 'Paad' },
   { id: 114, category: 'nature', garhwali: 'खाळ',     hindi: 'नाला / खड्ड', english: 'Stream / Ravine', pronunciation: 'Khaal' },
