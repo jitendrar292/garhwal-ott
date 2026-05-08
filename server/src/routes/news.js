@@ -25,6 +25,11 @@ const ALLOWED_MIME = new Set(['image/jpeg', 'image/png', 'image/gif', 'image/web
 // In-memory fallback when Redis is down
 let memNews = [];
 
+// In-memory image cache: id (number) → base64 data URI string.
+// Populated on first image request; persists for the lifetime of the process.
+// Saves a Redis round-trip (~50–200 ms) on every subsequent image load.
+const memImages = new Map(); // Map<number, string>
+
 // Short-lived cache for the public list endpoint. Avoids hitting Upstash on
 // every visit (which can be slow from cold or geographically distant regions).
 let listCache = null;       // { at: number, payload: { articles: [...] } }
@@ -56,6 +61,9 @@ async function saveNews(list) {
     // the main pahadi_news key stays well under Upstash's ~1 MB command limit.
     const forRedis = await Promise.all(list.map(async (a) => {
       if (a.imageUrl && a.imageUrl.startsWith('data:')) {
+        // Warm the in-memory image cache immediately so the next request
+        // doesn't need a Redis round-trip.
+        memImages.set(a.id, a.imageUrl);
         await redisSetJSON(`${IMAGE_KEY_PREFIX}${a.id}`, a.imageUrl, 365 * 24 * 3600)
           .catch((e) => console.error(`[news] image key save error for ${a.id}:`, e.message));
         // Store a truthy marker so the list endpoint still generates /api/news/:id/image URLs.
@@ -167,15 +175,23 @@ router.get('/:id/image', async (req, res) => {
     // Warm memNews if cold, but don't overwrite it if already populated.
     await loadNews();
 
-    // Try in-memory first — has the full data URI when the article was recently
-    // created/updated in this server instance.
-    const memArticle = memNews.find((a) => a.id === id);
-    let dataUri = (memArticle?.imageUrl || '').startsWith('data:') ? memArticle.imageUrl : null;
+    // 1. In-memory image cache (fastest — no Redis round-trip)
+    let dataUri = memImages.get(id) || null;
 
-    // Fall back to the separate Redis image key (post-migration / cold start).
-    // Also handles articles where imageUrl was saved as 'has_image' marker.
+    // 2. Try memNews for articles created/updated in this server session
+    //    (imageUrl holds the full data URI only during the same session).
+    if (!dataUri) {
+      const memArticle = memNews.find((a) => a.id === id);
+      if ((memArticle?.imageUrl || '').startsWith('data:')) {
+        dataUri = memArticle.imageUrl;
+        memImages.set(id, dataUri); // warm cache
+      }
+    }
+
+    // 3. Fall back to the separate Redis image key (cold start / cross-session).
     if (!dataUri) {
       dataUri = await redisGetJSON(`${IMAGE_KEY_PREFIX}${id}`);
+      if (dataUri) memImages.set(id, dataUri); // warm cache for next request
     }
 
     if (!dataUri || !dataUri.startsWith('data:')) return res.status(404).send('Not found');
@@ -324,7 +340,8 @@ router.put('/:id', async (req, res) => {
     let nextImageUrl = existing.imageUrl || '';
     if (image === null || image === '') {
       nextImageUrl = '';
-      // Remove stale image key from Redis
+      // Remove stale image key from Redis and in-memory cache
+      memImages.delete(id);
       await redisDelKey(`${IMAGE_KEY_PREFIX}${id}`).catch(() => {});
     } else if (typeof image === 'string' && image.startsWith('data:')) {
       const match = image.match(/^data:(image\/\w+);base64,(.+)$/);
@@ -380,7 +397,8 @@ router.delete('/:id', async (req, res) => {
 
     articles.splice(idx, 1);
     await saveNews(articles);
-    // Clean up separate image key (best-effort)
+    // Clean up separate image key and in-memory cache (best-effort)
+    memImages.delete(id);
     await redisDelKey(`${IMAGE_KEY_PREFIX}${id}`).catch(() => {});
     res.json({ success: true, remaining: articles.length });
   } catch (err) {
