@@ -58,7 +58,9 @@ async function saveNews(list) {
       if (a.imageUrl && a.imageUrl.startsWith('data:')) {
         await redisSetJSON(`${IMAGE_KEY_PREFIX}${a.id}`, a.imageUrl, 365 * 24 * 3600)
           .catch((e) => console.error(`[news] image key save error for ${a.id}:`, e.message));
-        return { ...a, imageUrl: '' };
+        // Store a truthy marker so the list endpoint still generates /api/news/:id/image URLs.
+        // An empty string would make the ternary skip the URL entirely.
+        return { ...a, imageUrl: 'has_image' };
       }
       return a;
     }));
@@ -166,6 +168,7 @@ router.get('/:id/image', async (req, res) => {
     let dataUri = (memArticle?.imageUrl || '').startsWith('data:') ? memArticle.imageUrl : null;
 
     // Fall back to the separate Redis image key (post-migration / cold start).
+    // Also handles articles where imageUrl was saved as 'has_image' marker.
     if (!dataUri) {
       dataUri = await redisGetJSON(`${IMAGE_KEY_PREFIX}${id}`);
     }
