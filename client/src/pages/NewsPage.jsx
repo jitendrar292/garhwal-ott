@@ -200,6 +200,7 @@ export default function NewsPage() {
                   className="w-full h-full object-cover"
                   loading={idx === 0 ? 'eager' : 'lazy'}
                   fetchPriority={idx === 0 ? 'high' : 'auto'}
+                  onError={(e) => { e.currentTarget.parentElement.style.display = 'none'; }}
                 />
               </div>
             )}
