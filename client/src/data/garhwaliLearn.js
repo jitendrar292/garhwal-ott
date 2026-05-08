@@ -12,6 +12,7 @@ export const LEARN_CATEGORIES = [
   { id: 'body',       label: 'शरीर',           emoji: '💪', labelEn: 'Body Parts' },
   { id: 'colors',     label: 'रंग',            emoji: '🎨', labelEn: 'Colors' },
   { id: 'time',       label: 'समय',            emoji: '⏰', labelEn: 'Time & Days' },
+  { id: 'muhavare',   label: 'मुहावरे',        emoji: '💬', labelEn: 'Idioms & Proverbs' },
 ];
 
 const PHRASES = [
@@ -160,6 +161,29 @@ const PHRASES = [
   { id: 118, category: 'daily', garhwali: 'दगड़ी',    hindi: 'साथी / दोस्त', english: 'Friend / Companion', pronunciation: 'Dagdi' },
   { id: 119, category: 'daily', garhwali: 'आज्ञा छ', hindi: 'आज्ञा है / ठीक है', english: 'As you say / Agreed', pronunciation: 'Aagna chha' },
   { id: 120, category: 'daily', garhwali: 'कख रौन्दा?', hindi: 'कहाँ रहते हो?', english: 'Where do you live?', pronunciation: 'Kakh raunda?' },
+
+  // ── मुहावरे (Garhwali Idioms & Proverbs) ──
+  // Extra field: meaning = usage context shown in browse mode
+  { id: 121, category: 'muhavare', garhwali: 'घी की लौड़ी, दोध को नाई ढालि', hindi: 'घी की लड़की दूध का नहीं ढालती', english: 'A pampered child avoids chores', pronunciation: 'Ghee ki laudi, dodh ko naai dhaali', meaning: 'जो हर चीज़ आराम से मिली हो, वो मेहनत नहीं करता — Said of someone spoilt.' },
+  { id: 122, category: 'muhavare', garhwali: 'ऊंचो चढ़ना, गहरो गिरना', hindi: 'ऊंचाई चढ़ना, गहराई गिरना', english: 'The higher you climb, the harder you fall', pronunciation: 'Ooncho chadna, gehro girna', meaning: 'घमंड से जो उठता है, वो ज़ोर से गिरता है।' },
+  { id: 123, category: 'muhavare', garhwali: 'अपणो ढोल अपणे आगि', hindi: 'अपना ढोल अपने आगे', english: 'Beat your own drum first', pronunciation: 'Apno dhol apne aagi', meaning: 'अपना काम खुद करो, दूसरों पर निर्भर न रहो।' },
+  { id: 124, category: 'muhavare', garhwali: 'गाई को दूध नाई देणो त, दो ढोल क्या करणो', hindi: 'गाय का दूध नहीं देती तो, ढोल पीटने से क्या फायदा', english: 'Force achieves nothing where nature fails', pronunciation: 'Gaai ko doodh naai deno ta, do dhol kya karno', meaning: 'अगर कोई स्वभाव से नहीं देता, ज़बरदस्ती से नहीं मिलेगा।' },
+  { id: 125, category: 'muhavare', garhwali: 'पाणि बिणो मछरी नाई जीवणी', hindi: 'पानी बिना मछली नहीं जी सकती', english: 'Fish cannot live without water', pronunciation: 'Paani bino machhari naai jeevni', meaning: 'हर चीज़ की अपनी ज़रूरत होती है, जैसे इन्सान को परिवार।' },
+  { id: 126, category: 'muhavare', garhwali: 'आंख्यूँ की लज्ज, पेटू की भूख', hindi: 'आँखों की शर्म, पेट की भूख', english: 'Too shy to eat even when hungry', pronunciation: 'Aankhyoon ki lajj, petoo ki bhookh', meaning: 'शर्म और गरीबी का दुख दोनों साथ वहन करना।' },
+  { id: 127, category: 'muhavare', garhwali: 'नीरो पाणि गहरो होणो', hindi: 'ठहरा पानी गहरा होता है', english: 'Still waters run deep', pronunciation: 'Neero paani gehro hono', meaning: 'चुप रहने वाला व्यक्ति अक्सर गहरा सोचता है।' },
+  { id: 128, category: 'muhavare', garhwali: 'बात के आगि बात नाई जाणी', hindi: 'बात से बात नहीं जाती', english: 'Words cannot be unsaid', pronunciation: 'Baat ke aagi baat naai jaani', meaning: 'बोली गई बात वापस नहीं होती, सोचकर बोलो।' },
+  { id: 129, category: 'muhavare', garhwali: 'अपणो घर, स्वर्ग से भलो', hindi: 'अपना घर स्वर्ग से भी बेहतर', english: "One's own home is better than heaven", pronunciation: 'Apno ghar, swarg se bhalo', meaning: 'घर जैसी हो, अपना घर सबसे प्यारा होता है।' },
+  { id: 130, category: 'muhavare', garhwali: 'पहाड़को पाणि पहाड़में रणो', hindi: 'पहाड़ का पानी पहाड़ में ही रहता है', english: 'Mountain water stays in the mountain', pronunciation: 'Pahaadko paani pahaadmein rano', meaning: 'पहाड़ी संपदा पहाड़ में ही रहनी चाहिए; पलायन न हो।' },
+  { id: 131, category: 'muhavare', garhwali: 'काम बिणो ठाठ नाई', hindi: 'काम किए बिना ठाठ नहीं', english: 'No rest without work', pronunciation: 'Kaam bino thaath naai', meaning: 'मेहनत करने से ही आराम मिलता है।' },
+  { id: 132, category: 'muhavare', garhwali: 'जूठ बोलणे वालो को लाठ पड़णी', hindi: 'झूठ बोलने वाले को लाठ मिलती है', english: 'The liar gets a kick in the end', pronunciation: 'Jooth bolne waalo ko laath padni', meaning: 'झूठ का फल हमेशा बुरा होता है।' },
+  { id: 133, category: 'muhavare', garhwali: 'बाँदर क्या जाणू अदरख को सुआद', hindi: 'बंदर क्या जाने अदरक का स्वाद', english: "What does a monkey know of ginger's taste", pronunciation: 'Baandar kya jaanu adarak ko suaad', meaning: 'अयोग्य व्यक्ति किसी अच्छी चीज़ की कद्र नहीं करता।' },
+  { id: 134, category: 'muhavare', garhwali: 'जितना गुड़ डालो, उतनो मीठो', hindi: 'जितना गुड़ डालोगे, उतना मीठा होगा', english: 'The more jaggery you add, the sweeter it gets', pronunciation: 'Jitna gud daalo, utno meetho', meaning: 'जो जितना दोगे, उतना पाएंगे — मेहनत का फल मिलता है।' },
+  { id: 135, category: 'muhavare', garhwali: 'भूखो नाग बि डसणो', hindi: 'भूखा साँप भी डसता है', english: 'A hungry snake still bites', pronunciation: 'Bhookho naag bi dasno', meaning: 'ज़रूरतमंद व्यक्ति भी खतरनाक हो सकता है, उसे हल्के में न लो।' },
+  { id: 136, category: 'muhavare', garhwali: 'जुबान न सम्भाल्यो त, इज्जत चली जाणी', hindi: 'जुबान न संभाली तो इज्जत चली जाती है', english: 'An unbridled tongue loses respect', pronunciation: 'Jubaan na sambhalyo ta, izzat chali jaani', meaning: 'बोलने में संयम रखो, वरना सम्मान चला जाता है।' },
+  { id: 137, category: 'muhavare', garhwali: 'दगड़ी न हो त, रात लम्बी होणी', hindi: 'साथी न हो तो, रात लम्बी लगती है', english: 'Without a companion the night feels long', pronunciation: 'Dagdi na ho ta, raat lambi honi', meaning: 'अकेलेपन में हर मुश्किल बड़ी लगती है।' },
+  { id: 138, category: 'muhavare', garhwali: 'घर को बौड़ी बौड़ी, बाहर को राणी', hindi: 'घर में बुढ़िया, बाहर रानी', english: 'Old at home, queen outside', pronunciation: 'Ghar ko boudi boudi, bahar ko raani', meaning: 'जो घर में बड़ों का आदर नहीं करते, बाहर दिखावा करते हैं।' },
+  { id: 139, category: 'muhavare', garhwali: 'जुगाड़ी की नींद, मेहनति का पेट', hindi: 'सही नींद वोही सोए, जो कमाए', english: 'The hardworking sleep well', pronunciation: 'Jugaadi ki neend, mehnati ka pet', meaning: 'मेहनत करने वाले को चैन और रोटी दोनों मिलते हैं।' },
+  { id: 140, category: 'muhavare', garhwali: 'ठंडो हाथ, घाटो साथ', hindi: 'ठंडा हाथ, घाव का साथ', english: "Cold hand, companion of wounds", pronunciation: 'Thando haath, ghaato saath', meaning: 'जो उदासीन दिखता है वो ही आपदत में साथ देता है।' },
 ];
 
 export default PHRASES;

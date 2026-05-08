@@ -366,6 +366,11 @@ export default function GarhwaliSikhaPage() {
                   <div className="flex-1 min-w-0">
                     <p className="text-lg font-bold text-white">{phrase.garhwali}</p>
                     <p className="text-sm text-amber-300 font-mono mt-0.5">🔊 {phrase.pronunciation}</p>
+                    {phrase.meaning && (
+                      <p className="text-xs text-gray-400 mt-2 italic leading-relaxed border-t border-white/5 pt-2">
+                        💬 {phrase.meaning}
+                      </p>
+                    )}
                   </div>
                   <div className="text-right shrink-0">
                     <p className="text-base font-semibold text-white">{phrase.hindi}</p>
