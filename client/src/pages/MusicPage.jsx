@@ -3,16 +3,19 @@ import { searchVideos } from '../api/youtube';
 import { useMusic } from '../context/MusicContext';
 import SEO from '../components/SEO';
 
+// All queries append "-movie -film -trailer -full movie" to keep results
+// limited to songs/audio only and exclude Garhwali movie uploads.
+const EXCLUDE = '-movie -film -trailer -"full movie"';
 const MUSIC_QUERIES = [
-  { label: '🔥 Trending', query: 'garhwali trending hit songs 2026' },
-  { label: '�️ NSN', query: 'Narendra Singh Negi songs garhwali' },
-  { label: '🎶 Classic', query: 'old garhwali evergreen songs' },
-  { label: '🏔️ Kumaoni', query: 'kumaoni hit songs uttarakhand' },
-  { label: '🎧 DJ Mix', query: 'garhwali DJ remix nonstop dance' },
-  { label: '🙏 Bhajan', query: 'garhwali bhajan devotional aarti' },
-  { label: '🪘 Jaagar', query: 'garhwali jaagar Pritam Bhartwan ritual' },
-  { label: '💃 Folk Dance', query: 'garhwali folk dance chaunphula thadya' },
-  { label: '👩 Female Voices', query: 'garhwali female singer Meena Rana Priyanka Meher' },
+  { label: '🔥 Trending', query: `garhwali trending hit songs 2026 ${EXCLUDE}` },
+  { label: '🎙️ NSN', query: `Narendra Singh Negi songs garhwali ${EXCLUDE}` },
+  { label: '🎶 Classic', query: `old garhwali evergreen songs ${EXCLUDE}` },
+  { label: '🏔️ Kumaoni', query: `kumaoni hit songs uttarakhand ${EXCLUDE}` },
+  { label: '🎧 DJ Mix', query: `garhwali DJ remix nonstop dance ${EXCLUDE}` },
+  { label: '🙏 Bhajan', query: `garhwali bhajan devotional aarti ${EXCLUDE}` },
+  { label: '🪘 Jaagar', query: `garhwali jaagar Pritam Bhartwan ritual ${EXCLUDE}` },
+  { label: '💃 Folk Dance', query: `garhwali folk dance chaunphula thadya ${EXCLUDE}` },
+  { label: '👩 Female Voices', query: `garhwali female singer Meena Rana Priyanka Meher ${EXCLUDE}` },
 ];
 
 export default function MusicPage() {
