@@ -156,6 +156,34 @@ export default function PahadiStorePage() {
           </div>
         </div>
 
+        {/* ── Devbhoomi Aayurveda – Dehradun Local Store ── */}
+        <div className="mb-4 rounded-2xl overflow-hidden border border-green-500/30 bg-gradient-to-r from-green-900/30 to-emerald-900/20">
+          <div className="flex items-center gap-2 px-4 py-2 bg-green-500/20 border-b border-green-500/20">
+            <span className="text-lg">🌿</span>
+            <p className="text-sm font-black text-green-200">देहरादून — Local पहाड़ी Products</p>
+          </div>
+          <div className="p-4">
+            <a
+              href="https://maps.app.goo.gl/ppkE764aqG4eL6eo9"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-start gap-3 rounded-xl bg-green-500/10 border border-green-400/20 hover:border-green-400/50 px-4 py-3 transition-all group"
+            >
+              <span className="text-3xl shrink-0">🌱</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-black text-green-100 group-hover:text-white">Devbhoomi Aayurveda</p>
+                <p className="text-xs text-green-300 mt-0.5">Pahadi local products · देहरादून</p>
+                <p className="text-[11px] text-slate-300 mt-1.5 leading-relaxed">
+                  गढ़वाली जड़ी-बूटियाँ, आयुर्वेदिक उत्पाद, पहाड़ी तेल, मसाले और पारंपरिक सामग्री — सब एक जगह।
+                </p>
+                <span className="mt-2 inline-block text-[11px] font-bold text-green-400 group-hover:text-green-300">
+                  📍 Google Maps पर देखें →
+                </span>
+              </div>
+            </a>
+          </div>
+        </div>
+
         {/* ── Location panel (general markets) ── */}
         <div className="mb-5 rounded-2xl border border-white/10 bg-white/5 p-4">
           {status === 'idle' && (
