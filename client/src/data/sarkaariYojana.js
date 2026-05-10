@@ -210,6 +210,21 @@ const SARKAARI_YOJANA = [
     featured: true,
   },
 
+  // ── कीवी परियोजना ───────────────────────────────────────────────────────
+  {
+    id: 'kiwi-pariyojana-uk',
+    title: 'Uttarakhand Kiwi Pariyojana (Kiwi Project)',
+    titleLocal: 'उत्तराखंड कीवी परियोजना',
+    department: 'Horticulture & Food Processing, Uttarakhand',
+    beneficiary: 'पहाड़ी क्षेत्रों के बागवान किसान (1,000–2,200 मीटर ऊंचाई)',
+    benefit: 'कीवी के पौधे निःशुल्क / सब्सिडी पर, ट्रेलिस संरचना निर्माण अनुदान, बाज़ार तक सीधी पहुंच; प्रति हेक्टेयर ₹1.5–2 लाख अनुदान सहायता',
+    category: 'agriculture',
+    status: 'active',
+    link: 'https://horticulture.uk.gov.in',
+    emoji: '🥝',
+    featured: true,
+  },
+
   // ── समाज कल्याण विभाग, उत्तराखंड ──────────────────────────────────────
   {
     id: 'vridha-avastha-pension-uk',
