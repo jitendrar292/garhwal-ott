@@ -472,7 +472,7 @@ export default function NewsAdminPage() {
     setPreviewEditData({});
   };
 
-  const saveEditedPreview = () => {
+  const saveEditedPreview = (asDraft = false) => {
     if (editingPreviewIndex === null) return;
     const updated = [...translatedPreviews];
     updated[editingPreviewIndex] = {
@@ -485,10 +485,13 @@ export default function NewsAdminPage() {
         ? previewEditData.imagePreview 
         : undefined,
       imageUrl: !previewEditData.imageDirty ? previewEditData.imagePreview : undefined,
+      ...(asDraft ? { status: 'draft' } : {}),
     };
     setTranslatedPreviews(updated);
     cancelEditingPreview();
   };
+
+  const saveAsDraftAndClose = () => saveEditedPreview(true);
 
   const handlePreviewImageChange = async (e) => {
     const file = e.target.files?.[0];
@@ -767,17 +770,24 @@ export default function NewsAdminPage() {
                       <div className="flex gap-2">
                         <button
                           type="button"
-                          onClick={saveEditedPreview}
+                          onClick={() => saveEditedPreview(false)}
                           className="text-xs px-3 py-1 rounded bg-green-600 hover:bg-green-700 text-white font-medium"
                         >
                           ✓ Save
                         </button>
                         <button
                           type="button"
+                          onClick={saveAsDraftAndClose}
+                          className="text-xs px-3 py-1 rounded bg-yellow-600 hover:bg-yellow-700 text-white font-medium"
+                        >
+                          📝 Save as Draft
+                        </button>
+                        <button
+                          type="button"
                           onClick={cancelEditingPreview}
                           className="text-xs px-3 py-1 rounded bg-dark-700 hover:bg-dark-600 text-gray-300"
                         >
-                          Cancel
+                          Discard
                         </button>
                       </div>
                     </div>
@@ -858,7 +868,14 @@ export default function NewsAdminPage() {
                       <div className="min-w-0 flex-1">
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex-1">
-                            <div className="font-bold text-white text-sm">{t.title}</div>
+                            <div className="font-bold text-white text-sm flex items-center gap-2">
+                              {t.title}
+                              {t.status === 'draft' && (
+                                <span className="text-[10px] px-1.5 py-0.5 rounded bg-yellow-600/30 text-yellow-300 border border-yellow-500/40 font-medium shrink-0">
+                                  📝 Draft
+                                </span>
+                              )}
+                            </div>
                             <div className="text-green-200/80 text-xs mt-1">{t.summary}</div>
                           </div>
                           <button
