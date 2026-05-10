@@ -24,7 +24,7 @@ const PAHADI_INGREDIENTS = [
     desc: 'उत्तराखंड का देसी सोयाबीन — भट्ट की चुड़कानी और दाल का स्वाद अनोखा।',
     keywords: ['भट्ट', 'bhatt', 'काला सोयाबीन'],
     online: [
-      { label: 'Amazon India', url: 'https://www.amazon.in/s?k=bhatt+ki+dal+uttarakhand&tag=pahadistore29-21' },
+      { label: 'Amazon India', url: 'https://www.amazon.in/Bhuli-Store-Protein-Traditional-Himalayan/dp/B0D9CXWYDK/?tag=pahadistore29-21' },
       { label: 'Flipkart', url: 'https://www.flipkart.com/search?q=bhatt+dal+pahadi' },
     ],
     localNote: 'पहाड़ी गाँवों के स्थानीय बाज़ार में मिलती है। देहरादून, पौड़ी, श्रीनगर गढ़वाल में आसानी से।',
