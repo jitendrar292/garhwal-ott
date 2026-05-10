@@ -224,8 +224,8 @@ export default function SarkaariYojanaRow() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h2 className="text-xl sm:text-2xl font-bold text-white">
-            🏛️ सरकारी योजनाएं
+          <h2 className="section-header">
+            🏛️ <span className="gradient-text">सरकारी योजनाएं</span>
           </h2>
           <p className="text-white/50 text-xs mt-0.5">
             उत्तराखंड में चल रही प्रमुख सरकारी योजनाएं
@@ -233,7 +233,7 @@ export default function SarkaariYojanaRow() {
         </div>
         <Link
           to="/yojana"
-          className="text-xs text-primary-400 hover:text-primary-300 font-medium shrink-0 transition-colors"
+          className="text-xs sm:text-sm font-medium text-amber-400 hover:text-amber-300 transition-colors flex items-center gap-1"
         >
           सभी देखें →
         </Link>
