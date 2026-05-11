@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import PAHADI_DISHES from '../data/pahadiDishes';
+import { withAffiliateTag } from '../utils/affiliateUrl';
 import { getIngredientLinks } from '../data/pahadiIngredients';
 import useNearbyStores from '../hooks/useNearbyStores';
 
@@ -308,7 +309,7 @@ export default function PahadiKhanoPage() {
                                 return (
                                   <a
                                     key={link.label}
-                                    href={link.url}
+                                    href={withAffiliateTag(link.url)}
                                     target="_blank"
                                     rel="noopener noreferrer sponsored"
                                     className={`inline-flex items-center gap-1.5 text-[10px] font-bold px-3 py-1.5 rounded-xl transition-all

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import PAHADI_INGREDIENTS from '../data/pahadiIngredients';
 import useNearbyStores from '../hooks/useNearbyStores';
+import { withAffiliateTag } from '../utils/affiliateUrl';
 
 export default function PahadiStorePage() {
   const [search, setSearch] = useState('');
@@ -369,7 +370,7 @@ export default function PahadiStorePage() {
                       return (
                         <a
                           key={link.label}
-                          href={link.url}
+                          href={withAffiliateTag(link.url)}
                           target="_blank"
                           rel="noopener noreferrer sponsored"
                           className={`inline-flex items-center gap-2 text-xs font-bold px-3 py-2 rounded-xl transition-all
