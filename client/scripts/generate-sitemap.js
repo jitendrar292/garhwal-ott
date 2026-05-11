@@ -35,6 +35,8 @@ const staticRoutes = [
   { path: '/garhwali-sikha', changefreq: 'weekly', priority: '0.7' },
   { path: '/pahadi-khano', changefreq: 'weekly', priority: '0.7' },
   { path: '/pahadi-store', changefreq: 'weekly', priority: '0.6' },
+  { path: '/about', changefreq: 'monthly', priority: '0.6' },
+  { path: '/privacy-policy', changefreq: 'yearly', priority: '0.3' },
   { path: '/feedback', changefreq: 'monthly', priority: '0.3' },
 ];
 

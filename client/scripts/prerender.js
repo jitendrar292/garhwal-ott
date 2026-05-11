@@ -35,6 +35,11 @@ const STATIC_ROUTES = [
   '/category/jaagar',
   '/category/mela',
   '/category/theatre',
+  '/garhwali-sikha',
+  '/pahadi-khano',
+  '/pahadi-store',
+  '/about',
+  '/privacy-policy',
 ];
 
 const FOLK_ROUTES = folkStories.map((s) => `/folk-story/${s.slug}`);

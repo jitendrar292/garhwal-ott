@@ -12,6 +12,8 @@ const FOOTER_LINKS = [
   { label: 'News', path: '/news' },
   { label: 'Favorites', path: '/favorites' },
   { label: 'Feedback', path: '/feedback' },
+  { label: 'About', path: '/about' },
+  { label: 'Privacy Policy', path: '/privacy-policy' },
 ];
 
 export default function Footer() {
@@ -127,9 +129,13 @@ export default function Footer() {
           <p className="text-xs text-gray-600">
             &copy; {new Date().getFullYear()} PahadiTube. All videos are from YouTube.
           </p>
-          <p className="text-[11px] text-gray-700">
-            PahadiTube does not host or control third-party embedded content.
-          </p>
+          <div className="flex items-center gap-3 text-[11px] text-gray-700">
+            <span>PahadiTube does not host or control third-party embedded content.</span>
+            <span className="hidden sm:inline">·</span>
+            <Link to="/privacy-policy" className="hover:text-gray-500 transition-colors">Privacy Policy</Link>
+            <span>·</span>
+            <Link to="/about" className="hover:text-gray-500 transition-colors">About</Link>
+          </div>
         </div>
       </div>
     </footer>

@@ -33,6 +33,8 @@ import VoiceRecordingPage from './pages/VoiceRecordingPage';
 import GarhwaliSikhaPage from './pages/GarhwaliSikhaPage';
 import PahadiKhanoPage from './pages/PahadiKhanoPage';
 import PahadiStorePage from './pages/PahadiStorePage';
+import AboutPage from './pages/AboutPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 
 // Protected route wrapper - redirects to login if not authenticated
 function RequireAuth({ children }) {
@@ -120,6 +122,8 @@ function AnimatedRoutes() {
           <Route path="/garhwali-sikha" element={<GarhwaliSikhaPage />} />
           <Route path="/pahadi-khano" element={<PahadiKhanoPage />} />
           <Route path="/pahadi-store" element={<PahadiStorePage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         </Routes>
       </motion.div>
     </AnimatePresence>

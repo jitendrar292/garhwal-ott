@@ -109,6 +109,18 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://pahaditube.in/about</loc>
+    <lastmod>2026-05-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://pahaditube.in/privacy-policy</loc>
+    <lastmod>2026-05-11</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
     <loc>https://pahaditube.in/feedback</loc>
     <lastmod>2026-05-11</lastmod>
     <changefreq>monthly</changefreq>
