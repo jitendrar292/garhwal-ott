@@ -25,7 +25,6 @@ const staticRoutes = [
   { path: '/yojana', changefreq: 'weekly', priority: '0.8' },
   { path: '/podcast', changefreq: 'weekly', priority: '0.7' },
   { path: '/folk-stories', changefreq: 'weekly', priority: '0.7' },
-  { path: '/ghughuti-ai', changefreq: 'weekly', priority: '0.7' },
   { path: '/category/movies', changefreq: 'daily', priority: '0.7' },
   { path: '/category/songs', changefreq: 'daily', priority: '0.7' },
   { path: '/category/comedy', changefreq: 'weekly', priority: '0.6' },
@@ -33,6 +32,9 @@ const staticRoutes = [
   { path: '/category/folkdance', changefreq: 'weekly', priority: '0.6' },
   { path: '/category/mela', changefreq: 'weekly', priority: '0.6' },
   { path: '/category/theatre', changefreq: 'weekly', priority: '0.6' },
+  { path: '/garhwali-sikha', changefreq: 'weekly', priority: '0.7' },
+  { path: '/pahadi-khano', changefreq: 'weekly', priority: '0.7' },
+  { path: '/pahadi-store', changefreq: 'weekly', priority: '0.6' },
   { path: '/feedback', changefreq: 'monthly', priority: '0.3' },
 ];
 

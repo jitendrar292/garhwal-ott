@@ -367,6 +367,7 @@ export default function GhughutiAIPage() {
         title="Ghughuti AI - Garhwali Chatbot & Language Assistant"
         description="Ghughuti AI is a Garhwali-speaking chatbot — ask about Uttarakhand culture, festivals, food, travel, folk songs and learn new Garhwali words with everyday examples."
         path="/ghughuti-ai"
+        noindex={true}
         keywords="Ghughuti AI, Garhwali chatbot, Garhwali AI, Uttarakhand AI, learn Garhwali, Garhwali language, Pahadi assistant"
         jsonLd={{
           '@context': 'https://schema.org',
