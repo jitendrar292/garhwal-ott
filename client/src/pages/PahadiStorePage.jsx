@@ -20,7 +20,11 @@ export default function PahadiStorePage() {
 
   const inUK = isUttarakhand || store?.state === 'Uttarakhand';
 
-  // Google Maps URL: if we have real coords, centre the map there; otherwise plain search
+  // Google Maps URLs: pahadi/organic first, Patanjali as fallback
+  const pahadiOrgMapsUrl = coords
+    ? `https://www.google.com/maps/search/pahadi+organic+store/@${coords.lat},${coords.lng},14z`
+    : 'https://www.google.com/maps/search/pahadi+organic+store+near+me';
+
   const patanjaliMapsUrl = coords
     ? `https://www.google.com/maps/search/Patanjali+store/@${coords.lat},${coords.lng},14z`
     : 'https://www.google.com/maps/search/Patanjali+store+near+me';
@@ -74,22 +78,24 @@ export default function PahadiStorePage() {
           </div>
         </div>
 
-        {/* ── Patanjali Store Finder ── */}
-        <div className="mb-4 rounded-2xl overflow-hidden border border-orange-400/30 bg-gradient-to-r from-orange-900/40 to-amber-900/30">
-          <div className="flex items-center gap-2 px-4 py-2 bg-orange-500/20 border-b border-orange-400/20">
-            <span className="text-lg">🪷</span>
-            <p className="text-sm font-black text-orange-200">पास का Patanjali Store खोजें</p>
+        {/* ── Pahadi + Organic Store Finder (PRIORITY) ── */}
+        <div className="mb-4 rounded-2xl overflow-hidden border border-green-400/30 bg-gradient-to-r from-green-900/40 to-emerald-900/30">
+          <div className="flex items-center gap-2 px-4 py-2 bg-green-500/20 border-b border-green-400/20">
+            <span className="text-lg">🌿</span>
+            <p className="text-sm font-black text-green-200">नज़दीकी पहाड़ी + ऑर्गेनिक Store खोजें</p>
+            <span className="ml-auto text-[10px] font-bold text-green-400 bg-green-500/20 px-2 py-0.5 rounded-full">Priority</span>
           </div>
           <div className="p-4">
             {status === 'idle' && (
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                <p className="text-xs text-slate-300 flex-1">
-                  Patanjali stores पर मंडुवा आटा, सरसों तेल, जड़ी-बूटी मसाले — सस्ते और शुद्ध मिलते हैं।
-                  अपनी location share करें, हम नज़दीकी store दिखाएंगे।
-                </p>
+                <div className="flex-1">
+                  <p className="text-xs text-slate-300">
+                    पहले हम आपके पास के पहाड़ी / ऑर्गेनिक स्टोर दिखाएंगे — अगर नहीं मिले तो नीचे Patanjali से खरीदें।
+                  </p>
+                </div>
                 <button
                   onClick={detect}
-                  className="shrink-0 flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-400 text-white text-xs font-black rounded-xl transition-colors"
+                  className="shrink-0 flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-500 text-white text-xs font-black rounded-xl transition-colors"
                 >
                   📍 Location Share करें
                 </button>
@@ -97,7 +103,7 @@ export default function PahadiStorePage() {
             )}
 
             {status === 'locating' && (
-              <div className="flex items-center gap-3 text-sm text-orange-300">
+              <div className="flex items-center gap-3 text-sm text-green-300">
                 <span className="animate-spin">🔄</span>
                 <span>Location ढूँढी जा रही है…</span>
               </div>
@@ -107,66 +113,87 @@ export default function PahadiStorePage() {
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
                 <p className="text-xs text-slate-400 flex-1">
                   {status === 'denied' ? '⚠️ Location permission नहीं मिली।' : '📍 Location detect नहीं हो सका।'}
-                  {' '}फिर भी Google Maps पर search कर सकते हैं।
+                  {' '}Google Maps पर directly search करें।
                 </p>
                 <a
-                  href={patanjaliMapsUrl}
+                  href={pahadiOrgMapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="shrink-0 flex items-center gap-2 px-4 py-2 bg-orange-500/30 hover:bg-orange-500/50 text-orange-200 text-xs font-black rounded-xl border border-orange-400/30 transition-colors"
+                  className="shrink-0 flex items-center gap-2 px-4 py-2 bg-green-500/30 hover:bg-green-500/50 text-green-200 text-xs font-black rounded-xl border border-green-400/30 transition-colors"
                 >
-                  🗺️ Google Maps पर खोजें
+                  🗺️ पहाड़ी Store खोजें
                 </a>
               </div>
             )}
 
             {status === 'found' && (
               <div>
-                <div className="flex items-center justify-between mb-3">
-                  <p className="text-sm font-bold text-white">
-                    📍 {city || store?.city} के पास Patanjali Stores
-                    {distKm != null && <span className="text-slate-400 font-normal text-xs"> (~{distKm} km)</span>}
-                  </p>
+                <div className="flex items-start justify-between gap-2 mb-3">
+                  <div>
+                    <p className="text-sm font-bold text-white">
+                      🌿 {city || store?.city} के पास पहाड़ी + ऑर्गेनिक Stores
+                      {distKm != null && <span className="text-slate-400 font-normal text-xs"> (~{distKm} km)</span>}
+                    </p>
+                    <p className="text-xs text-green-400 font-semibold mt-0.5">
+                      {inUK
+                        ? '✅ आप उत्तराखंड में हैं — ताज़ी पहाड़ी सामग्री पास में ही मिलेगी!'
+                        : store ? `💡 ${store.city} के पहाड़ी बाज़ार आपसे सबसे नज़दीक हैं` : ''}
+                    </p>
+                  </div>
                   <button onClick={detect} className="text-[10px] text-slate-400 hover:text-white underline shrink-0">
                     बदलें
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
-                  {/* Known Patanjali stores for this city */}
-                  {store?.patanjali?.map((p) => (
-                    <a
-                      key={p.name}
-                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.mapsQuery)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2.5 rounded-xl bg-orange-500/10 border border-orange-400/20 hover:border-orange-400/50 px-3 py-2.5 transition-all group"
-                    >
-                      <span className="text-xl shrink-0">🪷</span>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-bold text-orange-100 group-hover:text-white truncate">{p.name}</p>
-                        <p className="text-[10px] text-orange-300/70 mt-0.5">Google Maps पर देखें →</p>
-                      </div>
-                    </a>
-                  ))}
-                  {/* Live "near me" search using exact coordinates */}
-                  <a
-                    href={patanjaliMapsUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2.5 rounded-xl bg-green-500/10 border border-green-400/20 hover:border-green-400/50 px-3 py-2.5 transition-all group"
-                  >
-                    <span className="text-xl shrink-0">📍</span>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-bold text-green-200 group-hover:text-white">मेरे आस-पास सभी Patanjali Stores</p>
-                      <p className="text-[10px] text-green-300/70 mt-0.5">Live location से खोजें →</p>
+                {store?.markets?.length > 0 ? (
+                  <>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
+                      {store.markets.map((m) => (
+                        <a
+                          key={m.nameEn}
+                          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(m.mapsQuery)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-start gap-2.5 rounded-xl bg-green-500/10 border border-green-400/20 hover:border-green-400/50 p-3 transition-all group"
+                        >
+                          <span className="text-xl mt-0.5">🏪</span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-bold text-white group-hover:text-green-300 transition-colors">
+                              {m.name}
+                            </p>
+                            <p className="text-[10px] text-slate-400">{m.nameEn} · {store.cityHi}</p>
+                            <p className="text-[10px] text-slate-300 mt-0.5 leading-relaxed">{m.desc}</p>
+                            <span className="mt-1.5 inline-block text-[10px] font-bold text-green-400 group-hover:text-green-300">
+                              Google Maps पर देखें →
+                            </span>
+                          </div>
+                        </a>
+                      ))}
+                      {/* Live organic store search near coords */}
+                      <a
+                        href={pahadiOrgMapsUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2.5 rounded-xl bg-emerald-500/10 border border-emerald-400/20 hover:border-emerald-400/50 px-3 py-2.5 transition-all group"
+                      >
+                        <span className="text-xl shrink-0">🌱</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-bold text-emerald-200 group-hover:text-white">मेरे पास ऑर्गेनिक Store</p>
+                          <p className="text-[10px] text-emerald-300/70 mt-0.5">Live location से खोजें →</p>
+                        </div>
+                      </a>
                     </div>
-                  </a>
-                </div>
-
-                <p className="text-[10px] text-slate-400 leading-relaxed">
-                  💡 Patanjali stores पर मिलने वाली पहाड़ी सामग्री: <span className="text-amber-300">मंडुवा आटा, सरसों तेल (कच्ची घानी), तिल तेल, हर्बल मसाले, आंवला, त्रिफला</span>
-                </p>
+                    {store.nearestUK && (
+                      <p className="text-[10px] text-slate-400 leading-relaxed">
+                        💡 उत्तराखंड जाने पर <span className="text-amber-300 font-semibold">{store.nearestUK}</span> के बाज़ारों से भरपूर पहाड़ी सामग्री ले आएं।
+                      </p>
+                    )}
+                  </>
+                ) : (
+                  <div className="text-xs text-slate-400 bg-black/20 rounded-xl px-3 py-2">
+                    आपके पास कोई known पहाड़ी बाज़ार नहीं मिला। नीचे Patanjali Store या ऑनलाइन links से खरीदें।
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -204,94 +231,98 @@ export default function PahadiStorePage() {
           </div>
         </div>
 
-        {/* ── Location panel (general markets) ── */}
-        <div className="mb-5 rounded-2xl border border-white/10 bg-white/5 p-4">
-          {status === 'idle' && (
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-              <div className="flex-1">
-                <p className="text-sm font-bold text-white">📍 नज़दीकी पहाड़ी बाज़ार खोजें</p>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  अपनी location share करें — हम आपके शहर के पहाड़ी बाज़ार suggest करेंगे।
+        {/* ── Patanjali Store Finder (FALLBACK) ── */}
+        <div className="mb-5 rounded-2xl overflow-hidden border border-orange-400/20 bg-gradient-to-r from-orange-900/30 to-amber-900/20">
+          <div className="flex items-center gap-2 px-4 py-2 bg-orange-500/10 border-b border-orange-400/20">
+            <span className="text-lg">🪷</span>
+            <p className="text-sm font-black text-orange-300">पास का Patanjali Store — अगर पहाड़ी Store नहीं मिला</p>
+            <span className="ml-auto text-[10px] font-bold text-orange-400 bg-orange-500/20 px-2 py-0.5 rounded-full">Fallback</span>
+          </div>
+          <div className="p-4">
+            {status === 'idle' && (
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                <p className="text-xs text-slate-400 flex-1">
+                  Patanjali stores पर मंडुवा आटा, सरसों तेल, जड़ी-बूटी मसाले — सस्ते और शुद्ध मिलते हैं।
                 </p>
-              </div>
-              <button
-                onClick={detect}
-                className="shrink-0 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black text-xs font-black rounded-xl transition-colors"
-              >
-                📍 Location Share करें
-              </button>
-            </div>
-          )}
-
-          {status === 'locating' && (
-            <div className="flex items-center gap-3 text-sm text-amber-300">
-              <span className="animate-spin text-lg">🔄</span>
-              <span>आपकी location ढूँढी जा रही है…</span>
-            </div>
-          )}
-
-          {status === 'denied' && (
-            <p className="text-sm text-red-300">
-              ⚠️ Location permission नहीं मिली। Browser settings में enable करें, या नीचे ऑनलाइन links से खरीदें।
-            </p>
-          )}
-
-          {status === 'error' && (
-            <p className="text-sm text-slate-400">
-              📍 Location detect नहीं हो सका — नीचे ऑनलाइन links से खरीदें।
-            </p>
-          )}
-
-          {status === 'found' && store && (
-            <div>
-              <div className="flex items-start justify-between gap-2 mb-3">
-                <div>
-                  <p className="text-sm font-bold text-white">
-                    📍 {city || store.city} के पास
-                    {distKm != null && <span className="text-slate-400 font-normal"> (~{distKm} km)</span>}
-                  </p>
-                  <p className="text-xs text-amber-300 font-semibold mt-0.5">
-                    {inUK
-                      ? '✅ आप उत्तराखंड में हैं — ताज़ी पहाड़ी सामग्री पास में ही मिलेगी!'
-                      : `💡 ${store.city} के बाज़ार आपसे सबसे नज़दीक हैं`}
-                  </p>
-                </div>
-                <button onClick={detect} className="text-[10px] text-slate-400 hover:text-white underline shrink-0">
-                  बदलें
+                <button
+                  onClick={detect}
+                  className="shrink-0 flex items-center gap-2 px-4 py-2 bg-orange-500/40 hover:bg-orange-500/60 text-orange-200 text-xs font-black rounded-xl border border-orange-400/30 transition-colors"
+                >
+                  📍 Location Share करें
                 </button>
               </div>
+            )}
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {store.markets.map((m) => (
+            {status === 'locating' && (
+              <div className="flex items-center gap-3 text-sm text-orange-300">
+                <span className="animate-spin">🔄</span>
+                <span>Location ढूँढी जा रही है…</span>
+              </div>
+            )}
+
+            {(status === 'denied' || status === 'error') && (
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                <p className="text-xs text-slate-400 flex-1">
+                  {status === 'denied' ? '⚠️ Location permission नहीं मिली।' : '📍 Location detect नहीं हो सका।'}
+                  {' '}Google Maps पर search करें।
+                </p>
+                <a
+                  href={patanjaliMapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="shrink-0 flex items-center gap-2 px-4 py-2 bg-orange-500/30 hover:bg-orange-500/50 text-orange-200 text-xs font-black rounded-xl border border-orange-400/30 transition-colors"
+                >
+                  🗺️ Patanjali Store खोजें
+                </a>
+              </div>
+            )}
+
+            {status === 'found' && (
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-sm font-bold text-white">
+                    🪷 {city || store?.city} के पास Patanjali Stores
+                    {distKm != null && <span className="text-slate-400 font-normal text-xs"> (~{distKm} km)</span>}
+                  </p>
+                  <button onClick={detect} className="text-[10px] text-slate-400 hover:text-white underline shrink-0">
+                    बदलें
+                  </button>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
+                  {store?.patanjali?.map((p) => (
+                    <a
+                      key={p.name}
+                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.mapsQuery)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2.5 rounded-xl bg-orange-500/10 border border-orange-400/20 hover:border-orange-400/50 px-3 py-2.5 transition-all group"
+                    >
+                      <span className="text-xl shrink-0">🪷</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-bold text-orange-100 group-hover:text-white truncate">{p.name}</p>
+                        <p className="text-[10px] text-orange-300/70 mt-0.5">Google Maps पर देखें →</p>
+                      </div>
+                    </a>
+                  ))}
                   <a
-                    key={m.nameEn}
-                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(m.mapsQuery)}`}
+                    href={patanjaliMapsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-start gap-2.5 rounded-xl bg-black/30 border border-white/10 hover:border-amber-400/40 p-3 transition-all group"
+                    className="flex items-center gap-2.5 rounded-xl bg-orange-500/10 border border-orange-400/20 hover:border-orange-400/50 px-3 py-2.5 transition-all group"
                   >
-                    <span className="text-xl mt-0.5">🏪</span>
+                    <span className="text-xl shrink-0">📍</span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-bold text-white group-hover:text-amber-300 transition-colors">
-                        {m.name}
-                      </p>
-                      <p className="text-[10px] text-slate-400">{m.nameEn} · {store.cityHi}</p>
-                      <p className="text-[10px] text-slate-300 mt-0.5 leading-relaxed">{m.desc}</p>
-                      <span className="mt-1.5 inline-block text-[10px] font-bold text-amber-400 group-hover:text-amber-300">
-                        Google Maps पर देखें →
-                      </span>
+                      <p className="text-xs font-bold text-orange-200 group-hover:text-white">मेरे आस-पास सभी Patanjali Stores</p>
+                      <p className="text-[10px] text-orange-300/70 mt-0.5">Live location से खोजें →</p>
                     </div>
                   </a>
-                ))}
-              </div>
-
-              {store.nearestUK && (
-                <p className="mt-2.5 text-[10px] text-slate-400 leading-relaxed">
-                  💡 उत्तराखंड जाने पर <span className="text-amber-300 font-semibold">{store.nearestUK}</span> के बाज़ारों से भरपूर पहाड़ी सामग्री ले आएं।
+                </div>
+                <p className="text-[10px] text-slate-400 leading-relaxed">
+                  💡 Patanjali stores पर मिलने वाली पहाड़ी सामग्री: <span className="text-amber-300">मंडुवा आटा, सरसों तेल (कच्ची घानी), तिल तेल, हर्बल मसाले, आंवला, त्रिफला</span>
                 </p>
-              )}
-            </div>
-          )}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Search */}
