@@ -76,6 +76,15 @@ export default function JobsAdminPage() {
   const [devices, setDevices] = useState(null);
   const [devicesLoading, setDevicesLoading] = useState(false);
 
+  // Jobs Agent state
+  const [agentPulling, setAgentPulling] = useState(false);
+  const [agentJobs, setAgentJobs] = useState([]); // preview from pull
+  const [agentEvents, setAgentEvents] = useState([]); // preview from pull
+  const [selectedAgentJobs, setSelectedAgentJobs] = useState(new Set());
+  const [selectedAgentEvents, setSelectedAgentEvents] = useState(new Set());
+  const [agentPublishing, setAgentPublishing] = useState(false);
+  const [agentMessage, setAgentMessage] = useState('');
+
   const fetchJobs = useCallback(async () => {
     setLoading(true);
     setError('');
@@ -331,6 +340,127 @@ export default function JobsAdminPage() {
     await sendEventPush(upcomingEvents[index]);
   };
 
+  // ── Jobs Agent functions ──
+  const pullLatestJobs = async () => {
+    setAgentPulling(true);
+    setAgentMessage('');
+    setError('');
+    setAgentJobs([]);
+    setSelectedAgentJobs(new Set());
+    try {
+      const res = await fetch(`/api/jobs-agent/pull-jobs?key=${encodeURIComponent(key)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to pull jobs');
+      setAgentJobs(data.jobs || []);
+      setAgentMessage(data.message || `Found ${data.found} jobs, ${data.new} new`);
+      // Select all by default
+      setSelectedAgentJobs(new Set((data.jobs || []).map((_, i) => i)));
+    } catch (err) {
+      setError(`Agent error: ${err.message}`);
+    } finally {
+      setAgentPulling(false);
+    }
+  };
+
+  const publishSelectedJobs = async () => {
+    if (selectedAgentJobs.size === 0) {
+      setError('Select at least one job to publish');
+      return;
+    }
+    setAgentPublishing(true);
+    setError('');
+    try {
+      const jobsToPublish = agentJobs.filter((_, i) => selectedAgentJobs.has(i));
+      const res = await fetch(`/api/jobs-agent/publish-jobs?key=${encodeURIComponent(key)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jobs: jobsToPublish }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Publish failed');
+      setSuccess(`✅ ${data.published} jobs published!`);
+      setAgentJobs([]);
+      setSelectedAgentJobs(new Set());
+      setAgentMessage('');
+      fetchJobs();
+    } catch (err) {
+      setError(`Publish error: ${err.message}`);
+    } finally {
+      setAgentPublishing(false);
+    }
+  };
+
+  const pullLatestEvents = async () => {
+    setAgentPulling(true);
+    setAgentMessage('');
+    setError('');
+    setAgentEvents([]);
+    setSelectedAgentEvents(new Set());
+    try {
+      const res = await fetch(`/api/jobs-agent/pull-events?key=${encodeURIComponent(key)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to pull events');
+      setAgentEvents(data.events || []);
+      setAgentMessage(data.message || `Found ${data.found} events`);
+      setSelectedAgentEvents(new Set((data.events || []).map((_, i) => i)));
+    } catch (err) {
+      setError(`Agent error: ${err.message}`);
+    } finally {
+      setAgentPulling(false);
+    }
+  };
+
+  const publishSelectedEvents = async () => {
+    if (selectedAgentEvents.size === 0) {
+      setError('Select at least one event to publish');
+      return;
+    }
+    setAgentPublishing(true);
+    setError('');
+    try {
+      const eventsToPublish = agentEvents.filter((_, i) => selectedAgentEvents.has(i));
+      const res = await fetch(`/api/jobs-agent/publish-events?key=${encodeURIComponent(key)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ events: eventsToPublish }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Publish failed');
+      setSuccess(`✅ ${data.published} events published!`);
+      setAgentEvents([]);
+      setSelectedAgentEvents(new Set());
+      setAgentMessage('');
+    } catch (err) {
+      setError(`Publish error: ${err.message}`);
+    } finally {
+      setAgentPublishing(false);
+    }
+  };
+
+  const toggleAgentJob = (index) => {
+    setSelectedAgentJobs((prev) => {
+      const next = new Set(prev);
+      if (next.has(index)) next.delete(index);
+      else next.add(index);
+      return next;
+    });
+  };
+
+  const toggleAgentEvent = (index) => {
+    setSelectedAgentEvents((prev) => {
+      const next = new Set(prev);
+      if (next.has(index)) next.delete(index);
+      else next.add(index);
+      return next;
+    });
+  };
+
   // Login screen
   if (!authenticated) {
     return (
@@ -459,6 +589,149 @@ export default function JobsAdminPage() {
             </div>
           );
         })()}
+
+        {/* ═══ Jobs & Events Agent ═══ */}
+        <div className="mb-6 p-4 bg-gray-800 border border-emerald-500/30 rounded-lg">
+          <h2 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+            🤖 Jobs & Events Agent
+            <span className="text-xs text-gray-400 font-normal">AI-powered auto-pull from govt sites</span>
+          </h2>
+
+          <div className="flex flex-wrap gap-2 mb-3">
+            <button
+              onClick={pullLatestJobs}
+              disabled={agentPulling}
+              className="px-4 py-2 text-sm bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30 rounded-lg transition disabled:opacity-50"
+            >
+              {agentPulling ? '⏳ Pulling...' : '🔍 Pull Latest Jobs'}
+            </button>
+            <button
+              onClick={pullLatestEvents}
+              disabled={agentPulling}
+              className="px-4 py-2 text-sm bg-purple-500/20 text-purple-300 border border-purple-500/40 hover:bg-purple-500/30 rounded-lg transition disabled:opacity-50"
+            >
+              {agentPulling ? '⏳ Pulling...' : '🎉 Pull Latest Events'}
+            </button>
+          </div>
+
+          {agentMessage && (
+            <p className="text-xs text-emerald-300 mb-3 bg-emerald-500/10 px-3 py-1.5 rounded">
+              {agentMessage}
+            </p>
+          )}
+
+          {/* Agent Jobs Preview */}
+          {agentJobs.length > 0 && (
+            <div className="mb-4">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-medium text-white">
+                  📋 Pulled Jobs ({agentJobs.length}) — select to publish
+                </h3>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setSelectedAgentJobs(new Set(agentJobs.map((_, i) => i)))}
+                    className="text-xs text-emerald-400 hover:text-emerald-300"
+                  >
+                    Select All
+                  </button>
+                  <button
+                    onClick={() => setSelectedAgentJobs(new Set())}
+                    className="text-xs text-gray-400 hover:text-white"
+                  >
+                    Deselect All
+                  </button>
+                </div>
+              </div>
+              <div className="space-y-2 max-h-80 overflow-y-auto">
+                {agentJobs.map((job, i) => (
+                  <label
+                    key={i}
+                    className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer transition ${
+                      selectedAgentJobs.has(i) ? 'bg-emerald-500/15 border border-emerald-500/40' : 'bg-gray-700/50 border border-gray-700'
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedAgentJobs.has(i)}
+                      onChange={() => toggleAgentJob(i)}
+                      className="mt-1 w-4 h-4 rounded bg-gray-700 border-gray-600 text-emerald-500 focus:ring-emerald-500"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-white font-medium">{job.emoji || '📋'} {job.title}</p>
+                      <p className="text-xs text-gray-400">{job.department} • {job.location}</p>
+                      <div className="flex flex-wrap gap-2 mt-1 text-xs text-gray-500">
+                        {job.vacancies > 0 && <span>👥 {job.vacancies} posts</span>}
+                        <span>📅 Deadline: {job.lastDate}</span>
+                        {job.salary && <span>💰 {job.salary}</span>}
+                      </div>
+                    </div>
+                  </label>
+                ))}
+              </div>
+              <button
+                onClick={publishSelectedJobs}
+                disabled={agentPublishing || selectedAgentJobs.size === 0}
+                className="mt-3 px-5 py-2 text-sm bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-white font-semibold rounded-lg transition"
+              >
+                {agentPublishing ? '⏳ Publishing...' : `✅ Publish ${selectedAgentJobs.size} Selected Jobs`}
+              </button>
+            </div>
+          )}
+
+          {/* Agent Events Preview */}
+          {agentEvents.length > 0 && (
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-medium text-white">
+                  🎉 Pulled Events ({agentEvents.length}) — select to publish
+                </h3>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setSelectedAgentEvents(new Set(agentEvents.map((_, i) => i)))}
+                    className="text-xs text-purple-400 hover:text-purple-300"
+                  >
+                    Select All
+                  </button>
+                  <button
+                    onClick={() => setSelectedAgentEvents(new Set())}
+                    className="text-xs text-gray-400 hover:text-white"
+                  >
+                    Deselect All
+                  </button>
+                </div>
+              </div>
+              <div className="space-y-2 max-h-80 overflow-y-auto">
+                {agentEvents.map((event, i) => (
+                  <label
+                    key={i}
+                    className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer transition ${
+                      selectedAgentEvents.has(i) ? 'bg-purple-500/15 border border-purple-500/40' : 'bg-gray-700/50 border border-gray-700'
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedAgentEvents.has(i)}
+                      onChange={() => toggleAgentEvent(i)}
+                      className="mt-1 w-4 h-4 rounded bg-gray-700 border-gray-600 text-purple-500 focus:ring-purple-500"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-white font-medium">{event.emoji || '🎉'} {event.name}</p>
+                      <p className="text-xs text-gray-400">{event.date} • {event.location}</p>
+                      {event.description && <p className="text-xs text-gray-500 mt-0.5">{event.description}</p>}
+                    </div>
+                  </label>
+                ))}
+              </div>
+              <button
+                onClick={publishSelectedEvents}
+                disabled={agentPublishing || selectedAgentEvents.size === 0}
+                className="mt-3 px-5 py-2 text-sm bg-purple-500 hover:bg-purple-600 disabled:opacity-50 text-white font-semibold rounded-lg transition"
+              >
+                {agentPublishing ? '⏳ Publishing...' : `✅ Publish ${selectedAgentEvents.size} Selected Events`}
+              </button>
+            </div>
+          )}
+        </div>
 
         {/* Push Notification Devices */}
         {devices && (

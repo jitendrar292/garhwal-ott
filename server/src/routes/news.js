@@ -55,6 +55,9 @@ async function loadNews() {
 async function saveNews(list) {
   memNews = list; // keep full data (including imageUrl) in memory
   invalidateListCache();
+  if (!isRedisEnabled()) {
+    console.warn('[news] ⚠️  Redis not configured — articles will NOT persist after server restart!');
+  }
   if (isRedisEnabled()) {
     // Strip inline base64 images from the list before writing to Redis.
     // Each image is persisted in a separate key (pahadi_news_img_{id}) so
@@ -408,6 +411,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 module.exports = router;
-// Also expose loadNews so other modules (e.g. chat RAG) can read articles
-// without going through HTTP.
+// Also expose loadNews and saveNews so other modules (e.g. chat RAG, newsAgent)
+// can read/write articles without going through HTTP.
 module.exports.loadNews = loadNews;
+module.exports.saveNews = saveNews;

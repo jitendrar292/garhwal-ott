@@ -14,11 +14,9 @@ const express = require('express');
 const router = express.Router();
 const { crawlNews, deduplicateArticles } = require('../services/newsCrawler');
 const { translateBatch } = require('../services/newsTranslator');
-const { loadNews } = require('./news');
-const { redisGetJSON, redisSetJSON, isRedisEnabled } = require('../services/store');
+const { loadNews, saveNews } = require('./news');
 const { sendNotificationToAll } = require('../services/push');
 
-const REDIS_KEY = 'pahadi_news';
 const MAX_NEWS = 200;
 const ALLOWED_MIME = new Set(['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
 
@@ -198,7 +196,7 @@ router.post('/publish-translated', async (req, res) => {
     }
 
     if (articles.length > MAX_NEWS) articles.length = MAX_NEWS;
-    await saveNewsDirectly(articles);
+    await saveNews(articles);
 
     console.log(`[newsAgent] publish-translated: published ${published} articles`);
     res.json({ message: `Published ${published} articles`, published });
@@ -266,7 +264,7 @@ async function publishSelected(selected) {
     }
 
     if (articles.length > MAX_NEWS) articles.length = MAX_NEWS;
-    await saveNewsDirectly(articles);
+    await saveNews(articles);
 
     lastRun.articlesPublished = published;
     lastRun.status = 'completed';
@@ -396,7 +394,7 @@ async function runPipeline({ maxPerFeed = 3, maxAge = 24, maxArticles = 5, dryRu
 
     // Trim to max and save
     if (articles.length > MAX_NEWS) articles.length = MAX_NEWS;
-    await saveNewsDirectly(articles);
+    await saveNews(articles);
 
     lastRun.articlesPublished = published;
     lastRun.status = 'completed';
@@ -429,14 +427,7 @@ function buildArticleBody(translated) {
   return body;
 }
 
-// Direct save to Redis (bypasses the news route's internal state)
-let memNews = [];
-async function saveNewsDirectly(list) {
-  memNews = list;
-  if (isRedisEnabled()) {
-    await redisSetJSON(REDIS_KEY, list, 365 * 24 * 3600);
-  }
-}
+// Use shared saveNews from news.js (strips images, invalidates listCache, updates memNews)
 
 // ── Optional: internal cron (disabled by default) ──
 // Set NEWS_AGENT_CRON_HOURS env var to enable (e.g. "6" for every 6 hours).
