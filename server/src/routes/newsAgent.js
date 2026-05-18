@@ -281,7 +281,7 @@ async function publishSelected(selected) {
 }
 
 // ── The main pipeline ──
-async function runPipeline({ maxPerFeed = 3, maxAge = 24, maxArticles = 5, dryRun = false } = {}) {
+async function runPipeline({ maxPerFeed = 4, maxAge = 24, maxArticles = 8, dryRun = false } = {}) {
   if (isRunning) return;
   isRunning = true;
 
@@ -315,6 +315,13 @@ async function runPipeline({ maxPerFeed = 3, maxAge = 24, maxArticles = 5, dryRu
     const existing = await loadNews();
     let newArticles = deduplicateArticles(crawled, existing);
     lastRun.articlesNew = newArticles.length;
+
+    // Log source breakdown to help diagnose imbalanced feeds
+    const sourceCounts = {};
+    for (const a of newArticles) {
+      sourceCounts[a.source] = (sourceCounts[a.source] || 0) + 1;
+    }
+    console.log('[newsAgent] Source breakdown (after dedup):', JSON.stringify(sourceCounts));
 
     if (newArticles.length === 0) {
       lastRun.status = 'completed';

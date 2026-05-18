@@ -17,20 +17,18 @@ const parser = new Parser({
 const RSS_FEEDS = [
   // Amar Ujala Uttarakhand
   { url: 'https://www.amarujala.com/rss/uttarakhand.xml', source: 'Amar Ujala', lang: 'hi' },
-  // Dainik Jagran Uttarakhand
-  { url: 'https://www.jagran.com/rss/uttarakhand-news.xml', source: 'Dainik Jagran', lang: 'hi' },
-  // NDTV India (Hindi)
-  { url: 'https://feeds.feedburner.com/ndabordi', source: 'NDTV India', lang: 'hi' },
-  // Hindustan Times (English)
+  // Hindustan Times Dehradun (English)
   { url: 'https://www.hindustantimes.com/feeds/rss/cities/dehradun/rssfeed.xml', source: 'Hindustan Times', lang: 'en' },
-  // Live Hindustan Uttarakhand
-  { url: 'https://feed.livehindustan.com/rss/4430', source: 'Live Hindustan', lang: 'hi' },
-  // The Times of India (English)
+  // The Times of India Uttarakhand (English)
   { url: 'https://timesofindia.indiatimes.com/rssfeeds/4118073.cms', source: 'Times of India', lang: 'en' },
-  // Navbharat Times (Hindi)
-  { url: 'https://navbharattimes.indiatimes.com/rssfeedstopstories.cms', source: 'Navbharat Times', lang: 'hi' },
-  // Aaj Tak (Hindi)
-  { url: 'https://www.aajtak.in/rss/uttarakhand.xml', source: 'Aaj Tak', lang: 'hi' },
+  // News18 Hindi Uttarakhand
+  { url: 'https://hindi.news18.com/rss/khabar/state/uttarakhand.xml', source: 'News18 Hindi', lang: 'hi' },
+  // ABP Live Uttarakhand (Hindi)
+  { url: 'https://www.abplive.com/states/uttarakhand/feed', source: 'ABP Live', lang: 'hi' },
+  // Zee News Hindi Uttarakhand
+  { url: 'https://zeenews.india.com/hindi/rss/uttarakhand-news.xml', source: 'Zee News', lang: 'hi' },
+  // Rajasthan Patrika Uttarakhand (Hindi)
+  { url: 'https://www.patrika.com/rss/uttarakhand.xml', source: 'Patrika', lang: 'hi' },
 ];
 
 /**
@@ -97,8 +95,11 @@ async function crawlNews({ maxPerFeed = 5, maxAge = 24 } = {}) {
   // Sort by publish date (newest first)
   results.sort((a, b) => b.pubDate - a.pubDate);
 
-  console.log(`[newsCrawler] Crawled ${results.length} articles from ${RSS_FEEDS.length} feeds`);
-  return results;
+  // Balance across sources: round-robin pick so no single source dominates
+  const balanced = balanceSources(results);
+
+  console.log(`[newsCrawler] Crawled ${balanced.length} articles from ${RSS_FEEDS.length} feeds (balanced across sources)`);
+  return balanced;
 }
 
 /**
@@ -234,6 +235,39 @@ function normalizeTitle(title) {
     .replace(/[^\w\s\u0900-\u097F]/g, '') // keep alphanumeric + Devanagari
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+/**
+ * Balance articles across sources using round-robin so no single source
+ * dominates the output. Within each source, articles stay sorted by date.
+ */
+function balanceSources(articles) {
+  // Group by source
+  const bySource = {};
+  for (const a of articles) {
+    if (!bySource[a.source]) bySource[a.source] = [];
+    bySource[a.source].push(a);
+  }
+
+  // Round-robin pick from each source (newest first within each)
+  const sources = Object.keys(bySource);
+  const balanced = [];
+  let idx = 0;
+  let exhausted = 0;
+
+  while (exhausted < sources.length) {
+    const src = sources[idx % sources.length];
+    if (bySource[src].length > 0) {
+      balanced.push(bySource[src].shift());
+    } else {
+      exhausted++;
+    }
+    idx++;
+    // Safety: prevent infinite loop
+    if (idx > articles.length * 2) break;
+  }
+
+  return balanced;
 }
 
 module.exports = { crawlNews, deduplicateArticles, RSS_FEEDS };
