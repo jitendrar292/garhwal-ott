@@ -103,6 +103,14 @@ const GENRES = [
     bg: 'bg-red-700',
     badge: { text: '🆕', cls: 'bg-red-500/85' },
   },
+  {
+    name: 'पहाड़ी पहनावा',
+    sub: 'पारंपरिक\nवेशभूषा',
+    path: '/pahadi-pehnawa',
+    emoji: '👘',
+    bg: 'bg-purple-700',
+    badge: { text: '🆕', cls: 'bg-purple-500/85' },
+  },
 ];
 
 export default function GenreGrid() {

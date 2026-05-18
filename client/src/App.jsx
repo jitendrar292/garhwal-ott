@@ -33,6 +33,7 @@ import VoiceRecordingPage from './pages/VoiceRecordingPage';
 import GarhwaliSikhaPage from './pages/GarhwaliSikhaPage';
 import PahadiKhanoPage from './pages/PahadiKhanoPage';
 import PahadiStorePage from './pages/PahadiStorePage';
+import PahadiPehnawaPage from './pages/PahadiPehnawaPage';
 import AboutPage from './pages/AboutPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 
@@ -122,6 +123,7 @@ function AnimatedRoutes() {
           <Route path="/garhwali-sikha" element={<GarhwaliSikhaPage />} />
           <Route path="/pahadi-khano" element={<PahadiKhanoPage />} />
           <Route path="/pahadi-store" element={<PahadiStorePage />} />
+          <Route path="/pahadi-pehnawa" element={<PahadiPehnawaPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         </Routes>
