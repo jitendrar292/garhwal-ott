@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PAHADI_PEHNAWA from '../data/pahadiPehnawa';
+import { withAffiliateTag } from '../utils/affiliateUrl';
 
 // Color themes per region
 const REGION_COLORS = {
@@ -157,10 +158,34 @@ const PahadiPehnawaGrid = () => {
                           <p className="text-xs font-bold text-white truncate">{sub.name}</p>
                           <p className="text-[10px] text-amber-200">{sub.nameLocal}</p>
                           <p className="text-[10px] text-slate-300 mt-0.5 leading-snug">{sub.description}</p>
+                          {sub.buyUrl && (
+                            <a
+                              href={withAffiliateTag(sub.buyUrl)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 mt-1.5 text-[10px] font-bold text-amber-300 hover:text-amber-100 bg-amber-900/40 hover:bg-amber-900/60 px-2 py-0.5 rounded-full transition-colors"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              🛒 Buy Online
+                            </a>
+                          )}
                         </div>
                       </div>
                     ))}
                   </div>
+
+                  {/* Shop All link */}
+                  {item.shopUrl && (
+                    <a
+                      href={withAffiliateTag(item.shopUrl)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 mt-4 py-2.5 rounded-xl bg-amber-600/30 hover:bg-amber-600/50 border border-amber-500/30 text-amber-200 text-xs font-bold transition-colors"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      🛍️ सब खरीदें — Shop All on Amazon
+                    </a>
+                  )}
                 </div>
               )}
             </button>
