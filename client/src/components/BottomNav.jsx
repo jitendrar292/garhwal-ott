@@ -19,21 +19,6 @@ const TABS = [
     ),
   },
   {
-    name: 'Explore',
-    path: '/category/movies',
-    icon: (
-      <svg className="w-[22px] h-[22px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
-          d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
-      </svg>
-    ),
-    iconActive: (
-      <svg className="w-[22px] h-[22px]" fill="currentColor" viewBox="0 0 24 24">
-        <path fillRule="evenodd" d="M3 6a3 3 0 013-3h2.25a3 3 0 013 3v2.25a3 3 0 01-3 3H6a3 3 0 01-3-3V6zm9.75 0a3 3 0 013-3H18a3 3 0 013 3v2.25a3 3 0 01-3 3h-2.25a3 3 0 01-3-3V6zM3 15.75a3 3 0 013-3h2.25a3 3 0 013 3V18a3 3 0 01-3 3H6a3 3 0 01-3-3v-2.25zm9.75 0a3 3 0 013-3H18a3 3 0 013 3V18a3 3 0 01-3 3h-2.25a3 3 0 01-3-3v-2.25z" clipRule="evenodd" />
-      </svg>
-    ),
-  },
-  {
     name: 'Music',
     path: '/music',
     icon: (
@@ -50,6 +35,69 @@ const TABS = [
     featured: true,
   },
   {
+    name: 'Samagri',
+    path: '/pahadi-store',
+    icon: (
+      <svg className="w-[22px] h-[22px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
+          d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
+      </svg>
+    ),
+    iconActive: (
+      <svg className="w-[22px] h-[22px]" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M2.25 2.25a.75.75 0 000 1.5h1.386c.17 0 .318.114.362.278l2.558 9.592a3.752 3.752 0 00-2.806 3.63c0 .414.336.75.75.75h15.75a.75.75 0 000-1.5H5.378A2.25 2.25 0 017.5 15h11.218a.75.75 0 00.674-.421 60.358 60.358 0 002.96-7.228.75.75 0 00-.525-.965A60.864 60.864 0 005.68 4.509l-.232-.867A1.875 1.875 0 003.636 2.25H2.25zM3.75 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM16.5 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" />
+      </svg>
+    ),
+  },
+  {
+    name: 'News',
+    path: '/news',
+    icon: (
+      <svg className="w-[22px] h-[22px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
+          d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+      </svg>
+    ),
+    iconActive: (
+      <svg className="w-[22px] h-[22px]" fill="currentColor" viewBox="0 0 24 24">
+        <path fillRule="evenodd" d="M4.125 3C3.089 3 2.25 3.84 2.25 4.875V18a3 3 0 003 3h15a3 3 0 01-3-3V4.875C17.25 3.839 16.41 3 15.375 3H4.125zM12 9.75a.75.75 0 000 1.5h1.5a.75.75 0 000-1.5H12zm-.75-2.25a.75.75 0 01.75-.75h1.5a.75.75 0 010 1.5H12a.75.75 0 01-.75-.75zM6 12.75a.75.75 0 000 1.5h7.5a.75.75 0 000-1.5H6zm-.75 3.75a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5H6a.75.75 0 01-.75-.75zM6 6.75a.75.75 0 00-.75.75v3c0 .414.336.75.75.75h3a.75.75 0 00.75-.75v-3A.75.75 0 009 6.75H6z" clipRule="evenodd" />
+        <path d="M18.75 6.75h1.875c.621 0 1.125.504 1.125 1.125V18a1.5 1.5 0 01-3 0V6.75z" />
+      </svg>
+    ),
+  },
+  {
+    name: 'Jobs',
+    path: '/jobs',
+    icon: (
+      <svg className="w-[22px] h-[22px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
+          d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+      </svg>
+    ),
+    iconActive: (
+      <svg className="w-[22px] h-[22px]" fill="currentColor" viewBox="0 0 24 24">
+        <path fillRule="evenodd" d="M7.5 5.25a3 3 0 013-3h3a3 3 0 013 3V6a.75.75 0 01-.75.75H8.25A.75.75 0 017.5 6v-.75zm3-1.5a1.5 1.5 0 00-1.5 1.5v.003h6V5.25a1.5 1.5 0 00-1.5-1.5h-3z" clipRule="evenodd" />
+        <path fillRule="evenodd" d="M2.25 9.75a3 3 0 013-3h13.5a3 3 0 013 3v8.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V9.75zM12 12a.75.75 0 00-.75.75v.01c0 .414.336.75.75.75h.01a.75.75 0 00.75-.75v-.01a.75.75 0 00-.75-.75H12z" clipRule="evenodd" />
+      </svg>
+    ),
+  },
+  {
+    name: 'Pehnawa',
+    path: '/pahadi-pehnawa',
+    icon: (
+      <svg className="w-[22px] h-[22px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
+          d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42" />
+      </svg>
+    ),
+    iconActive: (
+      <svg className="w-[22px] h-[22px]" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
+        <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
+      </svg>
+    ),
+  },
+  {
     name: 'AI',
     path: '/ghughuti-ai',
     icon: (
@@ -61,21 +109,6 @@ const TABS = [
     iconActive: (
       <svg className="w-[22px] h-[22px]" fill="currentColor" viewBox="0 0 24 24">
         <path fillRule="evenodd" d="M9 4.5a.75.75 0 01.721.544l.813 2.846a3.75 3.75 0 002.576 2.576l2.846.813a.75.75 0 010 1.442l-2.846.813a3.75 3.75 0 00-2.576 2.576l-.813 2.846a.75.75 0 01-1.442 0l-.813-2.846a3.75 3.75 0 00-2.576-2.576L2.049 12.72a.75.75 0 010-1.442l2.846-.813A3.75 3.75 0 007.47 7.89l.813-2.846A.75.75 0 019 4.5zM18 1.5a.75.75 0 01.728.568l.258 1.036c.236.94.97 1.674 1.91 1.91l1.036.258a.75.75 0 010 1.456l-1.036.258c-.94.236-1.674.97-1.91 1.91l-.258 1.036a.75.75 0 01-1.456 0l-.258-1.036a2.625 2.625 0 00-1.91-1.91l-1.036-.258a.75.75 0 010-1.456l1.036-.258a2.625 2.625 0 001.91-1.91l.258-1.036A.75.75 0 0118 1.5z" clipRule="evenodd" />
-      </svg>
-    ),
-  },
-  {
-    name: 'Profile',
-    path: '/favorites',
-    icon: (
-      <svg className="w-[22px] h-[22px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
-          d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-      </svg>
-    ),
-    iconActive: (
-      <svg className="w-[22px] h-[22px]" fill="currentColor" viewBox="0 0 24 24">
-        <path fillRule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clipRule="evenodd" />
       </svg>
     ),
   },
@@ -105,13 +138,13 @@ export default function BottomNav() {
       animate={{ y: 0 }}
       transition={{ type: 'spring', stiffness: 400, damping: 30, delay: 0.2 }}
     >
-      <div className="flex items-center justify-around h-[68px] px-2 max-w-md mx-auto">
+      <div className="flex items-center justify-around h-[64px] px-1 max-w-lg mx-auto">
         {TABS.map((tab) => (
           <Link
             key={tab.path}
             to={tab.path}
             onClick={(e) => handleTabClick(e, tab.path)}
-            className={`relative flex flex-col items-center justify-center gap-1 min-w-[48px] min-h-[48px] px-3 py-1.5 rounded-2xl transition-all duration-250
+            className={`relative flex flex-col items-center justify-center gap-0.5 min-w-[44px] min-h-[44px] px-2 py-1 rounded-xl transition-all duration-250
               ${tab.featured && !isActive(tab.path) ? 'text-content-music' : ''}
               ${isActive(tab.path)
                 ? 'text-primary-400'
@@ -121,14 +154,14 @@ export default function BottomNav() {
             {isActive(tab.path) && (
               <motion.div
                 layoutId="bottomNavIndicator"
-                className="absolute inset-0 bg-primary-500/10 border border-primary-500/20 rounded-2xl"
+                className="absolute inset-0 bg-primary-500/10 border border-primary-500/20 rounded-xl"
                 transition={{ type: 'spring', stiffness: 400, damping: 30 }}
               />
             )}
             <span className="relative">
               {isActive(tab.path) ? tab.iconActive : tab.icon}
             </span>
-            <span className={`relative text-[10px] font-medium ${isActive(tab.path) ? 'text-primary-400' : ''}`}>
+            <span className={`relative text-[9px] font-medium ${isActive(tab.path) ? 'text-primary-400' : ''}`}>
               {tab.name}
             </span>
           </Link>

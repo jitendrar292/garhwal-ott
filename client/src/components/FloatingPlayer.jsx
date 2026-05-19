@@ -419,7 +419,7 @@ export default function FloatingPlayer() {
       {/* ═══════ MINI PLAYER BAR ═══════ */}
       {!expanded && (
         <motion.div
-          className="fixed bottom-[68px] sm:bottom-0 left-2 right-2 sm:left-0 sm:right-0 z-50"
+          className="fixed bottom-[64px] sm:bottom-0 left-2 right-2 sm:left-0 sm:right-0 z-50"
           initial={{ y: 80, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 80, opacity: 0 }}
