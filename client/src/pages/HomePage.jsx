@@ -65,56 +65,59 @@ export default function HomePage() {
       {/* Full-width slider */}
       <ImageSlider />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-8 space-y-0">
         {/* Genre cards */}
         <GenreGrid />
 
         {/* Festivals · Melas · Theatre / Events — unified row with type filters */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.1 }}
-          transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
         >
           <UpcomingHappenings />
         </motion.div>
 
         {/* Garhwali folk-stories — Devanagari narratives sourced from himlingo.com */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.1 }}
-          transition={{ duration: 0.5, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="section-stories pl-3"
         >
           <FolkStoriesRow />
         </motion.div>
 
         {/* Garhwali Sikha — Learn Garhwali language */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.1 }}
-          transition={{ duration: 0.5, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="section-learning pl-3"
         >
           <GarhwaliSikhaRow />
         </motion.div>
 
         {/* Govt Jobs — recent job postings for Uttarakhand */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.1 }}
-          transition={{ duration: 0.5, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="section-jobs pl-3"
         >
           <GovtJobsRow />
         </motion.div>
 
         {/* Sarkaari Yojana — current govt schemes for Uttarakhand */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.1 }}
-          transition={{ duration: 0.5, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
         >
           <SarkaariYojanaRow />
         </motion.div>

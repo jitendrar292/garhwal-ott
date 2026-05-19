@@ -45,7 +45,7 @@ export default function FeedbackPage() {
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
       <Link
         to="/"
-        className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white mb-6 transition-colors"
+        className="inline-flex items-center gap-2 text-body-sm text-white/50 hover:text-white mb-6 transition-colors"
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -53,16 +53,16 @@ export default function FeedbackPage() {
         Back to Home
       </Link>
 
-      <h1 className="page-header mb-2 flex items-center gap-3">
+      <h1 className="font-display text-heading-lg mb-2 flex items-center gap-3">
         <div className="w-1.5 h-8 bg-gradient-to-b from-primary-400 to-primary-600 rounded-full" />
-        Share Your <span className="gradient-text">Feedback</span>
+        Share Your <span className="text-gradient-primary">Feedback</span>
       </h1>
-      <p className="text-gray-400 mb-8">
+      <p className="text-body-sm text-white/50 mb-8">
         We&apos;d love to hear from you! Tell us what you think about PahadiTube.
       </p>
 
       {status === 'success' && (
-        <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4 mb-6 flex items-center gap-3">
+        <div className="alert-success mb-6 flex items-center gap-3">
           <svg className="w-5 h-5 text-green-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd"
               d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
@@ -73,14 +73,14 @@ export default function FeedbackPage() {
       )}
 
       {status === 'error' && (
-        <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 mb-6">
-          <p className="text-red-400 font-medium">{errorMsg}</p>
+        <div className="alert-error mb-6">
+          <p className="font-medium">{errorMsg}</p>
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1.5">
+          <label htmlFor="name" className="input-label">
             Name <span className="text-red-400">*</span>
           </label>
           <input
@@ -90,16 +90,14 @@ export default function FeedbackPage() {
             value={form.name}
             onChange={handleChange}
             maxLength={100}
-            className="w-full bg-dark-700 border border-dark-500 rounded-xl px-4 py-3 text-white
-                       placeholder-gray-500 focus:outline-none focus:border-primary-500
-                       focus:ring-1 focus:ring-primary-500 transition-all"
+            className="input-field"
             placeholder="Your name"
           />
         </div>
 
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1.5">
-            Email <span className="text-gray-600">(optional)</span>
+          <label htmlFor="email" className="input-label">
+            Email <span className="text-white/30">(optional)</span>
           </label>
           <input
             type="email"
@@ -108,15 +106,13 @@ export default function FeedbackPage() {
             value={form.email}
             onChange={handleChange}
             maxLength={200}
-            className="w-full bg-dark-700 border border-dark-500 rounded-xl px-4 py-3 text-white
-                       placeholder-gray-500 focus:outline-none focus:border-primary-500
-                       focus:ring-1 focus:ring-primary-500 transition-all"
+            className="input-field"
             placeholder="your@email.com"
           />
         </div>
 
         <div>
-          <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-1.5">
+          <label htmlFor="message" className="input-label">
             Message <span className="text-red-400">*</span>
           </label>
           <textarea
@@ -126,12 +122,10 @@ export default function FeedbackPage() {
             onChange={handleChange}
             maxLength={2000}
             rows={5}
-            className="w-full bg-dark-700 border border-dark-500 rounded-xl px-4 py-3 text-white
-                       placeholder-gray-500 focus:outline-none focus:border-primary-500
-                       focus:ring-1 focus:ring-primary-500 transition-all resize-none"
+            className="input-field resize-none"
             placeholder="What do you think about PahadiTube? Any suggestions?"
           />
-          <p className="text-xs text-gray-600 mt-1 text-right">{form.message.length}/2000</p>
+          <p className="text-caption text-white/30 mt-1 text-right">{form.message.length}/2000</p>
         </div>
 
         <button
@@ -163,8 +157,8 @@ export default function FeedbackPage() {
       </form>
 
       {/* Contact / Connect */}
-      <div className="mt-10 p-6 rounded-2xl bg-gradient-to-br from-dark-800/60 to-dark-900/60 border border-white/5">
-        <h2 className="text-lg font-semibold text-white mb-1 flex items-center gap-2">
+      <div className="mt-10 surface-card p-6">
+        <h2 className="text-heading-sm font-display text-white mb-1 flex items-center gap-2">
           <span className="w-1 h-5 bg-gradient-to-b from-primary-400 to-primary-600 rounded-full" />
           Contact Us
         </h2>

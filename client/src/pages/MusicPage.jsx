@@ -88,14 +88,14 @@ export default function MusicPage() {
       />
       {/* Header — YouTube Music style */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-500 via-rose-500 to-orange-500 flex items-center justify-center shadow-lg shadow-red-500/20">
+        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-500 via-rose-500 to-orange-500 flex items-center justify-center shadow-elevation-2">
           <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
           </svg>
         </div>
         <div>
-          <h1 className="page-header">Pahadi <span className="gradient-text">Music</span></h1>
-          <p className="text-sm text-gray-400">Garhwali & Kumaoni songs — tap to play</p>
+          <h1 className="font-display text-heading-lg">Pahadi <span className="text-gradient-primary">Music</span></h1>
+          <p className="text-body-sm text-white/50">Garhwali & Kumaoni songs — tap to play</p>
         </div>
       </div>
 
@@ -105,10 +105,10 @@ export default function MusicPage() {
           <button
             key={i}
             onClick={() => setActiveTab(i)}
-            className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+            className={`px-4 py-2.5 rounded-xl text-body-sm font-medium whitespace-nowrap transition-all ${
               activeTab === i
-                ? 'bg-white text-black shadow-md'
-                : 'bg-dark-700 text-gray-300 hover:bg-dark-600'
+                ? 'bg-primary-500 text-white shadow-glow-sm'
+                : 'bg-surface-2 text-white/60 hover:bg-surface-3 hover:text-white'
             }`}
           >
             {cat.label}
@@ -120,7 +120,7 @@ export default function MusicPage() {
       {loading ? (
         <div className="space-y-2">
           {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-dark-800">
+            <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-surface-1">
               <div className="w-12 h-12 rounded-lg skeleton" />
               <div className="flex-1 space-y-2">
                 <div className="h-3 skeleton rounded w-3/4" />
@@ -130,7 +130,7 @@ export default function MusicPage() {
           ))}
         </div>
       ) : tracks.length === 0 ? (
-        <p className="text-gray-400 text-center py-12">No tracks found</p>
+        <p className="text-white/40 text-center py-12">No tracks found</p>
       ) : (
         <div className="space-y-1">
           {tracks.map((track, index) => {
@@ -166,8 +166,8 @@ export default function MusicPage() {
                 }}
                 className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all border cursor-pointer
                   ${isActive
-                    ? 'bg-primary-500/10 border-primary-500/30 shadow-sm shadow-primary-500/10'
-                    : 'bg-dark-800/40 border-transparent hover:bg-dark-700/60'
+                    ? 'bg-primary-500/10 border-primary-500/30 shadow-glow-sm'
+                    : 'bg-surface-1/50 border-transparent hover:bg-surface-2'
                   }`}
               >
                 {/* Index / equalizer */}
@@ -204,7 +204,7 @@ export default function MusicPage() {
                 {/* Share button */}
                 <button
                   onClick={handleShare}
-                  className="p-2 rounded-full text-gray-400 hover:text-white hover:bg-dark-600 transition-colors shrink-0"
+                  className="p-2 rounded-full text-white/40 hover:text-white hover:bg-surface-3 transition-colors shrink-0"
                   aria-label="Share"
                   title="Share"
                 >
@@ -229,7 +229,7 @@ export default function MusicPage() {
           <button
             onClick={handleLoadMore}
             disabled={loadingMore}
-            className="px-6 py-2.5 rounded-full bg-dark-700 hover:bg-dark-600 text-sm font-medium text-white transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            className="btn-secondary px-6 py-2.5"
           >
             {loadingMore ? 'Loading…' : 'Load more'}
           </button>

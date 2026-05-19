@@ -6,6 +6,7 @@ import Footer from './components/Footer';
 import FloatingPlayer from './components/FloatingPlayer';
 import InstallBanner from './components/InstallBanner';
 import IntroSound from './components/IntroSound';
+import { ToastProvider } from './components/ui/Toast';
 import { MusicProvider } from './context/MusicContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import HomePage from './pages/HomePage';
@@ -44,7 +45,7 @@ function RequireAuth({ children }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#14122a]">
+      <div className="min-h-screen flex items-center justify-center bg-surface-0">
         <div className="animate-spin w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full" />
       </div>
     );
@@ -61,17 +62,19 @@ export default function App() {
   return (
     <AuthProvider>
       <MusicProvider>
-        <div className="min-h-screen flex flex-col text-white" style={{ backgroundColor: '#14122a' }}>
-          <Navbar />
-          <main className="flex-1 pb-24 sm:pb-8">
-            <AnimatedRoutes />
-          </main>
-          <Footer />
-          <FloatingPlayer />
-          <BottomNav />
-          <InstallBanner />
-          <IntroSound />
-        </div>
+        <ToastProvider>
+          <div className="min-h-screen flex flex-col text-white bg-surface-0">
+            <Navbar />
+            <main className="flex-1 pb-24 sm:pb-8">
+              <AnimatedRoutes />
+            </main>
+            <Footer />
+            <FloatingPlayer />
+            <BottomNav />
+            <InstallBanner />
+            <IntroSound />
+          </div>
+        </ToastProvider>
       </MusicProvider>
     </AuthProvider>
   );
@@ -83,10 +86,10 @@ function AnimatedRoutes() {
     <AnimatePresence mode="wait">
       <motion.div
         key={location.pathname}
-        initial={{ opacity: 0, y: 20, scale: 0.98 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: -12, scale: 0.99 }}
-        transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -8 }}
+        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
       >
         <Routes location={location}>
           <Route path="/" element={<HomePage />} />

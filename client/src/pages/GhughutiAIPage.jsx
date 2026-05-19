@@ -559,18 +559,18 @@ export default function GhughutiAIPage() {
             </div>
           </div>
         ) : (
-          <div className="mt-4 relative rounded-3xl border border-amber-300/20 bg-[#0f1a36]/80 backdrop-blur shadow-2xl shadow-black/40 overflow-hidden">
+          <div className="mt-4 relative rounded-3xl border border-amber-300/20 bg-surface-1/90 backdrop-blur-xl shadow-elevation-4 overflow-hidden">
             <div
-              className="h-1.5 w-full"
+              className="h-1 w-full"
               style={{
                 background:
-                  'repeating-linear-gradient(90deg, transparent 0 6px, rgba(251,191,36,0.5) 6px 10px)',
+                  'linear-gradient(90deg, #fbbf24, #d97706, #fbbf24)',
               }}
             />
             {messages.length > 0 && (
               <button
                 onClick={clearChat}
-                className="absolute top-3 right-3 z-10 px-3 py-1 text-[11px] font-medium text-white/80 hover:text-white bg-white/10 hover:bg-red-500/40 border border-white/15 rounded-full transition-colors"
+                className="absolute top-3 right-3 z-10 px-3 py-1.5 text-caption font-medium text-white/80 hover:text-white bg-white/10 hover:bg-red-500/40 border border-white/15 rounded-xl transition-colors"
               >
                 ✕ Clear
               </button>
@@ -604,7 +604,7 @@ export default function GhughutiAIPage() {
                   </div>
               )}
               {error && (
-                <div className="p-3 text-sm text-white bg-red-500/30 border border-red-300/30 rounded-xl">
+                <div className="alert-error">
                   ⚠️ {error}
                 </div>
               )}
@@ -622,10 +622,10 @@ export default function GhughutiAIPage() {
             className="rounded-2xl p-[2px]"
             style={{
               background:
-                'linear-gradient(135deg, #fbbf24 0%, #b45309 25%, #fbbf24 50%, #b45309 75%, #fbbf24 100%)',
+                'linear-gradient(135deg, #fbbf24 0%, #b45309 50%, #fbbf24 100%)',
             }}
           >
-            <div className="rounded-[14px] bg-[#0f1a36] border border-amber-300/20 flex items-end gap-2 p-2">
+            <div className="rounded-[14px] bg-surface-1 border border-amber-300/20 flex items-end gap-2 p-2">
               <textarea
                 ref={textareaRef}
                 value={input}

@@ -324,10 +324,10 @@ export default function FloatingPlayer() {
 
       {/* ═══════ FULL-SCREEN PLAYER (JioSaavn style) ═══════ */}
       {expanded && (
-        <div className="fixed inset-0 z-[60] bg-dark-950 flex flex-col select-none overflow-hidden">
+        <div className="fixed inset-0 z-[60] bg-surface-0 flex flex-col select-none overflow-hidden">
           <div className="absolute inset-0 pointer-events-none">
-            <img src={currentTrack.thumbnail} alt="" className="w-full h-full object-cover scale-150 blur-[80px] opacity-30" />
-            <div className="absolute inset-0 bg-gradient-to-b from-dark-950/40 via-dark-950/60 to-dark-950" />
+            <img src={currentTrack.thumbnail} alt="" className="w-full h-full object-cover scale-150 blur-[80px] opacity-25" />
+            <div className="absolute inset-0 bg-gradient-to-b from-surface-0/40 via-surface-0/70 to-surface-0" />
           </div>
 
           <div className="relative z-10 flex items-center justify-between px-5 pt-5 pb-2">
@@ -337,8 +337,8 @@ export default function FloatingPlayer() {
               </svg>
             </button>
             <div className="text-center">
-              <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] font-medium">Now Playing</p>
-              <p className="text-[11px] text-white/50 mt-0.5">{currentIndex + 1} of {playlist.length}</p>
+              <p className="text-caption text-white/40 uppercase tracking-[0.2em] font-medium">Now Playing</p>
+              <p className="text-caption text-white/50 mt-0.5">{currentIndex + 1} of {playlist.length}</p>
             </div>
             <a href={watchUrl} target="_blank" rel="noopener noreferrer" className="p-2 -mr-2 text-white/60 hover:text-white transition-colors" title="Open on YouTube">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -419,49 +419,51 @@ export default function FloatingPlayer() {
       {/* ═══════ MINI PLAYER BAR ═══════ */}
       {!expanded && (
         <motion.div
-          className="fixed bottom-16 sm:bottom-0 left-0 right-0 z-50"
+          className="fixed bottom-[68px] sm:bottom-0 left-2 right-2 sm:left-0 sm:right-0 z-50"
           initial={{ y: 80, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 80, opacity: 0 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 30 }}
         >
-          {duration > 0 && (
-            <div className="h-[2px] bg-white/5">
-              <div className="h-full bg-primary-500 transition-[width] duration-500 ease-linear" style={{ width: `${progress}%` }} />
-            </div>
-          )}
-          <div className="bg-dark-900/95 backdrop-blur-2xl border-t border-white/[0.06] px-3 py-2.5 flex items-center gap-3">
-            <button onClick={() => setExpanded(true)} className="shrink-0 relative group">
-              <img src={currentTrack.thumbnail} alt="" className="w-12 h-12 rounded-xl object-cover" />
-              {isPlaying && (
-                <div className="absolute inset-0 rounded-xl flex items-center justify-center bg-black/40">
-                  <div className="flex items-end gap-[2px] h-3">
-                    {[0, 0.15, 0.3].map((d, i) => (
-                      <span key={i} className="w-[2px] bg-white rounded-full" style={{ animation: `musicBar 0.5s ease-in-out ${d}s infinite alternate`, height: `${5 + i * 3}px` }} />
-                    ))}
+          <div className="bg-surface-2/95 backdrop-blur-2xl rounded-2xl sm:rounded-none border border-white/[0.08] sm:border-x-0 shadow-elevation-3 overflow-hidden">
+            {duration > 0 && (
+              <div className="h-[2px] bg-white/5">
+                <div className="h-full bg-primary-500 transition-[width] duration-500 ease-linear" style={{ width: `${progress}%` }} />
+              </div>
+            )}
+            <div className="px-3 py-2.5 flex items-center gap-3">
+              <button onClick={() => setExpanded(true)} className="shrink-0 relative group">
+                <img src={currentTrack.thumbnail} alt="" className="w-12 h-12 rounded-xl object-cover" />
+                {isPlaying && (
+                  <div className="absolute inset-0 rounded-xl flex items-center justify-center bg-black/40">
+                    <div className="flex items-end gap-[2px] h-3">
+                      {[0, 0.15, 0.3].map((d, i) => (
+                        <span key={i} className="w-[2px] bg-primary-400 rounded-full" style={{ animation: `musicBar 0.5s ease-in-out ${d}s infinite alternate`, height: `${5 + i * 3}px` }} />
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
-            </button>
-            <button onClick={() => setExpanded(true)} className="flex-1 min-w-0 text-left">
-              <p className="text-[13px] font-semibold text-white truncate">{currentTrack.title}</p>
-              <p className="text-[11px] text-white/40 truncate">{currentTrack.channelTitle}</p>
-            </button>
-            <div className="flex items-center gap-0.5 shrink-0">
-              <button onClick={togglePlay} disabled={!isReady} className="p-2.5 bg-white rounded-full text-black hover:scale-105 active:scale-95 transition-transform disabled:opacity-50" aria-label={isPlaying ? 'Pause' : 'Play'}>
-                {!isReady
-                  ? <div className="w-3 h-3 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-                  : isPlaying
-                    ? <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" /></svg>
-                    : <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
-                }
+                )}
               </button>
-              <button onClick={nextTrack} className="p-2 text-white/50 hover:text-white transition-colors" aria-label="Next">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" /></svg>
+              <button onClick={() => setExpanded(true)} className="flex-1 min-w-0 text-left">
+                <p className="text-body-sm font-semibold text-white truncate">{currentTrack.title}</p>
+                <p className="text-caption text-white/40 truncate">{currentTrack.channelTitle}</p>
               </button>
-              <button onClick={stop} className="p-2 text-white/40 hover:text-white transition-colors" aria-label="Close">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" /></svg>
-              </button>
+              <div className="flex items-center gap-0.5 shrink-0">
+                <button onClick={togglePlay} disabled={!isReady} className="p-2.5 bg-primary-500 rounded-full text-white hover:scale-105 active:scale-95 transition-transform disabled:opacity-50 shadow-glow-sm" aria-label={isPlaying ? 'Pause' : 'Play'}>
+                  {!isReady
+                    ? <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    : isPlaying
+                      ? <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" /></svg>
+                      : <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+                  }
+                </button>
+                <button onClick={nextTrack} className="p-2 text-white/50 hover:text-white transition-colors" aria-label="Next">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" /></svg>
+                </button>
+                <button onClick={stop} className="p-2 text-white/40 hover:text-white transition-colors" aria-label="Close">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" /></svg>
+                </button>
+              </div>
             </div>
           </div>
         </motion.div>

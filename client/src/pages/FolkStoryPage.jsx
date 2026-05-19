@@ -23,7 +23,7 @@ export default function FolkStoryPage() {
 
   if (state.loading) {
     return (
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 text-center text-gray-400">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 text-center text-white/50">
         लोक-गाथा लोड हो रही है…
       </div>
     );
@@ -32,7 +32,7 @@ export default function FolkStoryPage() {
   if (!state.story) {
     return (
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 text-center">
-        <p className="text-gray-300 mb-4">यो लोक-गाथा नी मिली।</p>
+        <p className="text-white/60 mb-4">यो लोक-गाथा नी मिली।</p>
         <Link to="/" className="text-primary-400 hover:underline">← घौर वापस</Link>
       </div>
     );
@@ -62,31 +62,31 @@ export default function FolkStoryPage() {
           publisher: { '@id': 'https://pahaditube.in/#organization' },
         }}
       />
-      <Link to="/" className="text-sm text-gray-400 hover:text-primary-400 inline-flex items-center gap-1 mb-6">
+      <Link to="/" className="text-body-sm text-white/40 hover:text-primary-400 inline-flex items-center gap-1 mb-6">
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
         सब लोक-गाथा
       </Link>
 
-      <header className="mb-8 border-b border-dark-700 pb-6">
+      <header className="mb-8 border-b border-white/[0.06] pb-6">
         <div className="flex items-center gap-3 mb-2">
           <span className="text-5xl">{emoji}</span>
           <div>
-            <h1 className="text-3xl sm:text-4xl font-bold text-amber-100 leading-tight">{name}</h1>
-            <p className="text-xs text-gray-500 mt-1">गढ़वाली लोक-गाथा</p>
+            <h1 className="font-display text-display-sm text-primary-100 leading-tight">{name}</h1>
+            <p className="text-caption text-white/40 mt-1">गढ़वाली लोक-गाथा</p>
           </div>
         </div>
-        <p className="text-sm text-gray-300 mt-3 italic">{blurb}</p>
+        <p className="text-body-sm text-white/60 mt-3 italic">{blurb}</p>
       </header>
 
-      <article className="prose prose-invert max-w-none text-gray-200 leading-loose text-[1.05rem]">
+      <article className="prose prose-invert max-w-none text-white/80 leading-loose text-[1.05rem] font-devanagari">
         {paragraphs.map((para, i) => (
           <p key={i} className="mb-4 whitespace-pre-line">{para}</p>
         ))}
       </article>
 
-      <footer className="mt-10 pt-6 border-t border-dark-700 text-xs text-gray-500 space-y-2">
+      <footer className="mt-10 pt-6 border-t border-white/[0.06] text-caption text-white/40 space-y-2">
         <p>
           स्रोत:{' '}
           {url ? (
@@ -106,18 +106,18 @@ export default function FolkStoryPage() {
 
       {others.length > 0 && (
         <section className="mt-10">
-          <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wide mb-3">और लोक-गाथा</h2>
+          <h2 className="text-body-sm font-bold text-white/50 uppercase tracking-wide mb-3">और लोक-गाथा</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {others.slice(0, 4).map((s) => (
               <Link
                 key={s.slug}
                 to={`/folk-story/${s.slug}`}
-                className="rounded-lg bg-dark-700/60 hover:bg-dark-600 border border-dark-600 hover:border-amber-500/50 transition-all p-3 flex items-center gap-3"
+                className="rounded-2xl bg-surface-2 hover:bg-surface-3 border border-white/[0.06] hover:border-primary-500/40 transition-all p-4 flex items-center gap-3"
               >
                 <span className="text-2xl">{s.emoji}</span>
                 <div className="min-w-0">
-                  <p className="font-semibold text-amber-100 text-sm truncate">{s.name}</p>
-                  <p className="text-xs text-gray-400 line-clamp-1">{s.blurb}</p>
+                  <p className="font-semibold text-primary-100 text-body-sm truncate">{s.name}</p>
+                  <p className="text-caption text-white/40 line-clamp-1">{s.blurb}</p>
                 </div>
               </Link>
             ))}

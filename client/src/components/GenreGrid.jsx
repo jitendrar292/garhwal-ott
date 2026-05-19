@@ -3,12 +3,12 @@ import { motion } from 'framer-motion';
 
 const containerVariants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.06, delayChildren: 0.1 } },
+  visible: { transition: { staggerChildren: 0.04, delayChildren: 0.05 } },
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, scale: 0.7, y: 30, rotate: -3 },
-  visible: { opacity: 1, scale: 1, y: 0, rotate: 0, transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] } },
+  hidden: { opacity: 0, scale: 0.85, y: 16 },
+  visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] } },
 };
 
 // Card style matches the Ghughuti AI topic tiles: solid colour, centred
@@ -115,12 +115,9 @@ const GENRES = [
 
 export default function GenreGrid() {
   return (
-    <section className="mb-10">
-      <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-        <span className="gradient-text">खोजा (Explore)</span>
-        <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
+    <section className="mb-section-md">
+      <h2 className="section-header mb-5">
+        <span className="text-gradient-primary">खोजा (Explore)</span>
       </h2>
       <motion.div
         className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-2.5 sm:gap-3"
@@ -133,16 +130,16 @@ export default function GenreGrid() {
           <motion.div
             key={g.path}
             variants={cardVariants}
-            whileHover={{ y: -5, scale: 1.06 }}
-            whileTap={{ scale: 0.94 }}
+            whileHover={{ y: -4, scale: 1.04 }}
+            whileTap={{ scale: 0.96 }}
           >
           <Link
             to={g.path}
-            className={`group relative ${g.bg} rounded-xl p-2 text-center shadow-lg shadow-black/30 ring-1 ring-white/10 hover:ring-white/30 hover:shadow-xl transition-all duration-300 overflow-hidden block card-shine`}
+            className={`group relative ${g.bg} rounded-2xl p-2.5 text-center shadow-elevation-1 hover:shadow-elevation-3 ring-1 ring-white/10 hover:ring-white/25 transition-all duration-250 overflow-hidden block`}
           >
-            {/* subtle dot pattern overlay (matches Ghughuti AI cards) */}
+            {/* subtle dot pattern overlay */}
             <div
-              className="absolute inset-0 opacity-10 pointer-events-none"
+              className="absolute inset-0 opacity-[0.07] pointer-events-none"
               style={{
                 backgroundImage:
                   'radial-gradient(circle at 30% 20%, #fff 1px, transparent 1px)',
@@ -153,20 +150,20 @@ export default function GenreGrid() {
             {/* Badge */}
             {g.badge && (
               <div
-                className={`absolute top-1.5 right-1.5 z-20 ${g.badge.cls} backdrop-blur-sm text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none`}
+                className={`absolute top-1.5 right-1.5 z-20 ${g.badge.cls} backdrop-blur-sm text-white text-[10px] font-bold px-1.5 py-0.5 rounded-lg leading-none`}
               >
                 {g.badge.text}
               </div>
             )}
 
-            <div className="relative flex flex-col items-center justify-center gap-1 min-h-[92px]">
-              <div className="text-2xl sm:text-3xl drop-shadow group-hover:scale-110 transition-transform">
+            <div className="relative flex flex-col items-center justify-center gap-1.5 min-h-[96px]">
+              <div className="text-2xl sm:text-3xl drop-shadow-sm group-hover:scale-110 transition-transform duration-250">
                 {g.emoji}
               </div>
-              <div className="text-white font-bold text-[12px] sm:text-[13px] leading-tight drop-shadow">
+              <div className="text-white font-semibold text-[12px] sm:text-[13px] leading-tight drop-shadow-sm">
                 {g.name}
               </div>
-              <div className="text-white/80 font-medium text-[9px] sm:text-[10px] leading-tight whitespace-pre-line drop-shadow">
+              <div className="text-white/70 font-medium text-[9px] sm:text-[10px] leading-tight whitespace-pre-line">
                 {g.sub}
               </div>
             </div>

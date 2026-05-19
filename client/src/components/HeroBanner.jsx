@@ -10,14 +10,14 @@ const HERO_CATEGORIES = [
 
 const containerVariants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.15, delayChildren: 0.3 } },
+  visible: { transition: { staggerChildren: 0.1, delayChildren: 0.2 } },
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 40, scale: 0.85, rotateX: 15 },
+  hidden: { opacity: 0, y: 20, scale: 0.9 },
   visible: {
-    opacity: 1, y: 0, scale: 1, rotateX: 0,
-    transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] },
+    opacity: 1, y: 0, scale: 1,
+    transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] },
   },
 };
 
@@ -32,17 +32,17 @@ const particles = Array.from({ length: 6 }, (_, i) => ({
 
 export default function HeroBanner() {
   return (
-    <div className="relative overflow-hidden bg-gradient-to-b from-dark-700 via-dark-800 to-dark-900 py-16 sm:py-24">
+    <div className="relative overflow-hidden bg-gradient-to-b from-surface-2 via-surface-1 to-surface-0 py-16 sm:py-24">
       {/* Primary background glow */}
       <motion.div
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-primary-500/15 rounded-full blur-[140px]"
-        animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-primary-500/10 rounded-full blur-[140px]"
+        animate={{ scale: [1, 1.15, 1], opacity: [0.4, 0.8, 0.4] }}
         transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
       />
       {/* Secondary accent glow */}
       <motion.div
-        className="absolute top-20 right-[10%] w-[300px] h-[200px] bg-accent-400/8 rounded-full blur-[100px]"
-        animate={{ scale: [1, 1.15, 1], opacity: [0.3, 0.6, 0.3], x: [0, 30, 0] }}
+        className="absolute top-20 right-[10%] w-[300px] h-[200px] bg-secondary-400/8 rounded-full blur-[100px]"
+        animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.5, 0.2], x: [0, 30, 0] }}
         transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
       />
       {/* Third glow for depth */}
@@ -67,25 +67,25 @@ export default function HeroBanner() {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
         <motion.h1
           className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight"
-          initial={{ opacity: 0, y: -30, scale: 0.9 }}
+          initial={{ opacity: 0, y: -20, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         >
           <motion.img
             src="/logo.png"
             alt="PahadiTube"
-            className="h-20 sm:h-28 w-auto mx-auto drop-shadow-[0_0_30px_rgba(0,188,212,0.3)]"
-            whileHover={{ scale: 1.05, rotate: [-1, 1, 0] }}
-            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+            className="h-20 sm:h-28 w-auto mx-auto drop-shadow-[0_0_30px_rgba(245,158,11,0.2)]"
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           />
         </motion.h1>
         <motion.p
-          className="mt-4 text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto"
-          initial={{ opacity: 0, y: 30 }}
+          className="mt-4 text-body sm:text-heading-sm text-white/60 max-w-2xl mx-auto"
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+          transition={{ duration: 0.5, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
         >
-          <span className="text-shimmer font-semibold">Watch the latest Pahadi movies, trending songs, comedy,</span>
+          <span className="text-gradient-primary font-semibold">Watch the latest Pahadi movies, trending songs, comedy,</span>
           <br className="hidden sm:block" />
           and devotional content — all in one place.
         </motion.p>
@@ -101,23 +101,19 @@ export default function HeroBanner() {
             <motion.div
               key={cat.path}
               variants={cardVariants}
-              whileHover={{ y: -8, scale: 1.08 }}
-              whileTap={{ scale: 0.92 }}
+              whileHover={{ y: -4, scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
             >
               <Link
                 to={cat.path}
-                className={`card-shine bg-gradient-to-br ${cat.color} rounded-2xl p-4 sm:p-5 text-center
-                           shadow-lg hover:shadow-2xl block transition-all duration-300
-                           ring-1 ring-white/10 hover:ring-white/25`}
+                className={`bg-gradient-to-br ${cat.color} rounded-2xl p-4 sm:p-5 text-center
+                           shadow-elevation-2 hover:shadow-elevation-3 block transition-all duration-200
+                           ring-1 ring-white/10 hover:ring-white/20`}
               >
-                <motion.div
-                  className="text-4xl mb-2"
-                  animate={{ y: [0, -4, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: Math.random() * 2 }}
-                >
+                <div className="text-4xl mb-2">
                   {cat.icon}
-                </motion.div>
-                <p className="text-sm font-bold text-white tracking-wide">{cat.name}</p>
+                </div>
+                <p className="text-body-sm font-bold text-white tracking-wide">{cat.name}</p>
               </Link>
             </motion.div>
           ))}

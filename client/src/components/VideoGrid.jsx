@@ -1,30 +1,31 @@
 import VideoCard from './VideoCard';
+import EmptyState from './ui/EmptyState';
 
 export default function VideoGrid({ videos, title, loading, error, onLoadMore, hasMore, loadingMore }) {
   return (
-    <section className="mb-12">
+    <section className="mb-section-md">
       {title && (
         <h2 className="page-header mb-6 flex items-center gap-3">
-          <div className="w-1.5 h-8 bg-gradient-to-b from-primary-400 to-primary-600 rounded-full" />
+          <div className="w-1 h-7 bg-gradient-to-b from-primary-400 to-primary-600 rounded-full" />
           {title}
         </h2>
       )}
 
       {error && (
-        <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-6 text-center">
-          <p className="text-red-400 font-medium">Failed to load videos</p>
-          <p className="text-red-400/60 text-sm mt-1">{error}</p>
+        <div className="alert-error">
+          <p className="font-medium">Failed to load videos</p>
+          <p className="text-white/40 text-sm mt-1">{error}</p>
         </div>
       )}
 
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
           {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="rounded-xl overflow-hidden bg-dark-700">
+            <div key={i} className="rounded-2xl overflow-hidden bg-surface-2 border border-white/5">
               <div className="aspect-video skeleton" />
-              <div className="p-3 space-y-2">
-                <div className="h-4 skeleton rounded w-full" />
-                <div className="h-3 skeleton rounded w-2/3" />
+              <div className="p-3.5 space-y-2.5">
+                <div className="h-4 skeleton rounded-lg w-full" />
+                <div className="h-3 skeleton rounded-lg w-2/3" />
               </div>
             </div>
           ))}
@@ -33,19 +34,22 @@ export default function VideoGrid({ videos, title, loading, error, onLoadMore, h
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
             {videos.map((video, index) => (
-              <div key={video.id} style={{ animationDelay: `${index * 50}ms` }}>
+              <div key={video.id} style={{ animationDelay: `${index * 40}ms` }} className="animate-fade-in-up">
                 <VideoCard video={video} />
               </div>
             ))}
           </div>
 
           {videos.length === 0 && !error && (
-            <div className="text-center py-16">
-              <p className="text-gray-500 text-lg">No videos found</p>
-            </div>
+            <EmptyState
+              icon="🎬"
+              title="No videos found"
+              description="Try searching for something else or browse our categories"
+              actionLabel="Explore"
+              actionTo="/"
+            />
           )}
 
-          {/* Load More disabled for now */}
           {false && hasMore && onLoadMore && (
             <div className="flex justify-center mt-8">
               <button

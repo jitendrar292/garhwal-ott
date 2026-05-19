@@ -166,7 +166,7 @@ export default function ImageSlider() {
       aria-label="Image slideshow"
     >
       {/* Slides with crossfade + Ken Burns */}
-      <div className="relative aspect-[16/6] sm:aspect-[5/1] bg-dark-800">
+      <div className="relative aspect-[16/7] sm:aspect-[21/7] bg-surface-1">
         {slides.map((slide, index) => (
           <div
             key={slide.src}
@@ -192,21 +192,21 @@ export default function ImageSlider() {
         ))}
 
         {/* Dark gradient overlays */}
-        <div className="absolute inset-0 z-20 bg-gradient-to-r from-dark-900/70 via-transparent to-transparent" />
-        <div className="absolute inset-0 z-20 bg-gradient-to-t from-dark-900/80 via-dark-900/20 to-transparent" />
+        <div className="absolute inset-0 z-20 bg-gradient-to-r from-surface-0/80 via-transparent to-transparent" />
+        <div className="absolute inset-0 z-20 bg-gradient-to-t from-surface-0 via-surface-0/30 to-transparent" />
 
         {/* Caption */}
-        <div className="absolute bottom-0 left-0 z-30 p-4 sm:p-6 max-w-xl">
+        <div className="absolute bottom-0 left-0 z-30 p-5 sm:p-8 max-w-xl">
           <p
             key={`title-${current}`}
-            className="text-white text-lg sm:text-2xl font-extrabold drop-shadow-lg
+            className="text-white font-display text-heading-lg sm:text-display-sm drop-shadow-lg
                        animate-fade-in-up"
           >
             {slides[current]?.title}
           </p>
           <p
             key={`sub-${current}`}
-            className="text-gray-300 text-xs sm:text-sm mt-1 drop-shadow animate-fade-in-up"
+            className="text-white/70 text-body-sm sm:text-body mt-1.5 drop-shadow animate-fade-in-up"
             style={{ animationDelay: '150ms' }}
           >
             {slides[current]?.subtitle}
@@ -215,12 +215,11 @@ export default function ImageSlider() {
             <Link
               key={`cta-${current}`}
               to={slides[current].link}
-              className="inline-flex items-center gap-2 mt-2 sm:mt-3 px-4 py-1.5 rounded-full
-                         bg-white/15 hover:bg-white/25 active:bg-white/10
-                         backdrop-blur-sm border border-white/20 hover:border-white/40
-                         text-white text-xs sm:text-sm font-semibold
+              className="inline-flex items-center gap-2 mt-3 sm:mt-4 px-5 py-2 rounded-xl
+                         bg-primary-500/90 hover:bg-primary-500
+                         text-white text-body-sm font-semibold
                          transition-all duration-200 hover:scale-105 active:scale-95
-                         animate-fade-in-up shadow-lg"
+                         animate-fade-in-up shadow-glow-sm"
               style={{ animationDelay: '280ms' }}
             >
               Explore
@@ -232,8 +231,8 @@ export default function ImageSlider() {
         </div>
 
         {/* Slide counter badge */}
-        <div className="absolute top-4 right-4 z-30 bg-black/50 backdrop-blur-sm rounded-full
-                        px-3 py-1 text-xs text-white/80 font-medium">
+        <div className="absolute top-4 right-4 z-30 bg-surface-1/80 backdrop-blur-sm rounded-xl
+                        px-3 py-1.5 text-caption text-white/70 font-medium">
           {current + 1} / {total}
         </div>
       </div>
