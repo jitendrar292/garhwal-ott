@@ -100,7 +100,7 @@ const GENRES = [
     name: 'पहाड़ी पहनावा',
     sub: 'पारंपरिक\nवेशभूषा',
     path: '/pahadi-pehnawa',
-    emoji: '👘',
+    emoji: '�',
     bg: 'bg-purple-700',
     badge: { text: '🆕', cls: 'bg-purple-500/85' },
   },
