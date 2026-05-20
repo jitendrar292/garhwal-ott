@@ -38,10 +38,10 @@ const GENRES = [
     badge: { text: '✨', cls: 'bg-fuchsia-600/85' },
   },
   {
-    name: 'जागर',
-    sub: 'भजन\nआरती',
+    name: 'जागर & मेला',
+    sub: 'भजन\nमेला-जात्रा',
     path: '/category/devotional',
-    emoji: '🔱',
+    emoji: '🔱🎪',
     bg: 'bg-amber-700',
   },
   {
@@ -64,13 +64,6 @@ const GENRES = [
     path: '/category/folkdance',
     emoji: '💃',
     bg: 'bg-rose-600',
-  },
-  {
-    name: 'मेला',
-    sub: 'थौलू\nजात्रा',
-    path: '/category/mela',
-    emoji: '🎪',
-    bg: 'bg-emerald-700',
   },
   {
     name: 'घुघुती AI',
