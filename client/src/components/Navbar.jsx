@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, Transition } from '@headlessui/react';
 import { useAuth } from '../context/AuthContext';
+import SnowEffect from './SnowEffect';
 
 const TABS = [
   { name: 'Home', path: '/', emoji: '🏠' },
@@ -26,6 +27,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [listening, setListening] = useState(false);
   const [micError, setMicError] = useState('');
+  const [snowing, setSnowing] = useState(false);
   const inputRef = useRef(null);
   const recognitionRef = useRef(null);
   const navigate = useNavigate();
@@ -195,6 +197,19 @@ export default function Navbar() {
 
           {/* Right actions */}
           <div className="flex items-center gap-1">
+            {/* Snow cloud button */}
+            <button
+              onClick={() => { setSnowing(true); setTimeout(() => setSnowing(false), 5000); }}
+              className={`p-2.5 rounded-xl transition-all ${
+                snowing ? 'text-sky-300 bg-sky-500/15' : 'text-white/50 hover:text-sky-300 hover:bg-sky-500/10'
+              }`}
+              aria-label="Let it snow"
+              title="Let it snow!"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M19.35 10.04A7.49 7.49 0 0012 4a7.49 7.49 0 00-7.35 6.04A6 6 0 005 22h14a5 5 0 00.35-11.96z" />
+              </svg>
+            </button>
             {/* Mobile search toggle */}
             {searchOpen ? (
               <form onSubmit={handleSearch} className="flex items-center gap-1 sm:hidden">
@@ -408,6 +423,7 @@ export default function Navbar() {
         </motion.div>
       )}
       </AnimatePresence>
+      <SnowEffect active={snowing} />
     </nav>
   );
 }
