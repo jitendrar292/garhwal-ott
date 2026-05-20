@@ -13,7 +13,7 @@ const FIRST_RUN_MS   = 0;
 const MIN_INTERVAL   = 90_000;
 const MAX_INTERVAL   = 130_000;
 const MAX_RUNS       = 6;
-const RUN_DURATION   = 9;   // seconds to cross screen
+const RUN_DURATION   = 18;  // seconds to cross screen
 const CHAR_SIZE      = 90;  // px height
 const SESSION_KEY    = 'pahadi_runner_count';
 
