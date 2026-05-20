@@ -7,10 +7,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const CHARACTERS = [
   { src: '/art/run-char.png' },
-  { src: '/art/pahadi-naari.png' },
 ];
 
-const FIRST_RUN_MS   = 5_000;
+const FIRST_RUN_MS   = 0;
 const MIN_INTERVAL   = 90_000;
 const MAX_INTERVAL   = 130_000;
 const MAX_RUNS       = 6;

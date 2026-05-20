@@ -107,11 +107,33 @@ const GENRES = [
 ];
 
 export default function GenreGrid() {
+  const handleShareApp = () => {
+    const url = window.location.origin;
+    const shareData = { title: 'PahadiTube', text: 'PahadiTube – Garhwali & Kumaoni entertainment app 🎬🎵', url };
+    if (navigator.share) {
+      navigator.share(shareData).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(url).then(() => alert('Link copied!'));
+    }
+  };
+
   return (
     <section className="mb-section-md">
-      <h2 className="section-header mb-5">
-        <span className="text-gradient-primary">खोजा (Explore)</span>
-      </h2>
+      <div className="flex items-center justify-between mb-5">
+        <h2 className="section-header">
+          <span className="text-gradient-primary">खोजा (Explore)</span>
+        </h2>
+        <button
+          onClick={handleShareApp}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white/70 hover:text-white bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 hover:border-white/20 transition-all"
+          title="Share App"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+          </svg>
+          Share App
+        </button>
+      </div>
       <motion.div
         className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-2.5 sm:gap-3"
         variants={containerVariants}
