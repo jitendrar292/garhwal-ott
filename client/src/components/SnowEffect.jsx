@@ -8,13 +8,13 @@ export default function SnowEffect({ active }) {
       setFlakes([]);
       return;
     }
-    const newFlakes = Array.from({ length: 50 }, (_, i) => ({
+    const newFlakes = Array.from({ length: 80 }, (_, i) => ({
       id: i,
       left: Math.random() * 100,
-      delay: Math.random() * 3,
-      duration: 2 + Math.random() * 3,
-      size: 4 + Math.random() * 8,
-      opacity: 0.5 + Math.random() * 0.5,
+      delay: Math.random() * 4,
+      duration: 3 + Math.random() * 4,
+      size: 5 + Math.random() * 10,
+      opacity: 0.6 + Math.random() * 0.4,
     }));
     setFlakes(newFlakes);
   }, [active]);

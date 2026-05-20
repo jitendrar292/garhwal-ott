@@ -199,7 +199,7 @@ export default function Navbar() {
           <div className="flex items-center gap-1">
             {/* Snow cloud button */}
             <button
-              onClick={() => { setSnowing(true); setTimeout(() => setSnowing(false), 5000); }}
+              onClick={() => { setSnowing(true); setTimeout(() => setSnowing(false), 8000); }}
               className={`p-2.5 rounded-xl transition-all ${
                 snowing ? 'text-sky-300 bg-sky-500/15' : 'text-white/50 hover:text-sky-300 hover:bg-sky-500/10'
               }`}
