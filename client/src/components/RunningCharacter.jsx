@@ -70,28 +70,31 @@ export default function RunningCharacter() {
       {running && (
         <motion.div
           key={`run-${runCount.current}`}
-          className="fixed z-[999] bottom-20 sm:bottom-6 cursor-pointer select-none"
+          className="fixed z-[999] bottom-20 sm:bottom-6 cursor-pointer select-none flex items-end gap-3"
           style={{ x: startX }}
           animate={{ x: endX }}
           transition={{ duration: RUN_DURATION, ease: 'linear' }}
           onAnimationComplete={handleRunComplete}
           onClick={handleClick}
-          aria-label="Running Pahadi character — click to open gallery!"
+          aria-label="Running Pahadi characters — click to open gallery!"
         >
-          <motion.div
-            style={{ scaleX: flipX }}
-            animate={{ y: [0, -10, 0, -7, 0] }}
-            transition={{ duration: 0.55, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <img
-              src={CHARACTERS[charIdx].src}
-              alt=""
-              className="object-contain drop-shadow-xl"
-              style={{ height: CHAR_SIZE, width: 'auto', maxWidth: CHAR_SIZE * 1.5 }}
-              draggable={false}
-              onError={(e) => { e.currentTarget.style.display = 'none'; }}
-            />
-          </motion.div>
+          {CHARACTERS.map((char, i) => (
+            <motion.div
+              key={char.src}
+              style={{ scaleX: flipX }}
+              animate={{ y: [0, -10, 0, -7, 0] }}
+              transition={{ duration: 0.55, repeat: Infinity, ease: 'easeInOut', delay: i * 0.15 }}
+            >
+              <img
+                src={char.src}
+                alt=""
+                className="object-contain drop-shadow-xl"
+                style={{ height: CHAR_SIZE, width: 'auto', maxWidth: CHAR_SIZE * 1.5 }}
+                draggable={false}
+                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+              />
+            </motion.div>
+          ))}
         </motion.div>
       )}
     </AnimatePresence>
