@@ -7,6 +7,7 @@ import Footer from './components/Footer';
 import FloatingPlayer from './components/FloatingPlayer';
 import InstallBanner from './components/InstallBanner';
 import IntroSound from './components/IntroSound';
+import RunningCharacter from './components/RunningCharacter';
 import { ToastProvider } from './components/ui/Toast';
 import { MusicProvider } from './context/MusicContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -74,6 +75,7 @@ export default function App() {
             <BottomNav />
             <InstallBanner />
             <IntroSound />
+            <RunningCharacter />
           </div>
         </ToastProvider>
       </MusicProvider>
