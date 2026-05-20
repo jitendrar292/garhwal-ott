@@ -22,15 +22,10 @@ const TABS = [
     name: 'Music',
     path: '/music',
     icon: (
-      <svg className="w-[22px] h-[22px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
-          d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-      </svg>
+      <img src="/icons/music.png" alt="Music" className="w-[22px] h-[22px] object-contain opacity-60" />
     ),
     iconActive: (
-      <svg className="w-[22px] h-[22px]" fill="currentColor" viewBox="0 0 24 24">
-        <path fillRule="evenodd" d="M19.952 1.651a.75.75 0 01.298.599V16.303a3 3 0 01-2.176 2.884l-1.32.377a2.553 2.553 0 11-1.403-4.909l2.311-.66a1.5 1.5 0 001.088-1.442V6.994l-9 2.572v9.737a3 3 0 01-2.176 2.884l-1.32.377a2.553 2.553 0 11-1.402-4.909l2.31-.66a1.5 1.5 0 001.088-1.442V5.25a.75.75 0 01.544-.721l10.5-3a.75.75 0 01.658.122z" clipRule="evenodd" />
-      </svg>
+      <img src="/icons/music.png" alt="Music" className="w-[22px] h-[22px] object-contain" />
     ),
     featured: true,
   },
