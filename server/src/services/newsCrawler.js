@@ -13,22 +13,17 @@ const parser = new Parser({
   maxRedirects: 3,
 });
 
-// RSS feeds to crawl — Uttarakhand-focused + general Hindi news
+// RSS feeds to crawl — Uttarakhand-focused + general Hindi/English news.
+// Verified working as of May 2026 (dead feeds removed).
 const RSS_FEEDS = [
-  // Amar Ujala Uttarakhand
+  // Amar Ujala Uttarakhand (Hindi) — 40+ items, very reliable
   { url: 'https://www.amarujala.com/rss/uttarakhand.xml', source: 'Amar Ujala', lang: 'hi' },
-  // Hindustan Times Dehradun (English)
-  { url: 'https://www.hindustantimes.com/feeds/rss/cities/dehradun/rssfeed.xml', source: 'Hindustan Times', lang: 'en' },
-  // The Times of India Uttarakhand (English)
+  // Times of India Uttarakhand (English) — 8+ items
   { url: 'https://timesofindia.indiatimes.com/rssfeeds/4118073.cms', source: 'Times of India', lang: 'en' },
-  // News18 Hindi Uttarakhand
+  // News18 Hindi Uttarakhand — 200+ items, very active
   { url: 'https://hindi.news18.com/rss/khabar/state/uttarakhand.xml', source: 'News18 Hindi', lang: 'hi' },
-  // ABP Live Uttarakhand (Hindi)
-  { url: 'https://www.abplive.com/states/uttarakhand/feed', source: 'ABP Live', lang: 'hi' },
-  // Zee News Hindi Uttarakhand
-  { url: 'https://zeenews.india.com/hindi/rss/uttarakhand-news.xml', source: 'Zee News', lang: 'hi' },
-  // Rajasthan Patrika Uttarakhand (Hindi)
-  { url: 'https://www.patrika.com/rss/uttarakhand.xml', source: 'Patrika', lang: 'hi' },
+  // NDTV Hindi — national Hindi news (Uttarakhand stories surface here)
+  { url: 'https://feeds.feedburner.com/ndtvkhabar-latest', source: 'NDTV Hindi', lang: 'hi' },
 ];
 
 /**
@@ -242,29 +237,27 @@ function normalizeTitle(title) {
  * dominates the output. Within each source, articles stay sorted by date.
  */
 function balanceSources(articles) {
-  // Group by source
+  // Group by source, skip sources with no articles
   const bySource = {};
   for (const a of articles) {
     if (!bySource[a.source]) bySource[a.source] = [];
     bySource[a.source].push(a);
   }
 
-  // Round-robin pick from each source (newest first within each)
-  const sources = Object.keys(bySource);
+  const sources = Object.keys(bySource).filter((s) => bySource[s].length > 0);
   const balanced = [];
-  let idx = 0;
-  let exhausted = 0;
 
-  while (exhausted < sources.length) {
-    const src = sources[idx % sources.length];
-    if (bySource[src].length > 0) {
-      balanced.push(bySource[src].shift());
-    } else {
-      exhausted++;
+  // Each pass takes one article from every non-empty source (round-robin).
+  // Loop until all source queues are drained.
+  let anyLeft = true;
+  while (anyLeft) {
+    anyLeft = false;
+    for (const src of sources) {
+      if (bySource[src].length > 0) {
+        balanced.push(bySource[src].shift());
+        anyLeft = true;
+      }
     }
-    idx++;
-    // Safety: prevent infinite loop
-    if (idx > articles.length * 2) break;
   }
 
   return balanced;
