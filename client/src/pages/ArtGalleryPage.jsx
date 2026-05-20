@@ -1,19 +1,30 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-const GALLERY = [
-  { src: '/art/khelo.png',               label: 'खेलो पहाड़ी 🏃' },
-  { src: '/art/fun.png',                 label: 'हँसी-ठट्ठा 😄' },
-  { src: '/art/diwali.png',              label: 'दिवाळी 🪔' },
-  { src: '/art/narendra-singh-negi.png', label: 'गढ़ गौरव — नरेन्द्र सिंह नेगी 🎶' },
-  { src: '/art/run-char.png',            label: 'पहाड़ी दौड़ 🏔️' },
+const FALLBACK_GALLERY = [
+  { id: 1, src: '/art/khelo.png', label: 'खेलो पहाड़ी 🏃' },
+  { id: 2, src: '/art/fun.png', label: 'हँसी-ठट्ठा 😄' },
+  { id: 3, src: '/art/diwali.png', label: 'दिवाळी 🪔' },
+  { id: 4, src: '/art/narendra-singh-negi.png', label: 'गढ़ गौरव — नरेन्द्र सिंह नेगी 🎶' },
+  { id: 5, src: '/art/run-char.png', label: 'पहाड़ी दौड़ 🏔️' },
 ];
 
 export default function ArtGalleryPage() {
+  const [gallery, setGallery] = useState(FALLBACK_GALLERY);
+
+  useEffect(() => {
+    fetch('/api/art-gallery')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.gallery && data.gallery.length > 0) setGallery(data.gallery);
+      })
+      .catch(() => {});
+  }, []);
   return (
     <div className="min-h-screen px-4 py-8 max-w-3xl mx-auto">
       <h1 className="text-2xl font-bold text-orange-400 mb-6">🎨 पहाड़ी कला Gallery</h1>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-        {GALLERY.map((item, i) => (
+        {gallery.map((item, i) => (
           <motion.div
             key={item.src}
             className="flex flex-col items-center gap-2"

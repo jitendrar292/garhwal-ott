@@ -7,6 +7,7 @@ const TABS = [
   { id: 'youtube', label: 'YouTube', emoji: '📺' },
   { id: 'feedback', label: 'Feedback', emoji: '💬' },
   { id: 'news', label: 'News', emoji: '📰' },
+  { id: 'art', label: 'Art Gallery', emoji: '🎨' },
 ];
 
 export default function AdminPage() {
@@ -300,6 +301,7 @@ export default function AdminPage() {
           <FeedbackTab feedback={feedback} loading={loading} onDelete={deleteFeedback} onRefresh={loadFeedback} />
         )}
         {activeTab === 'news' && <NewsTab adminKey={key} />}
+        {activeTab === 'art' && <ArtGalleryTab adminKey={key} />}
       </div>
     </div>
   );
@@ -506,6 +508,125 @@ function NewsTab({ adminKey }) {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
         </svg>
       </Link>
+    </div>
+  );
+}
+
+function ArtGalleryTab({ adminKey }) {
+  const [gallery, setGallery] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
+  const [label, setLabel] = useState('');
+  const [file, setFile] = useState(null);
+  const [msg, setMsg] = useState('');
+
+  const loadGallery = async () => {
+    try {
+      const res = await fetch('/api/art-gallery');
+      const data = await res.json();
+      setGallery(data.gallery || []);
+    } catch { /* ignore */ }
+    setLoading(false);
+  };
+
+  useEffect(() => { loadGallery(); }, []);
+
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    if (!file || !label.trim()) return;
+    setUploading(true);
+    setMsg('');
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+      formData.append('label', label.trim());
+      const res = await fetch(`/api/art-gallery?key=${encodeURIComponent(adminKey)}`, {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Upload failed');
+      setMsg('✓ Uploaded!');
+      setLabel('');
+      setFile(null);
+      loadGallery();
+    } catch (err) {
+      setMsg(`✗ ${err.message}`);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!confirm('Delete this art?')) return;
+    try {
+      const res = await fetch(`/api/art-gallery/${id}?key=${encodeURIComponent(adminKey)}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Delete failed');
+      setGallery((prev) => prev.filter((g) => g.id !== id));
+    } catch (err) {
+      setMsg(`✗ ${err.message}`);
+    }
+  };
+
+  return (
+    <div>
+      <h2 className="text-lg font-semibold mb-4">Art Gallery ({gallery.length})</h2>
+
+      {/* Upload form */}
+      <form onSubmit={handleUpload} className="bg-dark-700/50 rounded-xl p-4 mb-6 space-y-3">
+        <p className="text-sm font-medium text-gray-300">Upload New Art</p>
+        <input
+          type="text"
+          value={label}
+          onChange={(e) => setLabel(e.target.value)}
+          placeholder="Label (e.g. पहाड़ी चित्र 🎨)"
+          maxLength={200}
+          className="w-full bg-dark-600 border border-dark-400 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-primary-500"
+        />
+        <input
+          type="file"
+          accept="image/png,image/jpeg,image/webp,image/gif"
+          onChange={(e) => setFile(e.target.files[0] || null)}
+          className="block w-full text-sm text-gray-400 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary-500/20 file:text-primary-300 hover:file:bg-primary-500/30"
+        />
+        <div className="flex items-center gap-3">
+          <button
+            type="submit"
+            disabled={uploading || !file || !label.trim()}
+            className="btn-primary disabled:opacity-50 text-sm"
+          >
+            {uploading ? 'Uploading...' : 'Upload'}
+          </button>
+          {msg && <span className={`text-sm ${msg.startsWith('✓') ? 'text-green-400' : 'text-red-400'}`}>{msg}</span>}
+        </div>
+      </form>
+
+      {/* Gallery grid */}
+      {loading ? (
+        <p className="text-gray-400 text-center py-8">Loading...</p>
+      ) : gallery.length === 0 ? (
+        <p className="text-gray-400 text-center py-8">No art uploaded yet</p>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+          {gallery.map((item) => (
+            <div key={item.id} className="relative group bg-dark-700/50 rounded-xl p-2 border border-white/5">
+              <img
+                src={item.src}
+                alt={item.label}
+                className="w-full aspect-square object-contain rounded-lg"
+              />
+              <p className="text-xs text-center text-gray-300 mt-1.5 truncate">{item.label}</p>
+              <button
+                onClick={() => handleDelete(item.id)}
+                className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 bg-red-500/80 hover:bg-red-500 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center transition-opacity"
+                title="Delete"
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

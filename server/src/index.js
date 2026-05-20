@@ -17,6 +17,7 @@ const authRoutes = require('./routes/auth');
 const ttsRoutes = require('./routes/tts');
 const newsAgentRoutes = require('./routes/newsAgent');
 const jobsAgentRoutes = require('./routes/jobsAgent');
+const artGalleryRoutes = require('./routes/artGallery');
 const { getVisits, incrementVisits, getOpens, incrementOpens, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback } = require('./services/store');
 const { startTrendingRefresh } = require('./services/youtubeService');
 
@@ -52,7 +53,7 @@ app.use(helmet({
       scriptSrc: ["'self'", "'unsafe-inline'", "https://www.youtube.com", "https://www.youtube-nocookie.com", "https://s.ytimg.com", "https://www.instagram.com", "https://platform.instagram.com", "https://accounts.google.com", "https://apis.google.com"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://www.instagram.com", "https://platform.instagram.com", "https://accounts.google.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      imgSrc: ["'self'", "https://i.ytimg.com", "https://*.ytimg.com", "https://*.cdninstagram.com", "https://*.fbcdn.net", "https://www.instagram.com", "https://upload.wikimedia.org", "https://commons.wikimedia.org", "https://lh3.googleusercontent.com", "https://*.googleusercontent.com", "data:"],
+      imgSrc: ["'self'", "https://i.ytimg.com", "https://*.ytimg.com", "https://*.cdninstagram.com", "https://*.fbcdn.net", "https://www.instagram.com", "https://upload.wikimedia.org", "https://commons.wikimedia.org", "https://lh3.googleusercontent.com", "https://*.googleusercontent.com", "https://*.r2.dev", "https://*.cloudflarestorage.com", "data:"],
       frameSrc: ["'self'", "https://www.youtube.com", "https://youtube.com", "https://www.youtube-nocookie.com", "https://www.instagram.com", "https://accounts.google.com"],
       connectSrc: ["'self'", "https://www.youtube.com", "https://www.youtube-nocookie.com", "https://*.googlevideo.com", "https://ipapi.co", "https://www.instagram.com", "https://graph.instagram.com", "https://accounts.google.com", "https://oauth2.googleapis.com", "https://api.elevenlabs.io"],
       mediaSrc: ["'self'", "https://*.googlevideo.com", "https://www.youtube.com", "https://www.youtube-nocookie.com", "https://*.cdninstagram.com", "blob:"],
@@ -106,6 +107,7 @@ app.use('/api/feedback', visitLimiter);
 app.use('/api/favorites', visitLimiter);
 app.use('/api/news', visitLimiter);
 app.use('/api/jobs', visitLimiter);
+app.use('/api/art-gallery', visitLimiter);
 
 // Tighter limit for AI chat (paid upstream)
 const chatLimiter = rateLimit({
@@ -141,6 +143,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/tts', ttsRoutes);
 app.use('/api/news-agent', newsAgentRoutes);
 app.use('/api/jobs-agent', jobsAgentRoutes);
+app.use('/api/art-gallery', artGalleryRoutes);
 
 // Captions endpoint — tries hi, a.hi (auto Hindi), en, a.en in order
 app.get('/api/captions/:videoId', async (req, res) => {
