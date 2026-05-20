@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const CHARACTERS = [
+const FALLBACK_CHARACTERS = [
   { src: '/art/run-char.png' },
 ];
 
@@ -26,8 +26,24 @@ export default function RunningCharacter() {
   const [running, setRunning]       = useState(false);
   const [direction, setDirection]   = useState(1);
   const [charIdx, setCharIdx]       = useState(0);
+  const [characters, setCharacters] = useState(FALLBACK_CHARACTERS);
   const runCount = useRef(parseInt(sessionStorage.getItem(SESSION_KEY) || '0', 10));
   const timerRef = useRef(null);
+  const charsRef = useRef(FALLBACK_CHARACTERS);
+
+  // Fetch characters from API
+  useEffect(() => {
+    fetch('/api/runner')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.characters && data.characters.length > 0) {
+          const chars = data.characters.map((c) => ({ src: c.src }));
+          setCharacters(chars);
+          charsRef.current = chars;
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const scheduleRun = (delay) => {
     clearTimeout(timerRef.current);
@@ -35,7 +51,7 @@ export default function RunningCharacter() {
       if (runCount.current >= MAX_RUNS) return;
       runCount.current += 1;
       sessionStorage.setItem(SESSION_KEY, String(runCount.current));
-      setCharIdx((i) => (i + 1) % CHARACTERS.length);
+      setCharIdx((i) => (i + 1) % charsRef.current.length);
       setDirection((d) => (runCount.current % 2 === 0 ? 1 : -1));
       setRunning(true);
     }, delay);
@@ -77,7 +93,7 @@ export default function RunningCharacter() {
           onClick={handleClick}
           aria-label="Running Pahadi characters — click to open gallery!"
         >
-          {CHARACTERS.map((char, i) => (
+          {characters.map((char, i) => (
             <motion.div
               key={char.src}
               style={{ scaleX: flipX }}

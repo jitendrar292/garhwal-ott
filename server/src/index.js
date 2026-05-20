@@ -18,6 +18,7 @@ const ttsRoutes = require('./routes/tts');
 const newsAgentRoutes = require('./routes/newsAgent');
 const jobsAgentRoutes = require('./routes/jobsAgent');
 const artGalleryRoutes = require('./routes/artGallery');
+const runnerRoutes = require('./routes/runner');
 const { getVisits, incrementVisits, getOpens, incrementOpens, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback } = require('./services/store');
 const { startTrendingRefresh } = require('./services/youtubeService');
 
@@ -108,6 +109,7 @@ app.use('/api/favorites', visitLimiter);
 app.use('/api/news', visitLimiter);
 app.use('/api/jobs', visitLimiter);
 app.use('/api/art-gallery', visitLimiter);
+app.use('/api/runner', visitLimiter);
 
 // Tighter limit for AI chat (paid upstream)
 const chatLimiter = rateLimit({
@@ -144,6 +146,7 @@ app.use('/api/tts', ttsRoutes);
 app.use('/api/news-agent', newsAgentRoutes);
 app.use('/api/jobs-agent', jobsAgentRoutes);
 app.use('/api/art-gallery', artGalleryRoutes);
+app.use('/api/runner', runnerRoutes);
 
 // Captions endpoint — tries hi, a.hi (auto Hindi), en, a.en in order
 app.get('/api/captions/:videoId', async (req, res) => {

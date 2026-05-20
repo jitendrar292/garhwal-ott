@@ -8,6 +8,7 @@ const TABS = [
   { id: 'feedback', label: 'Feedback', emoji: '💬' },
   { id: 'news', label: 'News', emoji: '📰' },
   { id: 'art', label: 'Art Gallery', emoji: '🎨' },
+  { id: 'runner', label: 'Runner', emoji: '🏃' },
 ];
 
 export default function AdminPage() {
@@ -302,6 +303,7 @@ export default function AdminPage() {
         )}
         {activeTab === 'news' && <NewsTab adminKey={key} />}
         {activeTab === 'art' && <ArtGalleryTab adminKey={key} />}
+        {activeTab === 'runner' && <RunnerTab adminKey={key} />}
       </div>
     </div>
   );
@@ -616,6 +618,126 @@ function ArtGalleryTab({ adminKey }) {
                 className="w-full aspect-square object-contain rounded-lg"
               />
               <p className="text-xs text-center text-gray-300 mt-1.5 truncate">{item.label}</p>
+              <button
+                onClick={() => handleDelete(item.id)}
+                className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 bg-red-500/80 hover:bg-red-500 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center transition-opacity"
+                title="Delete"
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function RunnerTab({ adminKey }) {
+  const [chars, setChars] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
+  const [label, setLabel] = useState('');
+  const [file, setFile] = useState(null);
+  const [msg, setMsg] = useState('');
+
+  const loadChars = async () => {
+    try {
+      const res = await fetch('/api/runner');
+      const data = await res.json();
+      setChars(data.characters || []);
+    } catch { /* ignore */ }
+    setLoading(false);
+  };
+
+  useEffect(() => { loadChars(); }, []);
+
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    if (!file) return;
+    setUploading(true);
+    setMsg('');
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+      formData.append('label', label.trim() || 'Runner');
+      const res = await fetch(`/api/runner?key=${encodeURIComponent(adminKey)}`, {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Upload failed');
+      setMsg('✓ Uploaded!');
+      setLabel('');
+      setFile(null);
+      loadChars();
+    } catch (err) {
+      setMsg(`✗ ${err.message}`);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!confirm('Delete this runner character?')) return;
+    try {
+      const res = await fetch(`/api/runner/${id}?key=${encodeURIComponent(adminKey)}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Delete failed');
+      setChars((prev) => prev.filter((c) => c.id !== id));
+    } catch (err) {
+      setMsg(`✗ ${err.message}`);
+    }
+  };
+
+  return (
+    <div>
+      <h2 className="text-lg font-semibold mb-4">Runner Characters ({chars.length})</h2>
+      <p className="text-gray-400 text-sm mb-4">These characters run across the bottom of the screen. Upload transparent PNG images for best results.</p>
+
+      {/* Upload form */}
+      <form onSubmit={handleUpload} className="bg-dark-700/50 rounded-xl p-4 mb-6 space-y-3">
+        <p className="text-sm font-medium text-gray-300">Upload New Character</p>
+        <input
+          type="text"
+          value={label}
+          onChange={(e) => setLabel(e.target.value)}
+          placeholder="Label (optional, e.g. पहाड़ी नृत्य)"
+          maxLength={200}
+          className="w-full bg-dark-600 border border-dark-400 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-primary-500"
+        />
+        <input
+          type="file"
+          accept="image/png,image/jpeg,image/webp,image/gif"
+          onChange={(e) => setFile(e.target.files[0] || null)}
+          className="block w-full text-sm text-gray-400 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary-500/20 file:text-primary-300 hover:file:bg-primary-500/30"
+        />
+        <div className="flex items-center gap-3">
+          <button
+            type="submit"
+            disabled={uploading || !file}
+            className="btn-primary disabled:opacity-50 text-sm"
+          >
+            {uploading ? 'Uploading...' : 'Upload'}
+          </button>
+          {msg && <span className={`text-sm ${msg.startsWith('✓') ? 'text-green-400' : 'text-red-400'}`}>{msg}</span>}
+        </div>
+      </form>
+
+      {/* Characters list */}
+      {loading ? (
+        <p className="text-gray-400 text-center py-8">Loading...</p>
+      ) : chars.length === 0 ? (
+        <p className="text-gray-400 text-center py-8">No runner characters. Upload one to get started.</p>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+          {chars.map((item) => (
+            <div key={item.id} className="relative group bg-dark-700/50 rounded-xl p-3 border border-white/5 flex flex-col items-center">
+              <img
+                src={item.src}
+                alt={item.label}
+                className="h-20 w-auto object-contain"
+              />
+              <p className="text-xs text-center text-gray-300 mt-2 truncate w-full">{item.label}</p>
               <button
                 onClick={() => handleDelete(item.id)}
                 className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 bg-red-500/80 hover:bg-red-500 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center transition-opacity"
