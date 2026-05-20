@@ -27,7 +27,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [listening, setListening] = useState(false);
   const [micError, setMicError] = useState('');
-  const [snowing, setSnowing] = useState(false);
+  const [snowBatches, setSnowBatches] = useState([]);
   const inputRef = useRef(null);
   const recognitionRef = useRef(null);
   const navigate = useNavigate();
@@ -200,9 +200,13 @@ export default function Navbar() {
           <div className="flex items-center gap-1">
             {/* Snow cloud button */}
             <button
-              onClick={() => { setSnowing(true); setTimeout(() => setSnowing(false), 8000); }}
+              onClick={() => {
+                const id = Date.now();
+                setSnowBatches(prev => [...prev, id]);
+                setTimeout(() => setSnowBatches(prev => prev.filter(b => b !== id)), 8000);
+              }}
               className={`p-2.5 rounded-xl transition-all ${
-                snowing ? 'text-sky-300 bg-sky-500/15' : 'text-white/50 hover:text-sky-300 hover:bg-sky-500/10'
+                snowBatches.length > 0 ? 'text-sky-300 bg-sky-500/15' : 'text-white/50 hover:text-sky-300 hover:bg-sky-500/10'
               }`}
               aria-label="Let it snow"
               title="Let it snow!"
@@ -425,7 +429,7 @@ export default function Navbar() {
       )}
       </AnimatePresence>
     </nav>
-    <SnowEffect active={snowing} />
+    {snowBatches.map(id => <SnowEffect key={id} active={true} />)}
     </>
   );
 }

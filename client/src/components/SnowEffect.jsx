@@ -1,30 +1,19 @@
 import { useState, useEffect } from 'react';
 
 export default function SnowEffect({ active }) {
-  const [flakes, setFlakes] = useState([]);
-  const [settled, setSettled] = useState(false);
-
-  useEffect(() => {
-    if (!active) {
-      // Keep flakes visible briefly after deactivation for the "jammed" look
-      const t = setTimeout(() => { setFlakes([]); setSettled(false); }, 3000);
-      return () => clearTimeout(t);
-    }
-    const newFlakes = Array.from({ length: 80 }, (_, i) => ({
+  const [flakes] = useState(() =>
+    Array.from({ length: 80 }, (_, i) => ({
       id: i,
       left: Math.random() * 100,
       delay: Math.random() * 4,
       duration: 3 + Math.random() * 3,
       size: 5 + Math.random() * 10,
       opacity: 0.7 + Math.random() * 0.3,
-      // Flakes fall the full screen height
       stopAt: 95 + Math.random() * 5,
-    }));
-    setFlakes(newFlakes);
-    setSettled(true);
-  }, [active]);
+    }))
+  );
 
-  if (flakes.length === 0) return null;
+  if (!active) return null;
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden">
