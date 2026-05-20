@@ -17,8 +17,8 @@ export default function SnowEffect({ active }) {
       duration: 3 + Math.random() * 3,
       size: 5 + Math.random() * 10,
       opacity: 0.7 + Math.random() * 0.3,
-      // Each flake stops at a random point between 40vh and 90vh (grid area)
-      stopAt: 40 + Math.random() * 50,
+      // Flakes fall the full screen height
+      stopAt: 95 + Math.random() * 5,
     }));
     setFlakes(newFlakes);
     setSettled(true);
