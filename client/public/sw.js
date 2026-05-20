@@ -182,16 +182,14 @@ self.addEventListener('notificationclick', (event) => {
         const url = new URL(client.url);
         if (url.origin === self.location.origin) {
           await client.focus();
-          // Tell the page to refresh its data (e.g. NewsPage refetches /api/news).
-          // We post BEFORE navigate so the listener exists if we're already on the target route.
+          // Tell the React app to navigate to the target route via React Router.
+          // This is a smooth SPA navigation — no page reload.
           try { client.postMessage({ type: 'NOTIFICATION_CLICK', url: target }); } catch { /* noop */ }
-          if ('navigate' in client) {
-            try { await client.navigate(target); } catch { /* same-route navigate can throw — ignore */ }
-          }
           return;
         }
       } catch { /* noop */ }
     }
-    await self.clients.openWindow(target);
+    // No existing tab — open a new window at the target URL.
+    await self.clients.openWindow(new URL(target, self.location.origin).href);
   })());
 });
