@@ -118,17 +118,13 @@ export default function RunningCharacter() {
             animate={{ y: [0, -10, 0, -7, 0] }}
             transition={{ duration: 0.55, repeat: Infinity, ease: 'easeInOut' }}
           >
-            <div
-              className="rounded-full bg-white shadow-lg overflow-hidden border-2 border-orange-300/60"
-              style={{ width: CHAR_SIZE, height: CHAR_SIZE }}
-            >
-              <img
-                src={CHARACTERS[charIdx].src}
-                alt={CHARACTERS[charIdx].alt}
-                className="w-full h-full object-contain p-1"
-                draggable={false}
-              />
-            </div>
+            <img
+              src={CHARACTERS[charIdx].src}
+              alt={CHARACTERS[charIdx].alt}
+              className="object-contain drop-shadow-xl"
+              style={{ height: CHAR_SIZE, width: 'auto', maxWidth: CHAR_SIZE * 1.5 }}
+              draggable={false}
+            />
           </motion.div>
         </motion.div>
       )}
