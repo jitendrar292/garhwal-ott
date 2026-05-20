@@ -740,7 +740,7 @@ function RunnerTab({ adminKey }) {
               <p className="text-xs text-center text-gray-300 mt-2 truncate w-full">{item.label}</p>
               <button
                 onClick={() => handleDelete(item.id)}
-                className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 bg-red-500/80 hover:bg-red-500 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center transition-opacity"
+                className="absolute top-1 right-1 bg-red-500/80 hover:bg-red-500 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center transition-opacity"
                 title="Delete"
               >
                 ✕
