@@ -23,6 +23,21 @@ export default function HomePage() {
   const [devotional, setDevotional] = useState({ videos: [], loading: true, error: null });
   const [mela, setMela] = useState({ videos: [], loading: true, error: null });
   const [theatre, setTheatre] = useState({ videos: [], loading: true, error: null });
+
+  // Merged Jaagar + Mela: interleave both arrays so both categories are represented
+  const jagarMelaVideos = (() => {
+    const d = devotional.videos;
+    const m = mela.videos;
+    const out = [];
+    const len = Math.max(d.length, m.length);
+    for (let i = 0; i < len; i++) {
+      if (d[i]) out.push(d[i]);
+      if (m[i]) out.push(m[i]);
+    }
+    return out;
+  })();
+  const jagarMelaLoading = devotional.loading || mela.loading;
+  const jagarMelaError = devotional.error || mela.error;
   const [userLocation, setUserLocation] = useState(null);
 
   useEffect(() => {
@@ -195,22 +210,13 @@ export default function HomePage() {
         {/* Ad — after Folk Dances */}
         <AdUnitFluid />
 
-        {/* Jaagar & Devotional */}
+        {/* Jaagar, Devotional & Mela — merged row */}
         <VideoRow
-          title="🔱 Jaagar & Devotional"
-          videos={devotional.videos}
-          loading={devotional.loading}
-          error={devotional.error}
+          title="🔱🎪 Jaagar, Devotional & Mela"
+          videos={jagarMelaVideos}
+          loading={jagarMelaLoading}
+          error={jagarMelaError}
           categoryLink="/category/devotional"
-        />
-
-        {/* Mela & Festivals */}
-        <VideoRow
-          title="🎪 Mela & Festivals"
-          videos={mela.videos}
-          loading={mela.loading}
-          error={mela.error}
-          categoryLink="/category/mela"
         />
 
         {/* Theatre & Culture (HNBGU + Uttarakhand rangmanch) */}
