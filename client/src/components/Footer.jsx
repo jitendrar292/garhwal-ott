@@ -23,7 +23,7 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="relative overflow-hidden border-t border-white/[0.04] bg-surface-0">
+    <footer className="relative overflow-hidden border-t border-white/[0.04] bg-surface-0 pb-20 sm:pb-0">
       {/* Decorative gradient blur */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-24 bg-primary-500/[0.03] blur-3xl rounded-full pointer-events-none" />
 
