@@ -34,6 +34,7 @@ const GENRES = [
     sub: 'पहाड़ी\nगाणा',
     path: '/music',
     emoji: '🎵',
+    icon: '/icons/music.png',
     bg: 'bg-pink-600',
     badge: { text: '✨', cls: 'bg-fuchsia-600/85' },
   },
@@ -93,6 +94,7 @@ const GENRES = [
     sub: 'रेसिपी\nव्यंजन',
     path: '/pahadi-khano',
     emoji: '🍲',
+    icon: '/icons/khano.png',
     bg: 'bg-red-700',
     badge: { text: '🆕', cls: 'bg-red-500/85' },
   },
@@ -100,7 +102,8 @@ const GENRES = [
     name: 'पहाड़ी पहनावा',
     sub: 'पारंपरिक\nवेशभूषा',
     path: '/pahadi-pehnawa',
-    emoji: '�',
+    emoji: '👗',
+    icon: '/icons/pehnawa.png',
     bg: 'bg-purple-700',
     badge: { text: '🆕', cls: 'bg-purple-500/85' },
   },
@@ -173,7 +176,7 @@ export default function GenreGrid() {
 
             <div className="relative flex flex-col items-center justify-center gap-1.5 min-h-[96px]">
               <div className="text-2xl sm:text-3xl drop-shadow-sm group-hover:scale-110 transition-transform duration-250">
-                {g.emoji}
+                {g.icon ? <img src={g.icon} alt={g.name} className="w-8 h-8 sm:w-9 sm:h-9 object-contain inline-block" /> : g.emoji}
               </div>
               <div className="text-white font-semibold text-[12px] sm:text-[13px] leading-tight drop-shadow-sm">
                 {g.name}
