@@ -504,9 +504,10 @@
 /* ── Snowfall animation ────────────────── */
 @keyframes snowfall {
   0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
-  80% { opacity: 0.8; }
-  100% { transform: translateY(150vh) rotate(360deg); opacity: 0; }
+  80% { opacity: 1; }
+  90% { opacity: 1; transform: translateY(var(--snow-stop)) rotate(300deg); }
+  100% { opacity: 0.9; transform: translateY(var(--snow-stop)) rotate(360deg); }
 }
 .animate-snowfall {
-  animation: snowfall 4s linear forwards;
+  animation: snowfall var(--snow-duration) ease-out forwards;
 }
