@@ -1,4 +1,5 @@
-import { Routes, Route, Navigate, useLocation, useNavigate, useEffect } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Navbar from './components/Navbar';
 import BottomNav from './components/BottomNav';
