@@ -218,8 +218,9 @@ const GEMINI = {
 // =====================================================================
 // LLMs hallucinate confident-sounding fake news ("तुंगनाथ डोली ...") for any
 // "what's happening today" question. We block this by:
-//   1. Detecting "current-events" intent via keyword match.
-//   2. Fetching the latest articles from /api/news (Redis-backed CMS).
+//   1. Detecting "current-events" intent via keyword match OR keyword overlap
+//      with article titles/summaries.
+//   2. Fetching the relevant articles from /api/news (Redis-backed CMS).
 //   3. Injecting them as ground-truth context. The system prompt forbids the
 //      model from inventing news outside this list.
 
@@ -228,12 +229,70 @@ function isNewsQuery(text) {
   return NEWS_INTENT_RE.test(String(text || ''));
 }
 
+// ── Keyword-based relevance scoring for news RAG ──
+// Tokenize text, dropping stopwords and short tokens, so overlap scoring
+// focuses on meaningful content words.
+const NEWS_STOPWORDS = new Set([
+  'का', 'की', 'के', 'में', 'मा', 'मे', 'है', 'हैं', 'च', 'छ', 'छन', 'और', 'औ', 'या',
+  'से', 'सी', 'को', 'कु', 'तैं', 'पर', 'पै', 'कि', 'जो', 'जु', 'इस', 'उस', 'यह', 'वह',
+  'ki', 'ka', 'ke', 'me', 'main', 'hai', 'hain', 'aur', 'ya', 'se', 'ko', 'par',
+  'the', 'a', 'an', 'of', 'in', 'on', 'is', 'are', 'and', 'or', 'to', 'for', 'with',
+  'at', 'by', 'from', 'this', 'that', 'it', 'was', 'be', 'as', 'we',
+]);
+
+function newsTokenize(text) {
+  return String(text || '')
+    .toLowerCase()
+    .split(/[\s,.!?;:()"'\-—–\/।\[\]]+/)
+    .filter((t) => t.length >= 2 && !NEWS_STOPWORDS.has(t));
+}
+
+function scoreNewsArticle(article, queryTokens) {
+  const text = [
+    article.title || '',
+    article.summary || '',
+    (article.body || '').slice(0, 400),
+  ].join(' ');
+  const articleTokens = new Set(newsTokenize(text));
+  if (articleTokens.size === 0 || queryTokens.length === 0) return 0;
+  let hits = 0;
+  for (const t of queryTokens) {
+    if (articleTokens.has(t)) hits++;
+  }
+  return hits / queryTokens.length;
+}
+
+// Retrieve news articles relevant to the user query.
+//  - newsIntent=true  → return top 5 by recency (classic "latest news" request)
+//  - newsIntent=false → score articles by keyword overlap; return top 3 above threshold
+async function retrieveRelevantNews(userQuery, { newsIntent = false } = {}) {
+  let articles;
+  try { articles = await loadNews(); } catch { return []; }
+  if (!Array.isArray(articles) || articles.length === 0) return [];
+
+  if (newsIntent) {
+    // Return newest articles for generic news-intent queries.
+    return articles
+      .slice()
+      .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
+      .slice(0, 5);
+  }
+
+  // Topic query: score every article against the user's query tokens.
+  const queryTokens = newsTokenize(userQuery);
+  if (queryTokens.length < 2) return [];
+  const MIN_SCORE = 0.15; // at least 15% of query tokens must appear in article
+  return articles
+    .map((a) => ({ article: a, score: scoreNewsArticle(a, queryTokens) }))
+    .filter(({ score }) => score >= MIN_SCORE)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3)
+    .map(({ article }) => article);
+}
+
 async function formatNewsContext(articles, limit = 5) {
   if (!Array.isArray(articles) || articles.length === 0) return '';
-  const top = articles
-    .slice() // don't mutate
-    .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
-    .slice(0, limit);
+  const top = articles.slice(0, limit);
   if (top.length === 0) return '';
 
   const fmtDate = (ts) => {
@@ -1315,14 +1374,21 @@ router.post('/', async (req, res) => {
   }
   res.setHeader('X-Memory-Source', memorySource);
 
-  // News RAG: when the user asks about current events / latest news, fetch
-  // the top recent articles from the local CMS and inject them as ground
-  // truth so the model stops hallucinating ("Tungnath doli" type fakes).
+  // News RAG: retrieve articles relevant to the user's query.
+  // - For news-intent queries ("aajkal kya ho raha", "latest news") → top 5 by recency.
+  // - For any other query → score all articles by keyword overlap with the query;
+  //   inject top 3 if any article scores above threshold (15% token overlap).
+  //   This grounds the model on real CMS content even when the user doesn't
+  //   explicitly ask for "news" (e.g. "Tehri dam water level bata").
   let newsContext = '';
-  if (lastUser && isNewsQuery(lastUser.content)) {
+  if (lastUser) {
     try {
-      newsContext = await formatNewsContext(await loadNews(), 5);
-      if (newsContext) res.setHeader('X-News-Injected', '1');
+      const newsIntent = isNewsQuery(lastUser.content);
+      const relevant = await retrieveRelevantNews(lastUser.content, { newsIntent });
+      if (relevant.length > 0) {
+        newsContext = await formatNewsContext(relevant, relevant.length);
+        if (newsContext) res.setHeader('X-News-Injected', newsIntent ? 'intent' : 'topic');
+      }
     } catch (err) {
       console.error('[chat] news retrieval error:', err.message);
     }
