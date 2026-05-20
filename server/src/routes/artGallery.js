@@ -1,6 +1,5 @@
 const express = require('express');
 const multer = require('multer');
-const { uploadFile, deleteFile, isR2Enabled } = require('../services/r2');
 const { redisGetJSON, redisSetJSON } = require('../services/store');
 
 const router = express.Router();
@@ -69,15 +68,8 @@ router.post('/', upload.single('image'), async (req, res) => {
       return res.status(400).json({ error: 'Label too long (max 200 chars)' });
     }
 
-    let src;
-    if (isR2Enabled()) {
-      const ext = req.file.mimetype.split('/')[1] || 'png';
-      const key = `art-gallery/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-      const result = await uploadFile(key, req.file.buffer, req.file.mimetype);
-      src = result.url;
-    } else {
-      return res.status(503).json({ error: 'Storage (R2) not configured on server' });
-    }
+    // Store as base64 data URL in Redis
+    const src = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
 
     const gallery = await getGallery();
     const newItem = { id: Date.now(), src, label };
@@ -103,14 +95,6 @@ router.delete('/:id', async (req, res) => {
     const gallery = await getGallery();
     const item = gallery.find((g) => g.id === id);
     if (!item) return res.status(404).json({ error: 'Item not found' });
-
-    // Delete from R2 if it's an R2 URL (not a local /art/ path)
-    if (item.src && !item.src.startsWith('/') && isR2Enabled()) {
-      try {
-        const key = item.src.split('/').slice(-2).join('/'); // art-gallery/filename
-        await deleteFile(`art-gallery/${key.split('art-gallery/').pop()}`);
-      } catch { /* best-effort cleanup */ }
-    }
 
     const updated = gallery.filter((g) => g.id !== id);
     await saveGallery(updated);

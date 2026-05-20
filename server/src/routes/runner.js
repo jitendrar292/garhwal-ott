@@ -1,6 +1,5 @@
 const express = require('express');
 const multer = require('multer');
-const { uploadFile, deleteFile, isR2Enabled } = require('../services/r2');
 const { redisGetJSON, redisSetJSON } = require('../services/store');
 
 const router = express.Router();
@@ -61,15 +60,8 @@ router.post('/', upload.single('image'), async (req, res) => {
       return res.status(400).json({ error: 'Label too long (max 200 chars)' });
     }
 
-    let src;
-    if (isR2Enabled()) {
-      const ext = req.file.mimetype.split('/')[1] || 'png';
-      const key = `runner/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-      const result = await uploadFile(key, req.file.buffer, req.file.mimetype);
-      src = result.url;
-    } else {
-      return res.status(503).json({ error: 'Storage (R2) not configured on server' });
-    }
+    // Store as base64 data URL in Redis
+    const src = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
 
     const chars = await getCharacters();
     const newItem = { id: Date.now(), src, label };
@@ -95,14 +87,6 @@ router.delete('/:id', async (req, res) => {
     const chars = await getCharacters();
     const item = chars.find((c) => c.id === id);
     if (!item) return res.status(404).json({ error: 'Character not found' });
-
-    // Delete from R2 if it's an R2 URL
-    if (item.src && !item.src.startsWith('/') && isR2Enabled()) {
-      try {
-        const key = item.src.includes('runner/') ? `runner/${item.src.split('runner/').pop()}` : '';
-        if (key) await deleteFile(key);
-      } catch { /* best-effort cleanup */ }
-    }
 
     const updated = chars.filter((c) => c.id !== id);
     await saveCharacters(updated);
