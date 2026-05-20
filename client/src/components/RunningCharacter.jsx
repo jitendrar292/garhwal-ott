@@ -96,19 +96,3 @@ export default function RunningCharacter() {
     </AnimatePresence>
   );
 }
-            >
-              <img
-                src={CHARACTERS[charIdx].src}
-                alt=""
-                className="object-contain drop-shadow-xl"
-                style={{ height: CHAR_SIZE, width: 'auto', maxWidth: CHAR_SIZE * 1.5 }}
-                draggable={false}
-                onError={(e) => { e.currentTarget.style.display = 'none'; }}
-              />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
-  );
-}
