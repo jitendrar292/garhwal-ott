@@ -139,6 +139,7 @@ export default function Navbar() {
   };
 
   return (
+    <>
     <nav className={`sticky top-0 z-50 transition-all duration-300 ${
       scrolled
         ? 'bg-surface-0/95 backdrop-blur-2xl shadow-elevation-2 border-b border-white/6'
@@ -423,7 +424,8 @@ export default function Navbar() {
         </motion.div>
       )}
       </AnimatePresence>
-      <SnowEffect active={snowing} />
     </nav>
+    <SnowEffect active={snowing} />
+    </>
   );
 }
