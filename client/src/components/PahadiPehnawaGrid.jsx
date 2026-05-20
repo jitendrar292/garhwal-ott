@@ -55,7 +55,7 @@ const PahadiPehnawaGrid = () => {
         </svg>
 
         <div className="relative z-10 flex items-center gap-4">
-          <div className="text-5xl drop-shadow-lg">👘</div>
+          <img src="/icons/pehnawa.png" alt="Pahadi Pehnawa" className="w-14 h-14 object-contain drop-shadow-lg" />
           <div>
             <h2 className="text-2xl font-black text-white leading-tight">
               <span className="gradient-text">पहाड़ी पहनावा</span>
