@@ -9,7 +9,7 @@ import GovtJobsRow from '../components/GovtJobsRow';
 import SarkaariYojanaRow from '../components/SarkaariYojanaRow';
 import UpcomingHappenings from '../components/UpcomingHappenings';
 import AboutSection from '../components/AboutSection';
-import AdUnit from '../components/AdUnit';
+import AdUnit, { AdUnitFluid } from '../components/AdUnit';
 import { getVideosByCategory } from '../api/youtube';
 
 export default function HomePage() {
@@ -133,7 +133,7 @@ export default function HomePage() {
         />
 
         {/* Ad — after Trending */}
-        <AdUnit />
+        <AdUnitFluid />
 
         {/* Movies */}
         <VideoRow
@@ -154,7 +154,7 @@ export default function HomePage() {
         />
 
         {/* Ad — after Songs */}
-        <AdUnit />
+        <AdUnitFluid />
 
         {/* Comedy */}
         <VideoRow
@@ -193,7 +193,7 @@ export default function HomePage() {
         />
 
         {/* Ad — after Folk Dances */}
-        <AdUnit />
+        <AdUnitFluid />
 
         {/* Jaagar & Devotional */}
         <VideoRow

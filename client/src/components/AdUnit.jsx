@@ -34,3 +34,33 @@ export default function AdUnit({ className = '' }) {
     </div>
   );
 }
+
+// AdUnitFluid — in-feed / native fluid ad
+// Usage: <AdUnitFluid />
+const FLUID_SLOT       = '5995244505';
+const FLUID_LAYOUT_KEY = '-fb+5w+4e-db+86';
+
+export function AdUnitFluid({ className = '' }) {
+  const pushed = useRef(false);
+
+  useEffect(() => {
+    if (pushed.current) return;
+    pushed.current = true;
+    try {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch {}
+  }, []);
+
+  return (
+    <div className={`w-full overflow-hidden my-6 ${className}`}>
+      <ins
+        className="adsbygoogle"
+        style={{ display: 'block' }}
+        data-ad-format="fluid"
+        data-ad-layout-key={FLUID_LAYOUT_KEY}
+        data-ad-client={AD_CLIENT}
+        data-ad-slot={FLUID_SLOT}
+      />
+    </div>
+  );
+}

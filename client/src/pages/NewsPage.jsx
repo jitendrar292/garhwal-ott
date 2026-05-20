@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import NotifyButton from '../components/NotifyButton';
 import SEO from '../components/SEO';
-import AdUnit from '../components/AdUnit';
+import AdUnit, { AdUnitFluid } from '../components/AdUnit';
 
 const CATEGORIES = [
   { id: 'all', label: 'सब / All', emoji: '📰' },
@@ -265,7 +265,7 @@ export default function NewsPage() {
             </div>
           </article>
           {/* Ad after every 5th article */}
-          {(idx + 1) % 5 === 0 && <AdUnit />}
+          {(idx + 1) % 5 === 0 && <AdUnitFluid />}
         </div>
           );
         })}
