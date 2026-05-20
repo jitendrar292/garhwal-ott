@@ -5,8 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const CHARACTERS = [
-  { src: '/art/khelo.png', alt: 'Pahadi Khelo character' },
-  { src: '/art/fun.png',   alt: 'Pahadi Fun character'  },
+  { src: '/art/run-char.png' },
 ];
 
 const GALLERY = [
@@ -16,7 +15,7 @@ const GALLERY = [
   { src: '/art/narendra-singh-negi.png', label: 'गढ़ गौरव — नरेन्द्र सिंह नेगी 🎶' },
 ];
 
-const FIRST_RUN_MS   = 8_000;
+const FIRST_RUN_MS   = 5_000;
 const MIN_INTERVAL   = 90_000;
 const MAX_INTERVAL   = 130_000;
 const MAX_RUNS       = 6;
