@@ -38,6 +38,7 @@ import PahadiKhanoPage from './pages/PahadiKhanoPage';
 import PahadiStorePage from './pages/PahadiStorePage';
 import PahadiPehnawaPage from './pages/PahadiPehnawaPage';
 import AboutPage from './pages/AboutPage';
+import ArtGalleryPage from './pages/ArtGalleryPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 
 // Protected route wrapper - redirects to login if not authenticated
@@ -164,6 +165,7 @@ function AnimatedRoutes() {
             <Route path="/pahadi-store" element={<PahadiStorePage />} />
             <Route path="/pahadi-pehnawa" element={<PahadiPehnawaPage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/art-gallery" element={<ArtGalleryPage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           </Routes>
         </motion.div>
