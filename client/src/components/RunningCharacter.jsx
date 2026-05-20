@@ -1,6 +1,5 @@
 // RunningCharacter — a Pahadi art character that periodically runs across
-// the bottom of the screen. Clicks show a Garhwali speech bubble.
-// Only uses khelo.png + fun.png (portrait-style images excluded).
+// the bottom of the screen. Click opens a gallery of all art characters.
 
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -10,13 +9,11 @@ const CHARACTERS = [
   { src: '/art/fun.png',   alt: 'Pahadi Fun character'  },
 ];
 
-const PHRASES = [
-  'खेलो पहाड़ी! 🏔️',
-  'भाग रौ छूं! 🏃',
-  'जय उत्तराखंड! 🙌',
-  'हँसते रौ! 😄',
-  'पहाड़ म जीण बड़ी बात च!',
-  'अरे भुला, छोड़ ना! 😂',
+const GALLERY = [
+  { src: '/art/khelo.png',               label: 'खेलो पहाड़ी 🏃' },
+  { src: '/art/fun.png',                 label: 'हँसी-ठट्ठा 😄' },
+  { src: '/art/diwali.png',              label: 'दिवाळी 🪔' },
+  { src: '/art/narendra-singh-negi.png', label: 'गढ़ गौरव — नरेन्द्र सिंह नेगी 🎶' },
 ];
 
 const FIRST_RUN_MS   = 8_000;
@@ -35,7 +32,7 @@ export default function RunningCharacter() {
   const [running, setRunning]       = useState(false);
   const [direction, setDirection]   = useState(1);   // 1 = left→right, -1 = right→left
   const [charIdx, setCharIdx]       = useState(0);
-  const [bubble, setBubble]         = useState(null); // phrase string or null
+  const [gallery, setGallery]       = useState(false);
   const runCount = useRef(parseInt(sessionStorage.getItem(SESSION_KEY) || '0', 10));
   const timerRef = useRef(null);
 
@@ -60,7 +57,6 @@ export default function RunningCharacter() {
 
   const handleRunComplete = () => {
     setRunning(false);
-    setBubble(null);
     if (runCount.current < MAX_RUNS) {
       scheduleRun(randomInterval());
     }
@@ -68,9 +64,7 @@ export default function RunningCharacter() {
 
   const handleClick = (e) => {
     e.stopPropagation();
-    const phrase = PHRASES[Math.floor(Math.random() * PHRASES.length)];
-    setBubble(phrase);
-    setTimeout(() => setBubble(null), 2200);
+    setGallery(true);
   };
 
   const startX  = direction === 1 ? -(CHAR_SIZE + 20) : window.innerWidth + CHAR_SIZE + 20;
@@ -78,57 +72,88 @@ export default function RunningCharacter() {
   const flipX   = direction === -1 ? -1 : 1;
 
   return (
-    <AnimatePresence>
-      {running && (
-        <motion.div
-          key={`run-${runCount.current}`}
-          className="fixed z-[999] bottom-20 sm:bottom-6 cursor-pointer select-none"
-          style={{ x: startX }}
-          animate={{ x: endX }}
-          transition={{ duration: RUN_DURATION, ease: 'linear' }}
-          onAnimationComplete={handleRunComplete}
-          onClick={handleClick}
-          aria-label="Running Pahadi character — click for a surprise!"
-        >
-          {/* Speech bubble */}
-          <AnimatePresence>
-            {bubble && (
-              <motion.div
-                key="bubble"
-                className="absolute -top-12 left-1/2 -translate-x-1/2 whitespace-nowrap
-                           bg-white text-gray-900 text-xs font-bold px-3 py-1.5 rounded-full
-                           shadow-lg border border-gray-200 pointer-events-none"
-                initial={{ opacity: 0, y: 6, scale: 0.8 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -4, scale: 0.8 }}
-                transition={{ duration: 0.2 }}
-              >
-                {bubble}
-                {/* tiny tail */}
-                <span className="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-3 h-1.5
-                                 bg-white border-b border-r border-gray-200"
-                      style={{ clipPath: 'polygon(0 0, 100% 0, 50% 100%)' }} />
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Character with bob + flip */}
+    <>
+      {/* Gallery Modal */}
+      <AnimatePresence>
+        {gallery && (
           <motion.div
-            style={{ scaleX: flipX }}
-            animate={{ y: [0, -10, 0, -7, 0] }}
-            transition={{ duration: 0.55, repeat: Infinity, ease: 'easeInOut' }}
+            key="gallery-overlay"
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setGallery(false)}
           >
-            <img
-              src={CHARACTERS[charIdx].src}
-              alt=""
-              className="object-contain drop-shadow-xl"
-              style={{ height: CHAR_SIZE, width: 'auto', maxWidth: CHAR_SIZE * 1.5 }}
-              draggable={false}
-              onError={(e) => { e.currentTarget.style.display = 'none'; }}
-            />
+            <motion.div
+              className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-md w-full max-h-[80vh] overflow-y-auto p-5"
+              initial={{ scale: 0.85, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.85, opacity: 0 }}
+              transition={{ type: 'spring', damping: 22, stiffness: 260 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-bold text-gray-900 dark:text-white">🎨 पहाड़ी कला Gallery</h2>
+                <button
+                  onClick={() => setGallery(false)}
+                  className="text-gray-500 hover:text-gray-800 dark:hover:text-white text-2xl leading-none"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                {GALLERY.map((item) => (
+                  <div key={item.src} className="flex flex-col items-center gap-1">
+                    <div className="bg-gray-100 dark:bg-gray-800 rounded-xl p-2 w-full aspect-square flex items-center justify-center">
+                      <img
+                        src={item.src}
+                        alt={item.label}
+                        className="max-h-full max-w-full object-contain"
+                        draggable={false}
+                      />
+                    </div>
+                    <span className="text-xs text-center font-medium text-gray-700 dark:text-gray-300">
+                      {item.label}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+        )}
+      </AnimatePresence>
+
+      {/* Running character */}
+      <AnimatePresence>
+        {running && (
+          <motion.div
+            key={`run-${runCount.current}`}
+            className="fixed z-[999] bottom-20 sm:bottom-6 cursor-pointer select-none"
+            style={{ x: startX }}
+            animate={{ x: endX }}
+            transition={{ duration: RUN_DURATION, ease: 'linear' }}
+            onAnimationComplete={handleRunComplete}
+            onClick={handleClick}
+            aria-label="Running Pahadi character — click to open gallery!"
+          >
+            {/* Character with bob + flip */}
+            <motion.div
+              style={{ scaleX: flipX }}
+              animate={{ y: [0, -10, 0, -7, 0] }}
+              transition={{ duration: 0.55, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <img
+                src={CHARACTERS[charIdx].src}
+                alt=""
+                className="object-contain drop-shadow-xl"
+                style={{ height: CHAR_SIZE, width: 'auto', maxWidth: CHAR_SIZE * 1.5 }}
+                draggable={false}
+                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
