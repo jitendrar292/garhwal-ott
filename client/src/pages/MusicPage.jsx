@@ -88,10 +88,8 @@ export default function MusicPage() {
       />
       {/* Header — YouTube Music style */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-500 via-rose-500 to-orange-500 flex items-center justify-center shadow-elevation-2">
-          <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
-          </svg>
+        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-500 via-rose-500 to-orange-500 flex items-center justify-center shadow-elevation-2 overflow-hidden">
+          <img src="/icons/music.png" alt="Music" className="w-8 h-8 object-contain" />
         </div>
         <div>
           <h1 className="font-display text-heading-lg">Pahadi <span className="text-gradient-primary">Music</span></h1>
