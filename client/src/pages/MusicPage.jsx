@@ -88,11 +88,11 @@ export default function MusicPage() {
       />
       {/* Header — YouTube Music style */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-500 via-rose-500 to-orange-500 flex items-center justify-center shadow-elevation-2 overflow-hidden">
-          <img src="/icons/music.png" alt="Music" className="w-8 h-8 object-contain" />
+        <div className="w-12 h-12 rounded-2xl flex items-center justify-center overflow-hidden">
+          <img src="/icons/music.png" alt="Music" className="w-12 h-12 object-contain" />
         </div>
         <div>
-          <h1 className="font-display text-heading-lg">Pahadi <span className="text-gradient-primary">Music</span></h1>
+          <h1 className="font-display text-heading-lg">पहाड़ी <span className="text-gradient-primary">गाना</span></h1>
           <p className="text-body-sm text-white/50">Garhwali & Kumaoni songs — tap to play</p>
         </div>
       </div>
