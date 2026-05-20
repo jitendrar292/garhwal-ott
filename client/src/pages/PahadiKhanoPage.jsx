@@ -51,7 +51,7 @@ export default function PahadiKhanoPage() {
         >
           <div className="absolute -right-6 -bottom-6 text-9xl opacity-10 select-none">🥘</div>
           <div className="relative z-10 flex items-center gap-4">
-            <div className="text-5xl drop-shadow-lg">🍲</div>
+            <img src="/icons/khano.png" alt="Pahadi Khano" className="w-14 h-14 object-contain drop-shadow-lg" />
             <div>
               <h1 className="text-2xl sm:text-3xl font-black leading-tight">
                 <span className="gradient-text">पहाड़ी खाणू</span>
