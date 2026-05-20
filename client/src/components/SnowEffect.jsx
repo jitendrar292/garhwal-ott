@@ -47,4 +47,3 @@ export default function SnowEffect({ active }) {
     </div>
   );
 }
-}
