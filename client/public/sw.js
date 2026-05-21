@@ -17,6 +17,7 @@ const STATIC_ASSETS = [
   '/icons/khano.png',
   '/icons/music.png',
   '/icons/pehnawa.png',
+  '/art/samachar.png',
 ];
 
 // Install — cache shell assets
