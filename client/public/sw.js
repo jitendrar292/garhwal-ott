@@ -11,6 +11,12 @@ const STATIC_ASSETS = [
   '/icons/icon-512-v2.png',
   '/icons/icon-192-maskable-v2.png',
   '/icons/icon-512-maskable-v2.png',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
+  '/icons/devbhoomi-aayurveda.png',
+  '/icons/khano.png',
+  '/icons/music.png',
+  '/icons/pehnawa.png',
 ];
 
 // Install — cache shell assets
