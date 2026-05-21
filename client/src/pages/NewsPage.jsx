@@ -117,8 +117,8 @@ export default function NewsPage() {
       />
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-          <img src="/art/samachar.png" alt="News" className="w-7 h-7" />
+        <div className="w-12 h-12 rounded-2xl flex items-center justify-center">
+          <img src="/art/samachar.png" alt="News" className="w-10 h-10 object-contain" />
         </div>
         <div className="flex-1">
           <h1 className="page-header">पहाड़ी <span className="gradient-text">समाचार</span></h1>
