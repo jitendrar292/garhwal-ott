@@ -159,8 +159,8 @@ export function pickPahadiVoice() {
     if (lang === 'hi-in') s += 100;
     else if (lang.startsWith('hi')) s += 60;
     else if (lang.startsWith('mr') || lang.startsWith('ne')) s += 30; // Marathi/Nepali fallback
-    // Prefer female / natural voices — they carry the sing-song cadence better
-    if (/female|swara|kalpana|lekha|priya|aditi|veena|natural/i.test(name)) s += 20;
+    // Prefer male / deep voices for a natural Pahadi masculine tone
+    if (/male|rishi|madhur|hem|natural/i.test(name) && !/female/i.test(name)) s += 20;
     if (/google/i.test(name)) s += 8;
     if (/local/i.test(v.localService ? 'local' : '')) s += 4;
     return s;
@@ -170,6 +170,6 @@ export function pickPahadiVoice() {
 }
 
 // Prosody tuned to mimic Pahadi sing-song delivery: slightly slower than
-// neutral, slightly higher pitch.
+// neutral, with a natural male pitch.
 export const PAHADI_RATE = 0.88;
-export const PAHADI_PITCH = 1.12;
+export const PAHADI_PITCH = 0.95;
