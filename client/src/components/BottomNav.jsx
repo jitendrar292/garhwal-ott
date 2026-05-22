@@ -53,16 +53,10 @@ const TABS = [
     name: 'Jobs',
     path: '/jobs',
     icon: (
-      <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
-          d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-      </svg>
+      <img src="/art/naukri.png" alt="Jobs" className="w-7 h-7 object-contain opacity-60" />
     ),
     iconActive: (
-      <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
-        <path fillRule="evenodd" d="M7.5 5.25a3 3 0 013-3h3a3 3 0 013 3V6a.75.75 0 01-.75.75H8.25A.75.75 0 017.5 6v-.75zm3-1.5a1.5 1.5 0 00-1.5 1.5v.003h6V5.25a1.5 1.5 0 00-1.5-1.5h-3z" clipRule="evenodd" />
-        <path fillRule="evenodd" d="M2.25 9.75a3 3 0 013-3h13.5a3 3 0 013 3v8.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V9.75zM12 12a.75.75 0 00-.75.75v.01c0 .414.336.75.75.75h.01a.75.75 0 00.75-.75v-.01a.75.75 0 00-.75-.75H12z" clipRule="evenodd" />
-      </svg>
+      <img src="/art/naukri.png" alt="Jobs" className="w-7 h-7 object-contain" />
     ),
   },
   {
