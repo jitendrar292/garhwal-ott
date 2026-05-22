@@ -48,7 +48,7 @@ export default function PahadiStorePage() {
           <div className="absolute -right-4 -bottom-4 text-8xl opacity-10 select-none">🛒</div>
           <div className="relative z-10">
             <div className="flex items-center gap-3 mb-1.5">
-              <span className="text-4xl">🏔️</span>
+              <img src="/art/pahadi-Smagri.png" alt="पहाड़ी सामग्री" className="w-14 h-14 object-contain" />
               <div>
                 <h1 className="text-2xl sm:text-3xl font-black text-white">पहाड़ी सामग्री</h1>
                 <p className="text-amber-300 font-bold text-sm">Pahadi Ingredient Store</p>
