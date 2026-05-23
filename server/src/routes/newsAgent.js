@@ -62,7 +62,7 @@ router.post('/run', async (req, res) => {
   }
 
   // Accept optional overrides from request body
-  const { maxPerFeed = 5, maxAge = 24, maxArticles = 15, dryRun = false } = req.body || {};
+  const { maxPerFeed = 10, maxAge = 48, maxArticles = 20, dryRun = false } = req.body || {};
 
   // Start the pipeline asynchronously so we can respond immediately
   res.json({ message: 'News agent started', status: 'running' });
@@ -92,8 +92,8 @@ router.post('/publish-selected', async (req, res) => {
   if (!Array.isArray(selected) || selected.length === 0) {
     return res.status(400).json({ error: 'No articles provided' });
   }
-  if (selected.length > 10) {
-    return res.status(400).json({ error: 'Max 10 articles at a time' });
+  if (selected.length > 20) {
+    return res.status(400).json({ error: 'Max 20 articles at a time' });
   }
 
   // Validate each article has required fields
@@ -121,8 +121,8 @@ router.post('/translate-preview', async (req, res) => {
   if (!Array.isArray(selected) || selected.length === 0) {
     return res.status(400).json({ error: 'No articles provided' });
   }
-  if (selected.length > 5) {
-    return res.status(400).json({ error: 'Max 5 articles for preview at a time' });
+  if (selected.length > 10) {
+    return res.status(400).json({ error: 'Max 10 articles for preview at a time' });
   }
 
   for (const a of selected) {
@@ -281,7 +281,7 @@ async function publishSelected(selected) {
 }
 
 // ── The main pipeline ──
-async function runPipeline({ maxPerFeed = 4, maxAge = 24, maxArticles = 8, dryRun = false } = {}) {
+async function runPipeline({ maxPerFeed = 10, maxAge = 48, maxArticles = 20, dryRun = false } = {}) {
   if (isRunning) return;
   isRunning = true;
 
@@ -334,15 +334,15 @@ async function runPipeline({ maxPerFeed = 4, maxAge = 24, maxArticles = 8, dryRu
     // Limit articles per run to control API costs
     newArticles = newArticles.slice(0, maxArticles);
 
-    // Dry run: show top 5 crawled articles without translating (saves API tokens)
+    // Dry run: show top 10 crawled articles without translating (saves API tokens)
     if (dryRun) {
       lastRun.status = 'completed';
       lastRun.completedAt = Date.now();
       lastRun.articlesPublished = 0;
       lastRun.articlesTranslated = 0;
-      const top5 = newArticles.slice(0, 5);
-      console.log(`[newsAgent] Dry run — showing ${top5.length} crawled articles (no translation).`);
-      lastRun.preview = top5.map((a) => ({
+      const top = newArticles.slice(0, 10);
+      console.log(`[newsAgent] Dry run — showing ${top.length} crawled articles (no translation).`);
+      lastRun.preview = top.map((a) => ({
         title: a.title,
         summary: a.summary,
         source: a.source,

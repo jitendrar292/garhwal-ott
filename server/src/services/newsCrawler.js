@@ -33,7 +33,7 @@ const RSS_FEEDS = [
  * @param {number} opts.maxAge      Max article age in hours (default 24)
  * @returns {Promise<Array<{title, summary, body, source, sourceUrl, lang, pubDate}>>}
  */
-async function crawlNews({ maxPerFeed = 5, maxAge = 24 } = {}) {
+async function crawlNews({ maxPerFeed = 10, maxAge = 48 } = {}) {
   const cutoff = Date.now() - maxAge * 60 * 60 * 1000;
   const results = [];
 
