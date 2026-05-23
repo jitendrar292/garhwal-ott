@@ -85,8 +85,8 @@ const SLIDES = [
     link: '/category/devotional',
   },
   {
-    src: '/slider/aanaj-kootna.jpeg',
-    title: 'आनाज कूटना',
+    src: '/slider/anaj-kootna.png',
+    title: 'अनाज कूटना',
     subtitle: 'Traditional grain threshing — a timeless Pahadi practice',
     link: '/category/vlogs',
   },
