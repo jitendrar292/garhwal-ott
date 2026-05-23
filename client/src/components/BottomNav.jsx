@@ -53,10 +53,10 @@ const TABS = [
     name: 'Jobs',
     path: '/jobs',
     icon: (
-      <img src="/art/naukri.png" alt="Jobs" className="w-7 h-7 object-contain opacity-60" />
+      <img src="/art/naukri-chakri.png" alt="Jobs" className="w-7 h-7 object-contain opacity-60" />
     ),
     iconActive: (
-      <img src="/art/naukri.png" alt="Jobs" className="w-7 h-7 object-contain" />
+      <img src="/art/naukri-chakri.png" alt="Jobs" className="w-7 h-7 object-contain" />
     ),
   },
   {

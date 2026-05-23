@@ -247,7 +247,7 @@ export default function GovtJobsPage() {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="page-header mb-2 flex items-center justify-center gap-3">
-            <img src="/art/naukri.png" alt="Jobs" className="w-8 h-8 object-contain" /> <span className="gradient-text">सरकारी नौकरी</span>
+            <img src="/art/naukri-chakri.png" alt="Jobs" className="w-8 h-8 object-contain" /> <span className="gradient-text">सरकारी नौकरी</span>
             <span className="text-lg sm:text-xl font-normal text-white/60">Govt Jobs</span>
           </h1>
           <p className="text-white/60 text-sm">
