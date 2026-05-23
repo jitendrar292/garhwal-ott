@@ -4,6 +4,7 @@ import { searchVideos } from '../api/youtube';
 import VideoCard from '../components/VideoCard';
 import { useFavorites } from '../hooks/useFavorites';
 import LyricsSection from '../components/LyricsSection';
+import WhatsAppShareBtn from '../components/WhatsAppShareBtn';
 
 export default function PlayerPage() {
   const { videoId } = useParams();
@@ -173,6 +174,11 @@ export default function PlayerPage() {
               </svg>
               Share
             </button>
+            <WhatsAppShareBtn
+              title={videoMeta.title || 'Check this out on PahadiTube'}
+              text={videoMeta.channelTitle || ''}
+              url={`${window.location.origin}/watch/${videoId}`}
+            />
           </div>
 
           {/* Song lyrics in Garhwali */}

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useFavorites } from '../hooks/useFavorites';
+import WhatsAppShareBtn from './WhatsAppShareBtn';
 
 export default function VideoCard({ video, compact }) {
   const { isFavorite, addFavorite, removeFavorite } = useFavorites();
@@ -70,6 +71,14 @@ export default function VideoCard({ video, compact }) {
 
         {/* Action buttons — always visible on mobile, hover on desktop */}
         <div className="absolute top-2 right-2 flex items-center gap-1.5 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">
+          <WhatsAppShareBtn
+            title={video.title}
+            text={video.channelTitle || ''}
+            url={`${window.location.origin}/watch/${video.id}`}
+            compact
+            onClick
+            className="p-2 rounded-xl bg-black/50 backdrop-blur-sm border-transparent hover:border-[#25D366]"
+          />
           <button
             onClick={handleShare}
             className="p-2 rounded-xl bg-black/50 backdrop-blur-sm text-white/80 hover:bg-secondary-500 hover:text-white transition-all duration-200"

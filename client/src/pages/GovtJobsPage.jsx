@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import SEO from '../components/SEO';
 import GOVT_JOBS from '../data/govtJobs';
+import WhatsAppShareBtn from '../components/WhatsAppShareBtn';
 
 function daysUntil(iso) {
   const today = new Date();
@@ -151,6 +152,12 @@ function JobCard({ job, isHighlighted }) {
             </svg>
             Share
           </button>
+          <WhatsAppShareBtn
+            title={job.titleLocal || job.title}
+            text={`${job.department}\nपद: ${job.vacancies} | अंतिम तिथि: ${formatDate(job.lastDate)}`}
+            url={`${window.location.origin}/jobs#${job.id}`}
+            compact
+          />
           {job.link && !isExpired && (
             <a
               href={job.link}

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { folkStories, getFolkStoryWithBody } from '../data/folkStories';
 import SEO from '../components/SEO';
+import WhatsAppShareBtn from '../components/WhatsAppShareBtn';
 
 // Full-text reader for a single Garhwali folk-story. The story body is loaded
 // via dynamic import so the heavy ~50 KB Devanagari bundle never lands in the
@@ -78,6 +79,13 @@ export default function FolkStoryPage() {
           </div>
         </div>
         <p className="text-body-sm text-white/60 mt-3 italic">{blurb}</p>
+        <div className="mt-4">
+          <WhatsAppShareBtn
+            title={`${emoji} ${name}`}
+            text={blurb || 'गढ़वाली लोक-गाथा — PahadiTube'}
+            url={`${window.location.origin}/folk-story/${slug}`}
+          />
+        </div>
       </header>
 
       <article className="prose prose-invert max-w-none text-white/80 leading-loose text-[1.05rem] font-devanagari">

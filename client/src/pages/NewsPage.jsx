@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import NotifyButton from '../components/NotifyButton';
 import SEO from '../components/SEO';
 import AdUnit, { AdUnitFluid } from '../components/AdUnit';
+import WhatsAppShareBtn from '../components/WhatsAppShareBtn';
 
 const CATEGORIES = [
   { id: 'all', label: 'सब / All', emoji: '📰' },
@@ -253,6 +254,12 @@ export default function NewsPage() {
                   </svg>
                   Share
                 </button>
+                <WhatsAppShareBtn
+                  title={article.title}
+                  text={article.summary || ''}
+                  url={`${window.location.origin}/news`}
+                  compact
+                />
               </div>
               {expanded === article.id && (
                 <div className="mt-3 pt-3 border-t border-white/[0.06] text-sm text-gray-300 leading-relaxed whitespace-pre-line">
