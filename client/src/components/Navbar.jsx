@@ -34,6 +34,14 @@ export default function Navbar() {
   const location = useLocation();
   const { user, isAuthenticated, signOut } = useAuth();
 
+  // Auto-trigger snow on first visit
+  useEffect(() => {
+    const id = Date.now();
+    setSnowBatches([id]);
+    const timer = setTimeout(() => setSnowBatches(prev => prev.filter(b => b !== id)), 8000);
+    return () => clearTimeout(timer);
+  }, []);
+
   // Speech recognition support (skip iOS — webkit impl is unreliable)
   const SpeechRecognition = typeof window !== 'undefined' &&
     (window.SpeechRecognition || window.webkitSpeechRecognition);
