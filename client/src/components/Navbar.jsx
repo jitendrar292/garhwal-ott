@@ -252,58 +252,6 @@ export default function Navbar() {
               </svg>
             </button>
 
-            {/* Notification bell — visible only if user is subscribed */}
-            {pushInfo.subscribed && (
-              <div className="relative">
-                <button
-                  onClick={() => {
-                    setShowPushTooltip(prev => !prev);
-                    // Mark all as read when opened
-                    if (!showPushTooltip && pushInfo.notifications.length > 0) {
-                      localStorage.setItem('push_last_seen', String(pushInfo.notifications[0].id));
-                      setPushInfo(prev => ({ ...prev, unread: 0 }));
-                    }
-                  }}
-                  onBlur={() => setTimeout(() => setShowPushTooltip(false), 200)}
-                  className="relative p-2.5 text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 rounded-xl transition-all"
-                  aria-label="Notifications"
-                  title="Recent notifications"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                  </svg>
-                  {pushInfo.unread > 0 && (
-                    <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center px-1 text-[10px] font-bold bg-accent-500 text-white rounded-full shadow-lg animate-pulse">
-                      {pushInfo.unread > 9 ? '9+' : pushInfo.unread}
-                    </span>
-                  )}
-                </button>
-                {showPushTooltip && (
-                  <div className="absolute right-0 top-full mt-2 w-72 bg-surface-2 border border-white/10 rounded-xl shadow-xl z-50 overflow-hidden">
-                    <div className="px-3 py-2 border-b border-white/10">
-                      <p className="text-xs text-white/90 font-medium">🔔 Notifications</p>
-                    </div>
-                    <div className="max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10">
-                      {pushInfo.notifications.length === 0 ? (
-                        <p className="px-3 py-4 text-xs text-white/40 text-center">No notifications yet</p>
-                      ) : (
-                        pushInfo.notifications.slice(0, 10).map((n) => (
-                          <a
-                            key={n.id}
-                            href={n.url || '/'}
-                            className="block px-3 py-2.5 hover:bg-white/5 transition-colors border-b border-white/5 last:border-0"
-                          >
-                            <p className="text-xs font-medium text-white/90 truncate">{n.title}</p>
-                            {n.body && <p className="text-[11px] text-white/50 mt-0.5 line-clamp-2">{n.body}</p>}
-                            <p className="text-[10px] text-white/30 mt-1">{new Date(n.sentAt).toLocaleDateString('hi-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</p>
-                          </a>
-                        ))
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
             {/* Mobile search toggle */}
             {searchOpen ? (
               <form onSubmit={handleSearch} className="flex items-center gap-1 sm:hidden">
@@ -372,6 +320,58 @@ export default function Navbar() {
                   d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
             </Link>
+
+            {/* Notification bell */}
+            {pushInfo.subscribed && (
+              <div className="relative">
+                <button
+                  onClick={() => {
+                    setShowPushTooltip(prev => !prev);
+                    if (!showPushTooltip && pushInfo.notifications.length > 0) {
+                      localStorage.setItem('push_last_seen', String(pushInfo.notifications[0].id));
+                      setPushInfo(prev => ({ ...prev, unread: 0 }));
+                    }
+                  }}
+                  onBlur={() => setTimeout(() => setShowPushTooltip(false), 200)}
+                  className="relative p-2.5 text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 rounded-xl transition-all"
+                  aria-label="Notifications"
+                  title="Recent notifications"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                  </svg>
+                  {pushInfo.unread > 0 && (
+                    <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center px-1 text-[10px] font-bold bg-accent-500 text-white rounded-full shadow-lg animate-pulse">
+                      {pushInfo.unread > 9 ? '9+' : pushInfo.unread}
+                    </span>
+                  )}
+                </button>
+                {showPushTooltip && (
+                  <div className="fixed right-2 left-2 sm:left-auto sm:absolute sm:right-0 top-16 sm:top-full sm:mt-2 sm:w-72 max-w-[calc(100vw-1rem)] bg-surface-2 border border-white/10 rounded-xl shadow-xl z-50 overflow-hidden">
+                    <div className="px-3 py-2 border-b border-white/10">
+                      <p className="text-xs text-white/90 font-medium">🔔 Notifications</p>
+                    </div>
+                    <div className="max-h-[60vh] sm:max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10">
+                      {pushInfo.notifications.length === 0 ? (
+                        <p className="px-3 py-4 text-xs text-white/40 text-center">No notifications yet</p>
+                      ) : (
+                        pushInfo.notifications.slice(0, 10).map((n) => (
+                          <a
+                            key={n.id}
+                            href={n.url || '/'}
+                            className="block px-3 py-2.5 hover:bg-white/5 transition-colors border-b border-white/5 last:border-0"
+                          >
+                            <p className="text-xs font-medium text-white/90 truncate">{n.title}</p>
+                            {n.body && <p className="text-[11px] text-white/50 mt-0.5 line-clamp-2">{n.body}</p>}
+                            <p className="text-[10px] text-white/30 mt-1">{new Date(n.sentAt).toLocaleDateString('hi-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</p>
+                          </a>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* User Profile / Login */}
             {isAuthenticated ? (
