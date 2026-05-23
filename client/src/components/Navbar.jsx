@@ -348,8 +348,19 @@ export default function Navbar() {
                 </button>
                 {showPushTooltip && (
                   <div className="fixed right-2 left-2 sm:left-auto sm:absolute sm:right-0 top-16 sm:top-full sm:mt-2 sm:w-72 max-w-[calc(100vw-1rem)] bg-surface-2 border border-white/10 rounded-xl shadow-xl z-50 overflow-hidden">
-                    <div className="px-3 py-2 border-b border-white/10">
+                    <div className="px-3 py-2 border-b border-white/10 flex items-center justify-between">
                       <p className="text-xs text-white/90 font-medium">🔔 Notifications</p>
+                      {pushInfo.notifications.length > 0 && (
+                        <button
+                          onClick={() => {
+                            setPushInfo(prev => ({ ...prev, notifications: [], unread: 0 }));
+                            localStorage.setItem('push_last_seen', String(Date.now()));
+                          }}
+                          className="text-[10px] text-white/40 hover:text-accent-400 transition-colors"
+                        >
+                          Clear all
+                        </button>
+                      )}
                     </div>
                     <div className="max-h-[60vh] sm:max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10">
                       {pushInfo.notifications.length === 0 ? (
