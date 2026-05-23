@@ -114,6 +114,9 @@ async function sendNotificationToAll(payload) {
   const subs = await loadSubs();
   if (subs.length === 0) return { sent: 0, removed: 0, failed: 0 };
 
+  // Record notification in history for subscribers to view
+  await addToHistory(payload);
+
   const body = JSON.stringify(payload);
   const dead = [];
   let sent = 0;
@@ -155,6 +158,44 @@ async function sendNotificationToAll(payload) {
   return { sent, removed: dead.length, failed };
 }
 
+// --- Notification history (stores last N sent notifications) ---
+const HISTORY_KEY = 'pahadi_push_history';
+const MAX_HISTORY = 20;
+let memHistory = [];
+
+async function loadHistory() {
+  if (isRedisEnabled()) {
+    const data = await redisGetJSON(HISTORY_KEY);
+    if (Array.isArray(data)) return data;
+  }
+  return [...memHistory];
+}
+
+async function saveHistory(list) {
+  memHistory = list;
+  if (isRedisEnabled()) {
+    await redisSetJSON(HISTORY_KEY, list, 30 * 24 * 3600); // 30 days
+  }
+}
+
+async function addToHistory(payload) {
+  const history = await loadHistory();
+  history.unshift({
+    id: Date.now(),
+    title: payload.title || '',
+    body: payload.body || '',
+    url: payload.url || '/',
+    sentAt: new Date().toISOString(),
+  });
+  // Keep only last N
+  if (history.length > MAX_HISTORY) history.length = MAX_HISTORY;
+  await saveHistory(history);
+}
+
+async function getNotificationHistory() {
+  return await loadHistory();
+}
+
 module.exports = {
   isPushEnabled,
   getVapidPublicKey: () => VAPID_PUBLIC_KEY,
@@ -163,4 +204,6 @@ module.exports = {
   subscriptionCount,
   listSubscriptions,
   sendNotificationToAll,
+  addToHistory,
+  getNotificationHistory,
 };

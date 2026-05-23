@@ -16,6 +16,7 @@ const {
   subscriptionCount,
   listSubscriptions,
   sendNotificationToAll,
+  getNotificationHistory,
 } = require('../services/push');
 
 router.get('/vapid-public-key', (_req, res) => {
@@ -49,6 +50,18 @@ router.post('/unsubscribe', async (req, res) => {
     console.error('[push] unsubscribe error:', err.message);
     res.status(500).json({ error: 'Failed to unsubscribe' });
   }
+});
+
+// Public: recent notifications for subscribed users
+router.get('/subscriber-count', async (_req, res) => {
+  const count = await subscriptionCount();
+  res.json({ count });
+});
+
+// Public: notification history (last 20 sent notifications)
+router.get('/notifications', async (_req, res) => {
+  const notifications = await getNotificationHistory();
+  res.json({ notifications });
 });
 
 router.get('/count', async (req, res) => {
