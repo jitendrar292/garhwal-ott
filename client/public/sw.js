@@ -75,6 +75,9 @@ self.addEventListener('fetch', (event) => {
   // Skip non-GET and cross-origin requests
   if (request.method !== 'GET' || url.origin !== self.location.origin) return;
 
+  // Never intercept YouTube / Google Video requests — critical for background audio playback
+  if (url.hostname.includes('youtube.com') || url.hostname.includes('googlevideo.com') || url.hostname.includes('ytimg.com')) return;
+
   // API calls: network-first with no cache fallback
   if (url.pathname.startsWith('/api/')) {
     event.respondWith(

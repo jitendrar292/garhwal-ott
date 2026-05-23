@@ -44,6 +44,8 @@ export default function FloatingPlayer() {
   const pollTimer = useRef(null);
   const wakeLockRef = useRef(null);
   const endedFiredRef = useRef(false);
+  const keepAliveAudioRef = useRef(null);
+  const audioCtxRef = useRef(null);
 
   // Refs so YT callbacks always see latest values
   const repeatRef = useRef(repeat);
@@ -80,6 +82,48 @@ export default function FloatingPlayer() {
     document.addEventListener('visibilitychange', onVis);
     return () => document.removeEventListener('visibilitychange', onVis);
   }, [isPlaying, acquireWakeLock]);
+
+  /* ── Silent audio keepalive: keeps the browser audio process alive in background ──
+     Mobile OSes kill background tabs/PWAs unless a real <audio> element or
+     AudioContext is actively producing output. We generate an inaudible tone
+     (1Hz, near-zero gain) that runs while music is playing. This prevents
+     the OS from suspending the YT IFrame audio. ── */
+  const startKeepAlive = useCallback(() => {
+    if (audioCtxRef.current) return;
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = ctx.createOscillator();
+      const gain = ctx.createGain();
+      oscillator.frequency.value = 1; // inaudible
+      gain.gain.value = 0.001; // essentially silent
+      oscillator.connect(gain);
+      gain.connect(ctx.destination);
+      oscillator.start();
+      audioCtxRef.current = ctx;
+    } catch { /* unsupported */ }
+  }, []);
+
+  const stopKeepAlive = useCallback(() => {
+    try { audioCtxRef.current?.close(); } catch {}
+    audioCtxRef.current = null;
+  }, []);
+
+  // Start/stop keepalive based on playback state
+  useEffect(() => {
+    if (isPlaying) startKeepAlive();
+    else stopKeepAlive();
+  }, [isPlaying, startKeepAlive, stopKeepAlive]);
+
+  // Resume AudioContext on visibility change (some browsers suspend it)
+  useEffect(() => {
+    const onVis = () => {
+      if (document.visibilityState === 'visible' && audioCtxRef.current?.state === 'suspended') {
+        audioCtxRef.current.resume().catch(() => {});
+      }
+    };
+    document.addEventListener('visibilitychange', onVis);
+    return () => document.removeEventListener('visibilitychange', onVis);
+  }, []);
 
   /* ── Media Session API: lock-screen controls + metadata ── */
   useEffect(() => {
@@ -250,7 +294,8 @@ export default function FloatingPlayer() {
     playerRef.current = null;
     setIsReady(false);
     setIsPlaying(false);
-  }, [currentTrack]);
+    stopKeepAlive();
+  }, [currentTrack, stopKeepAlive]);
 
   /* ── poll current time while playing ── */
   useEffect(() => {
