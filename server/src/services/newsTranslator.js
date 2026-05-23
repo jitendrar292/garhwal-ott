@@ -2,6 +2,93 @@
 //
 // Uses the same multi-provider AI fallback chain as chat.js:
 // OpenAI → Groq → Gemini (non-streaming, JSON mode).
+//
+// RAG: Injects relevant few-shot Hindi→Garhwali pairs and glossary entries
+// from local data files to improve translation accuracy.
+
+const FEWSHOT_PAIRS = require('../data/garhwali-fewshot');
+const GLOSSARY = require('../data/garhwali-glossary');
+
+// ── RAG: Select relevant examples and vocabulary for a given article ──
+
+/**
+ * Find few-shot pairs whose Hindi text shares keywords with the article.
+ * Returns up to `maxPairs` most relevant examples.
+ */
+function selectRelevantFewShot(articleText, maxPairs = 12) {
+  const text = articleText.toLowerCase();
+  const scored = FEWSHOT_PAIRS.map((pair) => {
+    const words = pair.hi.split(/\s+/);
+    const hits = words.filter((w) => w.length > 2 && text.includes(w.toLowerCase())).length;
+    return { pair, score: hits };
+  });
+  scored.sort((a, b) => b.score - a.score);
+  // Take top matches (score > 0), plus a few random ones for grammar coverage
+  const relevant = scored.filter((s) => s.score > 0).slice(0, maxPairs - 3);
+  // Always include a few general grammar examples for baseline quality
+  const basics = FEWSHOT_PAIRS.slice(0, 3);
+  const selected = [...basics, ...relevant.map((s) => s.pair)];
+  // Deduplicate
+  const seen = new Set();
+  return selected.filter((p) => {
+    if (seen.has(p.hi)) return false;
+    seen.add(p.hi);
+    return true;
+  }).slice(0, maxPairs);
+}
+
+/**
+ * Find glossary entries relevant to the article content.
+ * Matches against tags and Hindi/English fields.
+ */
+function selectRelevantGlossary(articleText, maxEntries = 20) {
+  const text = articleText.toLowerCase();
+  const scored = GLOSSARY.map((entry) => {
+    let score = 0;
+    // Check tags
+    if (entry.tags) {
+      for (const tag of entry.tags) {
+        if (text.includes(tag.toLowerCase())) score += 2;
+      }
+    }
+    // Check Hindi field
+    if (entry.hi && text.includes(entry.hi.toLowerCase())) score += 3;
+    // Check English field
+    if (entry.en && entry.en.length > 3 && text.includes(entry.en.toLowerCase())) score += 1;
+    return { entry, score };
+  });
+  scored.sort((a, b) => b.score - a.score);
+  return scored.filter((s) => s.score > 0).slice(0, maxEntries).map((s) => s.entry);
+}
+
+/**
+ * Build a RAG context block from few-shot examples and glossary.
+ */
+function buildRAGContext(article) {
+  const fullText = `${article.title} ${article.summary || ''} ${article.body || ''}`;
+
+  const pairs = selectRelevantFewShot(fullText);
+  const glossary = selectRelevantGlossary(fullText);
+
+  let ragBlock = '';
+
+  if (pairs.length > 0) {
+    ragBlock += '\n\n## संदर्भ अनुवाद (Reference Hindi→Garhwali translations — FOLLOW this style):\n';
+    for (const p of pairs) {
+      ragBlock += `- "${p.hi}" → "${p.gw}"\n`;
+    }
+  }
+
+  if (glossary.length > 0) {
+    ragBlock += '\n\n## शब्दकोष (Use these exact Garhwali words):\n';
+    ragBlock += '| Hindi | गढ़वळि | English |\n|---|---|---|\n';
+    for (const g of glossary) {
+      ragBlock += `| ${g.hi} | ${g.gw} | ${g.en} |\n`;
+    }
+  }
+
+  return ragBlock;
+}
 
 const TRANSLATION_PROMPT = `तू एक पेशेवर गढ़वळि समाचार लेखक छै। तेरु काम छ Hindi/English समाचार लेख तैं शुद्ध गढ़वळि (Garhwali) भाषा मा एक पूरा, विस्तृत समाचार लेख लिखणु।
 
@@ -133,14 +220,18 @@ const PROVIDERS = [
  * @returns {Promise<{title, summary, body, category}|null>}
  */
 async function translateToGarhwali(article) {
+  // Build RAG context from local Garhwali data
+  const ragContext = buildRAGContext(article);
+
   const userMessage = `अनुवाद कर (${article.lang === 'en' ? 'English' : 'Hindi'} → गढ़वळि):
 
 शीर्षक: ${article.title}
 सारांश: ${article.summary || ''}
 मुख्य भाग: ${article.body || article.summary || ''}
 स्रोत: ${article.source}
+${ragContext}
 
-JSON मा जवाब दे।`;
+ऊपर दिए गए संदर्भ अनुवाद और शब्दकोष का पालन करते हुए शुद्ध गढ़वळि मा JSON मा जवाब दे।`;
 
   const messages = [
     { role: 'system', content: TRANSLATION_PROMPT },
