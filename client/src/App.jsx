@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Navbar from './components/Navbar';
 import BottomNav from './components/BottomNav';
@@ -11,35 +11,37 @@ import RunningCharacter from './components/RunningCharacter';
 import { ToastProvider } from './components/ui/Toast';
 import { MusicProvider } from './context/MusicContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import HomePage from './pages/HomePage';
-import CategoryPage from './pages/CategoryPage';
-import SearchPage from './pages/SearchPage';
-import PlayerPage from './pages/PlayerPage';
-import FavoritesPage from './pages/FavoritesPage';
-import FeedbackPage from './pages/FeedbackPage';
-import FeedbackAdminPage from './pages/FeedbackAdminPage';
-import MusicPage from './pages/MusicPage';
-import ShortsPage from './pages/ShortsPage';
-import PodcastPage from './pages/PodcastPage';
-import GhughutiAIPage from './pages/GhughutiAIPage';
-import NewsPage from './pages/NewsPage';
-import NewsAdminPage from './pages/NewsAdminPage';
-import YouTubeAdminPage from './pages/YouTubeAdminPage';
-import FolkStoryPage from './pages/FolkStoryPage';
-import FolkStoriesIndexPage from './pages/FolkStoriesIndexPage';
-import GovtJobsPage from './pages/GovtJobsPage';
-import JobsAdminPage from './pages/JobsAdminPage';
-import SarkaariYojanaPage from './pages/SarkaariYojanaPage';
-import LoginPage from './pages/LoginPage';
-import AdminPage from './pages/AdminPage';
-import VoiceRecordingPage from './pages/VoiceRecordingPage';
-import GarhwaliSikhaPage from './pages/GarhwaliSikhaPage';
-import PahadiKhanoPage from './pages/PahadiKhanoPage';
-import PahadiStorePage from './pages/PahadiStorePage';
-import PahadiPehnawaPage from './pages/PahadiPehnawaPage';
-import AboutPage from './pages/AboutPage';
-import ArtGalleryPage from './pages/ArtGalleryPage';
-import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+
+// Lazy-loaded page components for route-level code splitting
+const HomePage = lazy(() => import('./pages/HomePage'));
+const CategoryPage = lazy(() => import('./pages/CategoryPage'));
+const SearchPage = lazy(() => import('./pages/SearchPage'));
+const PlayerPage = lazy(() => import('./pages/PlayerPage'));
+const FavoritesPage = lazy(() => import('./pages/FavoritesPage'));
+const FeedbackPage = lazy(() => import('./pages/FeedbackPage'));
+const FeedbackAdminPage = lazy(() => import('./pages/FeedbackAdminPage'));
+const MusicPage = lazy(() => import('./pages/MusicPage'));
+const ShortsPage = lazy(() => import('./pages/ShortsPage'));
+const PodcastPage = lazy(() => import('./pages/PodcastPage'));
+const GhughutiAIPage = lazy(() => import('./pages/GhughutiAIPage'));
+const NewsPage = lazy(() => import('./pages/NewsPage'));
+const NewsAdminPage = lazy(() => import('./pages/NewsAdminPage'));
+const YouTubeAdminPage = lazy(() => import('./pages/YouTubeAdminPage'));
+const FolkStoryPage = lazy(() => import('./pages/FolkStoryPage'));
+const FolkStoriesIndexPage = lazy(() => import('./pages/FolkStoriesIndexPage'));
+const GovtJobsPage = lazy(() => import('./pages/GovtJobsPage'));
+const JobsAdminPage = lazy(() => import('./pages/JobsAdminPage'));
+const SarkaariYojanaPage = lazy(() => import('./pages/SarkaariYojanaPage'));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const AdminPage = lazy(() => import('./pages/AdminPage'));
+const VoiceRecordingPage = lazy(() => import('./pages/VoiceRecordingPage'));
+const GarhwaliSikhaPage = lazy(() => import('./pages/GarhwaliSikhaPage'));
+const PahadiKhanoPage = lazy(() => import('./pages/PahadiKhanoPage'));
+const PahadiStorePage = lazy(() => import('./pages/PahadiStorePage'));
+const PahadiPehnawaPage = lazy(() => import('./pages/PahadiPehnawaPage'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const ArtGalleryPage = lazy(() => import('./pages/ArtGalleryPage'));
+const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
 
 // Protected route wrapper - redirects to login if not authenticated
 function RequireAuth({ children }) {
@@ -128,6 +130,7 @@ function AnimatedRoutes() {
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         >
+          <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full" /></div>}>
           <Routes location={location}>
             <Route path="/" element={<HomePage />} />
             <Route path="/category/:category" element={<CategoryPage />} />
@@ -168,6 +171,7 @@ function AnimatedRoutes() {
             <Route path="/art-gallery" element={<ArtGalleryPage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           </Routes>
+          </Suspense>
         </motion.div>
       </AnimatePresence>
     </>

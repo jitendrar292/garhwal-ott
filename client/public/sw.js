@@ -3,8 +3,7 @@
 const BUILD_ID = '__BUILD_ID__';
 const CACHE_NAME = `pahaditube-${BUILD_ID}`;
 const STATIC_ASSETS = [
-  // Note: '/' intentionally NOT precached. Index.html must always come from
-  // the network so users get current bundle hashes (see fetch handler).
+  // Critical shell assets — precached on install for instant loads
   '/manifest.json',
   '/logo.png',
   '/icons/icon-192-v2.png',
@@ -17,7 +16,18 @@ const STATIC_ASSETS = [
   '/icons/khano.png',
   '/icons/music.png',
   '/icons/pehnawa.png',
-  '/art/samachar.png',
+  '/art/samachar.webp',
+  '/art/naukri-chakri.webp',
+  '/art/khano.webp',
+  '/art/music.webp',
+  '/art/pehnawa.webp',
+  '/art/fun.webp',
+  // Slider WebP assets (most used local slides)
+  '/slider/hisalu.webp',
+  '/slider/kaafal.webp',
+  '/slider/maalta.webp',
+  '/slider/ramman.webp',
+  '/slider/ghughti.webp',
 ];
 
 // Install — cache shell assets

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import OptimizedImage from './OptimizedImage';
 
 // Wikimedia Commons "Special:FilePath" auto-redirects to the latest upload.
 // We pass `?width=1600` so Commons returns a resized JPEG instead of the
@@ -173,7 +174,7 @@ export default function ImageSlider() {
             className={`absolute inset-0 transition-opacity duration-1000 ease-in-out
                        ${index === current ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
           >
-            <img
+            <OptimizedImage
               src={slide.src}
               alt={slide.title}
               className={`w-full h-full object-cover transition-transform duration-[8000ms] ease-out

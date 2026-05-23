@@ -6,6 +6,7 @@ require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 const youtubeRoutes = require('./routes/youtube');
 const chatRoutes = require('./routes/chat');
@@ -27,6 +28,9 @@ const PORT = process.env.PORT || 5001;
 
 // Trust the first proxy (Render/Railway sets x-forwarded-for / x-forwarded-host)
 app.set('trust proxy', 1);
+
+// Compress all responses (gzip/deflate)
+app.use(compression());
 
 // 301 redirect non-canonical hosts (www.pahaditube.in, *.onrender.com) to the
 // canonical domain. Skip API requests so server-to-server calls keep working,
