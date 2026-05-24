@@ -6,9 +6,10 @@ import SEO from '../components/SEO';
 // All queries append "-movie -film -trailer -full movie" to keep results
 // limited to songs/audio only and exclude Garhwali movie uploads.
 const EXCLUDE = '-movie -film -trailer -"full movie"';
+const EXCLUDE_REELS = `${EXCLUDE} -reels -reel -shorts -short -#shorts -#reels -instagram`;
 const MUSIC_QUERIES = [
   { label: '🔥 Trending', query: `garhwali trending hit songs 2026 ${EXCLUDE}` },
-  { label: '🎙️ NSN', query: `Narendra Singh Negi songs garhwali ${EXCLUDE}` },
+  { label: '🎙️ NSN', query: `Narendra Singh Negi best songs garhwali hit ${EXCLUDE_REELS}` },
   { label: '🎶 Classic', query: `old garhwali evergreen songs ${EXCLUDE}` },
   { label: '🏔️ Kumaoni', query: `kumaoni hit songs uttarakhand ${EXCLUDE}` },
   { label: '🎧 DJ Mix', query: `garhwali DJ remix nonstop dance ${EXCLUDE}` },
