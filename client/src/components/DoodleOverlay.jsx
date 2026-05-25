@@ -1,5 +1,5 @@
 // DoodleOverlay — Google Doodle-style full-screen splash.
-// Shows the daily doodle image once per day, auto-fades after a few seconds.
+// Fetches active doodle from /api/doodle. Shows once per session, auto-fades.
 // Tap anywhere to dismiss early.
 
 import { useEffect, useState } from 'react';
@@ -8,26 +8,29 @@ import { motion, AnimatePresence } from 'framer-motion';
 const STORAGE_KEY = 'pahadi_doodle_shown';
 const DOODLE_DURATION_MS = 4000; // Show for 4 seconds
 
-// Configure daily doodles here — swap src/caption for each occasion
-const TODAY_DOODLE = {
-  src: '/art/doodle.png',
-  caption: 'आज का डूडल • Today\'s Doodle',
-  subtitle: 'PahadiTube celebrates Uttarakhand!',
-};
-
 export default function DoodleOverlay() {
   const [visible, setVisible] = useState(false);
+  const [doodle, setDoodle] = useState(null);
 
   useEffect(() => {
-    // Only show once per day
-    const today = new Date().toDateString();
-    if (sessionStorage.getItem(STORAGE_KEY) === today) return;
-    sessionStorage.setItem(STORAGE_KEY, today);
-    setVisible(true);
+    // Only show once per session
+    if (sessionStorage.getItem(STORAGE_KEY)) return;
 
-    const timer = setTimeout(() => setVisible(false), DOODLE_DURATION_MS);
-    return () => clearTimeout(timer);
+    // Fetch active doodle from server
+    fetch('/api/doodle')
+      .then((r) => r.json())
+      .then((data) => {
+        if (!data.doodle) return; // No active doodle
+        sessionStorage.setItem(STORAGE_KEY, '1');
+        setDoodle(data.doodle);
+        setVisible(true);
+
+        setTimeout(() => setVisible(false), DOODLE_DURATION_MS);
+      })
+      .catch(() => {}); // Silently fail — doodle is non-critical
   }, []);
+
+  if (!doodle) return null;
 
   return (
     <AnimatePresence>
@@ -47,8 +50,8 @@ export default function DoodleOverlay() {
 
           {/* Doodle image with entrance animation */}
           <motion.img
-            src={TODAY_DOODLE.src}
-            alt={TODAY_DOODLE.caption}
+            src={doodle.src}
+            alt={doodle.caption}
             className="max-w-[85vw] max-h-[55vh] sm:max-w-[60vw] sm:max-h-[60vh] object-contain rounded-2xl shadow-2xl shadow-primary-500/20"
             initial={{ scale: 0.8, opacity: 0, y: 30 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -63,10 +66,10 @@ export default function DoodleOverlay() {
             transition={{ delay: 0.4, duration: 0.5 }}
           >
             <p className="text-white text-lg sm:text-xl font-bold">
-              {TODAY_DOODLE.caption}
+              {doodle.caption}
             </p>
             <p className="text-white/50 text-sm mt-1">
-              {TODAY_DOODLE.subtitle}
+              {doodle.subtitle}
             </p>
           </motion.div>
 

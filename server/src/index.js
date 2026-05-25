@@ -20,6 +20,7 @@ const newsAgentRoutes = require('./routes/newsAgent');
 const jobsAgentRoutes = require('./routes/jobsAgent');
 const artGalleryRoutes = require('./routes/artGallery');
 const runnerRoutes = require('./routes/runner');
+const doodleRoutes = require('./routes/doodle');
 const geoRoutes = require('./routes/geo');
 const { getVisits, incrementVisits, getOpens, incrementOpens, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback } = require('./services/store');
 const { startTrendingRefresh } = require('./services/youtubeService');
@@ -115,6 +116,7 @@ app.use('/api/news', visitLimiter);
 app.use('/api/jobs', visitLimiter);
 app.use('/api/art-gallery', visitLimiter);
 app.use('/api/runner', visitLimiter);
+app.use('/api/doodle', visitLimiter);
 
 // Tighter limit for AI chat (paid upstream)
 const chatLimiter = rateLimit({
@@ -152,6 +154,7 @@ app.use('/api/news-agent', newsAgentRoutes);
 app.use('/api/jobs-agent', jobsAgentRoutes);
 app.use('/api/art-gallery', artGalleryRoutes);
 app.use('/api/runner', runnerRoutes);
+app.use('/api/doodle', doodleRoutes);
 app.use('/api/geo', geoRoutes);
 
 // Captions endpoint — tries hi, a.hi (auto Hindi), en, a.en in order

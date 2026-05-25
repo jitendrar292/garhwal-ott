@@ -9,6 +9,7 @@ const TABS = [
   { id: 'news', label: 'News', emoji: '📰' },
   { id: 'art', label: 'Art Gallery', emoji: '🎨' },
   { id: 'runner', label: 'Runner', emoji: '🏃' },
+  { id: 'doodle', label: 'Doodle', emoji: '🖼️' },
 ];
 
 export default function AdminPage() {
@@ -304,6 +305,7 @@ export default function AdminPage() {
         {activeTab === 'news' && <NewsTab adminKey={key} />}
         {activeTab === 'art' && <ArtGalleryTab adminKey={key} />}
         {activeTab === 'runner' && <RunnerTab adminKey={key} />}
+        {activeTab === 'doodle' && <DoodleTab adminKey={key} />}
       </div>
     </div>
   );
@@ -749,6 +751,137 @@ function RunnerTab({ adminKey }) {
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+/* ─── Doodle Tab ─────────────────────────────────────────────── */
+function DoodleTab({ adminKey }) {
+  const [doodle, setDoodle] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
+  const [caption, setCaption] = useState('');
+  const [subtitle, setSubtitle] = useState('');
+  const [file, setFile] = useState(null);
+  const [msg, setMsg] = useState('');
+
+  const loadDoodle = async () => {
+    try {
+      const res = await fetch('/api/doodle');
+      const data = await res.json();
+      setDoodle(data.doodle || null);
+    } catch { /* ignore */ }
+    setLoading(false);
+  };
+
+  useEffect(() => { loadDoodle(); }, []);
+
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    if (!file) return;
+    setUploading(true);
+    setMsg('');
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+      formData.append('caption', caption.trim() || 'आज का डूडल');
+      formData.append('subtitle', subtitle.trim());
+      const res = await fetch(`/api/doodle?key=${encodeURIComponent(adminKey)}`, {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Upload failed');
+      setMsg('✓ Doodle published! It will show for 24 hours.');
+      setCaption('');
+      setSubtitle('');
+      setFile(null);
+      loadDoodle();
+    } catch (err) {
+      setMsg(`✗ ${err.message}`);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!confirm('Remove the active doodle?')) return;
+    try {
+      const res = await fetch(`/api/doodle?key=${encodeURIComponent(adminKey)}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Delete failed');
+      setDoodle(null);
+      setMsg('✓ Doodle removed');
+    } catch (err) {
+      setMsg(`✗ ${err.message}`);
+    }
+  };
+
+  return (
+    <div>
+      <h2 className="text-lg font-semibold mb-4">🖼️ Daily Doodle</h2>
+
+      {/* Current doodle */}
+      {loading ? (
+        <p className="text-gray-400 text-sm">Loading...</p>
+      ) : doodle ? (
+        <div className="bg-dark-700/50 rounded-xl p-4 mb-6">
+          <p className="text-sm text-green-400 font-medium mb-2">✓ Active Doodle</p>
+          <img
+            src={doodle.src}
+            alt={doodle.caption}
+            className="max-w-xs rounded-lg shadow mb-3"
+          />
+          <p className="text-white font-medium">{doodle.caption}</p>
+          {doodle.subtitle && <p className="text-gray-400 text-sm">{doodle.subtitle}</p>}
+          <p className="text-gray-500 text-xs mt-1">Published: {new Date(doodle.createdAt).toLocaleString()}</p>
+          <button
+            onClick={handleDelete}
+            className="mt-3 px-4 py-2 bg-red-500/20 text-red-300 rounded-lg text-sm hover:bg-red-500/30"
+          >
+            Remove Doodle
+          </button>
+        </div>
+      ) : (
+        <p className="text-gray-400 text-sm mb-4">No active doodle. Upload one below.</p>
+      )}
+
+      {/* Upload form */}
+      <form onSubmit={handleUpload} className="bg-dark-700/50 rounded-xl p-4 space-y-3">
+        <p className="text-sm font-medium text-gray-300">Upload New Doodle</p>
+        <input
+          type="text"
+          value={caption}
+          onChange={(e) => setCaption(e.target.value)}
+          placeholder="Caption (e.g. हरेला • Harela Festival)"
+          maxLength={200}
+          className="w-full bg-dark-600 border border-dark-400 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-primary-500"
+        />
+        <input
+          type="text"
+          value={subtitle}
+          onChange={(e) => setSubtitle(e.target.value)}
+          placeholder="Subtitle (optional)"
+          maxLength={200}
+          className="w-full bg-dark-600 border border-dark-400 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-primary-500"
+        />
+        <input
+          type="file"
+          accept="image/png,image/jpeg,image/webp,image/gif"
+          onChange={(e) => setFile(e.target.files[0] || null)}
+          className="block w-full text-sm text-gray-400 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary-500/20 file:text-primary-300 hover:file:bg-primary-500/30"
+        />
+        <div className="flex items-center gap-3">
+          <button
+            type="submit"
+            disabled={uploading || !file}
+            className="btn-primary disabled:opacity-50 text-sm"
+          >
+            {uploading ? 'Uploading...' : 'Publish Doodle'}
+          </button>
+          {msg && <span className="text-sm text-gray-300">{msg}</span>}
+        </div>
+        <p className="text-xs text-gray-500">Doodle auto-expires after 24 hours. Max 5MB.</p>
+      </form>
     </div>
   );
 }
