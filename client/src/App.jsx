@@ -14,6 +14,7 @@ const FloatingByoIcon = lazy(() => import('./components/FloatingByoIcon'));
 const InstallBanner = lazy(() => import('./components/InstallBanner'));
 const IntroSound = lazy(() => import('./components/IntroSound'));
 const RunningCharacter = lazy(() => import('./components/RunningCharacter'));
+const DoodleOverlay = lazy(() => import('./components/DoodleOverlay'));
 
 // Lazy-loaded page components for route-level code splitting
 const HomePage = lazy(() => import('./pages/HomePage'));
@@ -87,6 +88,7 @@ export default function App() {
               <InstallBanner />
               <IntroSound />
               <RunningCharacter />
+              <DoodleOverlay />
             </Suspense>
           </div>
         </ToastProvider>
