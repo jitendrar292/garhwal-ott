@@ -1,9 +1,24 @@
 import { motion } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+
+// Prefetch the page chunk on idle so navigation is instant
+const prefetchByoPage = () => import('../pages/PahadiByoPage');
 
 export default function FloatingByoIcon() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+
+  // Prefetch when browser is idle
+  useEffect(() => {
+    if ('requestIdleCallback' in window) {
+      const id = requestIdleCallback(prefetchByoPage);
+      return () => cancelIdleCallback(id);
+    } else {
+      const t = setTimeout(prefetchByoPage, 3000);
+      return () => clearTimeout(t);
+    }
+  }, []);
 
   // Hide on the Byo page itself
   if (pathname === '/pahadi-byo') return null;
