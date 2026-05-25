@@ -52,11 +52,23 @@ export default function DoodleOverlay() {
           <motion.img
             src={doodle.src}
             alt={doodle.caption}
-            className="max-w-[85vw] max-h-[55vh] sm:max-w-[60vw] sm:max-h-[60vh] object-contain rounded-2xl shadow-2xl shadow-primary-500/20"
+            className="max-w-[85vw] max-h-[45vh] sm:max-w-[60vw] sm:max-h-[50vh] object-contain rounded-2xl shadow-2xl shadow-primary-500/20"
             initial={{ scale: 0.8, opacity: 0, y: 30 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             transition={{ duration: 0.6, type: 'spring', stiffness: 150 }}
           />
+
+          {/* Overlay text on/below image */}
+          {doodle.overlayText && (
+            <motion.p
+              className="mt-4 px-6 py-3 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-400/30 rounded-xl text-amber-200 text-lg sm:text-2xl font-bold text-center max-w-[85vw] sm:max-w-[60vw]"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+            >
+              {doodle.overlayText}
+            </motion.p>
+          )}
 
           {/* Caption */}
           <motion.div

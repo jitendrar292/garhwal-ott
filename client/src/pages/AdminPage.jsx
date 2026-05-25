@@ -762,6 +762,7 @@ function DoodleTab({ adminKey }) {
   const [uploading, setUploading] = useState(false);
   const [caption, setCaption] = useState('');
   const [subtitle, setSubtitle] = useState('');
+  const [overlayText, setOverlayText] = useState('');
   const [file, setFile] = useState(null);
   const [msg, setMsg] = useState('');
 
@@ -786,6 +787,7 @@ function DoodleTab({ adminKey }) {
       formData.append('image', file);
       formData.append('caption', caption.trim() || 'आज का डूडल');
       formData.append('subtitle', subtitle.trim());
+      formData.append('overlayText', overlayText.trim());
       const res = await fetch(`/api/doodle?key=${encodeURIComponent(adminKey)}`, {
         method: 'POST',
         body: formData,
@@ -795,6 +797,7 @@ function DoodleTab({ adminKey }) {
       setMsg('✓ Doodle published! It will show for 24 hours.');
       setCaption('');
       setSubtitle('');
+      setOverlayText('');
       setFile(null);
       loadDoodle();
     } catch (err) {
@@ -833,6 +836,7 @@ function DoodleTab({ adminKey }) {
           />
           <p className="text-white font-medium">{doodle.caption}</p>
           {doodle.subtitle && <p className="text-gray-400 text-sm">{doodle.subtitle}</p>}
+          {doodle.overlayText && <p className="text-amber-300 text-sm font-semibold mt-1">「{doodle.overlayText}」</p>}
           <p className="text-gray-500 text-xs mt-1">Published: {new Date(doodle.createdAt).toLocaleString()}</p>
           <button
             onClick={handleDelete}
@@ -863,6 +867,14 @@ function DoodleTab({ adminKey }) {
           placeholder="Subtitle (optional)"
           maxLength={200}
           className="w-full bg-dark-600 border border-dark-400 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-primary-500"
+        />
+        <input
+          type="text"
+          value={overlayText}
+          onChange={(e) => setOverlayText(e.target.value)}
+          placeholder="Overlay Text (e.g. काफल पाको मी नी चाख्खो)"
+          maxLength={300}
+          className="w-full bg-dark-600 border border-amber-500/30 rounded-lg px-3 py-2 text-sm text-amber-200 placeholder-amber-400/50 focus:outline-none focus:border-amber-500"
         />
         <input
           type="file"

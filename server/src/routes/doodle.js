@@ -39,6 +39,7 @@ router.post('/', upload.single('image'), async (req, res) => {
     }
     const caption = (req.body.caption || '').trim() || 'आज का डूडल';
     const subtitle = (req.body.subtitle || '').trim() || '';
+    const overlayText = (req.body.overlayText || '').trim() || '';
 
     // Store as base64 data URL
     const src = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
@@ -48,6 +49,7 @@ router.post('/', upload.single('image'), async (req, res) => {
       src,
       caption,
       subtitle,
+      overlayText,
       createdAt: new Date().toISOString(),
     };
 
