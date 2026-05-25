@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const { redisGetJSON, redisSetJSON } = require('../services/store');
+const { sendNotificationToAll } = require('../services/push');
 
 const router = express.Router();
 const ADMIN_KEY = () => process.env.FEEDBACK_ADMIN_KEY || 'pahadi2026';
@@ -55,6 +56,15 @@ router.post('/', upload.single('image'), async (req, res) => {
 
     // Doodle lasts 24 hours
     await redisSetJSON(DOODLE_REDIS_KEY, doodle, 60 * 60 * 24);
+
+    // Send push notification to all subscribers
+    const pushBody = overlayText || subtitle || 'Open PahadiTube to see today\'s doodle!';
+    sendNotificationToAll({
+      title: `🖼️ ${caption}`,
+      body: pushBody,
+      url: '/',
+      tag: 'doodle',
+    }).catch((err) => console.error('[doodle] push error:', err.message));
 
     res.status(201).json({ success: true, doodle });
   } catch (err) {
