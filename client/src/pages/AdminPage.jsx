@@ -952,6 +952,7 @@ function ByoTab({ adminKey }) {
                 <th className="py-2 pr-4">#</th>
                 <th className="py-2 pr-4">Name</th>
                 <th className="py-2 pr-4">Instagram</th>
+                <th className="py-2 pr-4">Gender</th>
                 <th className="py-2 pr-4">Region</th>
                 <th className="py-2 pr-4">Date</th>
                 <th className="py-2">Action</th>
@@ -963,6 +964,7 @@ function ByoTab({ adminKey }) {
                   <td className="py-2 pr-4 text-gray-500">{i + 1}</td>
                   <td className="py-2 pr-4">{r.name}</td>
                   <td className="py-2 pr-4 font-mono text-xs">@{r.instagram}</td>
+                  <td className="py-2 pr-4 capitalize text-xs">{r.gender || '—'}</td>
                   <td className="py-2 pr-4 capitalize">{r.region || '—'}</td>
                   <td className="py-2 pr-4 text-gray-400 text-xs">{new Date(r.createdAt).toLocaleDateString()}</td>
                   <td className="py-2">

@@ -10,7 +10,7 @@ const FEATURES = [
 ];
 
 export default function PahadiByoPage() {
-  const [formData, setFormData] = useState({ name: '', instagram: '', region: '' });
+  const [formData, setFormData] = useState({ name: '', instagram: '', gender: '', region: '' });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -114,6 +114,17 @@ export default function PahadiByoPage() {
                   onChange={(e) => setFormData({ ...formData, instagram: e.target.value })}
                   className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-pink-500/50"
                 />
+                <select
+                  value={formData.gender}
+                  required
+                  onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                  className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500/50"
+                >
+                  <option value="" className="bg-dark-900">Gender चुनें</option>
+                  <option value="male" className="bg-dark-900">Male (पुरुष)</option>
+                  <option value="female" className="bg-dark-900">Female (महिला)</option>
+                  <option value="other" className="bg-dark-900">Other (अन्य)</option>
+                </select>
                 <select
                   value={formData.region}
                   onChange={(e) => setFormData({ ...formData, region: e.target.value })}
