@@ -74,6 +74,8 @@ export default function HeroBanner() {
           <motion.img
             src="/logo.png"
             alt="PahadiTube"
+            width={112}
+            height={112}
             className="h-20 sm:h-28 w-auto mx-auto drop-shadow-[0_0_30px_rgba(245,158,11,0.2)]"
             whileHover={{ scale: 1.05 }}
             transition={{ type: 'spring', stiffness: 400, damping: 25 }}

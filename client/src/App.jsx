@@ -3,15 +3,17 @@ import { useEffect, lazy, Suspense } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Navbar from './components/Navbar';
 import BottomNav from './components/BottomNav';
-import Footer from './components/Footer';
-import FloatingPlayer from './components/FloatingPlayer';
-import FloatingByoIcon from './components/FloatingByoIcon';
-import InstallBanner from './components/InstallBanner';
-import IntroSound from './components/IntroSound';
-import RunningCharacter from './components/RunningCharacter';
 import { ToastProvider } from './components/ui/Toast';
 import { MusicProvider } from './context/MusicContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
+
+// Lazy-load heavy layout components that aren't needed for first paint
+const Footer = lazy(() => import('./components/Footer'));
+const FloatingPlayer = lazy(() => import('./components/FloatingPlayer'));
+const FloatingByoIcon = lazy(() => import('./components/FloatingByoIcon'));
+const InstallBanner = lazy(() => import('./components/InstallBanner'));
+const IntroSound = lazy(() => import('./components/IntroSound'));
+const RunningCharacter = lazy(() => import('./components/RunningCharacter'));
 
 // Lazy-loaded page components for route-level code splitting
 const HomePage = lazy(() => import('./pages/HomePage'));
@@ -75,13 +77,17 @@ export default function App() {
             <main className="flex-1 pb-24 sm:pb-8">
               <AnimatedRoutes />
             </main>
-            <Footer />
-            <FloatingPlayer />
-            <FloatingByoIcon />
+            <Suspense fallback={null}>
+              <Footer />
+              <FloatingPlayer />
+              <FloatingByoIcon />
+            </Suspense>
             <BottomNav />
-            <InstallBanner />
-            <IntroSound />
-            <RunningCharacter />
+            <Suspense fallback={null}>
+              <InstallBanner />
+              <IntroSound />
+              <RunningCharacter />
+            </Suspense>
           </div>
         </ToastProvider>
       </MusicProvider>

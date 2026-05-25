@@ -13,16 +13,8 @@ const DANCE_SLIDES = [
     caption: 'रम्माण • Ramman Festival',
   },
   {
-    src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Cholia_dance_Uttarakhand.jpg?width=800',
-    caption: 'छोलिया नृत्य • Chholia Sword Dance',
-  },
-  {
     src: '/slider/20170516_073914.jpg',
     caption: 'देवता की डोली • Doli Procession',
-  },
-  {
-    src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Langvir_Nritya.jpg?width=800',
-    caption: 'लांगविर नृत्य • Langvir Dance',
   },
 ];
 
