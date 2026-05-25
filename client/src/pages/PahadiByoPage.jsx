@@ -123,6 +123,8 @@ export default function PahadiByoPage() {
                   <option value="garhwal" className="bg-dark-900">गढ़वाल</option>
                   <option value="kumaon" className="bg-dark-900">कुमाऊँ</option>
                   <option value="jaunsaar" className="bg-dark-900">जौनसार</option>
+                  <option value="jalampatar" className="bg-dark-900">जलमपतर</option>
+                  <option value="bane_dyula" className="bg-dark-900">बाने द्यूला</option>
                   <option value="other" className="bg-dark-900">अन्य</option>
                 </select>
                 <button
