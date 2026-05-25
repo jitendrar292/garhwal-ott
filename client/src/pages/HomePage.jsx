@@ -41,16 +41,15 @@ export default function HomePage() {
   const [userLocation, setUserLocation] = useState(null);
 
   useEffect(() => {
-    async function load(category, setter) {
+    async function load(category, setter, region = '') {
       try {
-        const data = await getVideosByCategory(category, '', 12);
+        const data = await getVideosByCategory(category, '', 12, region);
         setter({ videos: data.videos, loading: false, error: null });
       } catch (err) {
         setter((s) => ({ ...s, loading: false, error: err.message }));
       }
     }
     load('movies', setMovies);
-    load('trending', setTrending);
     load('songs', setSongs);
     load('comedy', setComedy);
     load('vlogs', setBlogs);
@@ -60,15 +59,20 @@ export default function HomePage() {
     load('mela', setMela);
     load('theatre', setTheatre);
 
-    // Detect user location via IP
-    fetch('https://ipapi.co/json/')
+    // Detect user location via IP (server-side) then fetch region-aware trending
+    fetch('/api/geo')
       .then((r) => r.json())
       .then((data) => {
         if (data && data.city) {
           setUserLocation({ city: data.city, region: data.region || '' });
         }
+        // Fetch trending with region bucket
+        load('trending', setTrending, data?.bucket || '');
       })
-      .catch(() => {});
+      .catch(() => {
+        // Fallback: load trending without region
+        load('trending', setTrending);
+      });
   }, []);
 
   const trendingTitle = userLocation

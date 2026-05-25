@@ -20,6 +20,7 @@ const newsAgentRoutes = require('./routes/newsAgent');
 const jobsAgentRoutes = require('./routes/jobsAgent');
 const artGalleryRoutes = require('./routes/artGallery');
 const runnerRoutes = require('./routes/runner');
+const geoRoutes = require('./routes/geo');
 const { getVisits, incrementVisits, getOpens, incrementOpens, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback } = require('./services/store');
 const { startTrendingRefresh } = require('./services/youtubeService');
 
@@ -151,6 +152,7 @@ app.use('/api/news-agent', newsAgentRoutes);
 app.use('/api/jobs-agent', jobsAgentRoutes);
 app.use('/api/art-gallery', artGalleryRoutes);
 app.use('/api/runner', runnerRoutes);
+app.use('/api/geo', geoRoutes);
 
 // Captions endpoint — tries hi, a.hi (auto Hindi), en, a.en in order
 app.get('/api/captions/:videoId', async (req, res) => {

@@ -381,6 +381,16 @@ const CATEGORY_QUERIES = {
   theatre: 'Uttarakhand theatre natak HNBGU theatre department garhwali kumaoni rangmanch nukkad natak pahadi drama',
 };
 
+// Region-specific queries for the "trending" category.
+// When a geo bucket is provided, we use a region-tailored query instead of
+// the generic CATEGORY_QUERIES.trending query above.
+const REGION_TRENDING_QUERIES = {
+  garhwal: 'Garhwali latest trending songs 2026 OR garhwali DJ remix OR garhwali comedy',
+  kumaon: 'Kumaoni latest trending songs 2026 OR kumaoni hit OR kumaoni comedy',
+  'delhi-ncr': 'Pahadi trending songs garhwali kumaoni uttarakhand 2026 OR pahadi DJ party',
+  other: 'Pahadi trending songs garhwali kumaoni uttarakhand OR pahadi viral',
+};
+
 // Categories that should be sourced from one specific YouTube channel
 // (newest uploads first) instead of a free-text search. Maps category ->
 // channel handle (without the leading '@'). The handle is resolved to a
@@ -537,8 +547,8 @@ async function searchVideos(query, pageToken = '', maxResults = 12, options = {}
   }
 }
 
-async function getVideosByCategory(category, pageToken = '', maxResults = 12) {
-  const result = await getVideosByCategoryRaw(category, pageToken, maxResults);
+async function getVideosByCategory(category, pageToken = '', maxResults = 12, region = '') {
+  const result = await getVideosByCategoryRaw(category, pageToken, maxResults, region);
   // Always pin curated videos at the top of page 1, regardless of whether
   // the data came from the API, Redis, in-memory cache or static fallback.
   return pageToken ? result : withPinned(category, result);
@@ -556,18 +566,24 @@ function permPageResponse(permVideos, offset, maxResults) {
   };
 }
 
-async function getVideosByCategoryRaw(category, pageToken = '', maxResults = 12) {
-  const query = CATEGORY_QUERIES[category];
+async function getVideosByCategoryRaw(category, pageToken = '', maxResults = 12, region = '') {
+  // For trending category: use region-specific query when a valid bucket is provided
+  const query = (category === 'trending' && region && REGION_TRENDING_QUERIES[region])
+    ? REGION_TRENDING_QUERIES[region]
+    : CATEGORY_QUERIES[category];
   if (!query) throw new Error('Unknown category');
 
   // Pagination over accumulated permanent storage ("Load More" pages)
   if (pageToken && pageToken.startsWith('perm:')) {
     const offset = parseInt(pageToken.slice(5), 10) || 0;
-    const permVideos = await getPermanentVideos(category);
+    const permKey = region ? `${category}:${region}` : category;
+    const permVideos = await getPermanentVideos(permKey);
     return permPageResponse(permVideos, offset, maxResults);
   }
 
-  const cacheKey = `category:${category}:${pageToken}:${maxResults}`;
+  const cacheKey = region
+    ? `category:${category}:${region}:${pageToken}:${maxResults}`
+    : `category:${category}:${pageToken}:${maxResults}`;
   const cached = cache.get(cacheKey);
   if (cached) return cached;
 
@@ -585,7 +601,8 @@ async function getVideosByCategoryRaw(category, pageToken = '', maxResults = 12)
     if (lt) return lt;
     const fb = fallbackCache.get(cacheKey);
     if (fb) return fb;
-    const permVideos = await getPermanentVideos(category);
+    const permKey = region ? `${category}:${region}` : category;
+    const permVideos = await getPermanentVideos(permKey);
     if (permVideos.length > 0) {
       return permPageResponse(permVideos, 0, maxResults);
     }
@@ -606,13 +623,14 @@ async function getVideosByCategoryRaw(category, pageToken = '', maxResults = 12)
     }
 
     // Merge new videos into permanent storage (accumulates over time)
+    const permKey = region ? `${category}:${region}` : category;
     if (result.videos && result.videos.length > 0) {
-      await mergeAndStorePermanentVideos(category, result.videos);
+      await mergeAndStorePermanentVideos(permKey, result.videos);
     }
 
     // For page 1: serve from the full accumulated permanent storage
     if (!pageToken) {
-      const permVideos = await getPermanentVideos(category);
+      const permVideos = await getPermanentVideos(permKey);
       if (permVideos.length > 0) {
         const response = permPageResponse(permVideos, 0, maxResults);
         cache.set(cacheKey, response);
@@ -640,9 +658,10 @@ async function getVideosByCategoryRaw(category, pageToken = '', maxResults = 12)
       console.log('Serving in-memory fallback for:', cacheKey);
       return fallback;
     }
-    const permVideos = await getPermanentVideos(category);
+    const permKeyFb = region ? `${category}:${region}` : category;
+    const permVideos = await getPermanentVideos(permKeyFb);
     if (permVideos.length > 0) {
-      console.log('Serving permanent storage for:', category);
+      console.log('Serving permanent storage for:', permKeyFb);
       return permPageResponse(permVideos, 0, maxResults);
     }
     if (err.message === 'QUOTA_EXCEEDED') {

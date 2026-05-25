@@ -44,7 +44,7 @@ router.get('/search', async (req, res) => {
 router.get('/category/:category', async (req, res) => {
   try {
     const { category } = req.params;
-    const { pageToken, maxResults } = req.query;
+    const { pageToken, maxResults, region } = req.query;
     const validCategories = ['movies', 'songs', 'comedy', 'devotional', 'trending', 'vlogs', 'shorts', 'reels', 'podcast', 'folkdance', 'jaagar', 'mela', 'theatre'];
     if (!validCategories.includes(category)) {
       return res.status(400).json({ error: 'Invalid category' });
@@ -54,7 +54,8 @@ router.get('/category/:category', async (req, res) => {
     const data = await getVideosByCategory(
       category,
       pageToken || '',
-      clamped
+      clamped,
+      category === 'trending' ? (region || '') : ''
     );
     res.json(data);
   } catch (err) {

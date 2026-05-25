@@ -19,8 +19,9 @@ export async function searchVideos(query, pageToken = '', maxResults = 10, order
   return fetchJSON(`${API_BASE}/search?${params}`);
 }
 
-export async function getVideosByCategory(category, pageToken = '', maxResults = 10) {
+export async function getVideosByCategory(category, pageToken = '', maxResults = 10, region = '') {
   const params = new URLSearchParams({ maxResults: String(maxResults) });
   if (pageToken) params.set('pageToken', pageToken);
+  if (region) params.set('region', region);
   return fetchJSON(`${API_BASE}/category/${encodeURIComponent(category)}?${params}`);
 }
