@@ -12,11 +12,31 @@ const FEATURES = [
 export default function PahadiByoPage() {
   const [formData, setFormData] = useState({ name: '', phone: '', region: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // For now just show success — backend integration later
-    setSubmitted(true);
+    setLoading(true);
+    setError('');
+    try {
+      const base = import.meta.env.VITE_API_URL || '';
+      const res = await fetch(`${base}/api/byo/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (res.ok || data.alreadyExists) {
+        setSubmitted(true);
+      } else {
+        setError(data.error || 'कुछ गलत हो गया');
+      }
+    } catch {
+      setError('Network error — कृपया फिर कोशिश करें');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -107,10 +127,12 @@ export default function PahadiByoPage() {
                 </select>
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-3 rounded-xl transition-all"
+                  disabled={loading}
+                  className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-3 rounded-xl transition-all disabled:opacity-50"
                 >
-                  Register करें 💍
+                  {loading ? 'Registering...' : 'Register करें 💍'}
                 </button>
+                {error && <p className="text-red-400 text-sm text-center">{error}</p>}
               </form>
             </>
           )}

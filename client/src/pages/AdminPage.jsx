@@ -10,6 +10,7 @@ const TABS = [
   { id: 'art', label: 'Art Gallery', emoji: '🎨' },
   { id: 'runner', label: 'Runner', emoji: '🏃' },
   { id: 'doodle', label: 'Doodle', emoji: '🖼️' },
+  { id: 'byo', label: 'Byo', emoji: '💍' },
 ];
 
 export default function AdminPage() {
@@ -306,6 +307,7 @@ export default function AdminPage() {
         {activeTab === 'art' && <ArtGalleryTab adminKey={key} />}
         {activeTab === 'runner' && <RunnerTab adminKey={key} />}
         {activeTab === 'doodle' && <DoodleTab adminKey={key} />}
+        {activeTab === 'byo' && <ByoTab adminKey={key} />}
       </div>
     </div>
   );
@@ -894,6 +896,89 @@ function DoodleTab({ adminKey }) {
         </div>
         <p className="text-xs text-gray-500">Doodle auto-expires after 24 hours. Max 5MB.</p>
       </form>
+    </div>
+  );
+}
+
+// =====================================================================
+// Byo Registrations Tab
+// =====================================================================
+function ByoTab({ adminKey }) {
+  const [registrations, setRegistrations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [msg, setMsg] = useState('');
+
+  const load = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/byo/registrations?key=${encodeURIComponent(adminKey)}`);
+      const data = await res.json();
+      setRegistrations(data.registrations || []);
+    } catch { /* ignore */ }
+    setLoading(false);
+  };
+
+  useEffect(() => { load(); }, []);
+
+  const handleDelete = async (id) => {
+    if (!confirm('Remove this registration?')) return;
+    try {
+      const res = await fetch(`/api/byo/registrations/${id}?key=${encodeURIComponent(adminKey)}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Delete failed');
+      setRegistrations((prev) => prev.filter((r) => r.id !== id));
+      setMsg('✓ Removed');
+      setTimeout(() => setMsg(''), 2000);
+    } catch (err) {
+      setMsg(`✗ ${err.message}`);
+    }
+  };
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-semibold">💍 Pahadi Byo Registrations</h2>
+        <span className="text-sm text-gray-400">{registrations.length} total</span>
+      </div>
+      {msg && <p className="text-sm text-green-400 mb-3">{msg}</p>}
+      {loading ? (
+        <p className="text-gray-400 text-sm">Loading...</p>
+      ) : registrations.length === 0 ? (
+        <p className="text-gray-400 text-sm">No registrations yet.</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead className="text-gray-400 border-b border-dark-600">
+              <tr>
+                <th className="py-2 pr-4">#</th>
+                <th className="py-2 pr-4">Name</th>
+                <th className="py-2 pr-4">Phone</th>
+                <th className="py-2 pr-4">Region</th>
+                <th className="py-2 pr-4">Date</th>
+                <th className="py-2">Action</th>
+              </tr>
+            </thead>
+            <tbody className="text-white">
+              {registrations.map((r, i) => (
+                <tr key={r.id} className="border-b border-dark-700/50 hover:bg-dark-700/30">
+                  <td className="py-2 pr-4 text-gray-500">{i + 1}</td>
+                  <td className="py-2 pr-4">{r.name}</td>
+                  <td className="py-2 pr-4 font-mono text-xs">{r.phone}</td>
+                  <td className="py-2 pr-4 capitalize">{r.region || '—'}</td>
+                  <td className="py-2 pr-4 text-gray-400 text-xs">{new Date(r.createdAt).toLocaleDateString()}</td>
+                  <td className="py-2">
+                    <button
+                      onClick={() => handleDelete(r.id)}
+                      className="text-red-400 hover:text-red-300 text-xs"
+                    >
+                      Remove
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }
