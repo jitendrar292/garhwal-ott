@@ -21,8 +21,10 @@ const JOB_SOURCES = [
   { url: 'https://www.ncs.gov.in/content-repository/rss/jobs-uttarakhand', name: 'NCS Portal', type: 'rss' },
   // Sarkari Result (Uttarakhand tagged)
   { url: 'https://www.sarkariresult.com/rss.php', name: 'Sarkari Result', type: 'rss' },
-  // FreeJobAlert
+  // FreeJobAlert RSS
   { url: 'https://www.freejobalert.com/feed/', name: 'FreeJobAlert', type: 'rss' },
+  // FreeJobAlert Uttarakhand-specific page
+  { url: 'https://www.freejobalert.com/uttarakhand-government-jobs/', name: 'FreeJobAlert UK', type: 'scrape' },
 ];
 
 // ── Event Sources ──
