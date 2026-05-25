@@ -16,8 +16,33 @@ const {
   subscriptionCount,
   listSubscriptions,
   sendNotificationToAll,
-  getNotificationHistory,
+  getNotificationHistoryForUser,
+  clearUserNotifications,
 } = require('../services/push');
+const { getSession } = require('./auth');
+
+// Best-effort caller identity for per-user notification clearing.
+// Prefers the logged-in user email (via Bearer session token); otherwise
+// falls back to an anonymous device id supplied by the client. Returns
+// null if neither is available.
+async function resolveUserKey(req) {
+  const authHeader = req.headers.authorization || '';
+  if (authHeader.startsWith('Bearer ')) {
+    const token = authHeader.slice(7);
+    try {
+      const session = await getSession(token);
+      if (session && session.expiresAt > Date.now() && session.email) {
+        return `u:${session.email}`;
+      }
+    } catch { /* ignore */ }
+  }
+  const anon = req.headers['x-device-id'] || req.query.deviceId || req.body?.deviceId;
+  if (anon && typeof anon === 'string') {
+    // Limit length to avoid unbounded keys.
+    return `d:${anon.slice(0, 64)}`;
+  }
+  return null;
+}
 
 router.get('/vapid-public-key', (_req, res) => {
   if (!isPushEnabled()) {
@@ -58,10 +83,25 @@ router.get('/subscriber-count', async (_req, res) => {
   res.json({ count });
 });
 
-// Public: notification history (last 20 sent notifications)
-router.get('/notifications', async (_req, res) => {
-  const notifications = await getNotificationHistory();
+// Public: notification history (last 20 sent notifications), filtered by
+// the caller's per-user "cleared" timestamp when an identity is available.
+router.get('/notifications', async (req, res) => {
+  const userKey = await resolveUserKey(req);
+  const notifications = await getNotificationHistoryForUser(userKey);
   res.json({ notifications });
+});
+
+// Public: clear the caller's notification list. We record a `clearedAt`
+// timestamp in Redis for this user/device so future GETs filter out
+// anything older. Does NOT mutate the global history (other users still
+// see their notifications).
+router.post('/notifications/clear', async (req, res) => {
+  const userKey = await resolveUserKey(req);
+  if (!userKey) {
+    return res.status(400).json({ error: 'Missing user identity (login or x-device-id header required)' });
+  }
+  const clearedAt = await clearUserNotifications(userKey);
+  res.json({ ok: true, clearedAt });
 });
 
 router.get('/count', async (req, res) => {

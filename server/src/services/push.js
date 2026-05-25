@@ -196,6 +196,50 @@ async function getNotificationHistory() {
   return await loadHistory();
 }
 
+// --- Per-user "cleared" tracking ---
+// Each user can clear their notification list independently. We persist a
+// timestamp (`clearedAt`) per user in Redis and filter the global history
+// against it when returning notifications for that user.
+const CLEARED_PREFIX = 'pahadi_push_cleared:';
+const memCleared = new Map(); // userKey -> clearedAt (fallback when Redis is off)
+
+function clearedKeyFor(userKey) {
+  return CLEARED_PREFIX + String(userKey);
+}
+
+async function getUserClearedAt(userKey) {
+  if (!userKey) return 0;
+  if (isRedisEnabled()) {
+    const data = await redisGetJSON(clearedKeyFor(userKey));
+    if (data && typeof data.clearedAt === 'number') return data.clearedAt;
+    return 0;
+  }
+  return memCleared.get(userKey) || 0;
+}
+
+async function setUserClearedAt(userKey, clearedAt) {
+  if (!userKey) return;
+  memCleared.set(userKey, clearedAt);
+  if (isRedisEnabled()) {
+    // Keep for 90 days; refreshed every time the user clears.
+    await redisSetJSON(clearedKeyFor(userKey), { clearedAt }, 90 * 24 * 3600);
+  }
+}
+
+async function clearUserNotifications(userKey) {
+  const now = Date.now();
+  await setUserClearedAt(userKey, now);
+  return now;
+}
+
+async function getNotificationHistoryForUser(userKey) {
+  const history = await loadHistory();
+  if (!userKey) return history;
+  const clearedAt = await getUserClearedAt(userKey);
+  if (!clearedAt) return history;
+  return history.filter((n) => Number(n.id) > clearedAt);
+}
+
 module.exports = {
   isPushEnabled,
   getVapidPublicKey: () => VAPID_PUBLIC_KEY,
@@ -206,4 +250,6 @@ module.exports = {
   sendNotificationToAll,
   addToHistory,
   getNotificationHistory,
+  getNotificationHistoryForUser,
+  clearUserNotifications,
 };

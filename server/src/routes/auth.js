@@ -616,3 +616,4 @@ router.get('/admin/users', async (req, res) => {
 
 module.exports = router;
 module.exports.requireAuth = requireAuth;
+module.exports.getSession = getSession;

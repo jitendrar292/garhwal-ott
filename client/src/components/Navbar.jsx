@@ -5,6 +5,26 @@ import { Menu, Transition } from '@headlessui/react';
 import { useAuth } from '../context/AuthContext';
 import SnowEffect from './SnowEffect';
 
+// Per-user notification clearing needs a stable caller identity. Logged-in
+// users send their auth token; everyone else gets a persistent anonymous
+// device id so "Clear all" still works across reloads on the same browser.
+function getDeviceId() {
+  if (typeof window === 'undefined') return '';
+  let id = localStorage.getItem('pahaditube_device_id');
+  if (!id) {
+    id = (crypto?.randomUUID?.() || `dev-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`);
+    localStorage.setItem('pahaditube_device_id', id);
+  }
+  return id;
+}
+
+function buildPushAuthHeaders() {
+  const headers = { 'X-Device-Id': getDeviceId() };
+  const token = typeof window !== 'undefined' && localStorage.getItem('pahaditube_auth_token');
+  if (token) headers.Authorization = `Bearer ${token}`;
+  return headers;
+}
+
 const TABS = [
   { name: 'Home', path: '/', emoji: '🏠' },
   { name: 'Movies', path: '/category/movies', emoji: '🎬' },
@@ -54,8 +74,8 @@ export default function Navbar() {
         const sub = await reg.pushManager.getSubscription();
         if (cancelled) return;
         if (sub) {
-          // Fetch recent notifications
-          const res = await fetch('/api/push/notifications');
+          // Fetch recent notifications (auth-aware so per-user "cleared" filter applies)
+          const res = await fetch('/api/push/notifications', { headers: buildPushAuthHeaders() });
           if (res.ok) {
             const { notifications } = await res.json();
             const lastSeen = parseInt(localStorage.getItem('push_last_seen') || '0', 10);
@@ -352,9 +372,17 @@ export default function Navbar() {
                       <p className="text-xs text-white/90 font-medium">🔔 Notifications</p>
                       {pushInfo.notifications.length > 0 && (
                         <button
-                          onClick={() => {
+                          onClick={async () => {
+                            // Optimistic UI
                             setPushInfo(prev => ({ ...prev, notifications: [], unread: 0 }));
                             localStorage.setItem('push_last_seen', String(Date.now()));
+                            // Persist clear in Redis for this user/device
+                            try {
+                              await fetch('/api/push/notifications/clear', {
+                                method: 'POST',
+                                headers: buildPushAuthHeaders(),
+                              });
+                            } catch { /* ignore — UI already cleared */ }
                           }}
                           className="text-[10px] text-white/40 hover:text-accent-400 transition-colors"
                         >
