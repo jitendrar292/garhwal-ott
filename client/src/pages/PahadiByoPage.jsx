@@ -3,10 +3,10 @@ import { motion } from 'framer-motion';
 import SEO from '../components/SEO';
 
 const FEATURES = [
-  { icon: '🏔️', title: 'पहाड़ी रिश्ते', desc: 'गढ़वाली, कुमाऊँनी, जौनसारी — अपनी संस्कृति में जीवनसाथी खोजें' },
-  { icon: '🤝', title: 'विश्वसनीय प्रोफाइल', desc: 'सत्यापित प्रोफाइल — सुरक्षित और भरोसेमंद' },
-  { icon: '💬', title: 'गोपनीय बातचीत', desc: 'Private messaging — आपकी प्राइवेसी सबसे पहले' },
-  { icon: '🎯', title: 'स्मार्ट मैचिंग', desc: 'जाति, भाषा, क्षेत्र, शिक्षा — सभी प्राथमिकताओं के अनुसार' },
+  { icon: '🏔️', title: 'Pahadi Vibes', desc: 'Instagram से आपकी vibe निकालें — AI-powered matching' },
+  { icon: '🤝', title: 'Real Connections', desc: 'Anonymous intro → mutual accept → Instagram reveal' },
+  { icon: '🎶', title: 'Cultural Discovery', desc: 'अपने पहाड़ के लोगों से जुड़ें — creators, friends, community' },
+  { icon: '✨', title: 'Vibe Matching', desc: 'भाषा, क्षेत्र, interests के आधार पर smart match' },
 ];
 
 export default function PahadiByoPage() {
@@ -42,9 +42,9 @@ export default function PahadiByoPage() {
   return (
     <>
       <SEO
-        title="पहाड़ी ब्यो — Pahadi Byo | Pahadi Matrimonial"
-        description="उत्तराखंड का अपना मैट्रिमोनियल — गढ़वाली, कुमाऊँनी रिश्ते। Find your Pahadi life partner on PahadiTube Byo."
-        keywords="pahadi matrimonial, garhwali marriage, kumaoni rishta, uttarakhand shaadi, pahadi byo, pahadi vivah"
+        title="Pahadi Byo — Find Your Pahadi Vibe | PahadiTube"
+        description="Apna pahad, apne log. Connect with pahadi people through vibe matching — Instagram-powered social discovery for Uttarakhand & Himachal diaspora."
+        keywords="pahadi byo, pahadi vibe, garhwali connections, kumaoni people, uttarakhand social, pahadi community, pahadi creators"
       />
       <div className="min-h-screen bg-gradient-to-b from-dark-950 via-dark-900 to-dark-950 px-4 py-10">
         {/* Hero */}
@@ -53,14 +53,14 @@ export default function PahadiByoPage() {
           animate={{ opacity: 1, y: 0 }}
           className="max-w-3xl mx-auto text-center mb-12"
         >
-          <span className="text-5xl mb-4 block">💍</span>
+          <span className="text-5xl mb-4 block">🏔️</span>
           <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-pink-400 via-rose-400 to-orange-400 bg-clip-text text-transparent mb-3">
-            पहाड़ी ब्यो
+            Pahadi Byo
           </h1>
-          <p className="text-lg text-white/70">
-            उत्तराखंड का अपना मैट्रिमोनियल — अपनी संस्कृति, अपनी भाषा, अपना जीवनसाथी
+          <p className="text-xl text-white/80 font-medium">
+            Find your pahadi vibe.
           </p>
-          <p className="text-sm text-white/40 mt-2">Pahadi Matrimonial by PahadiTube</p>
+          <p className="text-sm text-white/40 mt-2">Apna pahad, apne log. — by PahadiTube</p>
         </motion.div>
 
         {/* Features */}
@@ -89,14 +89,14 @@ export default function PahadiByoPage() {
         >
           {submitted ? (
             <div className="text-center py-6">
-              <span className="text-4xl block mb-3">🎉</span>
-              <h3 className="text-xl font-bold text-green-400">धन्यवाद!</h3>
-              <p className="text-white/60 mt-2">जल्दी ही हम आपसे संपर्क करेंगे।</p>
+              <span className="text-4xl block mb-3">✨</span>
+              <h3 className="text-xl font-bold text-green-400">You're in!</h3>
+              <p className="text-white/60 mt-2">We'll match your vibe soon. Check Instagram for updates 🏔️</p>
             </div>
           ) : (
             <>
-              <h2 className="text-xl font-bold text-white text-center mb-1">जल्द आ रहा है!</h2>
-              <p className="text-sm text-white/50 text-center mb-5">Early access के लिए register करें</p>
+              <h2 className="text-xl font-bold text-white text-center mb-1">Join the Vibe 🚀</h2>
+              <p className="text-sm text-white/50 text-center mb-5">Enter your Instagram — we'll match your pahadi energy</p>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <input
                   type="text"
@@ -152,7 +152,7 @@ export default function PahadiByoPage() {
 
         {/* Footer note */}
         <p className="text-center text-xs text-white/30 mt-10 max-w-md mx-auto">
-          पहाड़ी ब्यो PahadiTube की एक पहल है — उत्तराखंडी परिवारों को जोड़ने के लिए। आपकी जानकारी पूरी तरह सुरक्षित रहेगी।
+          Pahadi Byo by PahadiTube — connecting pahadi people through vibes, not bios. Your data stays safe 🔒
         </p>
       </div>
     </>
