@@ -185,18 +185,24 @@ export default function GovtJobsPage() {
   const [highlightedId, setHighlightedId] = useState(null);
 
   useEffect(() => {
+    // Filter out expired jobs (lastDate in the past)
+    const filterExpired = (list) => {
+      const today = new Date().toISOString().slice(0, 10);
+      return list.filter((j) => !j.lastDate || j.lastDate >= today);
+    };
+
     async function fetchJobs() {
       try {
         const res = await fetch('/api/jobs');
         if (res.ok) {
           const data = await res.json();
           const list = data.jobs || [];
-          setJobs(list.length > 0 ? list : GOVT_JOBS);
+          setJobs(filterExpired(list.length > 0 ? list : GOVT_JOBS));
         } else {
-          setJobs(GOVT_JOBS);
+          setJobs(filterExpired(GOVT_JOBS));
         }
       } catch {
-        setJobs(GOVT_JOBS);
+        setJobs(filterExpired(GOVT_JOBS));
       } finally {
         setLoading(false);
       }
