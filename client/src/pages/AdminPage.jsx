@@ -951,7 +951,7 @@ function ByoTab({ adminKey }) {
               <tr>
                 <th className="py-2 pr-4">#</th>
                 <th className="py-2 pr-4">Name</th>
-                <th className="py-2 pr-4">Phone</th>
+                <th className="py-2 pr-4">Instagram</th>
                 <th className="py-2 pr-4">Region</th>
                 <th className="py-2 pr-4">Date</th>
                 <th className="py-2">Action</th>
@@ -962,7 +962,7 @@ function ByoTab({ adminKey }) {
                 <tr key={r.id} className="border-b border-dark-700/50 hover:bg-dark-700/30">
                   <td className="py-2 pr-4 text-gray-500">{i + 1}</td>
                   <td className="py-2 pr-4">{r.name}</td>
-                  <td className="py-2 pr-4 font-mono text-xs">{r.phone}</td>
+                  <td className="py-2 pr-4 font-mono text-xs">@{r.instagram}</td>
                   <td className="py-2 pr-4 capitalize">{r.region || '—'}</td>
                   <td className="py-2 pr-4 text-gray-400 text-xs">{new Date(r.createdAt).toLocaleDateString()}</td>
                   <td className="py-2">

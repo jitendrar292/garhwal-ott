@@ -10,7 +10,7 @@ const FEATURES = [
 ];
 
 export default function PahadiByoPage() {
-  const [formData, setFormData] = useState({ name: '', phone: '', region: '' });
+  const [formData, setFormData] = useState({ name: '', instagram: '', region: '' });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -107,11 +107,11 @@ export default function PahadiByoPage() {
                   className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-pink-500/50"
                 />
                 <input
-                  type="tel"
+                  type="text"
                   required
-                  placeholder="फोन नंबर"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  placeholder="Instagram username (e.g. @yourhandle)"
+                  value={formData.instagram}
+                  onChange={(e) => setFormData({ ...formData, instagram: e.target.value })}
                   className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-pink-500/50"
                 />
                 <select

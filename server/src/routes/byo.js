@@ -17,26 +17,27 @@ async function saveRegistrations(list) {
 // POST /api/byo/register — public, user early-access signup
 router.post('/register', async (req, res) => {
   try {
-    const { name, phone, region } = req.body || {};
-    if (!name || !phone) {
-      return res.status(400).json({ error: 'Name and phone are required' });
+    const { name, instagram, region } = req.body || {};
+    if (!name || !instagram) {
+      return res.status(400).json({ error: 'Name and Instagram are required' });
     }
-    if (phone.length < 10 || phone.length > 15) {
-      return res.status(400).json({ error: 'Invalid phone number' });
+    const handle = instagram.trim().replace(/^@/, '').slice(0, 50);
+    if (!handle) {
+      return res.status(400).json({ error: 'Invalid Instagram handle' });
     }
 
     const entry = {
       id: Date.now(),
       name: name.trim().slice(0, 100),
-      phone: phone.trim().slice(0, 15),
+      instagram: handle,
       region: (region || '').trim().slice(0, 50),
       createdAt: new Date().toISOString(),
     };
 
     const list = await getRegistrations();
 
-    // Prevent duplicate phone numbers
-    if (list.some((r) => r.phone === entry.phone)) {
+    // Prevent duplicate Instagram handles
+    if (list.some((r) => r.instagram === entry.instagram)) {
       return res.status(409).json({ error: 'Already registered', alreadyExists: true });
     }
 
