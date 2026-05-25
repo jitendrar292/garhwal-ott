@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import BottomNav from './components/BottomNav';
 import Footer from './components/Footer';
 import FloatingPlayer from './components/FloatingPlayer';
+import FloatingByoIcon from './components/FloatingByoIcon';
 import InstallBanner from './components/InstallBanner';
 import IntroSound from './components/IntroSound';
 import RunningCharacter from './components/RunningCharacter';
@@ -42,6 +43,7 @@ const PahadiPehnawaPage = lazy(() => import('./pages/PahadiPehnawaPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const ArtGalleryPage = lazy(() => import('./pages/ArtGalleryPage'));
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
+const PahadiByoPage = lazy(() => import('./pages/PahadiByoPage'));
 
 // Protected route wrapper - redirects to login if not authenticated
 function RequireAuth({ children }) {
@@ -75,6 +77,7 @@ export default function App() {
             </main>
             <Footer />
             <FloatingPlayer />
+            <FloatingByoIcon />
             <BottomNav />
             <InstallBanner />
             <IntroSound />
@@ -169,6 +172,7 @@ function AnimatedRoutes() {
             <Route path="/pahadi-pehnawa" element={<PahadiPehnawaPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/art-gallery" element={<ArtGalleryPage />} />
+            <Route path="/pahadi-byo" element={<PahadiByoPage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           </Routes>
           </Suspense>
