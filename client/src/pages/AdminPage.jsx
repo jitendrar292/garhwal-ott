@@ -936,7 +936,7 @@ function ByoTab({ adminKey }) {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold">💍 Pahadi Byo Registrations</h2>
+        <h2 className="text-lg font-semibold">� Jhumelo Registrations</h2>
         <span className="text-sm text-gray-400">{registrations.length} total</span>
       </div>
       {msg && <p className="text-sm text-green-400 mb-3">{msg}</p>}

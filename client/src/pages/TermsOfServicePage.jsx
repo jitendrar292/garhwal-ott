@@ -15,7 +15,7 @@ const SECTIONS = [
       '• Curated YouTube video content: Garhwali/Kumaoni movies, songs, comedy, devotional music, folk dances, and cultural programs.',
       '• Original editorial content: folk stories (in Garhwali/Hindi), regional news, government job listings, Pahadi recipes, traditional attire guides, and festival information.',
       '• AI-powered Garhwali language chatbot (Ghughuti AI) and Garhwali language learning tools.',
-      '• Community features: feedback submission, art gallery, and Pahadi Byo (matchmaking).',
+      '• Community features: feedback submission, art gallery, and Jhumelo (pahadi social discovery).',
       'All video content is embedded from YouTube and is subject to YouTube\'s Terms of Service (https://www.youtube.com/t/terms).',
     ],
   },
@@ -42,7 +42,7 @@ const SECTIONS = [
   {
     title: '5. User-Generated Content',
     content: [
-      'By submitting feedback, art gallery entries, Pahadi Byo profiles, or any other user-generated content, you grant PahadiTube a non-exclusive, royalty-free licence to display and use such content on the platform.',
+      'By submitting feedback, art gallery entries, Jhumelo profiles, or any other user-generated content, you grant PahadiTube a non-exclusive, royalty-free licence to display and use such content on the platform.',
       'You retain ownership of content you submit but represent that you have the right to share it and that it does not violate any third-party rights.',
       'We reserve the right to remove any user-generated content that violates these Terms or is deemed inappropriate.',
     ],

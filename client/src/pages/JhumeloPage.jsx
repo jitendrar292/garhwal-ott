@@ -12,7 +12,7 @@ const VIBES = [
   { icon: '🏔️', text: 'mountain identity' },
 ];
 
-export default function PahadiByoPage() {
+export default function JhumeloPage() {
   const [instagram, setInstagram] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -45,9 +45,9 @@ export default function PahadiByoPage() {
   return (
     <>
       <SEO
-        title="Pahadi Byo ❤️ — Find Your Pahadi Vibe | PahadiTube"
+        title="Jhumelo ❤️ — Find Your Pahadi Tribe | PahadiTube"
         description="Not matrimony. Not dating. Find your pahadi internet tribe — flirting, friendship, creators, culture, music, nostalgia & mountain identity. Coming soon on PahadiTube."
-        keywords="pahadi byo, pahadi vibe, garhwali connections, kumaoni people, uttarakhand social, pahadi community, pahadi vibes"
+        keywords="jhumelo, pahadi vibe, garhwali connections, kumaoni people, uttarakhand social, pahadi community, pahadi tribe"
       />
       <div className="min-h-screen bg-gradient-to-b from-dark-950 via-dark-900 to-dark-950 px-4 py-16 flex flex-col items-center justify-center">
         {/* Hero */}
@@ -57,7 +57,7 @@ export default function PahadiByoPage() {
           className="max-w-2xl mx-auto text-center"
         >
           <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-pink-400 via-rose-400 to-orange-400 bg-clip-text text-transparent mb-6">
-            Pahadi Byo ❤️
+            Jhumelo ❤️
           </h1>
 
           <p className="text-2xl sm:text-3xl text-white font-semibold mb-4">
@@ -114,7 +114,7 @@ export default function PahadiByoPage() {
               <div className="text-center py-4">
                 <span className="text-3xl block mb-2">✨</span>
                 <h3 className="text-lg font-bold text-green-400">You're on the list!</h3>
-                <p className="text-white/60 text-sm mt-2">We'll DM you when Pahadi Byo launches 🏔️</p>
+                <p className="text-white/60 text-sm mt-2">We'll DM you when Jhumelo launches 🏔️</p>
               </div>
             ) : (
               <>
@@ -145,7 +145,7 @@ export default function PahadiByoPage() {
 
         {/* Footer note */}
         <p className="text-center text-xs text-white/30 mt-14 max-w-md mx-auto">
-          Pahadi Byo by PahadiTube — connecting pahadi people through vibes, not bios.
+          Jhumelo by PahadiTube — connecting pahadi people through vibes, not bios.
         </p>
       </div>
     </>
