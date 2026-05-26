@@ -14,6 +14,7 @@ const FOOTER_LINKS = [
   { label: 'Feedback', path: '/feedback' },
   { label: 'About', path: '/about' },
   { label: 'Privacy Policy', path: '/privacy-policy' },
+  { label: 'Terms of Service', path: '/terms-of-service' },
 ];
 
 export default function Footer() {

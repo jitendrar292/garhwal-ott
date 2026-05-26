@@ -15,6 +15,18 @@ const CATEGORY_SEO = {
   theatre:    { title: 'Garhwali Theatre & Cultural Programs', desc: 'Garhwali theatre, cultural performances and stage shows celebrating Pahadi heritage.' },
 };
 
+// Unique editorial descriptions per category — adds original content value for each page
+const CATEGORY_DESCRIPTIONS = {
+  movies: 'Garhwali cinema has evolved from low-budget local productions to professionally crafted feature films that showcase the landscapes, dialects, and cultural narratives of Uttarakhand. From the pioneering works of directors who first brought Garhwali stories to the screen, to modern releases that tackle social themes while preserving linguistic authenticity — this collection brings together the best of Pahadi filmmaking. Whether you\'re looking for family dramas set in mountain villages, action films inspired by local legends, or heartfelt romances in the Garhwali language, you\'ll find them here.',
+  songs: 'Garhwali music is the soul of Uttarakhand — from the soulful ballads of Narendra Singh Negi to the energetic DJ remixes that dominate pahadi weddings. This collection spans decades of Pahadi musical heritage: traditional folk songs passed down through generations, devotional hymns sung at temple festivals, romantic duets from Garhwali cinema, and viral hits from emerging artists like Saurav Maithani, Priyanka Meher, and Kishan Mahipal. Every song carries the essence of the mountains — stories of love, separation (virha), nature, and the unbreakable bond between Pahadis and their homeland.',
+  comedy: 'Garhwali comedy brings the everyday humour of mountain life to your screen. From the legendary Ghananand Bhandari\'s "Boda-Bodi" characters to new-age sketch creators on YouTube, Pahadi comedy reflects the witty observations, dialect jokes, and situational humour unique to Uttarakhandi culture. These sketches often feature relatable village characters — the clever housewife, the lazy husband, the scheming neighbour — and use authentic Garhwali dialogue that resonates with anyone who grew up in or around Uttarakhand.',
+  devotional: 'The devotional music of Garhwal is deeply rooted in centuries-old spiritual traditions. Jaagar — the ritualistic invocation of local deities through song and drum — is unique to Uttarakhand and recognised as an intangible cultural heritage. This collection includes Jaagar performances by masters like Pritam Bhartwan, bhajans dedicated to Kedarnath, Badrinath, and local devtas, and aarti recordings from temples across the region. These are not just songs — they are living traditions that connect the Pahadi diaspora to their ancestral spiritual practices.',
+  jaagar: 'Jaagar is the ancient Garhwali practice of invoking local deities through rhythmic drumming (dhol-damau) and narrative singing. Performed by a Jagariya (the lead singer) with a Dangariyan (the medium), Jaagar ceremonies are integral to village festivals, healing rituals, and community gatherings in Uttarakhand. This page brings you authentic Jaagar performances, devotional bhajans, and temple music that preserves this living tradition of Devbhoomi.',
+  folkdance: 'The folk dances of Garhwal and Kumaon are vibrant expressions of community celebration. Chaunphula — the graceful four-step dance performed during spring festivals; Thadya — the energetic group dance at weddings and fairs; Jhumelo — the swaying dance of harvest celebrations; and Langvir Nritya — the acrobatic warrior dance. Each form tells a story of seasons, love, valour, or devotion, accompanied by traditional instruments like dhol, damau, and ransingha. Watch these authentic performances and feel the rhythm of the mountains.',
+  mela: 'Uttarakhand\'s melas (fairs) and festivals are the heartbeat of Pahadi social life. From the legendary Nanda Devi Raj Jaat Yatra — the longest religious procession in Asia — to local village melas celebrating seasonal harvests, each event brings communities together with music, dance, trade, and spiritual rituals. This collection covers major events including Bissu Mela, Uttarayani, Gindari Mela, Bagwal, and more, offering a window into the living cultural heritage of the Garhwal and Kumaon regions.',
+  theatre: 'Garhwali theatre and cultural programs represent the performing arts traditions of Uttarakhand. From community stage shows ("nautanki" and "ramlila" in Pahadi style) to modern experimental theatre that blends traditional folk narratives with contemporary storytelling — these performances keep the oral traditions of the mountains alive. This section also includes recordings of cultural programs from Pahadi diaspora events in Delhi, Mumbai, and other cities where Uttarakhandi communities preserve their heritage through performance.',
+};
+
 const CATEGORY_LABELS = {
   movies: '🎬 Garhwali Movies',
   songs: '🎵 Garhwali Songs',
@@ -79,6 +91,16 @@ export default function CategoryPage() {
           isPartOf: { '@id': 'https://pahaditube.in/#website' },
         }}
       />
+
+      {/* Editorial description — unique original content per category */}
+      {CATEGORY_DESCRIPTIONS[category] && (
+        <div className="mb-8">
+          <p className="text-white/50 text-sm sm:text-base leading-relaxed max-w-4xl">
+            {CATEGORY_DESCRIPTIONS[category]}
+          </p>
+        </div>
+      )}
+
       <VideoGrid
         title={CATEGORY_LABELS[category] || category}
         videos={state.videos}
