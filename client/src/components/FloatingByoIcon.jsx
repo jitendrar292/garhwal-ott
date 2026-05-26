@@ -31,7 +31,7 @@ export default function FloatingByoIcon() {
       transition={{ delay: 2, type: 'spring', stiffness: 200 }}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
-      className="fixed bottom-28 right-4 z-50 sm:bottom-8 sm:right-6 w-14 h-14 rounded-full bg-gradient-to-br from-pink-500 to-rose-600 shadow-lg shadow-pink-500/30 flex items-center justify-center border-2 border-white/20 group"
+      className="fixed bottom-36 right-4 z-[60] sm:bottom-8 sm:right-6 w-14 h-14 rounded-full bg-gradient-to-br from-pink-500 to-rose-600 shadow-lg shadow-pink-500/30 flex items-center justify-center border-2 border-white/20 group"
       aria-label="Jhumelo — Find Your Pahadi Tribe"
       title="Jhumelo"
     >
