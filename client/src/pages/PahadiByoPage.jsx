@@ -3,10 +3,13 @@ import { motion } from 'framer-motion';
 import SEO from '../components/SEO';
 
 const VIBES = [
-  { icon: '🏔️', text: 'mountains' },
-  { icon: '🎶', text: 'folk songs' },
-  { icon: '☕', text: 'chai in cold weather' },
-  { icon: '🌲', text: 'village nostalgia' },
+  { icon: '💬', text: 'flirting' },
+  { icon: '🤝', text: 'friendship' },
+  { icon: '🎬', text: 'creators' },
+  { icon: '🪷', text: 'culture' },
+  { icon: '🎶', text: 'music' },
+  { icon: '🌄', text: 'nostalgia' },
+  { icon: '🏔️', text: 'mountain identity' },
 ];
 
 export default function PahadiByoPage() {
@@ -43,7 +46,7 @@ export default function PahadiByoPage() {
     <>
       <SEO
         title="Pahadi Byo ❤️ — Find Your Pahadi Vibe | PahadiTube"
-        description="Not matrimony. Not dating. Just pahadi vibes. Find people who understand mountains, folk songs, chai in cold weather, and village nostalgia. Coming soon on PahadiTube."
+        description="Not matrimony. Not dating. Find your pahadi internet tribe — flirting, friendship, creators, culture, music, nostalgia & mountain identity. Coming soon on PahadiTube."
         keywords="pahadi byo, pahadi vibe, garhwali connections, kumaoni people, uttarakhand social, pahadi community, pahadi vibes"
       />
       <div className="min-h-screen bg-gradient-to-b from-dark-950 via-dark-900 to-dark-950 px-4 py-16 flex flex-col items-center justify-center">
@@ -57,6 +60,9 @@ export default function PahadiByoPage() {
             Pahadi Byo ❤️
           </h1>
 
+          <p className="text-2xl sm:text-3xl text-white font-semibold mb-4">
+            Find your pahadi internet tribe.
+          </p>
           <div className="space-y-2 mb-10">
             <p className="text-lg text-white/70">Not matrimony.</p>
             <p className="text-lg text-white/70">Not dating.</p>
@@ -69,8 +75,8 @@ export default function PahadiByoPage() {
             transition={{ delay: 0.3 }}
             className="bg-white/5 border border-white/10 rounded-2xl p-8 mb-10"
           >
-            <p className="text-white/80 text-lg mb-6 font-medium">Find people who understand:</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <p className="text-white/80 text-lg mb-6 font-medium">A space for:</p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {VIBES.map((v, i) => (
                 <motion.div
                   key={v.text}
