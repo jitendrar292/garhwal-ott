@@ -33,14 +33,21 @@ export function AuthProvider({ children }) {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) {
-        clearAuth();
+        // Only clear auth on definitive auth failures (401/403).
+        // 5xx or other errors mean the server is temporarily unavailable
+        // (e.g. during a deployment restart) — keep the session alive.
+        if (res.status === 401 || res.status === 403) {
+          clearAuth();
+        }
         return;
       }
       const data = await res.json();
       setUser(data.user);
       localStorage.setItem(USER_KEY, JSON.stringify(data.user));
     } catch {
-      clearAuth();
+      // Network error (offline, server restarting during deploy, etc.)
+      // Do NOT clear auth — the token may still be valid once the server is back.
+      console.log('[auth] session verify failed (network) — keeping local session');
     }
   };
 
