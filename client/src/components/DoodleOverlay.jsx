@@ -17,8 +17,12 @@ export default function DoodleOverlay() {
     if (sessionStorage.getItem(STORAGE_KEY)) return;
 
     // Fetch active doodle from server
-    fetch('/api/doodle')
-      .then((r) => r.json())
+    const base = import.meta.env.VITE_API_URL || '';
+    fetch(`${base}/api/doodle`)
+      .then((r) => {
+        if (!r.ok) throw new Error('not ok');
+        return r.json();
+      })
       .then((data) => {
         if (!data.doodle) return; // No active doodle
         sessionStorage.setItem(STORAGE_KEY, '1');
