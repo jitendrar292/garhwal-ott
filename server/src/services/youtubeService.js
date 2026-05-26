@@ -754,6 +754,34 @@ async function refreshTrending() {
     }
   }
 
+  // Pre-warm region-specific trending pool caches.
+  // All users from the same bucket share this cached result — saves API quota.
+  const REGION_BUCKETS = Object.keys(REGION_TRENDING_QUERIES);
+  for (const bucket of REGION_BUCKETS) {
+    if (isQuotaCoolingDown()) break;
+    const regionQuery = REGION_TRENDING_QUERIES[bucket];
+    const regionCacheKey = `category:trending:${bucket}::12`;
+    try {
+      const result = await fetchFromYouTube(regionQuery, '', 12, { order: 'date' });
+      if (result.videos && result.videos.length > 0) {
+        await mergeAndStorePermanentVideos(`trending:${bucket}`, result.videos);
+      }
+      cache.set(regionCacheKey, result);
+      fallbackCache.set(regionCacheKey, result);
+      await redisSetJSON(`yt:${regionCacheKey}`, result, REDIS_TTL_SECONDS);
+      await redisSetJSON(longtermKey(regionCacheKey), result, REDIS_LONGTERM_TTL_SECONDS);
+      okCount++;
+      console.log(`[trending] pre-warmed pool cache for bucket: ${bucket}`);
+    } catch (err) {
+      skipCount++;
+      if (err.message === 'QUOTA_EXCEEDED') {
+        console.log('[trending] quota exceeded during regional pre-warm — stopping');
+        break;
+      }
+      console.error(`[trending] regional refresh failed for ${bucket}:`, err.message);
+    }
+  }
+
   const dur = ((Date.now() - started) / 1000).toFixed(1);
   console.log(
     `[trending] refresh done in ${dur}s — ${okCount} ok, ${skipCount} skipped` +

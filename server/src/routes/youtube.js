@@ -6,6 +6,7 @@ const {
   refreshTrending,
   listRefreshableCategories,
 } = require('../services/youtubeService');
+const { resolveGeo, getClientIp } = require('../services/geoService');
 
 const router = express.Router();
 
@@ -51,12 +52,31 @@ router.get('/category/:category', async (req, res) => {
     }
     const requested = parseInt(maxResults, 10) || 10;
     const clamped = Math.min(Math.max(requested, 1), 50);
+
+    // For trending: auto-detect region from IP if not explicitly provided.
+    // All users from the same geo bucket (e.g. all Dehradun IPs → "garhwal")
+    // share the same pooled cache entry — saves YouTube API quota.
+    let resolvedRegion = '';
+    if (category === 'trending') {
+      if (region) {
+        resolvedRegion = region;
+      } else {
+        const ip = getClientIp(req);
+        const geo = await resolveGeo(ip);
+        resolvedRegion = geo.bucket || '';
+      }
+    }
+
     const data = await getVideosByCategory(
       category,
       pageToken || '',
       clamped,
-      category === 'trending' ? (region || '') : ''
+      resolvedRegion
     );
+    // Include the resolved bucket so the client can display location context
+    if (category === 'trending' && resolvedRegion) {
+      data._bucket = resolvedRegion;
+    }
     res.json(data);
   } catch (err) {
     console.error('Category error:', err.message);

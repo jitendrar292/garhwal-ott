@@ -45,8 +45,10 @@ export default function HomePage() {
       try {
         const data = await getVideosByCategory(category, '', 12, region);
         setter({ videos: data.videos, loading: false, error: null });
+        return data;
       } catch (err) {
         setter((s) => ({ ...s, loading: false, error: err.message }));
+        return null;
       }
     }
     load('movies', setMovies);
@@ -59,20 +61,27 @@ export default function HomePage() {
     load('mela', setMela);
     load('theatre', setTheatre);
 
-    // Detect user location via IP (server-side) then fetch region-aware trending
+    // Trending: server auto-detects region from IP and pools all users
+    // from the same bucket (e.g. Dehradun, Rishikesh → "garhwal") into
+    // one shared cache — no separate /api/geo call needed.
+    load('trending', setTrending).then((data) => {
+      // Use the geo endpoint to get city name for display only
+      if (!data?._bucket) {
+        fetch('/api/geo')
+          .then((r) => r.json())
+          .then((geo) => {
+            if (geo?.city) setUserLocation({ city: geo.city, region: geo.region || '' });
+          })
+          .catch(() => {});
+      }
+    });
+    // Also fetch city for the heading label
     fetch('/api/geo')
       .then((r) => r.json())
       .then((data) => {
-        if (data && data.city) {
-          setUserLocation({ city: data.city, region: data.region || '' });
-        }
-        // Fetch trending with region bucket
-        load('trending', setTrending, data?.bucket || '');
+        if (data?.city) setUserLocation({ city: data.city, region: data.region || '' });
       })
-      .catch(() => {
-        // Fallback: load trending without region
-        load('trending', setTrending);
-      });
+      .catch(() => {});
   }, []);
 
   const trendingTitle = userLocation
