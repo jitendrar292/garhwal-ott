@@ -13,7 +13,10 @@ const VIBES = [
 ];
 
 export default function JhumeloPage() {
+  const [name, setName] = useState('');
   const [instagram, setInstagram] = useState('');
+  const [gender, setGender] = useState('');
+  const [region, setRegion] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -27,7 +30,7 @@ export default function JhumeloPage() {
       const res = await fetch(`${base}/api/byo/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ instagram }),
+        body: JSON.stringify({ name, instagram, gender, region }),
       });
       const data = await res.json();
       if (res.ok || data.alreadyExists) {
@@ -119,8 +122,15 @@ export default function JhumeloPage() {
             ) : (
               <>
                 <h2 className="text-lg font-bold text-white text-center mb-1">Get Early Access</h2>
-                <p className="text-sm text-white/50 text-center mb-4">Drop your Instagram — we'll notify you first</p>
+                <p className="text-sm text-white/50 text-center mb-4">Tell us about yourself — we'll notify you first</p>
                 <form onSubmit={handleSubmit} className="space-y-3">
+                  <input
+                    type="text"
+                    placeholder="Your Name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-pink-500/50"
+                  />
                   <input
                     type="text"
                     required
@@ -129,6 +139,27 @@ export default function JhumeloPage() {
                     onChange={(e) => setInstagram(e.target.value)}
                     className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-pink-500/50"
                   />
+                  <select
+                    value={gender}
+                    onChange={(e) => setGender(e.target.value)}
+                    className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500/50 appearance-none"
+                  >
+                    <option value="" className="bg-dark-900">Gender</option>
+                    <option value="Male" className="bg-dark-900">Male</option>
+                    <option value="Female" className="bg-dark-900">Female</option>
+                    <option value="Other" className="bg-dark-900">Other</option>
+                  </select>
+                  <select
+                    value={region}
+                    onChange={(e) => setRegion(e.target.value)}
+                    className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500/50 appearance-none"
+                  >
+                    <option value="" className="bg-dark-900">Region</option>
+                    <option value="Garhwal" className="bg-dark-900">Garhwal</option>
+                    <option value="Kumaon" className="bg-dark-900">Kumaon</option>
+                    <option value="Jaunsar" className="bg-dark-900">Jaunsar</option>
+                    <option value="Other" className="bg-dark-900">Other</option>
+                  </select>
                   <button
                     type="submit"
                     disabled={loading}
