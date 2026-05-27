@@ -17,9 +17,9 @@ async function saveRegistrations(list) {
 // POST /api/byo/register — public, user early-access signup
 router.post('/register', async (req, res) => {
   try {
-    const { name, instagram, gender, region } = req.body || {};
-    if (!name || !instagram) {
-      return res.status(400).json({ error: 'Name and Instagram are required' });
+    const { instagram } = req.body || {};
+    if (!instagram) {
+      return res.status(400).json({ error: 'Instagram is required' });
     }
     const handle = instagram.trim().replace(/^@/, '').slice(0, 50);
     if (!handle) {
@@ -28,10 +28,7 @@ router.post('/register', async (req, res) => {
 
     const entry = {
       id: Date.now(),
-      name: name.trim().slice(0, 100),
       instagram: handle,
-      gender: (gender || '').trim().slice(0, 10),
-      region: (region || '').trim().slice(0, 50),
       createdAt: new Date().toISOString(),
     };
 
