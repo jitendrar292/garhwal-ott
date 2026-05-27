@@ -17,13 +17,13 @@
   "orientation": "any",
   "icons": [
     {
-      "src": "/icons/icon-192-v2.png",
+      "src": "/icons/icon-192-white.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icons/icon-512-v2.png",
+      "src": "/icons/icon-512-white.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
