@@ -35,7 +35,7 @@ export default function FloatingByoIcon() {
       aria-label="Jhumelo — Find Your Pahadi Tribe"
       title="Jhumelo"
     >
-      <span className="text-2xl">�</span>
+      <span className="text-2xl">💃</span>
       {/* Pulse ring */}
       <span className="absolute inset-0 rounded-full animate-ping bg-pink-400/20 pointer-events-none" />
       {/* Label tooltip */}
