@@ -904,81 +904,173 @@ function DoodleTab({ adminKey }) {
 // Byo Registrations Tab
 // =====================================================================
 function ByoTab({ adminKey }) {
-  const [registrations, setRegistrations] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [msg, setMsg] = useState('');
+  const [subTab, setSubTab] = useState('registrations');
 
-  const load = async () => {
-    setLoading(true);
+  // Registrations
+  const [registrations, setRegistrations] = useState([]);
+  const [regLoading, setRegLoading] = useState(true);
+  const [regMsg, setRegMsg] = useState('');
+
+  const loadRegistrations = async () => {
+    setRegLoading(true);
     try {
       const res = await fetch(`/api/byo/registrations?key=${encodeURIComponent(adminKey)}`);
       const data = await res.json();
       setRegistrations(data.registrations || []);
     } catch { /* ignore */ }
-    setLoading(false);
+    setRegLoading(false);
   };
 
-  useEffect(() => { load(); }, []);
-
-  const handleDelete = async (id) => {
+  const handleDeleteReg = async (id) => {
     if (!confirm('Remove this registration?')) return;
     try {
       const res = await fetch(`/api/byo/registrations/${id}?key=${encodeURIComponent(adminKey)}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Delete failed');
       setRegistrations((prev) => prev.filter((r) => r.id !== id));
-      setMsg('✓ Removed');
-      setTimeout(() => setMsg(''), 2000);
+      setRegMsg('✓ Removed');
+      setTimeout(() => setRegMsg(''), 2000);
     } catch (err) {
-      setMsg(`✗ ${err.message}`);
+      setRegMsg(`✗ ${err.message}`);
     }
   };
 
+  // Compatibility checks
+  const [checks, setChecks] = useState([]);
+  const [checkLoading, setCheckLoading] = useState(true);
+  const [checkMsg, setCheckMsg] = useState('');
+
+  const loadChecks = async () => {
+    setCheckLoading(true);
+    try {
+      const res = await fetch(`/api/byo/compatibility?key=${encodeURIComponent(adminKey)}`);
+      const data = await res.json();
+      setChecks(data.checks || []);
+    } catch { /* ignore */ }
+    setCheckLoading(false);
+  };
+
+  const handleDeleteCheck = async (id) => {
+    if (!confirm('Remove this check?')) return;
+    try {
+      const res = await fetch(`/api/byo/compatibility/${id}?key=${encodeURIComponent(adminKey)}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Delete failed');
+      setChecks((prev) => prev.filter((r) => r.id !== id));
+      setCheckMsg('✓ Removed');
+      setTimeout(() => setCheckMsg(''), 2000);
+    } catch (err) {
+      setCheckMsg(`✗ ${err.message}`);
+    }
+  };
+
+  useEffect(() => { loadRegistrations(); loadChecks(); }, []);
+
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold">� Jhumelo Registrations</h2>
-        <span className="text-sm text-gray-400">{registrations.length} total</span>
+      <h2 className="text-lg font-semibold mb-4">💍 Jhumelo</h2>
+
+      {/* Sub-tabs */}
+      <div className="flex gap-2 mb-5">
+        {[
+          { id: 'registrations', label: `Registrations (${registrations.length})` },
+          { id: 'compatibility', label: `Compatibility (${checks.length})` },
+        ].map((t) => (
+          <button
+            key={t.id}
+            onClick={() => setSubTab(t.id)}
+            className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+              subTab === t.id ? 'bg-pink-500/20 text-pink-400 border border-pink-500/30' : 'text-gray-400 hover:text-white'
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
       </div>
-      {msg && <p className="text-sm text-green-400 mb-3">{msg}</p>}
-      {loading ? (
-        <p className="text-gray-400 text-sm">Loading...</p>
-      ) : registrations.length === 0 ? (
-        <p className="text-gray-400 text-sm">No registrations yet.</p>
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left">
-            <thead className="text-gray-400 border-b border-dark-600">
-              <tr>
-                <th className="py-2 pr-4">#</th>
-                <th className="py-2 pr-4">Name</th>
-                <th className="py-2 pr-4">Instagram</th>
-                <th className="py-2 pr-4">Gender</th>
-                <th className="py-2 pr-4">Region</th>
-                <th className="py-2 pr-4">Date</th>
-                <th className="py-2">Action</th>
-              </tr>
-            </thead>
-            <tbody className="text-white">
-              {registrations.map((r, i) => (
-                <tr key={r.id} className="border-b border-dark-700/50 hover:bg-dark-700/30">
-                  <td className="py-2 pr-4 text-gray-500">{i + 1}</td>
-                  <td className="py-2 pr-4">{r.name}</td>
-                  <td className="py-2 pr-4 font-mono text-xs">@{r.instagram}</td>
-                  <td className="py-2 pr-4 capitalize text-xs">{r.gender || '—'}</td>
-                  <td className="py-2 pr-4 capitalize">{r.region || '—'}</td>
-                  <td className="py-2 pr-4 text-gray-400 text-xs">{new Date(r.createdAt).toLocaleDateString()}</td>
-                  <td className="py-2">
-                    <button
-                      onClick={() => handleDelete(r.id)}
-                      className="text-red-400 hover:text-red-300 text-xs"
-                    >
-                      Remove
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+
+      {subTab === 'registrations' && (
+        <div>
+          {regMsg && <p className="text-sm text-green-400 mb-3">{regMsg}</p>}
+          {regLoading ? (
+            <p className="text-gray-400 text-sm">Loading...</p>
+          ) : registrations.length === 0 ? (
+            <p className="text-gray-400 text-sm">No registrations yet.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="text-gray-400 border-b border-dark-600">
+                  <tr>
+                    <th className="py-2 pr-4">#</th>
+                    <th className="py-2 pr-4">Name</th>
+                    <th className="py-2 pr-4">Instagram</th>
+                    <th className="py-2 pr-4">Gender</th>
+                    <th className="py-2 pr-4">Region</th>
+                    <th className="py-2 pr-4">Date</th>
+                    <th className="py-2">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="text-white">
+                  {registrations.map((r, i) => (
+                    <tr key={r.id} className="border-b border-dark-700/50 hover:bg-dark-700/30">
+                      <td className="py-2 pr-4 text-gray-500">{i + 1}</td>
+                      <td className="py-2 pr-4">{r.name || '—'}</td>
+                      <td className="py-2 pr-4 font-mono text-xs">@{r.instagram}</td>
+                      <td className="py-2 pr-4 capitalize text-xs">{r.gender || '—'}</td>
+                      <td className="py-2 pr-4 capitalize">{r.region || '—'}</td>
+                      <td className="py-2 pr-4 text-gray-400 text-xs">{new Date(r.createdAt).toLocaleDateString()}</td>
+                      <td className="py-2">
+                        <button onClick={() => handleDeleteReg(r.id)} className="text-red-400 hover:text-red-300 text-xs">
+                          Remove
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {subTab === 'compatibility' && (
+        <div>
+          {checkMsg && <p className="text-sm text-green-400 mb-3">{checkMsg}</p>}
+          {checkLoading ? (
+            <p className="text-gray-400 text-sm">Loading...</p>
+          ) : checks.length === 0 ? (
+            <p className="text-gray-400 text-sm">No compatibility checks yet.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="text-gray-400 border-b border-dark-600">
+                  <tr>
+                    <th className="py-2 pr-4">#</th>
+                    <th className="py-2 pr-4">Their Name</th>
+                    <th className="py-2 pr-4">Her Name</th>
+                    <th className="py-2 pr-4">Score</th>
+                    <th className="py-2 pr-4">Date</th>
+                    <th className="py-2">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="text-white">
+                  {checks.map((r, i) => (
+                    <tr key={r.id} className="border-b border-dark-700/50 hover:bg-dark-700/30">
+                      <td className="py-2 pr-4 text-gray-500">{i + 1}</td>
+                      <td className="py-2 pr-4">{r.myName}</td>
+                      <td className="py-2 pr-4">{r.gfName}</td>
+                      <td className="py-2 pr-4">
+                        <span className="font-bold text-pink-400">{r.score}%</span>
+                      </td>
+                      <td className="py-2 pr-4 text-gray-400 text-xs">{new Date(r.createdAt).toLocaleDateString()}</td>
+                      <td className="py-2">
+                        <button onClick={() => handleDeleteCheck(r.id)} className="text-red-400 hover:text-red-300 text-xs">
+                          Remove
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       )}
     </div>

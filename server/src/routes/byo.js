@@ -4,6 +4,16 @@ const { redisGetJSON, redisSetJSON } = require('../services/store');
 const router = express.Router();
 const ADMIN_KEY = () => process.env.FEEDBACK_ADMIN_KEY || 'pahadi2026';
 const BYO_REDIS_KEY = 'pahadi_byo_registrations';
+const COMPAT_REDIS_KEY = 'pahadi_byo_compatibility';
+
+async function getCompatibilityChecks() {
+  const data = await redisGetJSON(COMPAT_REDIS_KEY);
+  return Array.isArray(data) ? data : [];
+}
+
+async function saveCompatibilityChecks(list) {
+  await redisSetJSON(COMPAT_REDIS_KEY, list, 60 * 60 * 24 * 365 * 2); // 2 years
+}
 
 async function getRegistrations() {
   const data = await redisGetJSON(BYO_REDIS_KEY);
@@ -83,4 +93,62 @@ router.delete('/registrations/:id', async (req, res) => {
   }
 });
 
+// POST /api/byo/compatibility — public, store a compatibility check
+router.post('/compatibility', async (req, res) => {
+  try {
+    const { myName, gfName, score } = req.body || {};
+    if (!myName || !gfName) {
+      return res.status(400).json({ error: 'Both names are required' });
+    }
+    const entry = {
+      id: Date.now(),
+      myName: String(myName).trim().slice(0, 80),
+      gfName: String(gfName).trim().slice(0, 80),
+      score: typeof score === 'number' ? score : null,
+      createdAt: new Date().toISOString(),
+    };
+    const list = await getCompatibilityChecks();
+    list.unshift(entry);
+    // Keep last 500 checks
+    if (list.length > 500) list.length = 500;
+    await saveCompatibilityChecks(list);
+    res.status(201).json({ success: true });
+  } catch (err) {
+    console.error('[byo] compatibility error:', err.message);
+    res.status(500).json({ error: 'Failed to save' });
+  }
+});
+
+// GET /api/byo/compatibility — admin only
+router.get('/compatibility', async (req, res) => {
+  try {
+    if (req.query.key !== ADMIN_KEY()) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const list = await getCompatibilityChecks();
+    res.json({ checks: list, count: list.length });
+  } catch (err) {
+    console.error('[byo] compatibility list error:', err.message);
+    res.status(500).json({ error: 'Failed to fetch' });
+  }
+});
+
+// DELETE /api/byo/compatibility/:id — admin only
+router.delete('/compatibility/:id', async (req, res) => {
+  try {
+    if (req.query.key !== ADMIN_KEY()) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const id = parseInt(req.params.id, 10);
+    const list = await getCompatibilityChecks();
+    const filtered = list.filter((r) => r.id !== id);
+    await saveCompatibilityChecks(filtered);
+    res.json({ success: true, remaining: filtered.length });
+  } catch (err) {
+    console.error('[byo] compatibility delete error:', err.message);
+    res.status(500).json({ error: 'Delete failed' });
+  }
+});
+
 module.exports = router;
+

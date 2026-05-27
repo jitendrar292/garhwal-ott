@@ -1,6 +1,24 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import SEO from '../components/SEO';
+
+// Deterministic compatibility score — same names always give same result
+function calcCompatibility(a, b) {
+  const str = (a + b).toLowerCase().replace(/\s/g, '');
+  let h = 5381;
+  for (let i = 0; i < str.length; i++) {
+    h = ((h << 5) + h) ^ str.charCodeAt(i);
+    h = h >>> 0;
+  }
+  return 42 + (h % 55); // range 42–96
+}
+
+function compatLabel(score) {
+  if (score >= 85) return { text: 'Soulmates! 💘', color: 'text-pink-400' };
+  if (score >= 70) return { text: 'Strong vibes! 🔥', color: 'text-rose-400' };
+  if (score >= 55) return { text: 'Good chemistry ✨', color: 'text-orange-400' };
+  return { text: 'Thoda aur koshish karo 😄', color: 'text-yellow-400' };
+}
 
 const VIBES = [
   { icon: '💬', text: 'flirting' },
@@ -20,6 +38,29 @@ export default function JhumeloPage() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Compatibility checker
+  const [compMyName, setCompMyName] = useState('');
+  const [compGfName, setCompGfName] = useState('');
+  const [compResult, setCompResult] = useState(null);
+  const [compLoading, setCompLoading] = useState(false);
+
+  const handleCompatibility = async (e) => {
+    e.preventDefault();
+    const score = calcCompatibility(compMyName, compGfName);
+    setCompResult({ score, myName: compMyName, gfName: compGfName });
+    // store in backend (fire-and-forget)
+    setCompLoading(true);
+    try {
+      const base = import.meta.env.VITE_API_URL || '';
+      await fetch(`${base}/api/byo/compatibility`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ myName: compMyName, gfName: compGfName, score }),
+      });
+    } catch { /* silent */ }
+    setCompLoading(false);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -172,6 +213,84 @@ export default function JhumeloPage() {
               </>
             )}
           </motion.div>
+        </motion.div>
+
+        {/* Compatibility Checker */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.2 }}
+          className="w-full max-w-sm mx-auto mt-8 bg-white/5 border border-pink-500/20 rounded-2xl p-6"
+        >
+          <h2 className="text-lg font-bold text-white text-center mb-1">💑 Check Your Compatibility</h2>
+          <p className="text-xs text-white/40 text-center mb-5">Enter your names to see your vibe score</p>
+
+          <AnimatePresence mode="wait">
+            {compResult ? (
+              <motion.div
+                key="result"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center"
+              >
+                <p className="text-white/70 text-sm mb-1">{compResult.myName} ❤️ {compResult.gfName}</p>
+                <p className="text-5xl font-bold bg-gradient-to-r from-pink-400 to-rose-400 bg-clip-text text-transparent mb-2">
+                  {compResult.score}%
+                </p>
+                {/* Progress bar */}
+                <div className="w-full bg-white/10 rounded-full h-3 mb-3 overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${compResult.score}%` }}
+                    transition={{ duration: 1, ease: 'easeOut' }}
+                    className="h-3 rounded-full bg-gradient-to-r from-pink-500 to-rose-500"
+                  />
+                </div>
+                <p className={`text-base font-semibold mb-4 ${compatLabel(compResult.score).color}`}>
+                  {compatLabel(compResult.score).text}
+                </p>
+                <button
+                  onClick={() => { setCompResult(null); setCompMyName(''); setCompGfName(''); }}
+                  className="text-xs text-white/40 hover:text-white/70 underline"
+                >
+                  Try another pair
+                </button>
+              </motion.div>
+            ) : (
+              <motion.form
+                key="form"
+                onSubmit={handleCompatibility}
+                className="space-y-3"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+              >
+                <input
+                  type="text"
+                  required
+                  placeholder="Your Name"
+                  value={compMyName}
+                  onChange={(e) => setCompMyName(e.target.value)}
+                  className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-pink-500/50"
+                />
+                <div className="text-center text-pink-400 text-xl">❤️</div>
+                <input
+                  type="text"
+                  required
+                  placeholder="Her Name"
+                  value={compGfName}
+                  onChange={(e) => setCompGfName(e.target.value)}
+                  className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-pink-500/50"
+                />
+                <button
+                  type="submit"
+                  disabled={compLoading}
+                  className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-3 rounded-xl transition-all disabled:opacity-50"
+                >
+                  {compLoading ? 'Checking...' : 'Check Compatibility 💘'}
+                </button>
+              </motion.form>
+            )}
+          </AnimatePresence>
         </motion.div>
 
         {/* Footer note */}
