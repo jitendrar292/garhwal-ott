@@ -1,15 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Module-level flag — survives client-side route changes within the same
-// page session, but resets on full reload. We deliberately avoid localStorage
-// (Redis is the only store, and a per-device dismiss flag isn't worth a
-// server round-trip).
+// page session, but resets on full reload.
 let dismissedThisSession = false;
+
+// Capture the beforeinstallprompt event globally so it's available when the banner mounts
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+});
 
 export default function InstallBanner() {
   const [visible, setVisible] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
+  const [canPrompt, setCanPrompt] = useState(!!deferredPrompt);
+  const [installing, setInstalling] = useState(false);
 
   useEffect(() => {
     // Don't show if already installed as standalone PWA
@@ -20,7 +27,29 @@ export default function InstallBanner() {
     const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
     setIsIOS(ios);
     setVisible(true);
+
+    // Listen for late-arriving beforeinstallprompt
+    const handler = (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      setCanPrompt(true);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
   }, []);
+
+  async function handleInstallClick() {
+    if (!deferredPrompt) return;
+    setInstalling(true);
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    setCanPrompt(false);
+    setInstalling(false);
+    if (outcome === 'accepted') {
+      dismiss();
+    }
+  }
 
   function dismiss() {
     dismissedThisSession = true;
@@ -54,39 +83,51 @@ export default function InstallBanner() {
           </button>
         </div>
 
-        <div className="mt-3 space-y-1.5 text-caption text-white/70">
-          {isIOS ? (
-            <>
-              <p className="flex items-center gap-2">
-                <span className="text-primary-400 font-bold">1.</span>
-                Safari में नीचे <span className="bg-surface-3 px-1.5 py-0.5 rounded text-white">Share ↑</span> बटन दबाएं
-              </p>
-              <p className="flex items-center gap-2">
-                <span className="text-primary-400 font-bold">2.</span>
-                <span className="bg-surface-3 px-1.5 py-0.5 rounded text-white">"Add to Home Screen"</span> चुनें
-              </p>
-              <p className="flex items-center gap-2">
-                <span className="text-primary-400 font-bold">3.</span>
-                <span className="bg-surface-3 px-1.5 py-0.5 rounded text-white">Add</span> दबाएं — हो गया! ✅
-              </p>
-            </>
+        <div className="mt-3">
+          {canPrompt && !isIOS ? (
+            <button
+              onClick={handleInstallClick}
+              disabled={installing}
+              className="w-full bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-bold py-3 rounded-xl transition-all disabled:opacity-50 text-sm"
+            >
+              {installing ? 'Installing...' : 'Install करें — One Tap! 🚀'}
+            </button>
           ) : (
-            <>
-              <p className="flex items-center gap-2">
-                <span className="text-primary-400 font-bold">1.</span>
-                Chrome में ऊपर <span className="bg-surface-3 px-1.5 py-0.5 rounded text-white">⋮ Menu</span> खोलें
-              </p>
-              <p className="flex items-center gap-2">
-                <span className="text-primary-400 font-bold">2.</span>
-                <span className="bg-surface-3 px-1.5 py-0.5 rounded text-white">"Add to Home Screen"</span> दबाएं
-              </p>
-              <p className="flex items-center gap-2">
-                <span className="text-primary-400 font-bold">3.</span>
-                <span className="bg-surface-3 px-1.5 py-0.5 rounded text-white">Install</span> दबाएं — हो गया! ✅
-              </p>
-            </>
+            <div className="space-y-1.5 text-caption text-white/70">
+              {isIOS ? (
+                <>
+                  <p className="flex items-center gap-2">
+                    <span className="text-primary-400 font-bold">1.</span>
+                    Safari में नीचे <span className="bg-surface-3 px-1.5 py-0.5 rounded text-white">Share ↑</span> बटन दबाएं
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <span className="text-primary-400 font-bold">2.</span>
+                    <span className="bg-surface-3 px-1.5 py-0.5 rounded text-white">"Add to Home Screen"</span> चुनें
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <span className="text-primary-400 font-bold">3.</span>
+                    <span className="bg-surface-3 px-1.5 py-0.5 rounded text-white">Add</span> दबाएं — हो गया! ✅
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="flex items-center gap-2">
+                    <span className="text-primary-400 font-bold">1.</span>
+                    Chrome में ऊपर <span className="bg-surface-3 px-1.5 py-0.5 rounded text-white">⋮ Menu</span> खोलें
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <span className="text-primary-400 font-bold">2.</span>
+                    <span className="bg-surface-3 px-1.5 py-0.5 rounded text-white">"Add to Home Screen"</span> दबाएं
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <span className="text-primary-400 font-bold">3.</span>
+                    <span className="bg-surface-3 px-1.5 py-0.5 rounded text-white">Install</span> दबाएं — हो गया! ✅
+                  </p>
+                </>
+              )}
+            </div>
           )}
-          <p className="text-yellow-400/80 mt-2">⚠️ कोई APK फ़ाइल इंस्टाल न करें — वो हमारी नहीं है!</p>
+          <p className="text-yellow-400/80 text-caption mt-2">⚠️ कोई APK फ़ाइल इंस्टाल न करें — वो हमारी नहीं है!</p>
         </div>
       </div>
     </motion.div>
