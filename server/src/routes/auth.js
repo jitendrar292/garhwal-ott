@@ -555,6 +555,26 @@ async function requireAuth(req, res, next) {
   next();
 }
 
+// Optional auth: attaches req.user if a valid Bearer token is present,
+// but does NOT reject the request if there's no token or session is expired.
+// Used on public endpoints that have enhanced behaviour for logged-in users.
+async function optionalAuth(req, _res, next) {
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.slice(7);
+    try {
+      const session = await getSession(token);
+      if (session && session.expiresAt >= Date.now()) {
+        const user = await getUser(session.email);
+        if (user) req.user = user;
+      }
+    } catch {
+      // ignore — anonymous chat still works fine
+    }
+  }
+  next();
+}
+
 // Cleanup expired in-memory sessions (Redis sessions auto-expire via TTL)
 let lastCleanup = 0;
 function cleanupExpiredMemSessions() {
@@ -616,4 +636,5 @@ router.get('/admin/users', async (req, res) => {
 
 module.exports = router;
 module.exports.requireAuth = requireAuth;
+module.exports.optionalAuth = optionalAuth;
 module.exports.getSession = getSession;

@@ -450,6 +450,87 @@ async function getChatHistory(limit = MAX_CHAT_HISTORY) {
   return memChatHistory.slice(0, limit);
 }
 
+// ===== Per-user chat history (auth-linked, persisted to Redis) =====
+// Stores the last 100 messages for each authenticated user keyed by user.id.
+// Each entry: { role: 'user'|'assistant', content: string, at: ISO string }
+// TTL: 30 days (refreshed on every append).
+const USER_CHAT_KEY_PREFIX = 'pahadi_user_chat:';
+const MAX_USER_CHAT_MESSAGES = 100; // 50 turns (user + assistant pairs)
+const USER_CHAT_TTL = 30 * 24 * 60 * 60; // 30 days in seconds
+
+const memUserChat = new Map(); // userId -> [messages] (in-memory fallback)
+
+function userChatKey(userId) {
+  return `${USER_CHAT_KEY_PREFIX}${userId}`;
+}
+
+async function getUserChatHistory(userId, limit = MAX_USER_CHAT_MESSAGES) {
+  if (!userId) return [];
+  if (UPSTASH_ENABLED) {
+    try {
+      const raw = await redisCmd('LRANGE', userChatKey(userId), 0, Math.max(0, limit - 1));
+      return (raw || []).map((r) => {
+        try { return JSON.parse(r); } catch { return null; }
+      }).filter(Boolean);
+    } catch (err) {
+      console.error('[store] getUserChatHistory error:', err.message);
+    }
+  }
+  const mem = memUserChat.get(userId) || [];
+  return mem.slice(0, limit);
+}
+
+async function appendUserChatMessages(userId, messages) {
+  if (!userId || !Array.isArray(messages) || messages.length === 0) return;
+  const now = new Date().toISOString();
+  const entries = messages.map((m) => JSON.stringify({
+    role: m.role,
+    content: String(m.content || '').slice(0, 4000),
+    at: now,
+  }));
+  if (UPSTASH_ENABLED) {
+    try {
+      // RPUSH appends chronologically (oldest first, newest at end of list)
+      const res = await fetch(UPSTASH_URL, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${UPSTASH_TOKEN}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(['RPUSH', userChatKey(userId), ...entries]),
+      });
+      if (!res.ok) throw new Error(`RPUSH error ${res.status}`);
+      // Trim to last MAX_USER_CHAT_MESSAGES, refresh TTL
+      await redisCmd('LTRIM', userChatKey(userId), -MAX_USER_CHAT_MESSAGES, -1);
+      await redisCmd('EXPIRE', userChatKey(userId), String(USER_CHAT_TTL));
+      return;
+    } catch (err) {
+      console.error('[store] appendUserChatMessages error:', err.message);
+    }
+  }
+  // In-memory fallback
+  const mem = memUserChat.get(userId) || [];
+  for (const e of entries) {
+    try { mem.push(JSON.parse(e)); } catch { /* noop */ }
+  }
+  if (mem.length > MAX_USER_CHAT_MESSAGES) {
+    mem.splice(0, mem.length - MAX_USER_CHAT_MESSAGES);
+  }
+  memUserChat.set(userId, mem);
+}
+
+async function clearUserChatHistory(userId) {
+  if (!userId) return;
+  if (UPSTASH_ENABLED) {
+    try {
+      await redisCmd('DEL', userChatKey(userId));
+    } catch (err) {
+      console.error('[store] clearUserChatHistory error:', err.message);
+    }
+  }
+  memUserChat.delete(userId);
+}
+
 // ===== Favorites (per-device, anonymous) =====
 // Stored in Redis as one JSON array per deviceId. No auth — clients generate
 // a UUID locally and send it as ?deviceId=. Cap entries to keep memory bounded.
@@ -575,5 +656,5 @@ async function redisDelKey(key) {
   }
 }
 
-module.exports = { getVisits, incrementVisits, getOpens, incrementOpens, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback, redisGetJSON, redisSetJSON, redisDelKey, isRedisEnabled, redisSetAdd, redisSetMembers, redisSetCount, redisHashGet, redisHashSet, redisHashGetAll, redisHashLen, logChatExchange, getChatHistory, getFavorites, saveFavorites, addFavorite, removeFavorite };
+module.exports = { getVisits, incrementVisits, getOpens, incrementOpens, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback, redisGetJSON, redisSetJSON, redisDelKey, isRedisEnabled, redisSetAdd, redisSetMembers, redisSetCount, redisHashGet, redisHashSet, redisHashGetAll, redisHashLen, logChatExchange, getChatHistory, getUserChatHistory, appendUserChatMessages, clearUserChatHistory, getFavorites, saveFavorites, addFavorite, removeFavorite };
 

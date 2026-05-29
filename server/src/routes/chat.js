@@ -20,7 +20,8 @@ const {
   formatConversationContext,
   noteConversationLocally,
 } = require('../services/aiCache');
-const { logChatExchange, getChatHistory } = require('../services/store');
+const { logChatExchange, getChatHistory, appendUserChatMessages, getUserChatHistory, clearUserChatHistory } = require('../services/store');
+const { optionalAuth, requireAuth } = require('./auth');
 const { loadNews } = require('./news');
 const FOOD_OVERVIEW_TEMPLATE = require('../data/garhwali-food-template');
 const {
@@ -30,7 +31,7 @@ const {
   vectorInfo,
   resetNamespace,
 } = require('../services/vectorStore');
-const { normalizeQuery } = require('../services/queryNormalizer');
+const { normalizeQuery, normalizeQueryAsync } = require('../services/queryNormalizer');
 
 // =====================================================================
 // Quota protection: per-IP rate limit + global circuit breaker
@@ -678,7 +679,7 @@ function streamCachedReply(res, text) {
  * are already sent). Returns false if the provider couldn't even start, so the
  * caller can attempt the next provider.
  */
-async function tryStreamProvider(provider, basePayload, res, safeMessages, lastUser) {
+async function tryStreamProvider(provider, basePayload, res, safeMessages, lastUser, userId = null) {
   const apiKey = provider.getKey();
   if (!apiKey) {
     console.log(`[chat] skipping ${provider.name} — no API key`);
@@ -786,7 +787,7 @@ async function tryStreamProvider(provider, basePayload, res, safeMessages, lastU
           // replies are weaker and would otherwise poison future requests.
           if (!clientClosed && fullReply.length > 5 && !truncated && provider.trusted) {
             setCached(safeMessages, fullReply);
-            persistExchange(lastUser?.content, fullReply);
+            persistExchange(lastUser?.content, fullReply, userId);
           }
           if (truncated) {
             console.warn(`[chat] ${provider.name} truncated reply (${fullReply.length} chars) — not cached`);
@@ -814,7 +815,7 @@ async function tryStreamProvider(provider, basePayload, res, safeMessages, lastU
     }
     if (!clientClosed && fullReply.length > 5 && provider.trusted) {
       setCached(safeMessages, fullReply);
-      persistExchange(lastUser?.content, fullReply);
+      persistExchange(lastUser?.content, fullReply, userId);
     }
     res.write('data: [DONE]\n\n');
     res.end();
@@ -833,7 +834,7 @@ async function tryStreamProvider(provider, basePayload, res, safeMessages, lastU
  * back into the same SSE `data: { delta }` envelope the client already expects.
  * Returns true if streaming started, false if provider couldn't be used.
  */
-async function tryStreamGemini(basePayload, res, safeMessages, lastUser) {
+async function tryStreamGemini(basePayload, res, safeMessages, lastUser, userId = null) {
   const apiKey = GEMINI.getKey();
   if (!apiKey) {
     console.log('[chat] skipping gemini — no API key');
@@ -925,7 +926,7 @@ async function tryStreamGemini(basePayload, res, safeMessages, lastUser) {
     }
     if (!clientClosed && fullReply.length > 5 && !truncated && GEMINI.trusted) {
       setCached(safeMessages, fullReply);
-      persistExchange(lastUser?.content, fullReply);
+      persistExchange(lastUser?.content, fullReply, userId);
     }
     if (truncated) {
       console.warn(`[chat] gemini truncated reply (${fullReply.length} chars) — not cached`);
@@ -942,19 +943,29 @@ async function tryStreamGemini(basePayload, res, safeMessages, lastUser) {
 
 // Save a Q→A pair to Redis (long-term memory) and to the in-memory mirror
 // so it's instantly retrievable for the next request. Fire-and-forget.
-function persistExchange(userMsg, assistantMsg) {
+// If userId is provided, also appends to that user's personal chat history.
+function persistExchange(userMsg, assistantMsg, userId = null) {
   if (!userMsg || !assistantMsg) return;
   noteConversationLocally(userMsg, assistantMsg);
   const id = Date.now();
   logChatExchange(userMsg, assistantMsg).catch((err) => {
     console.error('[chat] logChatExchange failed:', err.message);
   });
+  if (userId) {
+    appendUserChatMessages(userId, [
+      { role: 'user', content: userMsg },
+      { role: 'assistant', content: assistantMsg },
+    ]).catch((err) => {
+      console.error('[chat] appendUserChatMessages failed:', err.message);
+    });
+  }
   if (isVectorEnabled()) {
     // Embed the normalized form so stored vectors align with normalized lookups.
     // Pass the raw query as displayQ so metadata.q stays human-readable.
-    const normalizedQ = normalizeQuery(userMsg);
-    upsertExchange(id, normalizedQ, assistantMsg, { displayQ: userMsg }).catch((err) => {
-      console.error('[chat] upsertExchange failed:', err.message);
+    normalizeQueryAsync(userMsg).then((normalizedQ) => {
+      upsertExchange(id, normalizedQ, assistantMsg, { displayQ: userMsg }).catch((err) => {
+        console.error('[chat] upsertExchange failed:', err.message);
+      });
     });
   }
 }
@@ -1004,7 +1015,7 @@ async function findFallbackReply(userText) {
   // 1. Try semantic vector search first
   if (isVectorEnabled()) {
     try {
-      const hits = await querySimilar(normalizeQuery(userText), { topK: 3, minScore: MIN_SCORE });
+      const hits = await querySimilar(await normalizeQueryAsync(userText), { topK: 3, minScore: MIN_SCORE });
       const good = hits.find((h) => h.a && fallbackOverlap(userText, h.q) >= MIN_OVERLAP);
       if (good) return { text: good.a, source: 'vector' };
       if (hits[0]) {
@@ -1186,7 +1197,7 @@ function buildCharacterPrompt(characterId) {
     .join(',\n')}\n]\n- ऊपर openingLineExamples मा सी किसी एक शैली मा जवाब शुरू कर।`;
 }
 
-router.post('/', async (req, res) => {
+router.post('/', optionalAuth, async (req, res) => {
   const hasAnyProviderKey = Boolean(
     process.env.OPENAI_API_KEY ||
     process.env.GROQ_API_KEY ||
@@ -1291,7 +1302,7 @@ router.post('/', async (req, res) => {
     try {
       // Normalize before embedding so the lookup is in the same canonical
       // vector space as stored exchanges (see persistExchange above).
-      const normalizedUserText = normalizeQuery(lastUser.content);
+      const normalizedUserText = await normalizeQueryAsync(lastUser.content);
       memoryHits = await querySimilar(normalizedUserText, { topK: 4, minScore: 0.72 });
     } catch (err) {
       console.error('[chat] vector query error:', err.message);
@@ -1444,23 +1455,24 @@ router.post('/', async (req, res) => {
   }
 
   // Try providers in priority order.
+  const userId = req.user?.id || null;
   if (openaiReady) {
-    const openaiOk = await tryStreamProvider(OPENAI, payload, res, cacheMessages, lastUser);
+    const openaiOk = await tryStreamProvider(OPENAI, payload, res, cacheMessages, lastUser, userId);
     if (openaiOk) return;
   }
 
   if (!res.headersSent && groqReady) {
-    const groqOk = await tryStreamProvider(GROQ, payload, res, cacheMessages, lastUser);
+    const groqOk = await tryStreamProvider(GROQ, payload, res, cacheMessages, lastUser, userId);
     if (groqOk) return;
   }
 
   if (!res.headersSent && openrouterReady) {
-    const orOk = await tryStreamProvider(OPENROUTER, payload, res, cacheMessages, lastUser);
+    const orOk = await tryStreamProvider(OPENROUTER, payload, res, cacheMessages, lastUser, userId);
     if (orOk) return;
   }
 
   if (!res.headersSent && geminiReady) {
-    const gemOk = await tryStreamGemini(payload, res, cacheMessages, lastUser);
+    const gemOk = await tryStreamGemini(payload, res, cacheMessages, lastUser, userId);
     if (gemOk) return;
   }
 
@@ -1469,6 +1481,31 @@ router.post('/', async (req, res) => {
     if (fb && streamFallbackReply(res, fb.text, fb.source)) return;
     if (streamFallbackReply(res, OFFLINE_REPLY, 'offline')) return;
     return res.status(502).json({ error: 'AI service unavailable' });
+  }
+});
+
+// =====================================================================
+// Per-user persistent chat history
+// =====================================================================
+// GET /api/chat/history — returns the authenticated user's chat history
+// (oldest first, up to 100 messages). Used by the client to restore the
+// conversation on page load/reload.
+router.get('/history', requireAuth, async (req, res) => {
+  try {
+    const history = await getUserChatHistory(req.user.id, 100);
+    res.json({ history });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE /api/chat/history — clears the authenticated user's chat history
+router.delete('/history', requireAuth, async (req, res) => {
+  try {
+    await clearUserChatHistory(req.user.id);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 

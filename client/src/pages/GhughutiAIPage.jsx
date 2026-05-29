@@ -1,12 +1,12 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import SEO from '../components/SEO';
 import { toGarhwaliSpeech, pickPahadiVoice, PAHADI_RATE, PAHADI_PITCH } from '../utils/garhwaliTone';
+import { useAuth } from '../context/AuthContext';
 
-// Chat history is intentionally NOT persisted in the browser — Redis is the
-// only store and the server already logs Q→A pairs server-side
-// (logChatExchange in server/src/services/store.js). The visible chat in this
-// page resets on full reload by design.
-const MAX_HISTORY = 30; // keep last 30 messages in memory
+// Chat history for authenticated users is persisted to Redis and restored on
+// page load via GET /api/chat/history. Anonymous users get an in-memory only
+// session that resets on reload.
+const MAX_HISTORY = 100; // cap in-memory view (matches server-side limit)
 
 const SUGGESTIONS = [
   'नमस्कार! तुम कन छन?',
@@ -52,7 +52,9 @@ const CHARACTERS = [
 ];
 
 export default function GhughutiAIPage() {
+  const { user, isAuthenticated } = useAuth();
   const [messages, setMessages] = useState([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
   const [input, setInput] = useState('');
   const [streaming, setStreaming] = useState(false);
   const [error, setError] = useState('');
@@ -84,6 +86,29 @@ export default function GhughutiAIPage() {
   // (we assume it is; if not, we gracefully fall back to Web Speech)
   const elevenLabsSupported = true;
   const ttsSupported = typeof window !== 'undefined' && 'speechSynthesis' in window;
+
+  // Restore persistent chat history for logged-in users
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const token = localStorage.getItem('pahaditube_auth_token');
+    if (!token) return;
+    setHistoryLoading(true);
+    fetch('/api/chat/history', {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data?.history && data.history.length > 0) {
+          // Convert stored {role, content, at} entries back to message shape
+          setMessages(
+            data.history.map(({ role, content }) => ({ role, content }))
+          );
+        }
+      })
+      .catch(() => { /* ignore — graceful degradation */ })
+      .finally(() => setHistoryLoading(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated]);
 
   // Cleanup speech on unmount
   useEffect(() => {
@@ -136,9 +161,13 @@ export default function GhughutiAIPage() {
     abortRef.current = controller;
 
     try {
+      const authToken = localStorage.getItem('pahaditube_auth_token');
+      const headers = { 'Content-Type': 'application/json' };
+      if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
+
       const res = await fetch('/api/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           messages: [...messages, userMsg].map(({ role, content }) => ({ role, content })),
           character: activeCharacter,
@@ -348,6 +377,14 @@ export default function GhughutiAIPage() {
     if (ttsSupported) window.speechSynthesis.cancel();
     setSpeakingIdx(-1);
     setMessages([]);
+    // Also clear the server-side history for authenticated users
+    const token = localStorage.getItem('pahaditube_auth_token');
+    if (token) {
+      fetch('/api/chat/history', {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      }).catch(() => { /* fire-and-forget */ });
+    }
   };
 
   const handleKeyDown = (e) => {
@@ -485,6 +522,17 @@ export default function GhughutiAIPage() {
             <p className="mt-1 text-sm text-white/70">
               गढ़वळि मा कुछ भि पुछा — खाना, गीत, त्योहार, यात्रा या कविता।
             </p>
+            {!isAuthenticated && (
+              <a
+                href="/login"
+                className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-amber-300/90 hover:text-amber-200 underline underline-offset-2"
+              >
+                🔒 Login to save your chat history across sessions
+              </a>
+            )}
+            {isAuthenticated && historyLoading && (
+              <p className="mt-2 text-xs text-white/50">बातचीत वापस ल्याणु रौं…</p>
+            )}
           </div>
         )}
 
