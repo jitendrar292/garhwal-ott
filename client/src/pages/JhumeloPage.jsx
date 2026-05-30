@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import confetti from 'canvas-confetti';
 import SEO from '../components/SEO';
+import WhatsAppShareBtn from '../components/WhatsAppShareBtn';
 
 // Deterministic compatibility score — same names always give same result
 function calcCompatibility(a, b) {
@@ -14,10 +16,34 @@ function calcCompatibility(a, b) {
 }
 
 function compatLabel(score) {
-  if (score >= 85) return { text: 'Soulmates! 💘', color: 'text-pink-400' };
-  if (score >= 70) return { text: 'Strong vibes! 🔥', color: 'text-rose-400' };
-  if (score >= 55) return { text: 'Good chemistry ✨', color: 'text-orange-400' };
-  return { text: 'Thoda aur koshish karo 😄', color: 'text-yellow-400' };
+  if (score >= 85) return {
+    text: 'Tu Meri Jaan Chhai! 💘',
+    color: 'text-pink-400',
+    icon: '💘',
+    desc: 'Matlab perfect match — filmy wali love story! 🎬',
+    tier: '85–96% • Top tier 🏆',
+  };
+  if (score >= 70) return {
+    text: 'Dil se Judey Chhau! 🔥',
+    color: 'text-rose-400',
+    icon: '🔥',
+    desc: 'Strong vibes — ek baar milao zaroor! ✨',
+    tier: '70–84% • 🔥 Hot connection',
+  };
+  if (score >= 55) return {
+    text: 'Bhalai Rista Chha ✨',
+    color: 'text-orange-400',
+    icon: '✨',
+    desc: 'Good chemistry, thoda aur time do! 😊',
+    tier: '55–69% • Warming up ☀️',
+  };
+  return {
+    text: 'Thoda Mehnat Karrau 😄',
+    color: 'text-yellow-400',
+    icon: '💪',
+    desc: 'Love ko time lagda hai… koshish karo! 💪',
+    tier: '42–54% • Early days 🌱',
+  };
 }
 
 const VIBES = [
@@ -44,10 +70,15 @@ export default function JhumeloPage() {
   const [compGfName, setCompGfName] = useState('');
   const [compResult, setCompResult] = useState(null);
   const [compLoading, setCompLoading] = useState(false);
+  const [heartPulse, setHeartPulse] = useState(false);
+  const [displayScore, setDisplayScore] = useState(0);
 
   const handleCompatibility = async (e) => {
     e.preventDefault();
     const score = calcCompatibility(compMyName, compGfName);
+    setDisplayScore(0);
+    setHeartPulse(true);
+    setTimeout(() => setHeartPulse(false), 1200);
     setCompResult({ score, myName: compMyName, gfName: compGfName });
     // store in backend (fire-and-forget)
     setCompLoading(true);
@@ -61,6 +92,34 @@ export default function JhumeloPage() {
     } catch { /* silent */ }
     setCompLoading(false);
   };
+
+  // Count-up animation + confetti
+  useEffect(() => {
+    if (!compResult) return;
+    setDisplayScore(0);
+    const target = compResult.score;
+    const steps = 40;
+    const interval = 1200 / steps;
+    let current = 0;
+    const timer = setInterval(() => {
+      current += target / steps;
+      if (current >= target) {
+        setDisplayScore(target);
+        clearInterval(timer);
+        if (target >= 85) {
+          confetti({
+            particleCount: 130,
+            spread: 80,
+            origin: { y: 0.65 },
+            colors: ['#f472b6', '#fb7185', '#f43f5e', '#ff69b4', '#fda4af', '#fbbf24'],
+          });
+        }
+      } else {
+        setDisplayScore(Math.round(current));
+      }
+    }, interval);
+    return () => clearInterval(timer);
+  }, [compResult]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -222,39 +281,88 @@ export default function JhumeloPage() {
           transition={{ delay: 1.2 }}
           className="w-full max-w-sm mx-auto mt-8 bg-white/5 border border-pink-500/20 rounded-2xl p-6"
         >
-          <h2 className="text-lg font-bold text-white text-center mb-1">💑 Check Your Compatibility</h2>
-          <p className="text-xs text-white/40 text-center mb-5">Enter your names to see your vibe score</p>
+          {/* Header */}
+          <div className="text-center mb-5">
+            <motion.span
+              className="text-3xl block"
+              animate={{ scale: [1, 1.15, 1] }}
+              transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
+            >💑</motion.span>
+            <h2 className="text-lg font-bold text-white mt-1">Check Your Compatibility</h2>
+            <p className="text-xs text-white/40 mt-1">Dono ke naam daalo — pyaar ka score dekho!</p>
+          </div>
 
           <AnimatePresence mode="wait">
             {compResult ? (
               <motion.div
                 key="result"
-                initial={{ opacity: 0, scale: 0.9 }}
+                initial={{ opacity: 0, scale: 0.88 }}
                 animate={{ opacity: 1, scale: 1 }}
+                transition={{ type: 'spring', stiffness: 260, damping: 20 }}
                 className="text-center"
               >
-                <p className="text-white/70 text-sm mb-1">{compResult.myName} ❤️ {compResult.gfName}</p>
-                <p className="text-5xl font-bold bg-gradient-to-r from-pink-400 to-rose-400 bg-clip-text text-transparent mb-2">
-                  {compResult.score}%
+                {/* Names row */}
+                <p className="text-white/70 text-sm mb-3 tracking-wide">
+                  {compResult.myName}
+                  <span className="text-pink-400 mx-2">❤️</span>
+                  {compResult.gfName}
                 </p>
-                {/* Progress bar */}
-                <div className="w-full bg-white/10 rounded-full h-3 mb-3 overflow-hidden">
+
+                {/* Score count-up */}
+                <p className="text-6xl font-extrabold bg-gradient-to-r from-pink-400 via-rose-400 to-orange-400 bg-clip-text text-transparent mb-1 tabular-nums">
+                  {displayScore}%
+                </p>
+
+                {/* Garhwali label */}
+                <p className={`text-base font-bold mb-4 ${compatLabel(compResult.score).color}`}>
+                  {compatLabel(compResult.score).text}
+                </p>
+
+                {/* Upgraded love meter */}
+                <div className="relative w-full h-5 bg-white/10 rounded-full mb-1">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${compResult.score}%` }}
-                    transition={{ duration: 1, ease: 'easeOut' }}
-                    className="h-3 rounded-full bg-gradient-to-r from-pink-500 to-rose-500"
+                    transition={{ duration: 1.2, ease: 'easeOut' }}
+                    className="absolute top-0 left-0 h-5 rounded-full bg-gradient-to-r from-pink-500 via-rose-500 to-orange-400"
                   />
+                  <motion.span
+                    initial={{ left: '0%' }}
+                    animate={{ left: `${Math.max(compResult.score - 5, 0)}%` }}
+                    transition={{ duration: 1.2, ease: 'easeOut' }}
+                    className="absolute -top-1 text-base pointer-events-none"
+                    style={{ position: 'absolute' }}
+                  >💗</motion.span>
                 </div>
-                <p className={`text-base font-semibold mb-4 ${compatLabel(compResult.score).color}`}>
-                  {compatLabel(compResult.score).text}
-                </p>
-                <button
-                  onClick={() => { setCompResult(null); setCompMyName(''); setCompGfName(''); }}
-                  className="text-xs text-white/40 hover:text-white/70 underline"
-                >
-                  Try another pair
-                </button>
+                <div className="flex justify-between text-xs text-white/25 mb-5 px-1">
+                  <span>0%</span>
+                  <span>100%</span>
+                </div>
+
+                {/* Breakdown card */}
+                <div className="bg-white/5 rounded-xl px-4 py-3 mb-5 text-left">
+                  <p className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-2">Matlab kya hai?</p>
+                  <p className="text-sm text-white/85">
+                    {compatLabel(compResult.score).icon} {compatLabel(compResult.score).desc}
+                  </p>
+                  <p className="text-xs text-white/35 mt-2">{compatLabel(compResult.score).tier}</p>
+                </div>
+
+                {/* Share + Reset */}
+                <div className="flex flex-col gap-2">
+                  <WhatsAppShareBtn
+                    title="Check Your Compatibility 💘"
+                    text={`${compResult.myName} ❤️ ${compResult.gfName} = ${compResult.score}% match! Check yours on Jhumelo by PahadiTube 🏔️`}
+                    compact={false}
+                    className="w-full justify-center"
+                  />
+                  <button
+                    onClick={() => { setCompResult(null); setCompMyName(''); setCompGfName(''); setDisplayScore(0); }}
+                    className="text-xs text-white/40 hover:text-white/70 underline mt-1"
+                  >
+                    Try another pair
+                  </button>
+                </div>
               </motion.div>
             ) : (
               <motion.form
@@ -272,11 +380,20 @@ export default function JhumeloPage() {
                   onChange={(e) => setCompMyName(e.target.value)}
                   className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-pink-500/50"
                 />
-                <div className="text-center text-pink-400 text-xl">❤️</div>
+                {/* Pulsing heart between inputs */}
+                <div className="flex justify-center">
+                  <motion.span
+                    className="text-2xl select-none"
+                    animate={heartPulse
+                      ? { scale: [1, 1.7, 1, 1.5, 1], rotate: [0, -12, 12, -6, 0] }
+                      : { scale: 1 }}
+                    transition={{ duration: 0.8, ease: 'easeInOut' }}
+                  >❤️</motion.span>
+                </div>
                 <input
                   type="text"
                   required
-                  placeholder="Her Name"
+                  placeholder="Their Name"
                   value={compGfName}
                   onChange={(e) => setCompGfName(e.target.value)}
                   className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-pink-500/50"
@@ -284,9 +401,9 @@ export default function JhumeloPage() {
                 <button
                   type="submit"
                   disabled={compLoading}
-                  className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-3 rounded-xl transition-all disabled:opacity-50"
+                  className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold py-3 rounded-xl transition-all disabled:opacity-50 shadow-lg shadow-pink-500/20"
                 >
-                  {compLoading ? 'Checking...' : 'Check Compatibility 💘'}
+                  {compLoading ? '✨ Checking...' : '💘 Check Compatibility'}
                 </button>
               </motion.form>
             )}
