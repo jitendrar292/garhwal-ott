@@ -11,6 +11,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 const Footer = lazy(() => import('./components/Footer'));
 const FloatingPlayer = lazy(() => import('./components/FloatingPlayer'));
 const FloatingByoIcon = lazy(() => import('./components/FloatingByoIcon'));
+const FloatingDailyProduct = lazy(() => import('./components/FloatingDailyProduct'));
 const InstallBanner = lazy(() => import('./components/InstallBanner'));
 const IntroSound = lazy(() => import('./components/IntroSound'));
 const RunningCharacter = lazy(() => import('./components/RunningCharacter'));
@@ -83,6 +84,7 @@ export default function App() {
               <Footer />
               <FloatingPlayer />
               <FloatingByoIcon />
+              <FloatingDailyProduct />
             </Suspense>
             <BottomNav />
             <Suspense fallback={null}>
