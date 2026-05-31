@@ -213,21 +213,38 @@ export default function ImageSlider() {
             {slides[current]?.subtitle}
           </p>
           {slides[current]?.link && (
-            <Link
+            <div
               key={`cta-${current}`}
-              to={slides[current].link}
-              className="inline-flex items-center gap-2 mt-3 sm:mt-4 px-5 py-2 rounded-xl
-                         bg-primary-500/90 hover:bg-primary-500
-                         text-white text-body-sm font-semibold
-                         transition-all duration-200 hover:scale-105 active:scale-95
-                         animate-fade-in-up shadow-glow-sm"
+              className="flex flex-wrap items-center gap-3 mt-4 sm:mt-5 animate-fade-in-up"
               style={{ animationDelay: '280ms' }}
             >
-              Explore
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
+              <Link
+                to={slides[current].link}
+                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl
+                           bg-primary-500 hover:bg-primary-400
+                           text-white text-body font-bold
+                           transition-all duration-200 hover:scale-105 active:scale-95
+                           shadow-glow-sm"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                </svg>
+                अभी देखो
+              </Link>
+              <Link
+                to="/category/movies"
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-2xl
+                           bg-white/10 hover:bg-white/20 backdrop-blur-sm
+                           text-white/90 hover:text-white text-body-sm font-semibold
+                           border border-white/20 hover:border-white/40
+                           transition-all duration-200 hover:scale-105 active:scale-95"
+              >
+                सब देखो
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
           )}
         </div>
 

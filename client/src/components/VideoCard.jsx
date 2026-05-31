@@ -1,10 +1,14 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useFavorites } from '../hooks/useFavorites';
+import { useWatchHistory } from '../hooks/useWatchHistory';
+import { useConfetti } from '../hooks/useConfetti';
 import WhatsAppShareBtn from './WhatsAppShareBtn';
 
 export default function VideoCard({ video, compact }) {
   const { isFavorite, addFavorite, removeFavorite } = useFavorites();
+  const { addToHistory } = useWatchHistory();
+  const { fireHeartBurst } = useConfetti();
   const fav = isFavorite(video.id);
 
   const handleFavorite = (e) => {
@@ -14,6 +18,11 @@ export default function VideoCard({ video, compact }) {
       removeFavorite(video.id);
     } else {
       addFavorite(video);
+      const rect = e.currentTarget.getBoundingClientRect();
+      fireHeartBurst(
+        (rect.left + rect.width / 2) / window.innerWidth,
+        (rect.top + rect.height / 2) / window.innerHeight,
+      );
     }
   };
 
@@ -44,6 +53,7 @@ export default function VideoCard({ video, compact }) {
     >
     <Link
       to={`/watch/${video.id}`}
+      onClick={() => addToHistory(video)}
       className="group block rounded-2xl overflow-hidden surface-card-interactive"
     >
       {/* Thumbnail */}

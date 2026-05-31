@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useWatchHistory } from '../hooks/useWatchHistory';
+import { useFavorites } from '../hooks/useFavorites';
 import ImageSlider from '../components/ImageSlider';
 import GenreGrid from '../components/GenreGrid';
 import VideoRow from '../components/VideoRow';
@@ -88,6 +90,9 @@ export default function HomePage() {
     ? `🔥 Trending near ${userLocation.city}`
     : '🔥 Trending Now';
 
+  const { history: watchHistory } = useWatchHistory();
+  const { favorites } = useFavorites();
+
   return (
     <div>
       {/* Full-width slider */}
@@ -96,6 +101,26 @@ export default function HomePage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-8 space-y-0">
         {/* Genre cards */}
         <GenreGrid />
+
+        {/* Continue Watching — localStorage-persisted watch history */}
+        {watchHistory.length > 0 && (
+          <VideoRow
+            title="▶ Continue Watching"
+            videos={watchHistory}
+            loading={false}
+            error={null}
+          />
+        )}
+
+        {/* My List — user's saved favorites */}
+        {favorites.length > 0 && (
+          <VideoRow
+            title="❤️ My List"
+            videos={favorites}
+            loading={false}
+            error={null}
+          />
+        )}
 
         {/* Festivals · Melas · Theatre / Events — unified row with type filters */}
         <motion.div
