@@ -40,7 +40,7 @@ export default function FloatingDailyProduct() {
       transition={{ delay: 2.8, type: 'spring', stiffness: 200 }}
       whileHover={{ scale: 1.12 }}
       whileTap={{ scale: 0.88 }}
-      className="fixed bottom-52 right-4 z-[60] sm:bottom-24 sm:right-6 w-14 h-14 rounded-full bg-gradient-to-br from-orange-500 to-amber-600 shadow-lg shadow-orange-500/30 flex items-center justify-center border-2 border-white/20 group"
+      className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[60] sm:bottom-10 w-14 h-14 rounded-full bg-gradient-to-br from-orange-500 to-amber-600 shadow-lg shadow-orange-500/30 flex items-center justify-center border-2 border-white/20 group"
       aria-label={`Aaj ka Pahadi Product: ${product.nameEn}`}
     >
       <span className="text-2xl leading-none">{product.emoji}</span>
@@ -54,7 +54,7 @@ export default function FloatingDailyProduct() {
       </span>
 
       {/* Tooltip — appears on hover */}
-      <span className="absolute bottom-16 right-0 bg-dark-900/95 backdrop-blur-sm text-white px-3 py-2 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-white/10 shadow-xl pointer-events-none">
+      <span className="absolute bottom-16 left-1/2 -translate-x-1/2 bg-dark-900/95 backdrop-blur-sm text-white px-3 py-2 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-white/10 shadow-xl pointer-events-none text-center">
         <span className="block text-[10px] text-orange-400 font-semibold uppercase tracking-wide mb-0.5">
           Aaj ka Pahadi Product
         </span>
