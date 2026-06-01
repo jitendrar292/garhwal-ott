@@ -336,7 +336,7 @@
   }
 
   .empty-state-title {
-    @apply font-display text-body font-semibold text-white/50;
+    @apply font-display text-body-md font-semibold text-white/50;
   }
 
   .empty-state-body {
