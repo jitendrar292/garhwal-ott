@@ -105,6 +105,7 @@ export default function BottomNav() {
 
   return (
     <motion.nav
+      aria-label="Main navigation"
       className="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-surface-0/95 backdrop-blur-2xl border-t border-white/6"
       initial={{ y: 80 }}
       animate={{ y: 0 }}
@@ -116,6 +117,8 @@ export default function BottomNav() {
             key={tab.path}
             to={tab.path}
             onClick={(e) => handleTabClick(e, tab.path)}
+            aria-current={isActive(tab.path) ? 'page' : undefined}
+            aria-label={tab.name}
             className={`relative flex flex-col items-center justify-center gap-0.5 min-w-[44px] min-h-[44px] px-2 py-1 rounded-xl transition-all duration-250
               ${tab.featured && !isActive(tab.path) ? 'text-content-music' : ''}
               ${isActive(tab.path)

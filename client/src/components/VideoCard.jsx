@@ -47,6 +47,7 @@ export default function VideoCard({ video, compact }) {
 
   return (
     <motion.div
+      role="article"
       whileHover={{ y: -4, scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       transition={{ type: 'spring', stiffness: 400, damping: 25 }}
@@ -54,6 +55,7 @@ export default function VideoCard({ video, compact }) {
     <Link
       to={`/watch/${video.id}`}
       onClick={() => addToHistory(video)}
+      aria-label={video.title}
       className="group block rounded-2xl overflow-hidden surface-card-interactive"
     >
       {/* Thumbnail */}

@@ -27,6 +27,13 @@
     }
   }
 
+  /* Brand-amber focus ring — visible on keyboard navigation only */
+  :focus-visible {
+    outline: 2px solid rgba(245, 158, 11, 0.8);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
   /* Custom scrollbar */
   ::-webkit-scrollbar {
     width: 6px;
@@ -313,6 +320,28 @@
   .alert-info {
     @apply bg-secondary-500/10 border border-secondary-500/20 rounded-xl p-4 text-secondary-300;
   }
+
+  /* ══════════════════════════════════════════════════
+     EMPTY STATES
+     ══════════════════════════════════════════════════ */
+
+  .empty-state {
+    @apply flex flex-col items-center justify-center gap-3 py-10 px-6
+           rounded-2xl border border-dashed border-white/10 text-center
+           text-white/40;
+  }
+
+  .empty-state-icon {
+    @apply text-4xl opacity-40;
+  }
+
+  .empty-state-title {
+    @apply font-display text-body font-semibold text-white/50;
+  }
+
+  .empty-state-body {
+    @apply text-caption text-white/30 max-w-xs;
+  }
 }
 
 /* ══════════════════════════════════════════════════
@@ -327,9 +356,9 @@
 
 .skeleton {
   background: linear-gradient(90deg,
-    rgba(255, 255, 255, 0.03) 25%,
-    rgba(255, 255, 255, 0.06) 50%,
-    rgba(255, 255, 255, 0.03) 75%
+    rgba(245, 158, 11, 0.04) 25%,
+    rgba(245, 158, 11, 0.10) 50%,
+    rgba(245, 158, 11, 0.04) 75%
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
