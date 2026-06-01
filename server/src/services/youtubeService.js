@@ -229,6 +229,24 @@ const STATIC_FALLBACK = {
     ],
     nextPageToken: null, prevPageToken: null, totalResults: 3,
   },
+  // Narendra Singh Negi (NSN) — dedicated fallback bucket for the NSN music tab
+  nsn: {
+    videos: [
+      { id: 'vuPPC-MRLjM', title: 'Kan Bhalo Kumoun Gadwal - N S Negi', thumbnail: 'https://i.ytimg.com/vi/vuPPC-MRLjM/hqdefault.jpg', channelTitle: 'Himadri Films', publishedAt: '2026-01-01', description: '' },
+      { id: 'nIhzDJGUL1o', title: 'Trijugi Narayan - Narendra Singh Negi', thumbnail: 'https://i.ytimg.com/vi/nIhzDJGUL1o/hqdefault.jpg', channelTitle: 'Himalayan Films', publishedAt: '2017-01-01', description: '' },
+      { id: 'fWN62nVqA84', title: 'Jai Badri Vishal - N S Negi', thumbnail: 'https://i.ytimg.com/vi/fWN62nVqA84/hqdefault.jpg', channelTitle: 'Kishan Mahipal', publishedAt: '2021-01-01', description: '' },
+      { id: 'IqxxQTrOX34', title: 'Nonstop NSN Garhwali Hits - Classic Songs', thumbnail: 'https://i.ytimg.com/vi/IqxxQTrOX34/hqdefault.jpg', channelTitle: 'Music On Beats', publishedAt: '2020-01-01', description: '' },
+      { id: 'sjiphyYu07k', title: 'Pahadon Ko Raibasi - Saurav Maithani (NSN classic cover)', thumbnail: 'https://i.ytimg.com/vi/sjiphyYu07k/hqdefault.jpg', channelTitle: 'U K Films Studio', publishedAt: '2024-01-01', description: '' },
+      { id: 'Sfd5X--L9Zc', title: 'Jiya Kori Kori Khando - Kishan Mahipal', thumbnail: 'https://i.ytimg.com/vi/Sfd5X--L9Zc/hqdefault.jpg', channelTitle: 'Mashakbeen', publishedAt: '2025-11-01', description: '' },
+      { id: 'GmJqs8hKl_0', title: 'Otuwa Belena - Vivek Nautiyal', thumbnail: 'https://i.ytimg.com/vi/GmJqs8hKl_0/hqdefault.jpg', channelTitle: 'Ularya Lok Dhun', publishedAt: '2024-01-01', description: '' },
+      { id: 'QcCbvhyLO5s', title: 'Aachhri - Darshan Farswan', thumbnail: 'https://i.ytimg.com/vi/QcCbvhyLO5s/hqdefault.jpg', channelTitle: 'Ularya Lok Dhun', publishedAt: '2025-01-01', description: '' },
+      { id: '5_sKFz9rVBw', title: 'Aankhyon Ka Baan Na Chalo - Meena Rana', thumbnail: 'https://i.ytimg.com/vi/5_sKFz9rVBw/hqdefault.jpg', channelTitle: 'VNV Records', publishedAt: '2025-01-01', description: '' },
+      { id: 'A1HSWP_Q0sM', title: 'Hamara Bara Ma - Vivek Nautiyal', thumbnail: 'https://i.ytimg.com/vi/A1HSWP_Q0sM/hqdefault.jpg', channelTitle: 'Himalayan Music Company', publishedAt: '2026-03-01', description: '' },
+      { id: 'm87rbITU1No', title: 'Ghas Kati - Priyanka Meher', thumbnail: 'https://i.ytimg.com/vi/m87rbITU1No/hqdefault.jpg', channelTitle: 'Priyanka Meher', publishedAt: '2026-03-01', description: '' },
+      { id: 'P77HXhI2gI8', title: 'Takk Lage Ki - Shweta Mahara', thumbnail: 'https://i.ytimg.com/vi/P77HXhI2gI8/hqdefault.jpg', channelTitle: 'Mashakbeen', publishedAt: '2026-03-01', description: '' },
+    ],
+    nextPageToken: null, prevPageToken: null, totalResults: 12,
+  },
 };
 
 // Curated/pinned video IDs that should always appear at the top of a
@@ -344,7 +362,9 @@ function seededShuffle(arr, seed) {
 function pickFallbackForQuery(query) {
   const q = String(query || '').toLowerCase();
   let bucket = 'songs';
-  if (/bhajan|devotional|jagar|jaagar|bhakti|stuti|aarti|mandir|temple/.test(q)) bucket = 'devotional';
+  // NSN (Narendra Singh Negi) — check before generic hit/trending to avoid mis-routing
+  if (/narendra\s*singh\s*negi|nsn|negi/.test(q)) bucket = 'nsn';
+  else if (/bhajan|devotional|jagar|jaagar|bhakti|stuti|aarti|mandir|temple/.test(q)) bucket = 'devotional';
   else if (/comedy|funny|hasi|hasna|kajyaan|polya|ghanna/.test(q)) bucket = 'comedy';
   // Only route to movies bucket when explicitly requesting movies — never for music searches
   else if (/movie|film|chakrachal|gharjawain/.test(q) && !/song|music|bhajan|dj|remix|jaagar/.test(q)) bucket = 'movies';

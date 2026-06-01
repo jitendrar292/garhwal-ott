@@ -39,8 +39,10 @@ export default function MusicPage() {
     setTracks([]);
     setNextPageToken(null);
     // First page: latest uploads first (order=date), 10 per fetch.
-    // videoCategoryId=10 = Music on YouTube — filters out movies/films.
-    searchVideos(MUSIC_QUERIES[activeTab].query, '', 10, 'date', '10')
+    // videoCategoryId omitted — category 10 (Music) is rarely set by regional
+    // Garhwali/Pahadi uploaders, so it causes zero results for NSN and other tabs.
+    // The query's -movie/-film exclusions already filter non-music content.
+    searchVideos(MUSIC_QUERIES[activeTab].query, '', 10, 'date')
       .then((data) => {
         if (!cancelled) {
           setTracks(data.videos || []);
@@ -57,7 +59,7 @@ export default function MusicPage() {
   const handleLoadMore = () => {
     if (!nextPageToken || loadingMore) return;
     setLoadingMore(true);
-    searchVideos(MUSIC_QUERIES[activeTab].query, nextPageToken, 10, 'date', '10')
+    searchVideos(MUSIC_QUERIES[activeTab].query, nextPageToken, 10, 'date')
       .then((data) => {
         // Append older results after the latest ones already shown.
         setTracks((prev) => mergeUnique(prev, data.videos || []));
