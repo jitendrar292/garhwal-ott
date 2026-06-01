@@ -83,8 +83,7 @@ export default function App() {
             <Suspense fallback={null}>
               <Footer />
               <FloatingPlayer />
-              <FloatingByoIcon />
-              <FloatingDailyProduct />
+              <HomeOnlyFloating />
             </Suspense>
             <BottomNav />
             <Suspense fallback={null}>
@@ -97,6 +96,18 @@ export default function App() {
         </ToastProvider>
       </MusicProvider>
     </AuthProvider>
+  );
+}
+
+/** Renders the daily-product + Jhumelo floating icons only on the home page. */
+function HomeOnlyFloating() {
+  const { pathname } = useLocation();
+  if (pathname !== '/') return null;
+  return (
+    <>
+      <FloatingByoIcon />
+      <FloatingDailyProduct />
+    </>
   );
 }
 
