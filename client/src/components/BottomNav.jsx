@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 
 const TABS = [
   {
-    name: 'Home',
+    name: 'घर',
     path: '/',
     icon: (
       <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -19,7 +19,7 @@ const TABS = [
     ),
   },
   {
-    name: 'Music',
+    name: 'गाणु',
     path: '/music',
     icon: (
       <img src="/icons/music.png" alt="Music" className="w-7 h-7 object-contain opacity-60" />
@@ -30,7 +30,7 @@ const TABS = [
     featured: true,
   },
   {
-    name: 'Samagri',
+    name: 'सामाण',
     path: '/pahadi-store',
     icon: (
       <img src="/art/pahadi-Smagri.png" alt="Samagri" className="w-7 h-7 object-contain opacity-60" />
@@ -40,7 +40,7 @@ const TABS = [
     ),
   },
   {
-    name: 'News',
+    name: 'रैबार',
     path: '/news',
     icon: (
       <img src="/art/samachar.png" alt="News" className="w-7 h-7 opacity-70" />
@@ -50,7 +50,7 @@ const TABS = [
     ),
   },
   {
-    name: 'Jobs',
+    name: 'चाकरी',
     path: '/jobs',
     icon: (
       <img src="/art/naukri-chakri.png" alt="Jobs" className="w-7 h-7 object-contain opacity-60" />
@@ -60,7 +60,7 @@ const TABS = [
     ),
   },
   {
-    name: 'Pehnawa',
+    name: 'पैनाव',
     path: '/pahadi-pehnawa',
     icon: (
       <img src="/icons/pehnawa.png" alt="Pehnawa" className="w-7 h-7 object-contain opacity-60" />
@@ -70,7 +70,7 @@ const TABS = [
     ),
   },
   {
-    name: 'AI',
+    name: 'घुघुती',
     path: '/ghughuti-ai',
     icon: (
       <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">

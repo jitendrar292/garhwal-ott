@@ -103,14 +103,14 @@ export default function NewsPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 pb-28">
       <SEO
-        title="Pahadi News - Latest Uttarakhand & Garhwali Samachar"
+        title="रैबार - Latest Uttarakhand & Garhwali News"
         description="Daily Pahadi news from Uttarakhand — politics, culture, sports, weather and development updates from Garhwal and Kumaon, in Hindi and Garhwali."
         path="/news"
         keywords="Pahadi news, Uttarakhand news, Garhwali samachar, Kumaon news, Garhwal news, Uttarakhand politics, Uttarakhand weather"
         jsonLd={{
           '@context': 'https://schema.org',
           '@type': 'CollectionPage',
-          name: 'Pahadi News - Uttarakhand Samachar',
+          name: 'रैबार - Uttarakhand News',  
           url: 'https://pahaditube.in/news',
           description: 'Daily Uttarakhand and Garhwali news covering politics, culture, sports, weather and development.',
           isPartOf: { '@id': 'https://pahaditube.in/#website' },
@@ -122,7 +122,7 @@ export default function NewsPage() {
           <img src="/art/samachar.png" alt="News" className="w-10 h-10 object-contain" />
         </div>
         <div className="flex-1">
-          <h1 className="page-header">पहाड़ी <span className="gradient-text">समाचार</span></h1>
+          <h1 className="page-header"><span className="gradient-text">रैबार</span></h1>
           <p className="text-sm text-gray-400">Local News from Devbhoomi Uttarakhand</p>
         </div>
         <NotifyButton />

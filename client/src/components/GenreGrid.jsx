@@ -75,7 +75,7 @@ const GENRES = [
     badge: { text: '🆕', cls: 'bg-teal-500/85' },
   },
   {
-    name: 'समाचार',
+    name: 'रैबार',
     sub: 'पहाड़ की\nखबर',
     path: '/news',
     emoji: '📰',
