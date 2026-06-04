@@ -41,6 +41,9 @@ const STATIC_ROUTES = [
   '/muhavare',
   '/instruments',
   '/sacred-places',
+  '/chardham-yatra',
+  '/sarkari-dastavej',
+  '/tyohar',
   '/about',
   '/privacy-policy',
 ];
