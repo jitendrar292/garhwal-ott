@@ -16,7 +16,7 @@ export default function MuhavarePage() {
     <div className="w-full text-white">
       <SEO
         title="गढ़वाली मुहावरे – Garhwali Proverbs & Sayings"
-        description="30+ पारंपरिक गढ़वाली कहावतें और मुहावरे हिंदी-अंग्रेजी अनुवाद के साथ। Traditional Garhwali proverbs with Hindi and English translations, cultural context, and categories."
+        description="30+ पारंपरिक गढ़वाली कहावतें और मुहावरे — हिंदी अनुवाद, अर्थ एवं सांस्कृतिक संदर्भ के साथ। पहाड़ी बुद्धि, साहस, प्रकृति, जीवन दर्शन और हास्य की कहावतें।"
         path="/muhavare"
         keywords="garhwali proverbs, garhwali muhavare, pahadi kahawat, uttarakhand proverbs, garhwali sayings, garhwali wisdom, pahadi culture"
       />

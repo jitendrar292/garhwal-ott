@@ -18,7 +18,7 @@ export default function InstrumentsPage() {
     <div className="w-full text-white">
       <SEO
         title="गढ़वाली वाद्य यंत्र – Traditional Musical Instruments of Uttarakhand"
-        description="ढोल, दमाऊ, रणसिंगा, हुड़का, मशकबीन — उत्तराखंड के पारंपरिक वाद्य यंत्रों का विस्तृत परिचय। Complete guide to Garhwali folk instruments with cultural significance and playing styles."
+        description="ढोल, दमाऊ, रणसिंगा, हुड़का, मशकबीन, अलगोजा, बांसुरी — उत्तराखंड के पारंपरिक वाद्य यंत्रों का विस्तृत परिचय। वादन शैली, सांस्कृतिक महत्व, प्रसिद्ध कलाकार और गढ़वाली संगीत परम्परा।"
         path="/instruments"
         keywords="garhwali instruments, dhol damau, ransingha, hurka, mashakbeen, uttarakhand music, pahadi folk instruments, garhwali folk music"
       />
