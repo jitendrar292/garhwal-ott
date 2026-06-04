@@ -10,6 +10,7 @@ import GarhwaliSikhaRow from '../components/GarhwaliSikhaRow';
 import GovtJobsRow from '../components/GovtJobsRow';
 import SarkaariYojanaRow from '../components/SarkaariYojanaRow';
 import UpcomingHappenings from '../components/UpcomingHappenings';
+import CharDhamRow from '../components/CharDhamRow';
 import AboutSection from '../components/AboutSection';
 import AdUnit, { AdUnitFluid } from '../components/AdUnit';
 import { getVideosByCategory } from '../api/youtube';
@@ -130,6 +131,16 @@ export default function HomePage() {
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
         >
           <UpcomingHappenings />
+        </motion.div>
+
+        {/* Char Dham Yatra — 4-dham guide cards + yatra videos */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.1 }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <CharDhamRow />
         </motion.div>
 
         {/* Garhwali folk-stories — traditional Uttarakhand narratives */}
