@@ -38,6 +38,9 @@ const STATIC_ROUTES = [
   '/garhwali-sikha',
   '/pahadi-khano',
   '/pahadi-store',
+  '/muhavare',
+  '/instruments',
+  '/sacred-places',
   '/about',
   '/privacy-policy',
 ];

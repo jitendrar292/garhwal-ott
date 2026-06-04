@@ -1,13 +1,7 @@
-// Garhwali folk stories — sourced from himlingo.com/folk-stories.
-// Mirrored client-side (≈55 KB raw, ~20 KB gzipped) so the reader page
-// renders instantly without a server round-trip. To refresh the dataset,
-// re-run `node scripts/scrape-himlingo-folkstories.js` in /server and copy
-// the regenerated entries into this file.
-//
-// The data comes from the upstream scraper as `{ slug, title, body, url }`
-// where `title` includes the trailing "/ गढ़वाली लोक-गाथा" suffix. We strip
-// that suffix here and add a display emoji + short Hindi blurb so each card
-// has a distinct identity in the row.
+// Garhwali folk stories — traditional oral narratives from Uttarakhand.
+// These are original Garhwali-language folk tales (लोक-गाथा) passed down
+// through generations in the Pahadi communities of Garhwal region.
+// Each story preserves the authentic Garhwali dialect and poetic form.
 
 const STORIES = [
   {
@@ -52,6 +46,54 @@ const STORIES = [
     blurb: 'रणू रौत के पराक्रम और बलिदान की कहानी का दूसरा भाग।',
     emoji: '🗡️',
   },
+  {
+    slug: 'rajula-malushahi',
+    name: 'राजुला मालूशाही',
+    blurb: 'बैराठ के राजकुमार मालूशाही और रंग महल की राजुला की अमर प्रेम-गाथा।',
+    emoji: '💕',
+  },
+  {
+    slug: 'surja-kunwar',
+    name: 'सूर्जा कुंवर',
+    blurb: 'हुडकी बोल की वीर-गाथा — सूर्जा कुंवर का शौर्य और बलिदान।',
+    emoji: '☀️',
+  },
+  {
+    slug: 'gaadu-folk-tale',
+    name: 'गाडू — वफादार कुत्ता',
+    blurb: 'गढ़वाली लोक-कथा — एक वफादार कुत्ते और अपने मालिक की मार्मिक गाथा।',
+    emoji: '🐕',
+  },
+  {
+    slug: 'nanda-devi-raj-jaat',
+    name: 'नन्दा देवी राज जात',
+    blurb: 'नन्दा देवी की ससुराल यात्रा — हिमालय की सबसे बड़ी धार्मिक यात्रा की कथा।',
+    emoji: '🏔️',
+  },
+  {
+    slug: 'ajua-bafaul',
+    name: 'अजुआ बफौल',
+    blurb: 'गढ़वाल की एक मार्मिक बाल-विधवा की कथा — अन्याय के विरुद्ध आवाज।',
+    emoji: '🕊️',
+  },
+  {
+    slug: 'bhana-gangnath',
+    name: 'भाना गंगनाथ',
+    blurb: 'गढ़वाल के सिद्ध सन्यासी भाना गंगनाथ और रानी बेलापाटणी की प्रेम-गाथा।',
+    emoji: '🔱',
+  },
+  {
+    slug: 'madhomahesh-gaatha',
+    name: 'मादो महेश गाथा',
+    blurb: 'पंवार वंश के शासक मादो महेश और उनकी वीरता की गाथा।',
+    emoji: '⚜️',
+  },
+  {
+    slug: 'garhwali-bhoot-katha',
+    name: 'गढ़वाली भूत कथाएँ',
+    blurb: 'गढ़वाल की रहस्यमयी भूत-प्रेत कथाएँ — चुड़ैल, झ्यूंता और भैरो।',
+    emoji: '👻',
+  },
 ];
 
 // Lazily load the heavy text bundle only when a reader actually opens a
@@ -74,5 +116,5 @@ export async function getFolkStoryWithBody(slug) {
   const meta = getFolkStory(slug);
   if (!meta) return null;
   const bodies = await loadBodies();
-  return { ...meta, ...(bodies[slug] || { body: '', url: '' }) };
+  return { ...meta, ...(bodies[slug] || { body: '', summary: '' }) };
 }

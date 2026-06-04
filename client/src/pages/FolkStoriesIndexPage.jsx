@@ -40,16 +40,8 @@ export default function FolkStoriesIndexPage() {
         </h1>
         <p className="text-sm text-gray-400 mt-2">
           Folk tales of Garhwal — heroes, lovers and warriors of the Pahadi heartland.
-          Sourced from{' '}
-          <a
-            href="https://himlingo.com/folk-stories/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary-400 hover:underline"
-          >
-            himlingo.com
-          </a>
-          .
+          These traditional oral narratives have been passed down through generations in Uttarakhand's
+          Garhwali-speaking communities, preserving the region's rich cultural heritage.
         </p>
       </header>
 

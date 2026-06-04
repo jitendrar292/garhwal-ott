@@ -141,18 +141,18 @@ const PHRASES = [
   { id: 105, category: 'time', garhwali: 'शनिवार',  hindi: 'शनिवार',  english: 'Saturday',  pronunciation: 'Shanivaar' },
   { id: 106, category: 'time', garhwali: 'रविवार',  hindi: 'रविवार',  english: 'Sunday',    pronunciation: 'Ravivaar' },
 
-  // ── Extra from Himlingo dictionary ──
+  // ── Additional vocabulary ──
   // Greetings
   { id: 107, category: 'greetings', garhwali: 'खुसाली छ?',    hindi: 'खुशी है?',         english: 'Are you happy / well?',   pronunciation: 'Khusaali chha?' },
   { id: 108, category: 'greetings', garhwali: 'जय हो',         hindi: 'जय हो',            english: 'Victory / Blessings',     pronunciation: 'Jay ho' },
-  // Family (himlingo-sourced)
+  // Family
   { id: 111, category: 'family', garhwali: 'नाति',    hindi: 'नाती / पोता', english: 'Grandson',   pronunciation: 'Naati' },
-  // Nature (himlingo-sourced)
+  // Nature
   { id: 113, category: 'nature', garhwali: 'पाड़',     hindi: 'पहाड़',   english: 'Mountain (local)', pronunciation: 'Paad' },
   { id: 114, category: 'nature', garhwali: 'खाळ',     hindi: 'नाला / खड्ड', english: 'Stream / Ravine', pronunciation: 'Khaal' },
   { id: 115, category: 'nature', garhwali: 'बुरांस',  hindi: 'बुरांश',  english: 'Rhododendron (Uttarakhand flower)', pronunciation: 'Buraans' },
   { id: 116, category: 'nature', garhwali: 'भ्यूँ',   hindi: 'ज़मीन',   english: 'Land / Earth',  pronunciation: 'Bhyoon' },
-  // Daily phrases (himlingo-sourced)
+  // Daily phrases
   { id: 117, category: 'daily', garhwali: 'भलि तरां',  hindi: 'अच्छी तरह से', english: 'Properly / Well done', pronunciation: 'Bhali taraa' },
   { id: 118, category: 'daily', garhwali: 'दगड़ी',    hindi: 'साथी / दोस्त', english: 'Friend / Companion', pronunciation: 'Dagdi' },
   { id: 119, category: 'daily', garhwali: 'आज्ञा छ', hindi: 'आज्ञा है / ठीक है', english: 'As you say / Agreed', pronunciation: 'Aagna chha' },

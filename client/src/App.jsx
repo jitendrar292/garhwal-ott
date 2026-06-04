@@ -49,6 +49,9 @@ const ArtGalleryPage = lazy(() => import('./pages/ArtGalleryPage'));
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
 const TermsOfServicePage = lazy(() => import('./pages/TermsOfServicePage'));
 const JhumeloPage = lazy(() => import('./pages/JhumeloPage'));
+const MuhavarePage = lazy(() => import('./pages/MuhavarePage'));
+const InstrumentsPage = lazy(() => import('./pages/InstrumentsPage'));
+const SacredPlacesPage = lazy(() => import('./pages/SacredPlacesPage'));
 
 // Protected route wrapper - redirects to login if not authenticated
 function RequireAuth({ children }) {
@@ -195,6 +198,9 @@ function AnimatedRoutes() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/art-gallery" element={<ArtGalleryPage />} />
             <Route path="/jhumelo" element={<JhumeloPage />} />
+            <Route path="/muhavare" element={<MuhavarePage />} />
+            <Route path="/instruments" element={<InstrumentsPage />} />
+            <Route path="/sacred-places" element={<SacredPlacesPage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="/terms-of-service" element={<TermsOfServicePage />} />
           </Routes>

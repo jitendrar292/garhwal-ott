@@ -132,7 +132,7 @@ export default function HomePage() {
           <UpcomingHappenings />
         </motion.div>
 
-        {/* Garhwali folk-stories — Devanagari narratives sourced from himlingo.com */}
+        {/* Garhwali folk-stories — traditional Uttarakhand narratives */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

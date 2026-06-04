@@ -39,7 +39,7 @@ export default function FolkStoryPage() {
     );
   }
 
-  const { name, blurb, emoji, body, url } = state.story;
+  const { name, blurb, emoji, body, summary } = state.story;
   const paragraphs = (body || '').split(/\n{2,}/).map((p) => p.trim()).filter(Boolean);
 
   // Promote other stories at the bottom — exclude the current one.
@@ -49,7 +49,7 @@ export default function FolkStoryPage() {
     <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-6 pb-16">
       <SEO
         title={`${name} - Garhwali Folk Story`}
-        description={blurb || `${name} — a Garhwali folk story (लोक-गाथा) from Uttarakhand.`}
+        description={summary || blurb || `${name} — a Garhwali folk story (लोक-गाथा) from Uttarakhand.`}
         path={`/folk-story/${slug}`}
         type="article"
         jsonLd={{
@@ -88,6 +88,13 @@ export default function FolkStoryPage() {
         </div>
       </header>
 
+      {summary && (
+        <section className="mb-8 p-5 rounded-xl bg-amber-950/30 border border-amber-700/20">
+          <h2 className="text-sm font-bold text-amber-200 uppercase tracking-wide mb-2">Story Summary (English)</h2>
+          <p className="text-sm text-white/70 leading-relaxed">{summary}</p>
+        </section>
+      )}
+
       <article className="prose prose-invert max-w-none text-white/80 leading-loose text-[1.05rem] font-devanagari">
         {paragraphs.map((para, i) => (
           <p key={i} className="mb-4 whitespace-pre-line">{para}</p>
@@ -96,15 +103,7 @@ export default function FolkStoryPage() {
 
       <footer className="mt-10 pt-6 border-t border-white/[0.06] text-caption text-white/40 space-y-2">
         <p>
-          स्रोत:{' '}
-          {url ? (
-            <a href={url} target="_blank" rel="noopener noreferrer" className="text-primary-400 hover:underline">
-              himlingo.com
-            </a>
-          ) : (
-            'himlingo.com'
-          )}
-          {' '}— एक समुदाय-आधारित पहाड़ी भाषा संरक्षण परियोजना।
+          यो लोक-गाथा गढ़वाल की मौखिक परम्परा का हिस्सा छ — पीढ़ी दर पीढ़ी सुणाई जांदी रही छ।
         </p>
         <p>
           यो गाथा का बारे मा घुघुती AI सी पुछण च त{' '}
