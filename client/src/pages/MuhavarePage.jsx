@@ -41,8 +41,8 @@ export default function MuhavarePage() {
             प्रकृति, साहस और समाज से जुड़े अनुभवों को सुंदर शब्दों में व्यक्त करते हैं।
           </p>
           <p className="text-xs text-gray-400 mt-2">
-            Traditional proverbs from the Garhwal Himalayas — each carrying generations of mountain wisdom,
-            translated into Hindi and English with cultural context.
+            पहाड़ की बैठकों मा, चूल्हा का पास, बुजुर्गों की ज़बान से — ये कहावतें सुन-सुन कर
+            बच्चे बड़े होन्दा। आज यो परम्परा लुप्त हो रई छ — इसलिए हमने इनको संरक्षित करी।
           </p>
         </motion.div>
 
@@ -58,7 +58,7 @@ export default function MuhavarePage() {
                   : 'bg-surface-2 text-gray-300 hover:bg-surface-3'
               }`}
             >
-              {cat.label} <span className="text-gray-400 ml-1">({cat.english})</span>
+              {cat.label}
             </button>
           ))}
         </div>
@@ -80,9 +80,6 @@ export default function MuhavarePage() {
               <p className="text-sm text-gray-300 mb-1">
                 <span className="text-gray-500">हिंदी:</span> {m.hindi}
               </p>
-              <p className="text-sm text-gray-400 italic mb-2">
-                {m.english}
-              </p>
 
               {expandedId === m.id && (
                 <motion.div
@@ -90,9 +87,9 @@ export default function MuhavarePage() {
                   animate={{ opacity: 1, height: 'auto' }}
                   className="mt-3 pt-3 border-t border-white/10"
                 >
-                  <p className="text-xs text-gray-400 leading-relaxed">
-                    <span className="text-primary-400 font-medium">सांस्कृतिक संदर्भ: </span>
-                    {m.context}
+                  <p className="text-sm text-gray-300 leading-relaxed">
+                    <span className="text-primary-400 font-medium">अर्थ एवं संदर्भ: </span>
+                    {m.meaning}
                   </p>
                 </motion.div>
               )}
@@ -118,11 +115,10 @@ export default function MuhavarePage() {
             समाज का नियम हो, या जीवन दर्शन।
           </p>
           <p className="text-sm text-gray-300 leading-relaxed">
-            These Garhwali proverbs represent centuries of accumulated mountain wisdom. Each saying encapsulates
-            a truth about Pahadi life — from the practical observations of farmers and shepherds to the
-            philosophical reflections of hill elders. They were traditionally passed down orally during evening
-            gatherings (baithak) and are increasingly at risk of being forgotten as younger generations migrate
-            to cities.
+            ये कहावतें पारंपरिक रूप से शाम की बैठकों में, चूल्हा के पास, खेतों में काम करते हुए
+            सुनाई जाती थीं। आज शहरीकरण और पलायन के कारण नई पीढ़ी इन्हें भूल रही है।
+            हमने ये मुहावरे यहाँ संकलित किए हैं ताकि ये बुद्धि की बातें जीवित रहें और
+            आने वाली पीढ़ियों तक पहुँचें।
           </p>
         </div>
       </div>

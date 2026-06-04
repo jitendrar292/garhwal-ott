@@ -43,8 +43,8 @@ export default function SacredPlacesPage() {
             स्थापत्य कला, और गढ़वाली संस्कृति से उनका गहरा सम्बन्ध।
           </p>
           <p className="text-xs text-gray-400 mt-2">
-            Explore the sacred temples, ancient forts, and heritage sites of Uttarakhand — complete with
-            legends, architectural notes, and their deep connection to Garhwali identity.
+            हर मन्दिर, हर किला, हर पवित्र स्थल — एक कहानी सुणौन्दो।
+            पीढ़ियों से चली आ रई ये कथाएँ गढ़वाली अस्मिता का अभिन्न अंग छन।
           </p>
         </motion.div>
 
@@ -60,7 +60,7 @@ export default function SacredPlacesPage() {
                   : 'bg-surface-2 text-gray-300 hover:bg-surface-3'
               }`}
             >
-              {t.label} <span className="text-gray-400 ml-1">({t.english})</span>
+              {t.label}
             </button>
           ))}
         </div>
@@ -82,7 +82,7 @@ export default function SacredPlacesPage() {
                   <h3 className="font-bold text-base group-hover:text-teal-300 transition-colors">
                     {place.name}
                   </h3>
-                  <p className="text-xs text-gray-400">{place.english}</p>
+                  <p className="text-xs text-gray-400">{place.district} • {place.altitude}</p>
                 </div>
               </div>
               <p className="text-sm text-gray-300 line-clamp-3 mb-3">{place.legend}</p>
@@ -118,7 +118,7 @@ export default function SacredPlacesPage() {
                     <div>
                       <h2 className="text-xl font-bold">{opened.name}</h2>
                       <p className="text-sm text-gray-400">
-                        {opened.english} • {opened.district} • {opened.altitude}
+                        {opened.district} • {opened.altitude}
                       </p>
                     </div>
                   </div>
@@ -132,22 +132,22 @@ export default function SacredPlacesPage() {
 
                 <div className="space-y-4">
                   <section>
-                    <h3 className="text-sm font-semibold text-teal-300 mb-1">पौराणिक कथा (Legend)</h3>
+                    <h3 className="text-sm font-semibold text-teal-300 mb-1">पौराणिक कथा</h3>
                     <p className="text-sm text-gray-300 leading-relaxed">{opened.legend}</p>
                   </section>
 
                   <section>
-                    <h3 className="text-sm font-semibold text-teal-300 mb-1">महत्व (Significance)</h3>
+                    <h3 className="text-sm font-semibold text-teal-300 mb-1">महत्व</h3>
                     <p className="text-sm text-gray-300 leading-relaxed">{opened.significance}</p>
                   </section>
 
                   <section>
-                    <h3 className="text-sm font-semibold text-teal-300 mb-1">स्थापत्य कला (Architecture)</h3>
+                    <h3 className="text-sm font-semibold text-teal-300 mb-1">स्थापत्य कला</h3>
                     <p className="text-sm text-gray-300 leading-relaxed">{opened.architecture}</p>
                   </section>
 
                   <section>
-                    <h3 className="text-sm font-semibold text-teal-300 mb-1">गढ़वाली सम्बन्ध (Garhwali Connection)</h3>
+                    <h3 className="text-sm font-semibold text-teal-300 mb-1">गढ़वाली सम्बन्ध</h3>
                     <p className="text-sm text-gray-300 leading-relaxed">{opened.garhwaliConnection}</p>
                   </section>
 
@@ -172,11 +172,9 @@ export default function SacredPlacesPage() {
             अटूट हिस्सा हैं।
           </p>
           <p className="text-sm text-gray-300 leading-relaxed">
-            Uttarakhand is called "Devbhumi" — the land of gods. For Garhwali people, these sacred and
-            historical sites are not merely tourist destinations but living connections to their ancestors,
-            their faith, and their cultural identity. From the 1000-year-old Panwar dynasty capitals to the
-            highest Shiva temples in the world, each site tells a story of devotion, art, and the unique
-            relationship between mountain people and their landscape.
+            पंवार वंश की 1000 साल पुरानी राजधानियों से लेकर दुनिया के सबसे ऊँचे शिव मन्दिर तक —
+            हर स्थल भक्ति, कला, और पहाड़ी लोकों के अपनी भूमि से अनूठे रिश्ते की कहानी सुनान्दा छ।
+            यो स्थल हमारी विरासत छन, हमारी पहचान छन, हमारी आस्था छन।
           </p>
         </div>
       </div>

@@ -43,8 +43,8 @@ export default function InstrumentsPage() {
             अपनी आवाज, और अपनी कहानी। जानिए कैसे ये वाद्य गढ़वाली संस्कृति की आत्मा हैं।
           </p>
           <p className="text-xs text-gray-400 mt-2">
-            A comprehensive guide to the folk instruments of Garhwal and Kumaon — their history, cultural role,
-            playing techniques, and the communities that preserve them.
+            औजी, बजगी, दास समुदाय — सदियों से ये परिवार हमारी संगीत परम्परा सम्भाला छन।
+            आधुनिकता की चुनौती मा ये कला विलुप्त हो रई छ — इनकी जानकारी और सम्मान आज पहले से ज्यादा जरूरी छ।
           </p>
         </motion.div>
 
@@ -60,7 +60,7 @@ export default function InstrumentsPage() {
                   : 'bg-surface-2 text-gray-300 hover:bg-surface-3'
               }`}
             >
-              {t.label} <span className="text-gray-400 ml-1">({t.english})</span>
+              {t.label}
             </button>
           ))}
         </div>
@@ -82,7 +82,7 @@ export default function InstrumentsPage() {
                   <h3 className="font-bold text-base group-hover:text-purple-300 transition-colors">
                     {inst.name}
                   </h3>
-                  <p className="text-xs text-gray-400">{inst.english}</p>
+                  <p className="text-xs text-gray-400">{inst.region}</p>
                 </div>
               </div>
               <p className="text-sm text-gray-300 line-clamp-3 mb-2">{inst.description}</p>
@@ -116,7 +116,7 @@ export default function InstrumentsPage() {
                     <span className="text-4xl">{opened.image}</span>
                     <div>
                       <h2 className="text-xl font-bold">{opened.name}</h2>
-                      <p className="text-sm text-gray-400">{opened.english} • {opened.region}</p>
+                      <p className="text-sm text-gray-400">{opened.region}</p>
                     </div>
                   </div>
                   <button
@@ -129,23 +129,23 @@ export default function InstrumentsPage() {
 
                 <div className="space-y-4">
                   <section>
-                    <h3 className="text-sm font-semibold text-purple-300 mb-1">विवरण (Description)</h3>
+                    <h3 className="text-sm font-semibold text-purple-300 mb-1">विवरण</h3>
                     <p className="text-sm text-gray-300 leading-relaxed">{opened.description}</p>
                   </section>
 
                   <section>
-                    <h3 className="text-sm font-semibold text-purple-300 mb-1">सांस्कृतिक महत्व (Cultural Significance)</h3>
+                    <h3 className="text-sm font-semibold text-purple-300 mb-1">सांस्कृतिक महत्व</h3>
                     <p className="text-sm text-gray-300 leading-relaxed">{opened.culturalSignificance}</p>
                   </section>
 
                   <section>
-                    <h3 className="text-sm font-semibold text-purple-300 mb-1">वादन शैली (Playing Style)</h3>
+                    <h3 className="text-sm font-semibold text-purple-300 mb-1">वादन शैली</h3>
                     <p className="text-sm text-gray-300 leading-relaxed">{opened.playingStyle}</p>
                   </section>
 
                   <section>
-                    <h3 className="text-sm font-semibold text-purple-300 mb-1">प्रसिद्ध वादक (Famous Players)</h3>
-                    <p className="text-sm text-gray-300 leading-relaxed">{opened.famousPlayers}</p>
+                    <h3 className="text-sm font-semibold text-purple-300 mb-1">प्रसिद्ध कलाकार</h3>
+                    <p className="text-sm text-gray-300 leading-relaxed">{opened.famousInfo}</p>
                   </section>
                 </div>
               </motion.div>
@@ -162,10 +162,9 @@ export default function InstrumentsPage() {
             रणसिंगा देवता की जात के लिए, हुड़का खेती-बाड़ी के गीतों के लिए — हर अवसर पर एक अलग ध्वनि गूँजती है।
           </p>
           <p className="text-sm text-gray-300 leading-relaxed">
-            The musical instrument tradition of Garhwal is inseparable from daily life. Unlike concert traditions,
-            these instruments exist within living rituals — weddings, harvests, deity processions, and spirit
-            invocations. The hereditary musician communities (Auji, Bajgi, Das) who preserve these traditions face
-            the challenge of modernization, making documentation and appreciation more important than ever.
+            इन वाद्य यंत्रों कू बजाणो वाला समुदाय — औजी, बजगी, दास — पीढ़ियों से यो कला सम्भाली छ।
+            आधुनिकता की चुनौती मा यो परम्परा खतरा मा छ। इसलिए इनको दस्तावेजीकरण और सम्मान
+            आज पहले से ज्यादा जरूरी छ। हमारा वाद्य यंत्र — हमारी आवाज छन, हमारी पहचान छन।
           </p>
         </div>
       </div>

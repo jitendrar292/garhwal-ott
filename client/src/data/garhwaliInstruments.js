@@ -1,134 +1,124 @@
 /**
- * Traditional Musical Instruments of Garhwal & Kumaon
- * Comprehensive guide to the folk instruments of Uttarakhand
+ * गढ़वाली पारंपरिक वाद्य यंत्र
+ * उत्तराखंड की लोक संगीत परम्परा का विस्तृत परिचय
  */
 const GARHWALI_INSTRUMENTS = [
   {
     id: 'dhol',
     name: 'ढोल',
-    english: 'Dhol',
     type: 'percussion',
     image: '🥁',
-    region: 'Garhwal & Kumaon',
-    description: 'The dhol is the heartbeat of every Garhwali celebration. It is a large, barrel-shaped drum played with two sticks — a thin bamboo stick (dagga) on the treble side and a curved heavy stick (thali) on the bass side. The drum body is carved from a single piece of sheesham or mango wood, with goatskin stretched over both ends.',
-    culturalSignificance: 'No wedding, festival, or religious procession in Uttarakhand is complete without the dhol. The rhythmic patterns (taal) vary by occasion — the "Mangal" beat for weddings, "Jagar" beat for spirit invocations, and "Pandav Nritya" beat for the epic dance-drama. Dhol players (Auji/Dholi) hold a hereditary position in village society and are essential for all rituals.',
-    playingStyle: 'The player hangs the dhol from a shoulder strap and strikes alternately on both sides. The bass side produces deep resonant booms while the treble side creates sharp, cutting rhythms. Master players can produce 15+ distinct sounds from a single instrument.',
-    famousPlayers: 'Pritam Das Auji (legendary court drummer of Tehri), Mohan Upreti (documented dhol traditions), Ajay Rawat (contemporary fusion artist).'
+    region: 'गढ़वाल एवं कुमाऊँ',
+    description: 'ढोल गढ़वाल की धड़कन छ — बिना ढोल कुई शादी, कुई त्यौहार, कुई देवता की जात नी होन्दी। यो एक बड़ो, बैरल जसो ड्रम छ जैको शरीर शीशम या आम की लकड़ी से बणाइन्दा। दुयों तरफ बकरी की खाल तानी जान्दी। दाईं तरफ पतली बाँस की छड़ी (डग्गा) से बजाइन्दा, बाईं तरफ मुड्यो भारी डंडा (थाली) से।',
+    culturalSignificance: 'गढ़वाल मा ढोल बिना कुई शुभ काम नी होन्दो। शादी मा "मंगल" ताल बजन्दी, जागर मा "जागर" ताल, पांडव नृत्य मा अलग ताल। ढोल बजाणो वालो (औजी/ढोली) गाँव मा बहुत महत्वपूर्ण होन्दो — बिना ढोली कुई संस्कार अधूरो छ। यो वंश-परंपरागत काम छ — बाप से बेटो सीखदो।',
+    playingStyle: 'ढोल कन्धा पर लटकाईक बजाइन्दा। एक तरफ गहरी "धम-धम" आवाज (बास), दूजी तरफ तीखी "टक-टक" (तिरछी)। उस्ताद ढोली एक ढोल से 15 से ज्यादा अलग-अलग आवाजें निकालन्दो। ताल बदलणो — धीमा-तेज, गहरा-ऊँचो — यो कला बरसों की रियाज़ से औन्दी।',
+    famousInfo: 'प्रसिद्ध ढोली: प्रीतम दास औजी (टिहरी दरबार), मोहन उप्रेती (ढोल परम्परा के दस्तावेजकर्ता)। आज अजय रावत जसा कलाकार ढोल कू फ्यूजन संगीत मा ली जा रया छन।'
   },
   {
     id: 'damau',
     name: 'दमाऊ',
-    english: 'Damau (Kettledrum)',
     type: 'percussion',
     image: '🪘',
-    region: 'Garhwal & Kumaon',
-    description: 'The damau is a small copper kettledrum that always accompanies the dhol as its treble complement. Shaped like a bowl with a single goatskin head, it is played with two thin bamboo sticks. The copper body gives it a bright, metallic ring that cuts through the dhol\'s deep boom.',
-    culturalSignificance: 'The dhol-damau pair is inseparable — they are considered "husband and wife" in Garhwali tradition. The damau provides the intricate rhythmic filigree over the dhol\'s foundation beat. In Jagar ceremonies, the damau\'s rapid patterns are believed to attract and guide ancestral spirits.',
-    playingStyle: 'Played with both sticks striking rapidly in alternating patterns. The damau player must synchronize precisely with the dhol while adding complex ornamentations. Advanced techniques include rim shots, muted strokes, and the characteristic "rolling thunder" (ladi) that signals transitions.',
-    famousPlayers: 'Traditionally played by Bajgi (Das) community members who inherit the skill. Notable: Keshav Das (Pauri), Surendra Auji (Chamoli).'
+    region: 'गढ़वाल एवं कुमाऊँ',
+    description: 'दमाऊ ताँबा की कटोरी जसो छोटो नगाड़ो छ जो हमेशा ढोल का साथ बजन्दो। एक तरफ बकरी की खाल तानी होन्दी, दो पतली बाँस की छड़ियों से बजाइन्दा। ताँबा का शरीर से चमकदार, धातु जसी तीखी आवाज निकलन्दी जो ढोल की गहरी आवाज का ऊपर सुणाई देन्दी।',
+    culturalSignificance: 'ढोल-दमाऊ "पति-पत्नी" माणे जान्दा गढ़वाल मा — एक बिना दूसरा अधूरो छ। ढोल नींव (आधार ताल) देन्दो, दमाऊ ऊपर फिरकी (तिहाई, लय) भरन्दो। जागर मा दमाऊ की तेज-तेज थाप से पूर्वजों की आत्मा बुलाई जान्दी — ढंगरिया (माध्यम) नाचण लगन्दो जब दमाऊ की गति बढ़न्दी।',
+    playingStyle: 'दुयों छड़ी एक साथ बारी-बारी मारन्दा — बहुत तेज गति मा। ढोली का साथ पूरो तालमेल रखणो पड़न्दो। उस्ताद दमाऊ वादक "लड़ी" (rolling thunder) बजौन्दा जो किसी भी ताल के बदलाव को संकेत देन्दी।',
+    famousInfo: 'दमाऊ बजगी (दास) समुदाय का लोक वंश-परंपरा से बजान्दा। केशव दास (पौड़ी) और सुरेन्द्र औजी (चमोली) प्रसिद्ध दमाऊ वादक छन।'
   },
   {
     id: 'ransingha',
     name: 'रणसिंगा',
-    english: 'Ransingha (War Horn)',
     type: 'wind',
     image: '📯',
-    region: 'Garhwal',
-    description: 'The ransingha is a curved copper trumpet, typically 3-4 feet long, shaped like the letter "S" or "C". It produces a powerful, haunting drone that can be heard echoing across mountain valleys for kilometers. Made from hammered copper sheets joined together, it has no finger holes — sound variation comes purely from lip pressure and breathing.',
-    culturalSignificance: 'Originally a war instrument used to signal armies across valleys (its name means "war-horn"), it now serves primarily in religious processions (jaat) and deity processions. When the ransingha sounds, it is believed that gods are approaching. During Nanda Devi Raj Jaat, multiple ransinghas create an otherworldly atmosphere as the procession crosses glacier passes.',
-    playingStyle: 'The player must develop tremendous lung capacity and lip strength to produce the sustained drone note. Skilled players can produce 3-4 harmonic overtones. Playing is physically demanding — sessions rarely exceed 15-20 minutes at a stretch.',
-    famousPlayers: 'A communal instrument rather than solo virtuoso tradition. Notable ensembles in Chandpur, Nagpur patti, and the Nanda Devi Raj Jaat troupe.'
+    region: 'गढ़वाल',
+    description: 'रणसिंगा ताँबा को एक टेड़ो-मेड़ो (S या C आकार) तुरही छ — 3-4 फुट लम्बो। इनमा कुई छेद (hole) नी होन्दो — सिर्फ होंठों का दबाव और साँस से आवाज बदलन्दी। एक शक्तिशाली, भूतिया गूँज निकलन्दी जो पहाड़ की घाटियों मा किलोमीटरों तक सुणाई देन्दी।',
+    culturalSignificance: 'पुराणा ज़माना मा रणसिंगा युद्ध को वाद्य छयो — इनको नाम ही "रण" (युद्ध) + "सिंगा" (सींग) छ। सैना कू एक घाटी से दूजी तरफ संदेश भेजणो का काम करदो छयो। आज देवता की जात (शोभा-यात्रा) मा बजाइन्दा। जब रणसिंगा बजन्दो त माणे जान्दो — देवता आ रया छन। नन्दा देवी राज जात मा कई रणसिंगा एक साथ बजन्दा — बरफानी दर्रा पर वो आवाज अलौकिक लगन्दी।',
+    playingStyle: 'बजाणो वालो कू बहुत ताकतवर फेफड़ा और होंठ चैन्दा। एक लम्बी, निरन्तर ध्वनि निकालणी पड़न्दी। कुशल वादक 3-4 हारमोनिक ओवरटोन निकालन्दो। शारीरिक रूप से बहुत कठिन — 15-20 मिनट से ज्यादा लगातार नी बजाई सकन्दा।',
+    famousInfo: 'यो सामूहिक वाद्य छ — अकेला नी बजाइन्दा। चाँदपुर, नागपुर पट्टी, और नन्दा देवी राज जात की टोली प्रसिद्ध छन।'
   },
   {
     id: 'turhi',
     name: 'तुरही',
-    english: 'Turhi (Straight Trumpet)',
     type: 'wind',
     image: '🎺',
-    region: 'Garhwal & Kumaon',
-    description: 'The turhi is a straight copper trumpet, 4-6 feet long, that produces a clear, piercing tone. Unlike the curved ransingha, the turhi is held straight out from the body, requiring considerable arm strength. It is typically played in pairs, with each instrument taking alternate phrases.',
-    culturalSignificance: 'The turhi announces royal or divine presence. In the old Garhwal kingdom, it was sounded when the king left his palace. Today it precedes deity processions (devta ki jaat) as they travel between villages. The sound is considered auspicious — it purifies the air and drives away evil spirits.',
-    playingStyle: 'Played in pairs for antiphonal effect. One turhi sounds a sustained note while the other rests, creating a continuous drone. The sound is produced by buzzing the lips into a cup-shaped mouthpiece.',
-    famousPlayers: 'Part of the hereditary Bajgi ensemble tradition. Notable at Kedarnath, Tungnath, and Kartik Swami temple processions.'
+    region: 'गढ़वाल एवं कुमाऊँ',
+    description: 'तुरही एक सीधी ताँबा की तुरही छ — 4-6 फुट लम्बी। रणसिंगा से अलग, यो सीधी पकड़ी जान्दी। बहुत साफ, तीखी आवाज निकलन्दी। हमेशा जोड़ी (दो) मा बजाई जान्दी — एक बजन्दो तब दूजो साँस लेन्दो, इनसे लगातार ध्वनि बणी रन्दी।',
+    culturalSignificance: 'तुरही राजा या देवता का आगमन की घोषणा करन्दी। पुराणा गढ़वाल राज मा जब राजा महल से निकलदो त तुरही बजन्दी। आज देवता की जात मा आगे-आगे तुरही बजन्दी। इनकी आवाज शुभ माणी जान्दी — हवा शुद्ध करन्दी, बुरी शक्तियों भगौन्दी।',
+    playingStyle: 'जोड़ी मा बजाइन्दी — एक लम्बी आवाज निकालन्दो, दूजो विश्राम करन्दो, फेर बारी बदलन्दी। कप जसी मुखपत्र (mouthpiece) मा होंठ कम्पन करैक आवाज निकाली जान्दी।',
+    famousInfo: 'केदारनाथ, तुंगनाथ, और कार्तिक स्वामी मन्दिर की जात मा तुरही प्रमुख छ। बजगी समुदाय का लोक वंश-परंपरा से बजान्दा।'
   },
   {
     id: 'hurka',
     name: 'हुड़का',
-    english: 'Hurka (Hourglass Drum)',
     type: 'percussion',
     image: '🪘',
-    region: 'Kumaon & Garhwal',
-    description: 'The hurka is a small hourglass-shaped drum held in one hand and played with the other. Made from hollowed wood with goatskin on both ends connected by leather lacing, it produces a variable-pitch sound when squeezed. It is light enough to be played while walking or dancing.',
-    culturalSignificance: 'The hurka is the instrument of the Hurkiya — a storyteller-singer who narrates epic ballads (Hurkiya Bol) at agricultural festivals. During rice-planting season, the Hurkiya walks along paddy field edges, singing heroic tales to motivate workers. The tradition combines entertainment, history-keeping, and work motivation in one art form.',
-    playingStyle: 'The player squeezes the leather laces connecting the two heads to change pitch — tighter squeeze = higher pitch. This allows the hurka to "speak" and follow the melodic contours of the narrative. The right hand strikes the drum while the left controls tension.',
-    famousPlayers: 'Mohan Singh Rautela (Almora), Gopi Das (Pithoragarh). The Hurkiya Bol tradition is recognized by UNESCO as an intangible cultural heritage.'
+    region: 'कुमाऊँ एवं गढ़वाल',
+    description: 'हुड़का एक छोटो, रेत-घड़ी (hourglass) जसो ड्रम छ — एक हाथ मा पकड़ीक दूजा हाथ से बजाइन्दा। खोखली लकड़ी का दुयों तरफ बकरी की खाल, चमड़ा की डोरी से जुड़ी। जब डोरी दबाइन्दा त आवाज ऊँची-नीची (pitch बदलन्दी) होन्दी। इतणो हल्को छ कि चलदा-चलदा, नाचदा-नाचदा बजाई सकन्दा।',
+    culturalSignificance: 'हुड़का "हुड़किया" (कथावाचक-गायक) को वाद्य छ। धान रोपाई का मौसम मा हुड़किया खेत की मेड़ पर खड़ो ह्वैक वीर गाथा (हुड़किया बोल) गाउन्दो — किसानों को मनोरंजन करन्दो, इतिहास सुणौन्दो, और काम की गति बढ़ौन्दो। यो एक अनूठी परम्परा छ — मनोरंजन + इतिहास + प्रेरणा एक साथ।',
+    playingStyle: 'बायो हाथ चमड़ा की डोरी दबौन्दो — ज्यादा दबाव = ऊँची आवाज। इनसे हुड़का "बोलन्दो" — गाथा की धुन का साथ ऊँचो-नीचो होन्दो। दायो हाथ खाल पर मारन्दो। हुड़किया गाउन्दो भी और बजौन्दो भी — बहुत कठिन कला।',
+    famousInfo: 'मोहन सिंह रौतेला (अल्मोड़ा), गोपी दास (पिथौरागढ़) प्रसिद्ध हुड़किया छन। हुड़किया बोल परम्परा UNESCO ने अमूर्त सांस्कृतिक विरासत माणी छ।'
   },
   {
     id: 'mashakbeen',
     name: 'मशकबीन',
-    english: 'Mashakbeen (Bagpipe)',
     type: 'wind',
     image: '🎵',
-    region: 'Garhwal',
-    description: 'The mashakbeen is the Garhwali bagpipe — a goatskin bag with a blowpipe and a chanter (melody pipe). Unlike Scottish bagpipes, the Garhwali mashakbeen uses a simpler single-reed chanter and produces a softer, more nasal tone. The goatskin bag serves as an air reservoir allowing continuous sound.',
-    culturalSignificance: 'The mashakbeen was associated with the courts and armies of the Garhwal kingdom. During the British colonial period, Garhwali regiments famously played mashakbeen alongside military drums. Today it is rare but preserved in a few families in Pauri and Chamoli districts. Its revival is a point of cultural pride.',
-    playingStyle: 'The player inflates the goatskin bag through the blowpipe, then squeezes the bag with the arm to force air through the chanter while fingers play the melody. Circular breathing is not needed since the bag acts as a reservoir.',
-    famousPlayers: 'Padma Shri Mohan Singh Gunjyal (last traditional mashakbeen master of Garhwal), Narendra Negi (attempted revival in concerts).'
+    region: 'गढ़वाल',
+    description: 'मशकबीन गढ़वाल की बैगपाइप छ — बकरी की खाल को थैलो, एक फूंक-नली, और एक सुर-नली। स्कॉटलैंड की बैगपाइप से सरल — एक ही रीड (reed) को सुर-नली और नरम, नाक जसी आवाज। बकरी की खाल हवा जमा करन्दी — लगातार आवाज निकलन्दी।',
+    culturalSignificance: 'मशकबीन गढ़वाल राजदरबार और सेना से जुड़ी छई। अंग्रेजों का समय गढ़वाली रेजिमेंट मा मशकबीन बजाई जान्दी छई — सैनिक ड्रम के साथ। आज बहुत कम लोक बजा सकन्दा — पौड़ी और चमोली जिला की कुछ परिवारों मा ही यो कला बची छ। इनको पुनरुद्धार गढ़वाली सांस्कृतिक गौरव को विषय छ।',
+    playingStyle: 'बकरी की खाल फूंक-नली से फुलाइन्दा, फेर बाँह से दबाईक हवा सुर-नली मा भेजन्दा, उँगलियों से धुन बजाइन्दा। खाल हवा जमा करन्दी इसलिए circular breathing की जरूरत नी पड़न्दी।',
+    famousInfo: 'पद्म श्री मोहन सिंह गुंज्याल — गढ़वाल का अंतिम पारंपरिक मशकबीन उस्ताद। नरेन्द्र सिंह नेगी ने कॉन्सर्ट मा इनको पुनरुद्धार की कोशिश करी।'
   },
   {
     id: 'algoja',
     name: 'अलगोजा',
-    english: 'Algoja (Twin Flutes)',
     type: 'wind',
     image: '🎶',
-    region: 'Garhwal & Kumaon',
-    description: 'The algoja consists of two bamboo flutes played simultaneously — one provides the drone note while the other plays the melody. Each flute has 5-6 finger holes. The player holds both flutes in the mouth at once, using circular breathing to maintain continuous sound.',
-    culturalSignificance: 'The algoja is the shepherd\'s instrument — played in high-altitude meadows (bugyal) while grazing sheep and goats. Its haunting, double-toned sound carries across mountain valleys and is associated with pastoral solitude and the romance of hill life. Many Garhwali love songs reference the algoja as a symbol of longing.',
-    playingStyle: 'The most challenging Garhwali instrument technically — requires circular breathing, independent finger coordination on two flutes simultaneously, and the ability to maintain a drone while playing melody. Master players can produce complex counterpoint between the two flutes.',
-    famousPlayers: 'Shepherds of Chamoli and Rudraprayag are known masters. The tradition is declining as pastoral lifestyles diminish.'
+    region: 'गढ़वाल एवं कुमाऊँ',
+    description: 'अलगोजा दो बाँसुरी एक साथ बजाणो की कला छ — एक सुर (drone) देन्दी, दूजी धुन बजन्दी। हर बाँसुरी मा 5-6 छेद होन्दा। दुयों एक साथ मुख मा रखीक, circular breathing से लगातार आवाज निकाली जान्दी।',
+    culturalSignificance: 'अलगोजा ग्वाला (चरवाहा) को वाद्य छ — ऊँची बुग्यालों मा भेड़-बकरी चराउंदो-चराउंदो बजाइन्दा। दो-तानी (double-toned) भूतिया आवाज पहाड़ की घाटियों मा गूंजन्दी। गढ़वाली प्रेम गीतों मा अलगोजा विरह (अकेलापन, याद) को प्रतीक छ — "अलगोजा बजी रयो, मेरो प्रेमी याद आयो।"',
+    playingStyle: 'गढ़वाल को सबसे कठिन वाद्य — circular breathing चैन्दी, दुयों बाँसुरी पर अलग-अलग उँगली संचालन, और एक साथ drone बनाये रखणो + धुन बजाणो। उस्ताद दुयों बाँसुरी मा अलग-अलग सुर निकालन्दो — जनी दो आदमी बजा रया हों।',
+    famousInfo: 'चमोली और रुद्रप्रयाग का ग्वाला (चरवाहा) समुदाय का लोक इनमा माहिर होन्दा। चरवाही जीवनशैली घटण से यो परम्परा विलुप्त हो रई छ।'
   },
   {
     id: 'thali',
     name: 'थाली',
-    english: 'Thali (Brass Plate)',
     type: 'percussion',
     image: '🍽️',
-    region: 'Garhwal & Kumaon',
-    description: 'The brass eating plate (thali) doubles as a percussion instrument in Garhwali folk music. Struck with a wooden spoon or metal rod, it produces a bright, ringing tone. Different sizes and thicknesses produce different pitches, allowing a set of thalis to create melodic percussion.',
-    culturalSignificance: 'The thali represents the accessibility of Garhwali music — anyone with a kitchen plate can join in. During Harela and other festivals, women create complex rhythmic patterns by striking thalis in groups. The "Thali Naach" (plate dance) is a traditional women\'s performance where dancers spin and strike thalis simultaneously.',
-    playingStyle: 'Held in one hand and struck with a metal ring or wooden stick in the other. Advanced players flip the thali between hands while maintaining rhythm. In group performances, interlocking patterns create rich polyrhythmic textures.',
-    famousPlayers: 'A communal women\'s tradition rather than individual virtuoso performance. Notable at Harela, Ghee Sankranti, and wedding celebrations.'
+    region: 'गढ़वाल एवं कुमाऊँ',
+    description: 'पीतल की खाणा की थाली — रोज काम मा आणो वालो बर्तन — गढ़वाल मा ताल वाद्य का रूप मा भी बजाइन्दा! लकड़ी का चम्मच या धातु की छड़ से मारीक चमकदार, खनकती आवाज निकलन्दी। अलग-अलग आकार की थाली अलग-अलग सुर (pitch) देन्दी।',
+    culturalSignificance: 'थाली गढ़वाली संगीत की सुलभता (accessibility) दर्शौन्दी — किसी का भी घर मा थाली छ, कुई भी बजाई सकदो! हरेला, घी संक्रान्ति मा औरतें समूह मा थाली बजौन्दी। "थाली नाच" एक पारंपरिक महिला प्रदर्शन छ — नाचदी-नाचदी, घूमदी-घूमदी थाली बजौन्दी।',
+    playingStyle: 'एक हाथ मा थाली पकड़ीक दूजा हाथ मा धातु की अंगूठी या लकड़ी की छड़ी से मारन्दा। उस्ताद थाली एक हाथ से दूजा हाथ मा उलटन्दा-पलटन्दा और ताल नी टूटन्दी। समूह मा बजाण पर एक-दूजा मा गुथ्या (interlocking) ताल बणन्दी — बड़ी सुन्दर लगन्दी।',
+    famousInfo: 'यो सामुदायिक महिला परम्परा छ — अकेला कलाकार नी, समूह मा बजन्दी। हरेला, घी संक्रान्ति, और शादी मा विशेष।'
   },
   {
     id: 'bansuri',
     name: 'बांसुरी (पहाड़ी)',
-    english: 'Bansuri (Pahadi Flute)',
     type: 'wind',
     image: '🪈',
-    region: 'Garhwal & Kumaon',
-    description: 'The Pahadi bansuri is a transverse bamboo flute, shorter and higher-pitched than its plains counterpart. Made from the thin-walled ringal bamboo found at 2000-3000m altitude, it produces a bright, piercing tone suited to carrying across open mountain spaces. Typically 10-14 inches long with 6 finger holes.',
-    culturalSignificance: 'Associated with Lord Krishna in Hindu tradition, the bansuri in Garhwal is primarily a pastoral instrument. Shepherds play it in high meadows, and its sound is woven into many folk songs as a symbol of mountain romance. The phrase "bansuri bajee" (the flute played) signals romance in Garhwali poetry.',
-    playingStyle: 'Blown across the embouchure hole with the flute held to the side. The high altitude where ringal grows makes these flutes naturally higher-pitched. Players use half-holing and cross-fingering for microtones essential to Pahadi ragas.',
-    famousPlayers: 'Gopal Babu Goswami (integrated bansuri into Garhwali recordings), Jagmohan (folk fusion). The instrument is common among shepherd communities of upper Garhwal.'
+    region: 'गढ़वाल एवं कुमाऊँ',
+    description: 'पहाड़ी बांसुरी मैदानी बांसुरी से छोटी और ऊँची आवाज वाली होन्दी। रिंगाल बाँस (2000-3000 मीटर ऊँचाई पर मिलणो वालो) से बणन्दी — पतली दीवार, तीखी, साफ आवाज जो खुली पहाड़ी हवा मा दूर तक जान्दी। 10-14 इंच लम्बी, 6 छेद।',
+    culturalSignificance: 'हिन्दू परम्परा मा बांसुरी भगवान कृष्ण से जुड़ी छ, पर गढ़वाल मा यो मुख्यतः ग्वाला (चरवाहा) को वाद्य छ। ऊँची बुग्यालों मा भेड़ चरौन्दा-चरौन्दा बजाइन्दा। गढ़वाली प्रेम गीतों मा "बांसुरी बजी" मतलब — प्रेम जाग्यो। पहाड़ी रोमांस और अकेलेपन को प्रतीक छ बांसुरी।',
+    playingStyle: 'embouchure hole पर फूंक मारीक बजाइन्दा — बाँसुरी बगल मा पकड़ीक। ऊँचाई पर उगणो वाली रिंगाल बांसुरी कुदरती तौर पर ऊँची pitch की होन्दी। पहाड़ी रागों का microtone (सूक्ष्म सुर) बजाणो का लिए half-holing और cross-fingering तकनीक इस्तेमाल होन्दी।',
+    famousInfo: 'गोपाल बाबू गोस्वामी (गढ़वाली रिकॉर्डिंग मा बांसुरी शामिल करी), जगमोहन (लोक फ्यूजन)। ऊपरी गढ़वाल का चरवाहा समुदाय मा आम छ।'
   },
   {
     id: 'daunr-thali',
     name: 'डौंर (नगाड़ा)',
-    english: 'Daunr / Nagada (Temple Drum)',
     type: 'percussion',
     image: '🔔',
-    region: 'Garhwal',
-    description: 'The daunr (also called nagada) is a large, deep-pitched temple drum played during aarti and deity processions. Made from a hollowed tree trunk or large copper vessel with thick buffalo hide stretched over the top, it produces a thunderous boom that reverberates through valleys.',
-    culturalSignificance: 'The daunr is exclusively a sacred instrument — never played for entertainment. It resides in the temple and is struck during morning/evening aarti, during deity jaat (processions), and to signal the beginning of important religious events. The Kedarnath daunr is said to be audible 5 km away and signals dawn worship to the entire valley.',
-    playingStyle: 'Struck with a single heavy wooden mallet. The player times strikes to coincide with specific moments in the prayer ritual. During processions, a rhythmic pattern (often 3-beat or 7-beat cycles) coordinates with dhol and damau.',
-    famousPlayers: 'Hereditary temple musicians (pujari families). The Kedarnath temple nagada tradition, Tungnath temple ensemble, and Kartik Swami temple procession are notable examples.'
+    region: 'गढ़वाल',
+    description: 'डौंर (नगाड़ा) मन्दिर को बड़ो, गहरी आवाज वालो ड्रम छ। खोखला पेड़ का तना या बड़ी ताँबा की हांडी — ऊपर मोटी भैंसा की खाल तानी जान्दी। गरजदार "धम-धम-धम" आवाज — पूरी घाटी मा गूंजन्दी।',
+    culturalSignificance: 'डौंर केवल पवित्र वाद्य छ — कबी मनोरंजन का लिए नी बजाइन्दा। मन्दिर मा रन्दो — सुबह-शाम आरती मा, देवता की जात मा, धार्मिक आयोजनों की शुरुआत मा बजाइन्दा। केदारनाथ को नगाड़ा 5 किमी दूर तक सुणाई देन्दो — पूरी घाटी कू बतौन्दो कि सुबह की पूजा शुरू ह्वैगे।',
+    playingStyle: 'एक भारी लकड़ी का मुगदर (mallet) से मारन्दा। पूजा की विशेष क्षणों पर मारणो होन्दो — समय बहुत महत्वपूर्ण। जात मा 3-ताल या 7-ताल की लय मा ढोल-दमाऊ के साथ तालमेल रखीक बजाइन्दा।',
+    famousInfo: 'मन्दिर के वंश-परंपरागत पुजारी परिवार बजान्दा। केदारनाथ मन्दिर, तुंगनाथ मन्दिर, और कार्तिक स्वामी मन्दिर की जात प्रसिद्ध छ।'
   }
 ];
 
 export const INSTRUMENT_TYPES = [
-  { id: 'all', label: 'सभी वाद्य', english: 'All Instruments' },
-  { id: 'percussion', label: 'ताल वाद्य', english: 'Percussion' },
-  { id: 'wind', label: 'सुषिर वाद्य', english: 'Wind' },
+  { id: 'all', label: 'सभी वाद्य', labelHindi: 'सभी वाद्य यंत्र' },
+  { id: 'percussion', label: 'ताल वाद्य', labelHindi: 'ढोल, दमाऊ, हुड़का' },
+  { id: 'wind', label: 'सुषिर वाद्य', labelHindi: 'रणसिंगा, बांसुरी, अलगोजा' },
 ];
 
 export default GARHWALI_INSTRUMENTS;
