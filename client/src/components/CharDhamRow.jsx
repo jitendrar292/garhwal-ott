@@ -1,23 +1,11 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import VideoRow from './VideoRow';
 import CHAR_DHAM from '../data/charDham';
-import { searchVideos } from '../api/youtube';
 
 export default function CharDhamRow() {
-  const [yatraVideos, setYatraVideos] = useState({ videos: [], loading: true, error: null });
-
-  useEffect(() => {
-    searchVideos('char dham yatra 2026 kedarnath badrinath gangotri yamunotri uttarakhand', '', 10)
-      .then((data) => setYatraVideos({ videos: data.videos, loading: false, error: null }))
-      .catch((err) => setYatraVideos({ videos: [], loading: false, error: err.message }));
-  }, []);
 
   return (
-    <div className="space-y-0">
-      {/* ── Guide Banner ── */}
-      <div className="pl-3 mb-1">
+    <div className="pl-3 mb-1">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-lg sm:text-xl font-bold text-white">
             🛕 चार धाम यात्रा गाइड 2026
@@ -75,14 +63,5 @@ export default function CharDhamRow() {
           </motion.div>
         </div>
       </div>
-
-      {/* ── Yatra Videos ── */}
-      <VideoRow
-        title="🎥 चार धाम यात्रा Videos"
-        videos={yatraVideos.videos}
-        loading={yatraVideos.loading}
-        error={yatraVideos.error}
-      />
-    </div>
   );
 }
