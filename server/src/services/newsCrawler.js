@@ -13,18 +13,53 @@ const parser = new Parser({
   maxRedirects: 3,
 });
 
-// RSS feeds to crawl — Uttarakhand-focused + general Hindi/English news.
-// Verified working as of May 2026 (dead feeds removed).
+// RSS feeds to crawl — ALL Uttarakhand-specific feeds only.
+// Verified working as of June 2026. No national/general feeds.
 const RSS_FEEDS = [
   // Amar Ujala Uttarakhand (Hindi) — 40+ items, very reliable
   { url: 'https://www.amarujala.com/rss/uttarakhand.xml', source: 'Amar Ujala', lang: 'hi' },
-  // Times of India Uttarakhand (English) — 8+ items
-  { url: 'https://timesofindia.indiatimes.com/rssfeeds/4118073.cms', source: 'Times of India', lang: 'en' },
-  // News18 Hindi Uttarakhand — 200+ items, very active
+  // News18 Hindi Uttarakhand — state-specific feed, very active
   { url: 'https://hindi.news18.com/rss/khabar/state/uttarakhand.xml', source: 'News18 Hindi', lang: 'hi' },
-  // NDTV Hindi — national Hindi news (Uttarakhand stories surface here)
-  { url: 'https://feeds.feedburner.com/ndtvkhabar-latest', source: 'NDTV Hindi', lang: 'hi' },
+  // Dainik Jagran Uttarakhand (Hindi)
+  { url: 'https://www.jagran.com/rss/news-national-uttarakhand.xml', source: 'Dainik Jagran', lang: 'hi' },
+  // Live Hindustan Uttarakhand (Hindi)
+  { url: 'https://www.livehindustan.com/rss/uttarakhand.xml', source: 'Live Hindustan', lang: 'hi' },
+  // Times of India Uttarakhand (English) — UK-specific section
+  { url: 'https://timesofindia.indiatimes.com/rssfeeds/4118073.cms', source: 'Times of India', lang: 'en' },
 ];
+
+// Keywords that confirm an article is Uttarakhand-related.
+// Checked against lowercased title + summary text.
+const UK_KEYWORDS_HI = [
+  'उत्तराखंड', 'उत्तराखण्ड', 'देहरादून', 'हरिद्वार', 'ऋषिकेश', 'नैनीताल',
+  'केदारनाथ', 'बद्रीनाथ', 'गंगोत्री', 'यमुनोत्री', 'गढ़वाल', 'कुमाऊं', 'कुमाऊँ',
+  'चमोली', 'पौड़ी', 'टिहरी', 'रुद्रप्रयाग', 'उत्तरकाशी', 'चम्पावत', 'बागेश्वर',
+  'पिथौरागढ़', 'अल्मोड़ा', 'रानीखेत', 'मसूरी', 'मुनस्यारी', 'जोशीमठ',
+  'हरसिल', 'लैंसडाउन', 'कोटद्वार', 'रामनगर', 'हल्द्वानी',
+];
+const UK_KEYWORDS_EN = [
+  'uttarakhand', 'dehradun', 'haridwar', 'rishikesh', 'nainital',
+  'kedarnath', 'badrinath', 'gangotri', 'yamunotri', 'garhwal', 'kumaon',
+  'chamoli', 'pauri', 'tehri', 'rudraprayag', 'uttarkashi', 'champawat',
+  'bageshwar', 'pithoragarh', 'almora', 'mussoorie', 'munsiyari', 'joshimath',
+  'lansdowne', 'kotdwar', 'ramnagar', 'haldwani', 'char dham', 'chardham',
+];
+
+/**
+ * Returns true if the article is Uttarakhand-related based on title+summary keywords.
+ */
+function isUttarakhandRelated(article) {
+  const text = `${article.title} ${article.summary}`.toLowerCase();
+  // Hindi keywords
+  for (const kw of UK_KEYWORDS_HI) {
+    if (text.includes(kw)) return true;
+  }
+  // English keywords (for en-lang feeds)
+  for (const kw of UK_KEYWORDS_EN) {
+    if (text.includes(kw)) return true;
+  }
+  return false;
+}
 
 /**
  * Fetch news articles from all configured RSS feeds.
@@ -87,13 +122,20 @@ async function crawlNews({ maxPerFeed = 10, maxAge = 48 } = {}) {
     }
   }
 
+  // Filter: only keep Uttarakhand-related articles
+  const ukOnly = results.filter(isUttarakhandRelated);
+  const removed = results.length - ukOnly.length;
+  if (removed > 0) {
+    console.log(`[newsCrawler] Filtered out ${removed} non-Uttarakhand articles`);
+  }
+
   // Sort by publish date (newest first)
-  results.sort((a, b) => b.pubDate - a.pubDate);
+  ukOnly.sort((a, b) => b.pubDate - a.pubDate);
 
   // Balance across sources: round-robin pick so no single source dominates
-  const balanced = balanceSources(results);
+  const balanced = balanceSources(ukOnly);
 
-  console.log(`[newsCrawler] Crawled ${balanced.length} articles from ${RSS_FEEDS.length} feeds (balanced across sources)`);
+  console.log(`[newsCrawler] Crawled ${balanced.length} UK articles from ${RSS_FEEDS.length} feeds (balanced across sources)`);
   return balanced;
 }
 
