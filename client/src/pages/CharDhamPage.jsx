@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import SEO from '../components/SEO';
-import CHAR_DHAM, { YATRA_TIPS, HELICOPTER_SERVICES } from '../data/charDham';
+import CHAR_DHAM, {
+  YATRA_TIPS,
+  HELICOPTER_SERVICES,
+  PANCH_KEDAR,
+  BADRINATH_NEARBY_ATTRACTIONS,
+  GANGOTRI_NEARBY_ATTRACTIONS,
+  YAMUNOTRI_NEARBY_ATTRACTIONS,
+} from '../data/charDham';
 
 export default function CharDhamPage() {
   const [activeDham, setActiveDham] = useState('kedarnath');
@@ -91,6 +98,42 @@ export default function CharDhamPage() {
                   </div>
                 </div>
                 <p className="mt-4 text-sm text-white/90 leading-relaxed">{dham.significance}</p>
+                {dham.id === 'kedarnath' && (
+                  <a
+                    href="#panch-kedar"
+                    className="inline-flex items-center gap-2 mt-4 text-xs sm:text-sm font-semibold bg-black/25 hover:bg-black/35 rounded-lg px-3 py-2 transition-colors"
+                  >
+                    🔱 पंच केदार भी देखें
+                    <span>↓</span>
+                  </a>
+                )}
+                {dham.id === 'badrinath' && (
+                  <a
+                    href="#badrinath-nearby"
+                    className="inline-flex items-center gap-2 mt-4 text-xs sm:text-sm font-semibold bg-black/25 hover:bg-black/35 rounded-lg px-3 py-2 transition-colors"
+                  >
+                    🗺️ आसपास के आकर्षण देखें
+                    <span>↓</span>
+                  </a>
+                )}
+                {dham.id === 'gangotri' && (
+                  <a
+                    href="#gangotri-nearby"
+                    className="inline-flex items-center gap-2 mt-4 text-xs sm:text-sm font-semibold bg-black/25 hover:bg-black/35 rounded-lg px-3 py-2 transition-colors"
+                  >
+                    🧭 गंगोत्री आसपास के आकर्षण
+                    <span>↓</span>
+                  </a>
+                )}
+                {dham.id === 'yamunotri' && (
+                  <a
+                    href="#yamunotri-nearby"
+                    className="inline-flex items-center gap-2 mt-4 text-xs sm:text-sm font-semibold bg-black/25 hover:bg-black/35 rounded-lg px-3 py-2 transition-colors"
+                  >
+                    🧭 यमुनोत्री आसपास के आकर्षण
+                    <span>↓</span>
+                  </a>
+                )}
               </div>
 
               {/* Tabs */}
@@ -196,6 +239,110 @@ export default function CharDhamPage() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Panch Kedar */}
+        <section id="panch-kedar" className="mb-10 scroll-mt-24">
+          <div className="rounded-2xl p-5 sm:p-6 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-950 border border-indigo-500/20">
+            <div className="flex items-start justify-between gap-3 mb-4">
+              <div>
+                <h2 className="text-xl sm:text-2xl font-bold">🔱 पंच केदार गाइड</h2>
+                <p className="text-xs sm:text-sm text-gray-300 mt-1">
+                  पौराणिक मान्यता अनुसार शिवजी के अंग पांच स्थलों पर प्रकट हुए — केदारनाथ, तुंगनाथ,
+                  रुद्रनाथ, मध्यमहेश्वर और कल्पेश्वर।
+                </p>
+              </div>
+            </div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {PANCH_KEDAR.map((k) => (
+                <div key={k.id} className="bg-white/5 border border-white/10 rounded-xl p-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <h3 className="font-bold text-white text-base">{k.name}</h3>
+                    <span className="text-[11px] px-2 py-0.5 rounded-full bg-indigo-500/30 text-indigo-200">
+                      {k.form}
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-300 mt-2">📍 {k.district} • {k.altitude}</p>
+                  <p className="text-xs text-gray-300 mt-1">🥾 {k.trek}</p>
+                  <p className="text-xs text-gray-400 mt-1.5">बेस: {k.bestBase}</p>
+                  <p className="text-xs text-indigo-100/90 mt-2 leading-relaxed">{k.note}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Badrinath Nearby Attractions */}
+        <section id="badrinath-nearby" className="mb-10 scroll-mt-24">
+          <div className="rounded-2xl p-5 sm:p-6 bg-gradient-to-br from-amber-950 via-orange-950 to-slate-950 border border-amber-500/20">
+            <div className="mb-4">
+              <h2 className="text-xl sm:text-2xl font-bold">🗺️ बद्रीनाथ के आसपास घूमने की जगह</h2>
+              <p className="text-xs sm:text-sm text-gray-300 mt-1">
+                दर्शन के साथ 1-2 दिन extra रखकर आसपास के महत्वपूर्ण स्थलों को भी यात्रा में शामिल करें।
+              </p>
+            </div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {BADRINATH_NEARBY_ATTRACTIONS.map((place) => (
+                <div key={place.id} className="bg-white/5 border border-white/10 rounded-xl p-4">
+                  <h3 className="font-bold text-white text-base">{place.name}</h3>
+                  <p className="text-xs text-amber-200 mt-1">{place.type}</p>
+                  <p className="text-xs text-gray-300 mt-2">📍 दूरी: {place.distance}</p>
+                  <p className="text-xs text-gray-300 mt-1">⏱️ समय: {place.time}</p>
+                  <p className="text-xs text-gray-200 mt-2 leading-relaxed">{place.highlight}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Gangotri Nearby Attractions */}
+        <section id="gangotri-nearby" className="mb-10 scroll-mt-24">
+          <div className="rounded-2xl p-5 sm:p-6 bg-gradient-to-br from-cyan-950 via-teal-950 to-slate-950 border border-cyan-500/20">
+            <div className="mb-4">
+              <h2 className="text-xl sm:text-2xl font-bold">🧭 गंगोत्री के आसपास घूमने की जगह</h2>
+              <p className="text-xs sm:text-sm text-gray-300 mt-1">
+                गंगोत्री दर्शन के साथ घाटी और ट्रेकिंग स्पॉट कवर करने के लिए 1-2 दिन extra रखें।
+              </p>
+            </div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {GANGOTRI_NEARBY_ATTRACTIONS.map((place) => (
+                <div key={place.id} className="bg-white/5 border border-white/10 rounded-xl p-4">
+                  <h3 className="font-bold text-white text-base">{place.name}</h3>
+                  <p className="text-xs text-cyan-200 mt-1">{place.type}</p>
+                  <p className="text-xs text-gray-300 mt-2">📍 दूरी: {place.distance}</p>
+                  <p className="text-xs text-gray-300 mt-1">⏱️ समय: {place.time}</p>
+                  <p className="text-xs text-gray-200 mt-2 leading-relaxed">{place.highlight}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Yamunotri Nearby Attractions */}
+        <section id="yamunotri-nearby" className="mb-10 scroll-mt-24">
+          <div className="rounded-2xl p-5 sm:p-6 bg-gradient-to-br from-blue-950 via-indigo-950 to-slate-950 border border-blue-500/20">
+            <div className="mb-4">
+              <h2 className="text-xl sm:text-2xl font-bold">🧭 यमुनोत्री के आसपास घूमने की जगह</h2>
+              <p className="text-xs sm:text-sm text-gray-300 mt-1">
+                यमुनोत्री ट्रेक के साथ पारंपरिक गांव और पवित्र स्थलों को भी यात्रा में शामिल करें।
+              </p>
+            </div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {YAMUNOTRI_NEARBY_ATTRACTIONS.map((place) => (
+                <div key={place.id} className="bg-white/5 border border-white/10 rounded-xl p-4">
+                  <h3 className="font-bold text-white text-base">{place.name}</h3>
+                  <p className="text-xs text-blue-200 mt-1">{place.type}</p>
+                  <p className="text-xs text-gray-300 mt-2">📍 दूरी: {place.distance}</p>
+                  <p className="text-xs text-gray-300 mt-1">⏱️ समय: {place.time}</p>
+                  <p className="text-xs text-gray-200 mt-2 leading-relaxed">{place.highlight}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
         {/* General Yatra Tips */}
         <div className="mb-10">
