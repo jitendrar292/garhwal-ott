@@ -64,7 +64,7 @@ export default function HeroBanner() {
         />
       ))}
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
+      <div className="relative max-w-full mx-auto px-4 sm:px-6 text-center">
         <motion.h1
           className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight"
           initial={{ opacity: 0, y: -20, scale: 0.95 }}

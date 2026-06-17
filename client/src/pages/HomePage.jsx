@@ -99,7 +99,7 @@ export default function HomePage() {
       {/* Full-width slider */}
       <ImageSlider />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-8 space-y-0">
+      <div className="max-w-full mx-auto px-4 sm:px-6 pt-8 space-y-0">
         {/* Genre cards */}
         <GenreGrid />
 

@@ -28,7 +28,7 @@ export default function Footer() {
       {/* Decorative gradient blur */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-24 bg-primary-500/[0.03] blur-3xl rounded-full pointer-events-none" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-10 pb-8">
+      <div className="relative max-w-full mx-auto px-4 sm:px-6 pt-10 pb-8">
         {/* Main footer grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
           {/* Brand column */}

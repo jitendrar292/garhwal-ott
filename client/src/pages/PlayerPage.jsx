@@ -54,7 +54,7 @@ export default function PlayerPage() {
   const fav = isFavorite(videoId);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+    <div className="max-w-full mx-auto px-4 sm:px-6 py-6">
       {/* Back button */}
       <Link
         to="/"

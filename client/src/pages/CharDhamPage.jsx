@@ -25,7 +25,7 @@ export default function CharDhamPage() {
         keywords="char dham yatra guide, kedarnath yatra, badrinath yatra, gangotri yatra, yamunotri yatra, chardham registration, kedarnath helicopter booking, chardham yatra cost, uttarakhand pilgrimage"
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-12">
+      <div className="max-w-full mx-auto px-4 sm:px-6 pt-6 pb-12">
         {/* Hero */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

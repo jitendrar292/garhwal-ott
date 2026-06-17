@@ -48,7 +48,7 @@ export default function SearchPage() {
   }, [query, state.nextPageToken, state.loadingMore]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+    <div className="max-w-full mx-auto px-4 sm:px-6 py-10">
       {!query ? (
         <div className="text-center py-20">
           <p className="text-gray-500 text-xl">Enter a search term to find Pahadi videos</p>

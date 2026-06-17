@@ -48,7 +48,7 @@ export default function PodcastPage() {
   }, [state.nextPageToken, state.loadingMore]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+    <div className="max-w-full mx-auto px-4 sm:px-6 py-10">
       <SEO
         title="Pahadi Podcast - Garhwali Stories, Culture & Interviews"
         description="Listen to Pahadi podcasts in Garhwali and Hindi — interviews, folk stories, culture talks and untold Uttarakhand stories from creators across the hills."

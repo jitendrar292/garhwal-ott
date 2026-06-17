@@ -22,7 +22,7 @@ export default function MuhavarePage() {
       />
 
       {/* Hero */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6">
+      <div className="max-w-full mx-auto px-4 sm:px-6 pt-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

@@ -5,7 +5,7 @@ export default function FavoritesPage() {
   const { favorites } = useFavorites();
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+    <div className="max-w-full mx-auto px-4 sm:px-6 py-10">
       <h2 className="page-header mb-6 flex items-center gap-3">
         <div className="w-1.5 h-8 bg-gradient-to-b from-red-400 to-red-600 rounded-full" />
         ♥ Your <span className="gradient-text">Favorites</span>

@@ -84,7 +84,7 @@ export default function TyoharPage() {
         keywords="uttarakhand festivals, harela festival, igas bagwal, phool dei, ghee sankranti, uttarayani mela, nanda devi mela, garhwali festivals, kumaoni festivals, pahadi tyohar, uttarakhand culture"
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-12">
+      <div className="max-w-full mx-auto px-4 sm:px-6 pt-6 pb-12">
         {/* Hero */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

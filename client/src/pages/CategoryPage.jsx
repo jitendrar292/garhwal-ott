@@ -78,7 +78,7 @@ export default function CategoryPage() {
   }, [category, state.nextPageToken, state.loadingMore]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+    <div className="max-w-full mx-auto px-4 sm:px-6 py-10">
       <SEO
         title={(CATEGORY_SEO[category] && CATEGORY_SEO[category].title) || `${CATEGORY_LABELS[category] || category} - PahadiTube`}
         description={(CATEGORY_SEO[category] && CATEGORY_SEO[category].desc) || `Browse ${category} videos on PahadiTube — Garhwali and Pahadi content from Uttarakhand.`}

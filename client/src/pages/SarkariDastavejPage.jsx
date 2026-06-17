@@ -25,7 +25,7 @@ export default function SarkariDastavejPage() {
         keywords="uttarakhand jati praman patra, mool niwas praman patra uk, bhulekh uk, edistrict uk, ration card uttarakhand, income certificate uttarakhand, birth certificate uttarakhand, pension uttarakhand"
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-12">
+      <div className="max-w-full mx-auto px-4 sm:px-6 pt-6 pb-12">
         {/* Hero */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
