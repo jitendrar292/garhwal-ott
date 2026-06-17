@@ -13,11 +13,33 @@ const CATEGORIES = [
   { id: 'education', label: 'शिक्षा', emoji: '🎓' },
   { id: 'agriculture', label: 'कृषि', emoji: '🌾' },
   { id: 'employment', label: 'रोजगार', emoji: '💼' },
+  { id: 'msme', label: 'MSME / स्वरोजगार', emoji: '🏭' },
   { id: 'youth', label: 'युवा', emoji: '🧑' },
   { id: 'housing', label: 'आवास', emoji: '🏡' },
   { id: 'infrastructure', label: 'अवसंरचना', emoji: '⛑️' },
   { id: 'social-welfare', label: 'समाज कल्याण', emoji: '🤲' },
 ];
+
+function isMsmeScheme(y) {
+  const id = (y.id || '').toLowerCase();
+  const title = (y.title || '').toLowerCase();
+  const titleLocal = (y.titleLocal || '').toLowerCase();
+  const department = (y.department || '').toLowerCase();
+
+  return (
+    id.includes('msme') ||
+    id.includes('swarojgar') ||
+    id.includes('kiwi') ||
+    id.includes('matsya') ||
+    id.includes('dairy') ||
+    id.includes('mushroom') ||
+    id.includes('beekeeping') ||
+    department.includes('msme') ||
+    department.includes('khadi') ||
+    title.includes('swarojgar') ||
+    titleLocal.includes('स्वरोजगार')
+  );
+}
 
 const categoryColors = {
   health: 'border-rose-500/50 bg-rose-900/20',
@@ -49,6 +71,29 @@ const statusConfig = {
   'registration-open': { label: 'रजिस्ट्रेशन खुला', className: 'bg-blue-500/20 text-blue-300 border border-blue-500/40' },
   ongoing: { label: 'जारी', className: 'bg-teal-500/20 text-teal-300 border border-teal-500/40' },
 };
+
+const TOP_MSME_IDEAS = [
+  {
+    title: 'Kiwi Juice Processing',
+    emoji: '🥝',
+    blurb: 'कीवी पल्प, जूस, स्क्वैश और लोकल ब्रांडिंग से वैल्यू एडिशन आय।',
+  },
+  {
+    title: 'Matsya Palan',
+    emoji: '🐟',
+    blurb: 'तालाब/टैंक आधारित मत्स्य पालन से नियमित ग्रामीण रोजगार।',
+  },
+  {
+    title: 'Dairy Micro Unit',
+    emoji: '🥛',
+    blurb: 'दूध संग्रह और दही/घी/पनीर जैसे उत्पादों से स्थानीय उद्यम।',
+  },
+  {
+    title: 'Mushroom + Beekeeping',
+    emoji: '🍄',
+    blurb: 'कम निवेश में ड्यूल इनकम मॉडल, SHG और युवाओं के लिए उपयुक्त।',
+  },
+];
 
 function YojanaModal({ yojana, onClose }) {
   const status = statusConfig[yojana.status] || statusConfig.active;
@@ -255,7 +300,12 @@ export default function SarkaariYojanaPage() {
   const [selectedYojana, setSelectedYojana] = useState(null);
 
   const filtered = SARKAARI_YOJANA.filter((y) => {
-    const matchCat = activeCategory === 'all' || y.category === activeCategory;
+    const matchCat =
+      activeCategory === 'all'
+        ? true
+        : activeCategory === 'msme'
+          ? isMsmeScheme(y)
+          : y.category === activeCategory;
     const q = search.toLowerCase();
     const matchSearch =
       !q ||
@@ -270,6 +320,8 @@ export default function SarkaariYojanaPage() {
     acc[cat.id] =
       cat.id === 'all'
         ? SARKAARI_YOJANA.length
+        : cat.id === 'msme'
+          ? SARKAARI_YOJANA.filter((y) => isMsmeScheme(y)).length
         : SARKAARI_YOJANA.filter((y) => y.category === cat.id).length;
     return acc;
   }, {});
@@ -323,6 +375,36 @@ export default function SarkaariYojanaPage() {
           </div>
         ))}
       </div>
+
+      {/* Top MSME ideas */}
+      <section className="mb-6 rounded-2xl border border-blue-500/30 bg-blue-900/15 p-4 sm:p-5">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+          <div>
+            <h2 className="text-base sm:text-lg font-semibold text-blue-100">Top MSME Ideas (रोजगार)</h2>
+            <p className="text-xs sm:text-sm text-white/70 mt-1">
+              Kiwi juice, matsya palan, dairy अर allied models के लिए relevant योजनाएं इसी page मा उपलब्ध छन।
+            </p>
+          </div>
+          <button
+            onClick={() => setActiveCategory('msme')}
+            className="shrink-0 px-3 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-black text-xs sm:text-sm font-semibold transition-colors"
+          >
+            MSME योजनाएं देखो
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {TOP_MSME_IDEAS.map((idea) => (
+            <article key={idea.title} className="rounded-xl border border-white/10 bg-white/5 p-3.5">
+              <h3 className="text-sm font-semibold text-white flex items-center gap-2 mb-1.5">
+                <span>{idea.emoji}</span>
+                <span>{idea.title}</span>
+              </h3>
+              <p className="text-xs text-white/70 leading-relaxed">{idea.blurb}</p>
+            </article>
+          ))}
+        </div>
+      </section>
 
       {/* Search */}
       <div className="relative mb-5">

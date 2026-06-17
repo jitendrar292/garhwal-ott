@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useWatchHistory } from '../hooks/useWatchHistory';
 import { useFavorites } from '../hooks/useFavorites';
@@ -154,6 +155,31 @@ export default function HomePage() {
         >
           <FolkStoriesRow />
         </motion.div>
+
+        <section className="rounded-2xl border border-white/[0.08] bg-gradient-to-r from-amber-900/20 via-primary-900/20 to-surface-2 p-5 sm:p-6 mt-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h2 className="text-lg sm:text-xl font-semibold text-amber-100">New: Garhwali Culture Library</h2>
+              <p className="text-sm text-white/65 mt-1 max-w-2xl">
+                Read original blogs and educational articles on Uttarakhand history, traditions, migration, language, and mountain life.
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Link
+                to="/culture"
+                className="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-black text-sm font-semibold transition-colors"
+              >
+                Explore Articles
+              </Link>
+              <Link
+                to="/folk-stories"
+                className="px-4 py-2 rounded-lg border border-white/20 hover:border-white/40 text-white text-sm font-semibold transition-colors"
+              >
+                Folk Stories
+              </Link>
+            </div>
+          </div>
+        </section>
 
         {/* Garhwali Sikha — Learn Garhwali language */}
         <motion.div

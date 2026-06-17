@@ -4,6 +4,25 @@ import { folkStories, getFolkStoryWithBody } from '../data/folkStories';
 import SEO from '../components/SEO';
 import WhatsAppShareBtn from '../components/WhatsAppShareBtn';
 
+const STORY_CONTEXT = {
+  'teelu-rauteli': {
+    context: 'This वीर-गाथा reflects the political and emotional world of medieval Garhwal, where personal loss transformed into public duty. It is frequently cited as a rare Himalayan ballad centered on female military leadership.',
+    significance: 'Useful for studying gender, memory, and resistance in regional oral history.',
+  },
+  'jeetu-bagdwal-part-1': {
+    context: 'Jeetu narratives combine music symbolism with folk spirituality. The story bridges everyday village realism and the supernatural imagination present in mountain traditions.',
+    significance: 'Important for understanding how Garhwali oral literature encodes cautionary ethics through lyrical storytelling.',
+  },
+  'jeetu-bagdwal-part-2': {
+    context: 'Part 2 deepens the tragic dimension of the Jeetu cycle and highlights how vows and fate operate in Garhwali ballad structure.',
+    significance: 'Frequently used in cultural studies to explore fatalism, ritual time, and emotional storytelling in Uttarakhand.',
+  },
+  'rajula-malushahi': {
+    context: 'Often remembered as a love epic, this narrative also preserves memory of mobility, trade, and social negotiation across Himalayan regions.',
+    significance: 'A key text for understanding romance as a vehicle for social commentary in mountain folklore.',
+  },
+};
+
 // Full-text reader for a single Garhwali folk-story. The story body is loaded
 // via dynamic import so the heavy ~50 KB Devanagari bundle never lands in the
 // homepage chunk.
@@ -41,6 +60,7 @@ export default function FolkStoryPage() {
 
   const { name, blurb, emoji, body, summary } = state.story;
   const paragraphs = (body || '').split(/\n{2,}/).map((p) => p.trim()).filter(Boolean);
+  const contextInfo = STORY_CONTEXT[slug] || null;
 
   // Promote other stories at the bottom — exclude the current one.
   const others = folkStories.filter((s) => s.slug !== slug);
@@ -92,6 +112,14 @@ export default function FolkStoryPage() {
         <section className="mb-8 p-5 rounded-xl bg-amber-950/30 border border-amber-700/20">
           <h2 className="text-sm font-bold text-amber-200 uppercase tracking-wide mb-2">Story Summary (English)</h2>
           <p className="text-sm text-white/70 leading-relaxed">{summary}</p>
+        </section>
+      )}
+
+      {contextInfo && (
+        <section className="mb-8 p-5 rounded-xl bg-white/[0.03] border border-white/[0.08]">
+          <h2 className="text-sm font-bold text-primary-200 uppercase tracking-wide mb-2">Cultural Context</h2>
+          <p className="text-sm text-white/70 leading-relaxed mb-3">{contextInfo.context}</p>
+          <p className="text-xs text-white/50">{contextInfo.significance}</p>
         </section>
       )}
 

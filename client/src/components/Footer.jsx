@@ -10,6 +10,7 @@ const FOOTER_LINKS = [
   { label: 'Jaagar', path: '/category/jaagar' },
   { label: 'Mela', path: '/category/mela' },
   { label: 'News', path: '/news' },
+  { label: 'Culture Library', path: '/culture' },
   { label: 'Favorites', path: '/favorites' },
   { label: 'Feedback', path: '/feedback' },
   { label: 'About', path: '/about' },

@@ -31,6 +31,41 @@ const CATEGORIES = [
   { id: 'psu', label: 'PSU', emoji: '🏭' },
 ];
 
+const MSME_ROJGAR_MODELS = [
+  {
+    id: 'kiwi-juice',
+    emoji: '🥝',
+    title: 'Kiwi Juice Processing Unit',
+    detail: 'कीवी ग्रेडिंग, पल्पिंग, जूस/स्क्वैश पैकिंग और लोकल ब्रांडिंग से पहाड़ी क्षेत्रों में वैल्यू एडिशन रोजगार।',
+    investment: 'लघु इकाई: लगभग ₹3-10 लाख (स्केल के अनुसार)',
+    support: 'MSME registration, food processing training, packaging/branding support',
+  },
+  {
+    id: 'matsya-palan',
+    emoji: '🐟',
+    title: 'Matsya Palan (Fish Farming)',
+    detail: 'टैंक/तालाब आधारित मत्स्य पालन से ग्रामीण परिवारों को नियमित आय और SHG आधारित रोजगार अवसर।',
+    investment: 'स्टार्टर मॉडल: लगभग ₹2-8 लाख',
+    support: 'Fisheries dept training, pond development assistance, feed guidance',
+  },
+  {
+    id: 'dairy-unit',
+    emoji: '🥛',
+    title: 'Dairy & Milk Collection Micro Unit',
+    detail: 'डेयरी पशुपालन, दूध संग्रह, दही/घी जैसी वैल्यू-एडेड यूनिट से गांव स्तर पर रोजगार।',
+    investment: 'माइक्रो डेयरी: लगभग ₹4-12 लाख',
+    support: 'Animal Husbandry linkage, veterinary support, chilling/collection network',
+  },
+  {
+    id: 'mushroom-beekeeping',
+    emoji: '🍄',
+    title: 'Mushroom & Beekeeping Allied Model',
+    detail: 'कम जगह में मशरूम उत्पादन और मधुमक्खी पालन के साथ ड्यूल इनकम मॉडल, महिलाओं/युवाओं के लिए उपयुक्त।',
+    investment: 'प्रारंभिक सेटअप: लगभग ₹1-5 लाख',
+    support: 'Skill training, cluster-based marketing, cooperative procurement',
+  },
+];
+
 function JobCard({ job, isHighlighted }) {
   const daysLeft = daysUntil(job.lastDate);
   const isUrgent = daysLeft <= 7 && daysLeft >= 0;
@@ -278,6 +313,42 @@ export default function GovtJobsPage() {
             <div className="text-2xl font-bold text-green-400">{totalVacancies.toLocaleString()}</div>
             <div className="text-white/60 text-xs">Total Vacancies</div>
           </div>
+        </div>
+
+        {/* MSME / Self-employment details */}
+        <div className="mb-8 rounded-2xl border border-blue-500/30 bg-blue-900/15 p-5 sm:p-6">
+          <div className="flex items-start justify-between gap-3 mb-4">
+            <div>
+              <h2 className="text-lg sm:text-xl font-semibold text-blue-100">MSME रोजगार विकल्प</h2>
+              <p className="text-xs sm:text-sm text-white/70 mt-1">
+                सिर्फ सरकारी भर्ती ही नहीं, स्वरोजगार मा भी मौके छन - Kiwi Juice, Matsya Palan, Dairy अर allied models.
+              </p>
+            </div>
+            <a
+              href="/yojana"
+              className="shrink-0 text-xs sm:text-sm px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white transition-colors"
+            >
+              योजनाएं देखो
+            </a>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {MSME_ROJGAR_MODELS.map((item) => (
+              <article key={item.id} className="rounded-xl border border-white/10 bg-white/5 p-4">
+                <h3 className="text-sm sm:text-base font-semibold text-white flex items-center gap-2 mb-2">
+                  <span className="text-lg">{item.emoji}</span>
+                  <span>{item.title}</span>
+                </h3>
+                <p className="text-xs sm:text-sm text-white/70 leading-relaxed mb-2">{item.detail}</p>
+                <p className="text-xs text-amber-300 mb-1"><strong>Investment:</strong> {item.investment}</p>
+                <p className="text-xs text-white/60"><strong>Support:</strong> {item.support}</p>
+              </article>
+            ))}
+          </div>
+
+          <p className="text-[11px] text-white/50 mt-4">
+            Note: Investment/support figures are indicative and may vary by district, eligibility, and current policy notification.
+          </p>
         </div>
 
         {/* Category filters */}

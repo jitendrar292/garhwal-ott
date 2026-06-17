@@ -3,6 +3,24 @@ import { folkStories } from '../data/folkStories';
 import SEO from '../components/SEO';
 import UttarakhandSpecialtiesGrid from '../components/PahadiCuisineGrid';
 
+const FEATURED_NARRATIVES = [
+  {
+    title: 'Tilu Rauteli: Pahad ki Veerangana',
+    detail:
+      'Tilu Rauteli ki gatha sirf yudh ki kahani nahi hai. Yeh Garhwal ki social memory hai jahan ek yuva mahila ne apne parivaar, asmita, aur bhoomi ke liye sainik leadership li. Is narrative me shaurya ke saath grief aur duty dono saath chalte hain.',
+  },
+  {
+    title: 'Jeetu Bagdwal: Sangeet aur Adhyatmik Sankat',
+    detail:
+      'Jeetu ki kahani mountain folklore me kala aur adhyatmik duniya ke beech ki rekha ko dikhati hai. Bansuri ka sur akarshan ban jata hai, aur wahin se katha fate, promise, aur loss tak pahunchti hai. Isliye yeh gatha lok-sangeet aur lok-vishwas dono ki study ke liye mahatvapurn hai.',
+  },
+  {
+    title: 'Rajula Malushahi: Prem ke Pare Samajik Arth',
+    detail:
+      'Rajula-Malushahi ko aksar romantic epic ke roop me padha jata hai, lekin isme trade routes, parivarik power, aur social boundaries ka bhi gahra sanket milta hai. Is narrative ko padhte waqt Himalayan mobility aur identity politics dono samajh aate hain.',
+  },
+];
+
 // Grid index for /folk-stories — shows every Garhwali folk-tale card so the
 // "लोक-गाथा" Explore tile has a real destination. Cards reuse the same
 // gradient styling as FolkStoriesRow but stack 2-up on mobile / 3-up on
@@ -44,6 +62,23 @@ export default function FolkStoriesIndexPage() {
           Garhwali-speaking communities, preserving the region's rich cultural heritage.
         </p>
       </header>
+
+      <section className="mb-8 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5 sm:p-6">
+        <h2 className="text-xl font-semibold text-white mb-3">Why These Folk Narratives Matter</h2>
+        <p className="text-sm text-gray-300 leading-relaxed mb-4">
+          Garhwali lok-gatha oral tradition ka hissa rahi hain. In kahaniyon me itihaas, social ethics, regional politics,
+          ecological memory, aur community values saath-saath record hue milte hain. Is archive ka uddeshya keval stories
+          list karna nahi, balki unka cultural context bhi preserve karna hai.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {FEATURED_NARRATIVES.map((item) => (
+            <article key={item.title} className="rounded-xl border border-amber-700/30 bg-amber-900/20 p-4">
+              <h3 className="text-sm font-semibold text-amber-200 mb-2">{item.title}</h3>
+              <p className="text-xs text-gray-300 leading-relaxed">{item.detail}</p>
+            </article>
+          ))}
+        </div>
+      </section>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {folkStories.map((s) => (
