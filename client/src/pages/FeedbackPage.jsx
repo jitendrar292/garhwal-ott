@@ -42,7 +42,7 @@ export default function FeedbackPage() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
+    <div className="max-w-full mx-auto px-4 sm:px-6 py-10">
       <Link
         to="/"
         className="inline-flex items-center gap-2 text-body-sm text-white/50 hover:text-white mb-6 transition-colors"

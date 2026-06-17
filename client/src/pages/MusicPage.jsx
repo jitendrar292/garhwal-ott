@@ -74,7 +74,7 @@ export default function MusicPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 pb-32">
+    <div className="max-w-full mx-auto px-4 sm:px-6 py-6 pb-32">
       <SEO
         title="Garhwali & Pahadi Songs - Trending, Bhajan, Jaagar, DJ Mix"
         description="Stream the latest Garhwali songs, evergreen Narendra Singh Negi classics, Kumaoni hits, Pahadi DJ remixes, devotional bhajans and Jaagar — curated playlists from Uttarakhand."

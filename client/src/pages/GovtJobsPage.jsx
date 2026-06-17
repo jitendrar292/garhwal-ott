@@ -256,7 +256,7 @@ export default function GovtJobsPage() {
         keywords="govt jobs uttarakhand, sarkari naukri, UKPSC, UKSSSC, uttarakhand police recruitment, forest ranger jobs"
       />
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+      <div className="max-w-full mx-auto px-4 sm:px-6 py-8">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="page-header mb-2 flex items-center justify-center gap-3">

@@ -111,7 +111,7 @@ export default function TermsOfServicePage() {
         description="Terms of Service for PahadiTube — rules and guidelines for using the Garhwali and Pahadi cultural entertainment platform."
         path="/terms-of-service"
       />
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
+      <div className="max-w-full mx-auto px-4 sm:px-6 py-12">
         <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">Terms of Service</h1>
         <p className="text-white/40 text-sm mb-8">Last updated: 26 May 2026</p>
 

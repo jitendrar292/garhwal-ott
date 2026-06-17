@@ -38,7 +38,7 @@ export default function PahadiStorePage() {
         keywords="pahadi ingredients buy online, gehat dal, bhatt dal, mandua flour, jakhiya, jambu, uttarakhand food online, patanjali store near me"
       />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-6 pb-16">
+      <div className="max-w-full mx-auto px-4 sm:px-6 pt-6 pb-16">
 
         {/* Hero */}
         <div

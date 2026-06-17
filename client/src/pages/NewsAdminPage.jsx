@@ -558,7 +558,7 @@ export default function NewsAdminPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="max-w-full mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">News Admin</h1>
         <div className="flex items-center gap-2 flex-wrap">

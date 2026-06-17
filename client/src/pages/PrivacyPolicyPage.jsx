@@ -93,7 +93,7 @@ const SECTIONS = [
 
 export default function PrivacyPolicyPage() {
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
+    <div className="max-w-full mx-auto px-4 sm:px-6 py-12">
       <SEO
         title="Privacy Policy — PahadiTube"
         description="Read PahadiTube's Privacy Policy to understand how we collect, use, and protect your personal information."

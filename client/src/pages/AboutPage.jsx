@@ -53,7 +53,7 @@ const MISSION_POINTS = [
 
 export default function AboutPage() {
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
+    <div className="max-w-full mx-auto px-4 sm:px-6 py-12">
       <SEO
         title="About PahadiTube — Pahadi Entertainment & Culture"
         description="PahadiTube is Uttarakhand's premier free streaming platform for Garhwali and Kumaoni movies, music, folk stories, news, and culture. Learn about our mission."

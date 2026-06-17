@@ -9,7 +9,7 @@ import UttarakhandSpecialtiesGrid from '../components/PahadiCuisineGrid';
 // desktop instead of scrolling horizontally.
 export default function FolkStoriesIndexPage() {
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-16">
+    <div className="max-w-full mx-auto px-4 sm:px-6 pt-6 pb-16">
       <SEO
         title="Garhwali Folk Stories - Uttarakhand Lok Gatha & Legends"
         description="Read Garhwali folk stories (लोक-गाथा) from Uttarakhand — Jagdev Panwar, Jeetu Bagdwal, Teelu Rauteli, Kalu Bhandari, Ranu Rout and more Pahadi legends."

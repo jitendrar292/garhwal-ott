@@ -275,7 +275,7 @@ export default function SarkaariYojanaPage() {
   }, {});
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 pb-28">
+    <div className="max-w-full mx-auto px-4 sm:px-6 py-6 pb-28">
       <SEO
         title="सरकारी योजनाएं | उत्तराखंड | Pahadi Tube"
         description="उत्तराखंड में चल रही प्रमुख सरकारी योजनाओं की जानकारी — स्वास्थ्य, शिक्षा, कृषि, महिला, रोजगार, आवास और अधिक।"
