@@ -15,13 +15,24 @@ export default function AdUnit({ className = '' }) {
     // Only push once per mount; guard against StrictMode double-invoke
     if (pushed.current) return;
     pushed.current = true;
-    try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch {}
+    
+    // Wait for adsbygoogle to be available
+    const timer = setTimeout(() => {
+      try {
+        (window.adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: AD_CLIENT,
+          enable_page_level_ads: true
+        });
+      } catch (error) {
+        console.warn('AdSense error:', error);
+      }
+    }, 100);
+    
+    return () => clearTimeout(timer);
   }, []);
 
   return (
-    <div className={`w-full overflow-hidden my-6 ${className}`}>
+    <div className={`w-full overflow-hidden my-6 min-h-[250px] ${className}`}>
       <ins
         ref={ref}
         className="adsbygoogle"
@@ -46,13 +57,24 @@ export function AdUnitFluid({ className = '' }) {
   useEffect(() => {
     if (pushed.current) return;
     pushed.current = true;
-    try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch {}
+    
+    // Wait for adsbygoogle to be available
+    const timer = setTimeout(() => {
+      try {
+        (window.adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: AD_CLIENT,
+          enable_page_level_ads: true
+        });
+      } catch (error) {
+        console.warn('AdSense error:', error);
+      }
+    }, 100);
+    
+    return () => clearTimeout(timer);
   }, []);
 
   return (
-    <div className={`w-full overflow-hidden my-6 ${className}`}>
+    <div className={`w-full overflow-hidden my-6 min-h-[250px] ${className}`}>
       <ins
         className="adsbygoogle"
         style={{ display: 'block' }}
