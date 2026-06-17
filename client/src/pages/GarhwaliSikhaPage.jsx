@@ -203,7 +203,7 @@ export default function GarhwaliSikhaPage() {
   const nextCard = () => setCardIdx((i) => (i < categoryPhrases.length - 1 ? i + 1 : 0));
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 pb-28">
+    <div className="max-w-full mx-auto px-4 sm:px-6 py-6 pb-28">
       <SEO
         title="गढ़वाली सीखा - Learn Garhwali Language"
         description="Learn Garhwali language with flashcards, quiz, and everyday phrases. Greetings, numbers, family, food and more in Garhwali."

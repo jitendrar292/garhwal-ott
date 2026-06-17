@@ -101,7 +101,7 @@ export default function NewsPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 pb-28">
+    <div className="max-w-full mx-auto px-4 sm:px-6 py-6 pb-28">
       <SEO
         title="रैबार - Latest Uttarakhand & Garhwali News"
         description="Daily Pahadi news from Uttarakhand — politics, culture, sports, weather and development updates from Garhwal and Kumaon, in Hindi and Garhwali."
