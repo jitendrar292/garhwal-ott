@@ -1,9 +1,10 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, lazy, Suspense } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, Transition } from '@headlessui/react';
 import { useAuth } from '../context/AuthContext';
-import SnowEffect from './SnowEffect';
+
+const SnowEffect = lazy(() => import('./SnowEffect'));
 
 // Per-user notification clearing needs a stable caller identity. Logged-in
 // users send their auth token; everyone else gets a persistent anonymous
@@ -56,19 +57,16 @@ export default function Navbar() {
   const location = useLocation();
   const { user, isAuthenticated, signOut } = useAuth();
 
-  // Auto-trigger snow on first visit
-  useEffect(() => {
-    const id = Date.now();
-    setSnowBatches([id]);
-    const timer = setTimeout(() => setSnowBatches(prev => prev.filter(b => b !== id)), 8000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Check push subscription status and fetch notifications
+  // Defer push checks to idle time so first paint is not delayed by SW/network work.
   useEffect(() => {
     if (typeof window === 'undefined' || !('serviceWorker' in navigator) || !('PushManager' in window)) return;
     let cancelled = false;
-    (async () => {
+
+    let idleHandle;
+    let timeoutHandle;
+
+    const run = async () => {
+      if (cancelled) return;
       try {
         const reg = await navigator.serviceWorker.ready;
         const sub = await reg.pushManager.getSubscription();
@@ -86,8 +84,19 @@ export default function Navbar() {
           }
         }
       } catch { /* ignore */ }
-    })();
-    return () => { cancelled = true; };
+    };
+
+    if ('requestIdleCallback' in window) {
+      idleHandle = window.requestIdleCallback(run, { timeout: 2500 });
+    } else {
+      timeoutHandle = window.setTimeout(run, 800);
+    }
+
+    return () => {
+      cancelled = true;
+      if (idleHandle && 'cancelIdleCallback' in window) window.cancelIdleCallback(idleHandle);
+      if (timeoutHandle) window.clearTimeout(timeoutHandle);
+    };
   }, []);
 
   // Speech recognition support (skip iOS — webkit impl is unreliable)
@@ -557,7 +566,9 @@ export default function Navbar() {
       )}
       </AnimatePresence>
     </nav>
-    {snowBatches.map(id => <SnowEffect key={id} active={true} />)}
+    <Suspense fallback={null}>
+      {snowBatches.map(id => <SnowEffect key={id} active={true} />)}
+    </Suspense>
     </>
   );
 }
