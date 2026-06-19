@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { getVideosByCategory } from '../api/youtube';
 import INSTAGRAM_REELS from '../data/instagramReels';
 import SEO from '../components/SEO';
+import NotifyButton from '../components/NotifyButton';
 
 // Interleave two arrays so the user sees a mix instead of all-shorts-then-all-reels.
 function interleave(a, b) {
@@ -184,7 +185,7 @@ export default function ShortsPage() {
   }
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="max-w-full mx-auto px-4 sm:px-6 py-6 pb-28">
       <SEO
         title="Pahadi Reels & Shorts - Garhwali Comedy, Dance & Vlogs"
         description="Scroll the best Pahadi Shorts, YouTube Reels and Instagram Reels — Garhwali comedy, folk dance, vlogs and trending clips from Uttarakhand creators."
@@ -199,24 +200,30 @@ export default function ShortsPage() {
           isPartOf: { '@id': 'https://pahaditube.in/#website' },
         }}
       />
+
       {/* Header */}
-      <div className="w-full max-w-md px-4 pt-4 pb-2 flex items-center gap-3">
-        <div className="w-1 h-7 bg-gradient-to-b from-pink-400 to-red-500 rounded-full" />
-        <h1 className="page-header">📱 Pahadi <span className="gradient-text">Reels</span></h1>
-        <span className="text-xs text-gray-500 ml-auto">Tap to play</span>
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-12 h-12 rounded-2xl flex items-center justify-center">
+          <span className="text-2xl">📱</span>
+        </div>
+        <div className="flex-1">
+          <h1 className="page-header"><span className="gradient-text">Pahadi Reels</span></h1>
+          <p className="text-sm text-gray-400">Shorts, Reels & Instagram Videos</p>
+        </div>
+        <NotifyButton />
       </div>
 
       {/* Tab switcher */}
-      <div className="w-full max-w-md px-4 pb-2 flex gap-2 overflow-x-auto">
+      <div className="flex gap-2 overflow-x-auto pb-3 mb-6 scroll-row">
         {TABS.map((t) => (
           <button
             key={t.id}
             type="button"
             onClick={() => setTab(t.id)}
-            className={`shrink-0 text-xs font-medium px-3 py-1.5 rounded-full transition-colors border ${
+            className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
               tab === t.id
-                ? 'bg-gradient-to-r from-pink-500 to-red-500 text-white border-transparent shadow'
-                : 'bg-dark-800/60 text-gray-300 border-white/10 hover:bg-dark-700'
+                ? 'bg-white text-black shadow-md'
+                : 'bg-dark-700 text-gray-300 hover:bg-dark-600'
             }`}
           >
             <span className="mr-1">{t.emoji}</span>{t.label}
@@ -224,18 +231,19 @@ export default function ShortsPage() {
         ))}
       </div>
 
-      {/* Vertical snap scroll container */}
-      <div
-        ref={containerRef}
-        className="w-full max-w-md overflow-y-scroll snap-y snap-mandatory"
-        style={{ height: 'calc(100dvh - 175px)' }}
-      >
+      {/* Vertical snap scroll container — centered with max width for shorts */}
+      <div className="flex justify-center">
+        <div
+          ref={containerRef}
+          className="w-full max-w-md overflow-y-scroll snap-y snap-mandatory"
+          style={{ height: 'calc(100dvh - 300px)' }}
+        >
         {videos.map((video, i) => (
           <div
             key={video._key || `${tab}-${video.id}-${i}`}
             data-short-card={i}
             className="snap-start snap-always flex flex-col items-center justify-center px-3 py-2"
-            style={{ height: 'calc(100dvh - 175px)' }}
+            style={{ height: 'calc(100dvh - 300px)' }}
           >
             {video.source === 'instagram' ? (
               // Instagram reel — handled by IG's own embed script
@@ -341,6 +349,7 @@ export default function ShortsPage() {
             )}
           </div>
         )}
+      </div>
       </div>
     </div>
   );
