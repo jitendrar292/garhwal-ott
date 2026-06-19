@@ -12,6 +12,7 @@ import GovtJobsRow from '../components/GovtJobsRow';
 import SarkaariYojanaRow from '../components/SarkaariYojanaRow';
 import UpcomingHappenings from '../components/UpcomingHappenings';
 import CharDhamRow from '../components/CharDhamRow';
+import TrendingInstagramRow from '../components/TrendingInstagramRow';
 import AboutSection from '../components/AboutSection';
 import AdUnit, { AdUnitFluid } from '../components/AdUnit';
 import { getVideosByCategory } from '../api/youtube';
@@ -154,6 +155,16 @@ export default function HomePage() {
           className="section-stories pl-3"
         >
           <FolkStoriesRow />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.1 }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="section-instagram pl-3"
+        >
+          <TrendingInstagramRow />
         </motion.div>
 
         <section className="rounded-2xl border border-white/[0.08] bg-gradient-to-r from-amber-900/20 via-primary-900/20 to-surface-2 p-5 sm:p-6 mt-4">

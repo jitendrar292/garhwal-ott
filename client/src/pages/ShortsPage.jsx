@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { getVideosByCategory } from '../api/youtube';
 import INSTAGRAM_REELS from '../data/instagramReels';
 import SEO from '../components/SEO';
@@ -71,6 +71,7 @@ export default function ShortsPage() {
   const [shorts, setShorts] = useState([]);
   const [reels, setReels]   = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchParams] = useSearchParams();
   const [tab, setTab] = useState('all');
   const [activeIndex, setActiveIndex] = useState(0);
   // Click-to-play: tracks which card indices the user has tapped to start.
@@ -96,6 +97,14 @@ export default function ShortsPage() {
       })),
     []
   );
+
+  useEffect(() => {
+    const requestedTab = searchParams.get('tab');
+    if (!requestedTab) return;
+    if (TABS.some((t) => t.id === requestedTab)) {
+      setTab(requestedTab);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     let alive = true;
