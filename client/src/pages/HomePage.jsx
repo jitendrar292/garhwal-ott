@@ -170,12 +170,12 @@ export default function HomePage() {
               <span className="text-xs text-white/50">Handpicked for faster discovery</span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="-mx-1 px-1 flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               {todayPicks.map((item) => (
                 <Link
                   key={item.video.id}
                   to={`/watch/${item.video.id}`}
-                  className={`group rounded-xl border border-white/[0.08] bg-gradient-to-br ${item.tint} p-3 hover:border-white/[0.2] transition-all`}
+                  className={`group shrink-0 snap-start w-[78vw] sm:w-[46vw] lg:w-[24vw] max-w-[360px] rounded-xl border border-white/[0.08] bg-gradient-to-br ${item.tint} p-3 hover:border-white/[0.2] transition-all`}
                 >
                   <div className="aspect-video rounded-lg overflow-hidden mb-2">
                     <img
