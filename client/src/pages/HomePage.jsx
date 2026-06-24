@@ -108,6 +108,7 @@ export default function HomePage() {
     { to: '/folk-stories', label: 'Folk Stories', emoji: '📖' },
     { to: '/news', label: 'News', emoji: '📰' },
     { to: '/jobs', label: 'Jobs', emoji: '💼' },
+    { to: '/sacred-places', label: 'Trekking', emoji: '🥾' },
     { to: '/culture', label: 'Culture Library', emoji: '🏔️' },
     { to: '/ghughuti-ai', label: 'Ask Ghughuti AI', emoji: '✨' },
   ];
