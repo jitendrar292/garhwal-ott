@@ -33,12 +33,12 @@ const CATEGORIES = [
 
 const MSME_ROJGAR_MODELS = [
   {
-    id: 'kiwi-juice',
+    id: 'kiwi-plantation',
     emoji: '🥝',
-    title: 'Kiwi Juice Processing Unit',
-    detail: 'कीवी ग्रेडिंग, पल्पिंग, जूस/स्क्वैश पैकिंग और लोकल ब्रांडिंग से पहाड़ी क्षेत्रों में वैल्यू एडिशन रोजगार।',
-    investment: 'लघु इकाई: लगभग ₹3-10 लाख (स्केल के अनुसार)',
-    support: 'MSME registration, food processing training, packaging/branding support',
+    title: 'Kiwi Plantation (Orchard) Unit',
+    detail: 'कीवी बागवानी मॉडल: T-bar/pergola training के साथ 4m x 5-6m spacing, फलन 4-5 साल में शुरू और 7-8 साल में commercial production; औसत ~25 टन/हेक्टेयर तक yield संभव।',
+    investment: '1 acre orchard (trellis + drip + fencing + planting) के लिए NHB one-acre model में बेस लागत ~₹2.5 लाख बताई गई है; मौजूदा लागत स्थान और सामग्री के अनुसार अधिक हो सकती है।',
+    support: 'Horticulture dept + NHB/MIDH linkage, drip irrigation subsidy, quality planting material और trellis/orchard establishment के लिए bankable project support।',
   },
   {
     id: 'matsya-palan',
@@ -63,6 +63,38 @@ const MSME_ROJGAR_MODELS = [
     detail: 'कम जगह में मशरूम उत्पादन और मधुमक्खी पालन के साथ ड्यूल इनकम मॉडल, महिलाओं/युवाओं के लिए उपयुक्त।',
     investment: 'प्रारंभिक सेटअप: लगभग ₹1-5 लाख',
     support: 'Skill training, cluster-based marketing, cooperative procurement',
+  },
+  {
+    id: 'pmegp',
+    emoji: '🏭',
+    title: 'PMEGP (Prime Minister Employment Generation Programme)',
+    detail: 'नया micro-enterprise शुरू करने के लिए KVIC/KVIB/DIC route से manufacturing और service units को support। ग्रामीण/पहाड़ी युवाओं के लिए popular self-employment yojana।',
+    investment: 'Project cost: Manufacturing up to ₹50 lakh, Service up to ₹20 lakh (latest PMEGP norms के अनुसार)।',
+    support: 'Margin money subsidy (category/location आधारित), EDP training, bank-linked loan facilitation।',
+  },
+  {
+    id: 'pmfme-odop',
+    emoji: '🍯',
+    title: 'PMFME (ODOP Food Processing Support)',
+    detail: 'One District One Product model के तहत pickle, mandua, pahadi masala, honey, fruit processing जैसी micro food units को formalize और scale करने के लिए योजना।',
+    investment: 'Eligible micro food enterprises के लिए project-linked support; सामान्यतः credit-linked capital subsidy component उपलब्ध।',
+    support: '35% तक credit-linked capital subsidy (scheme norms), branding/packaging, FSSAI support, SHG/FPO handholding।',
+  },
+  {
+    id: 'mudra-loan',
+    emoji: '💳',
+    title: 'Pradhan Mantri MUDRA Yojana (PMMY)',
+    detail: 'छोटे व्यवसायों के लिए collateral-light working capital/term loan support। किराना, tailoring, repair, transport, dairy, food carts जैसे छोटे उद्यमों के लिए उपयोगी।',
+    investment: 'Shishu, Kishor, Tarun categories में business stage के अनुसार loan slabs; revised upper slab के लिए bank norms apply।',
+    support: 'Bank/NBFC route financing, low-ticket enterprise onboarding, women and first-time entrepreneurs के लिए better access।',
+  },
+  {
+    id: 'standup-india',
+    emoji: '📈',
+    title: 'Stand-Up India (Women/SC/ST Entrepreneurs)',
+    detail: 'Greenfield enterprise शुरू करने के लिए women और SC/ST entrepreneurs को institutional credit push; manufacturing, trading, services sectors में उपयोगी।',
+    investment: 'Loan range सामान्यतः ₹10 lakh से ₹1 crore (bank appraisal और viability के आधार पर)।',
+    support: 'Handholding support, project preparation guidance, bank loan facilitation under Stand-Up India framework।',
   },
 ];
 
