@@ -15,6 +15,19 @@ const { redisGetJSON, redisSetJSON, isRedisEnabled } = require('../services/stor
 
 const REDIS_KEY = 'pahadi_jobs';
 const MAX_JOBS = 100;
+const VALID_CATEGORIES = new Set(['state', 'central', 'psu', 'defence', 'police', 'teaching']);
+const ALLOWED_LINK_HOST_PATTERNS = [
+  /\.gov\.in$/i,
+  /\.nic\.in$/i,
+  /\.ac\.in$/i,
+  /\.org$/i,
+  /(^|\.)ncs\.gov\.in$/i,
+  /(^|\.)freejobalert\.com$/i,
+  /(^|\.)sarkariresult\.com$/i,
+  /(^|\.)itbpolice\.nic\.in$/i,
+  /(^|\.)ssbrectt\.gov\.in$/i,
+  /(^|\.)ukmssb\.org$/i,
+];
 
 // In-memory fallback when Redis is down
 let memJobs = [];
@@ -23,6 +36,54 @@ let memJobs = [];
 let listCache = null;
 const LIST_TTL_MS = 60 * 1000; // 60 seconds
 function invalidateListCache() { listCache = null; }
+
+function isValidIsoDate(iso) {
+  return typeof iso === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(iso) && !Number.isNaN(new Date(`${iso}T00:00:00`).getTime());
+}
+
+function isAllowedJobLink(link) {
+  if (!link || typeof link !== 'string') return true;
+  try {
+    const u = new URL(link);
+    if (!['http:', 'https:'].includes(u.protocol)) return false;
+    return ALLOWED_LINK_HOST_PATTERNS.some((rx) => rx.test(u.hostname));
+  } catch {
+    return false;
+  }
+}
+
+function isLikelyValidJob(job) {
+  if (!job || typeof job !== 'object') return false;
+  if (!job.title || !job.department || !job.lastDate) return false;
+  if (String(job.title).trim().length < 6) return false;
+  if (!isValidIsoDate(job.lastDate)) return false;
+  if (!isAllowedJobLink(job.link || '')) return false;
+
+  const lowerTitle = String(job.title).toLowerCase();
+  if (/mela|festival|event|youtube|reel|shorts|matrimony|dating/.test(lowerTitle)) return false;
+
+  const vacancies = parseInt(job.vacancies, 10);
+  if (!Number.isNaN(vacancies) && (vacancies < 0 || vacancies > 200000)) return false;
+
+  return true;
+}
+
+function sanitizeJob(job) {
+  const category = VALID_CATEGORIES.has(job.category) ? job.category : 'state';
+  return {
+    ...job,
+    category,
+    title: String(job.title || '').trim(),
+    titleLocal: String(job.titleLocal || '').trim(),
+    department: String(job.department || '').trim(),
+    location: String(job.location || 'Uttarakhand').trim(),
+    vacancies: Math.max(0, parseInt(job.vacancies, 10) || 0),
+    salary: String(job.salary || '').trim(),
+    eligibility: String(job.eligibility || '').trim(),
+    link: String(job.link || '').trim(),
+    emoji: String(job.emoji || '📋').trim() || '📋',
+  };
+}
 
 async function loadJobs() {
   if (isRedisEnabled()) {
@@ -60,8 +121,9 @@ router.get('/', async (_req, res) => {
     }
 
     const jobs = await loadJobs();
+    const validJobs = jobs.filter(isLikelyValidJob).map(sanitizeJob);
     // Sort by lastDate ascending (upcoming first)
-    const sorted = jobs.sort((a, b) => (a.lastDate || '').localeCompare(b.lastDate || ''));
+    const sorted = validJobs.sort((a, b) => (a.lastDate || '').localeCompare(b.lastDate || ''));
 
     const payload = { jobs: sorted };
     listCache = { at: Date.now(), payload };
@@ -105,7 +167,7 @@ router.post('/', async (req, res) => {
       .replace(/\s+/g, '-')
       .slice(0, 50) + '-' + Date.now().toString(36);
 
-    const newJob = {
+    const newJob = sanitizeJob({
       id,
       title,
       titleLocal: titleLocal || '',
@@ -121,7 +183,11 @@ router.post('/', async (req, res) => {
       emoji: emoji || '📋',
       featured: featured === true,
       createdAt: Date.now(),
-    };
+    });
+
+    if (!isLikelyValidJob(newJob)) {
+      return res.status(400).json({ error: 'Invalid or suspicious job listing' });
+    }
 
     jobs.unshift(newJob);
     
@@ -146,9 +212,13 @@ router.put('/:id', async (req, res) => {
     if (idx === -1) return res.status(404).json({ error: 'Job not found' });
 
     const updates = req.body;
-    const updated = { ...jobs[idx], ...updates, updatedAt: Date.now() };
+    const updated = sanitizeJob({ ...jobs[idx], ...updates, updatedAt: Date.now() });
     // Preserve original id
     updated.id = jobs[idx].id;
+
+    if (!isLikelyValidJob(updated)) {
+      return res.status(400).json({ error: 'Invalid or suspicious job listing' });
+    }
     jobs[idx] = updated;
 
     await saveJobs(jobs);
