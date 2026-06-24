@@ -3,6 +3,78 @@ import { motion, AnimatePresence } from 'framer-motion';
 import SEO from '../components/SEO';
 import SACRED_PLACES, { PLACE_TYPES } from '../data/sacredPlaces';
 
+const FAMOUS_TREKS = [
+  {
+    id: 'kedarkantha',
+    name: 'Kedarkantha Trek',
+    region: 'Sankri, Uttarkashi',
+    duration: '4-6 days',
+    level: 'Easy to Moderate',
+    bestSeason: 'Dec-Mar (snow), Apr-Jun',
+    altitude: '3,810 m',
+    highlight: 'Best beginner snow trek with summit sunrise views.',
+  },
+  {
+    id: 'har-ki-dun',
+    name: 'Har Ki Dun Trek',
+    region: 'Govind Pashu Vihar, Uttarkashi',
+    duration: '6-8 days',
+    level: 'Moderate',
+    bestSeason: 'Apr-Jun, Sep-Nov',
+    altitude: '3,566 m',
+    highlight: 'Ancient Himalayan valley trek through villages and forests.',
+  },
+  {
+    id: 'valley-of-flowers',
+    name: 'Valley of Flowers + Hemkund',
+    region: 'Chamoli',
+    duration: '4-6 days',
+    level: 'Moderate',
+    bestSeason: 'Jul-Sep',
+    altitude: '4,329 m (Hemkund)',
+    highlight: 'UNESCO valley with monsoon blooms and alpine meadows.',
+  },
+  {
+    id: 'brahmatal',
+    name: 'Brahmatal Trek',
+    region: 'Lohajung, Chamoli',
+    duration: '5-6 days',
+    level: 'Easy to Moderate',
+    bestSeason: 'Dec-Mar, Apr-May',
+    altitude: '3,400 m',
+    highlight: 'Panoramic views of Trishul and Nanda Ghunti peaks.',
+  },
+  {
+    id: 'rupin-pass',
+    name: 'Rupin Pass Trek',
+    region: 'Dehradun-Uttarkashi border route',
+    duration: '7-9 days',
+    level: 'Difficult',
+    bestSeason: 'May-Jun, Sep-Oct',
+    altitude: '4,650 m',
+    highlight: 'High-altitude crossover trek with dramatic terrain changes.',
+  },
+  {
+    id: 'nag-tibba',
+    name: 'Nag Tibba Trek',
+    region: 'Tehri',
+    duration: '1-2 days',
+    level: 'Easy',
+    bestSeason: 'Oct-Apr',
+    altitude: '3,022 m',
+    highlight: 'Great weekend trek from Dehradun/Mussoorie side.',
+  },
+];
+
+const TRACKING_STEPS = [
+  'Route planning: trek distance, altitude gain, water points, and nearest road-head पहले verify करें।',
+  'Live location safety: mobile में offline maps (Google Maps + downloadable area) पहले save करें।',
+  'Forest/permit check: Valley of Flowers, Govind, Kedarnath side जैसे routes पर permit/entry rules पहले confirm करें।',
+  'Weather tracking: IMD forecast + local advisories check करके ही summit push करें; heavy rain/snow alerts में delay करें।',
+  'Emergency readiness: power bank, headlamp, basic first-aid, ORS, whistle, rain layer, and emergency contacts साथ रखें।',
+  'Responsible trekking: marked trail से न हटें, solo high-altitude route avoid करें, and local guide/registered operator prefer करें।',
+];
+
 export default function SacredPlacesPage() {
   const [activeType, setActiveType] = useState('all');
   const [openId, setOpenId] = useState(null);
@@ -161,6 +233,39 @@ export default function SacredPlacesPage() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Famous Treks + Tracking Guide */}
+        <div className="bg-surface-1 rounded-xl p-5 mb-6 border border-white/5">
+          <h2 className="text-lg font-bold mb-1">🥾 उत्तराखंड के Famous Treks</h2>
+          <p className="text-sm text-gray-300 mb-4">
+            Beginner से advanced तक popular trekking routes, unka level, season और route profile नीचे दिया है।
+          </p>
+
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 mb-5">
+            {FAMOUS_TREKS.map((trek) => (
+              <div key={trek.id} className="rounded-xl border border-white/10 bg-surface-2 p-4">
+                <h3 className="text-sm font-semibold text-teal-300">{trek.name}</h3>
+                <p className="text-xs text-gray-400 mt-1">📍 {trek.region}</p>
+                <p className="text-xs text-gray-300 mt-2">{trek.highlight}</p>
+                <div className="mt-3 flex flex-wrap gap-1.5 text-[10px] text-gray-300">
+                  <span className="px-2 py-0.5 rounded bg-black/30">⏱️ {trek.duration}</span>
+                  <span className="px-2 py-0.5 rounded bg-black/30">📈 {trek.level}</span>
+                  <span className="px-2 py-0.5 rounded bg-black/30">⛰️ {trek.altitude}</span>
+                  <span className="px-2 py-0.5 rounded bg-black/30">🗓️ {trek.bestSeason}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <h3 className="text-sm font-semibold text-teal-300 mb-2">🧭 Uttarakhand में Trek kaise Track karein (Practical Guide)</h3>
+          <div className="space-y-2">
+            {TRACKING_STEPS.map((step, i) => (
+              <p key={i} className="text-sm text-gray-300 leading-relaxed">
+                <span className="text-teal-300 font-semibold">{i + 1}.</span> {step}
+              </p>
+            ))}
+          </div>
+        </div>
 
         {/* Educational Section */}
         <div className="bg-surface-1 rounded-xl p-5 mb-8 border border-white/5">
