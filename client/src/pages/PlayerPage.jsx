@@ -5,6 +5,7 @@ import VideoCard from '../components/VideoCard';
 import { useFavorites } from '../hooks/useFavorites';
 import LyricsSection from '../components/LyricsSection';
 import WhatsAppShareBtn from '../components/WhatsAppShareBtn';
+import ScriptSection from '../components/ScriptSection';
 
 export default function PlayerPage() {
   const { videoId } = useParams();
@@ -180,6 +181,9 @@ export default function PlayerPage() {
               url={`${window.location.origin}/watch/${videoId}`}
             />
           </div>
+
+          {/* Song lyrics in Garhwali */}
+          <ScriptSection videoId={videoId} />
 
           {/* Song lyrics in Garhwali */}
           <LyricsSection videoId={videoId} />

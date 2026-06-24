@@ -27,10 +27,39 @@ export default function MusicPage() {
   const [nextPageToken, setNextPageToken] = useState(null);
   const { playTrack, currentTrack } = useMusic();
 
-  // Dedupe by video id — protects against overlap between pages.
+  const REEL_WORDS_RE = /\b(shorts?|reels?|instagram|insta)\b/i;
+  const CLEAN_TAIL_RE = /\s*\([^)]*\)|\s*\[[^\]]*\]|\s*\|.*$/g;
+
+  const normalizeTitle = (title = '') =>
+    title
+      .toLowerCase()
+      .replace(CLEAN_TAIL_RE, '')
+      .replace(/\b(official|video|full|song|audio|lyrics?|hd|4k|remix)\b/g, '')
+      .replace(/[^a-z0-9\u0900-\u097f\s]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+  const filterSongLikeVideos = (items = []) =>
+    items.filter((t) => {
+      const hay = `${t?.title || ''} ${t?.channelTitle || ''}`;
+      return !REEL_WORDS_RE.test(hay);
+    });
+
+  // Dedupe by video id first, then by normalized title to avoid repeat songs.
   const mergeUnique = (existing, incoming) => {
-    const seen = new Set(existing.map((t) => t.id));
-    return [...existing, ...incoming.filter((t) => !seen.has(t.id))];
+    const byVideoId = new Set(existing.map((t) => t.id));
+    const bySongKey = new Set(existing.map((t) => normalizeTitle(t.title)));
+
+    const merged = [...existing];
+    for (const track of incoming) {
+      if (!track?.id || byVideoId.has(track.id)) continue;
+      const songKey = normalizeTitle(track.title);
+      if (songKey && bySongKey.has(songKey)) continue;
+      byVideoId.add(track.id);
+      if (songKey) bySongKey.add(songKey);
+      merged.push(track);
+    }
+    return merged;
   };
 
   useEffect(() => {
@@ -45,7 +74,7 @@ export default function MusicPage() {
     searchVideos(MUSIC_QUERIES[activeTab].query, '', 10, 'date')
       .then((data) => {
         if (!cancelled) {
-          setTracks(data.videos || []);
+          setTracks(mergeUnique([], filterSongLikeVideos(data.videos || [])));
           setNextPageToken(data.nextPageToken || null);
           setLoading(false);
         }
@@ -62,7 +91,7 @@ export default function MusicPage() {
     searchVideos(MUSIC_QUERIES[activeTab].query, nextPageToken, 10, 'date')
       .then((data) => {
         // Append older results after the latest ones already shown.
-        setTracks((prev) => mergeUnique(prev, data.videos || []));
+        setTracks((prev) => mergeUnique(prev, filterSongLikeVideos(data.videos || [])));
         setNextPageToken(data.nextPageToken || null);
       })
       .catch(() => {})

@@ -38,6 +38,21 @@ const CATEGORY_LABELS = {
   theatre: '🎭 Theatre & Culture',
 };
 
+const MOVIES_CONTENT_BLOCKS = [
+  {
+    title: 'What You Will Find',
+    body: 'Classic Garhwali films, modern indie cinema, village dramas, family stories, social issue films, and culturally rooted storytelling from Garhwal and Kumaon creators.',
+  },
+  {
+    title: 'Why These Films Matter',
+    body: 'Movies preserve dialects, folk expressions, and regional identity. Watching and sharing Garhwali cinema helps keep the language and mountain narratives alive for younger generations.',
+  },
+  {
+    title: 'How To Explore Better',
+    body: 'Open any movie, then use Script (Text) to read captions in plain text, copy lines, or download script notes. This is useful for language learners and cultural documentation.',
+  },
+];
+
 export default function CategoryPage() {
   const { category } = useParams();
   const [state, setState] = useState({ videos: [], loading: true, error: null, nextPageToken: null, loadingMore: false });
@@ -98,6 +113,17 @@ export default function CategoryPage() {
           <p className="text-white/50 text-sm sm:text-base leading-relaxed max-w-4xl">
             {CATEGORY_DESCRIPTIONS[category]}
           </p>
+        </div>
+      )}
+
+      {category === 'movies' && (
+        <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-3">
+          {MOVIES_CONTENT_BLOCKS.map((item) => (
+            <article key={item.title} className="rounded-2xl bg-surface-1/70 border border-white/10 p-4">
+              <h3 className="text-sm font-semibold text-white mb-2">{item.title}</h3>
+              <p className="text-xs sm:text-sm text-white/65 leading-relaxed">{item.body}</p>
+            </article>
+          ))}
         </div>
       )}
 

@@ -3,6 +3,40 @@ import { useSearchParams } from 'react-router-dom';
 import VideoGrid from '../components/VideoGrid';
 import { searchVideos } from '../api/youtube';
 
+const REEL_WORDS_RE = /\b(shorts?|reels?|instagram|insta)\b/i;
+const CLEAN_TAIL_RE = /\s*\([^)]*\)|\s*\[[^\]]*\]|\s*\|.*$/g;
+
+const normalizeTitle = (title = '') =>
+  title
+    .toLowerCase()
+    .replace(CLEAN_TAIL_RE, '')
+    .replace(/\b(official|video|full|song|audio|lyrics?|hd|4k|remix)\b/g, '')
+    .replace(/[^a-z0-9\u0900-\u097f\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const filterReels = (items = []) =>
+  items.filter((v) => {
+    const hay = `${v?.title || ''} ${v?.channelTitle || ''}`;
+    return !REEL_WORDS_RE.test(hay);
+  });
+
+const mergeUniqueByTitle = (existing = [], incoming = []) => {
+  const byVideoId = new Set(existing.map((v) => v.id));
+  const byTitle = new Set(existing.map((v) => normalizeTitle(v.title)).filter(Boolean));
+  const merged = [...existing];
+
+  for (const video of incoming) {
+    if (!video?.id || byVideoId.has(video.id)) continue;
+    const key = normalizeTitle(video.title);
+    if (key && byTitle.has(key)) continue;
+    byVideoId.add(video.id);
+    if (key) byTitle.add(key);
+    merged.push(video);
+  }
+  return merged;
+};
+
 export default function SearchPage() {
   const [searchParams] = useSearchParams();
   const query = searchParams.get('q') || '';
@@ -19,7 +53,8 @@ export default function SearchPage() {
       try {
         const data = await searchVideos(query, '', 10);
         if (!cancelled) {
-          setState({ videos: data.videos, loading: false, error: null, nextPageToken: data.nextPageToken, loadingMore: false });
+          const cleaned = mergeUniqueByTitle([], filterReels(data.videos || []));
+          setState({ videos: cleaned, loading: false, error: null, nextPageToken: data.nextPageToken, loadingMore: false });
         }
       } catch (err) {
         if (!cancelled) {
@@ -38,7 +73,7 @@ export default function SearchPage() {
       const data = await searchVideos(query, state.nextPageToken, 10);
       setState((s) => ({
         ...s,
-        videos: [...s.videos, ...data.videos],
+        videos: mergeUniqueByTitle(s.videos, filterReels(data.videos || [])),
         nextPageToken: data.nextPageToken,
         loadingMore: false,
       }));

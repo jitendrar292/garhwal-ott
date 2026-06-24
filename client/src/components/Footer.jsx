@@ -96,10 +96,10 @@ export default function Footer() {
                 </svg>
               </a>
               <a
-                href="https://www.instagram.com/pahaditube.323/"
+                href="https://www.instagram.com/pahaditubeofficial/"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Instagram — @pahaditube.323"
+                aria-label="Instagram — @pahaditubeofficial"
                 title="Instagram"
                 className="w-9 h-9 flex items-center justify-center rounded-xl bg-white/[0.03] border border-white/6 text-white/40 hover:text-white hover:bg-gradient-to-tr hover:from-[#FEDA75] hover:via-[#FA7E1E] hover:to-[#D62976] hover:border-transparent transition-all duration-200"
               >

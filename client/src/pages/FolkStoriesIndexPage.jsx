@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useMemo, useState } from 'react';
 import { folkStories } from '../data/folkStories';
 import SEO from '../components/SEO';
 import UttarakhandSpecialtiesGrid from '../components/PahadiCuisineGrid';
@@ -21,11 +22,53 @@ const FEATURED_NARRATIVES = [
   },
 ];
 
+const STORY_CATEGORIES = {
+  'teelu-rauteli': 'veer',
+  'surja-kunwar': 'veer',
+  'ranu-rout': 'veer',
+  'ranu-rout-2': 'veer',
+  'jagdev-panwar': 'veer',
+  'madhomahesh-gaatha': 'veer',
+
+  'rajula-malushahi': 'prem',
+  'kalu-bhandari': 'prem',
+  'bhana-gangnath': 'prem',
+
+  'garhwali-bhoot-katha': 'bhoot',
+  'khala-ki-chudail': 'bhoot',
+  'devdar-ka-jhyunta': 'bhoot',
+  'masaan-ghat-rahasya': 'bhoot',
+  'pipal-ka-saya': 'bhoot',
+};
+
+const FILTER_TABS = [
+  { id: 'all', label: 'सभी कथा' },
+  { id: 'veer', label: 'वीर गाथा' },
+  { id: 'prem', label: 'प्रेम कथा' },
+  { id: 'bhoot', label: 'भूत कथाएँ' },
+];
+
 // Grid index for /folk-stories — shows every Garhwali folk-tale card so the
 // "लोक-गाथा" Explore tile has a real destination. Cards reuse the same
 // gradient styling as FolkStoriesRow but stack 2-up on mobile / 3-up on
 // desktop instead of scrolling horizontally.
 export default function FolkStoriesIndexPage() {
+  const [activeFilter, setActiveFilter] = useState('all');
+
+  const categoryCounts = useMemo(() => {
+    const counts = { all: folkStories.length, veer: 0, prem: 0, bhoot: 0 };
+    for (const story of folkStories) {
+      const cat = STORY_CATEGORIES[story.slug];
+      if (cat && counts[cat] != null) counts[cat] += 1;
+    }
+    return counts;
+  }, []);
+
+  const visibleStories = useMemo(() => {
+    if (activeFilter === 'all') return folkStories;
+    return folkStories.filter((s) => STORY_CATEGORIES[s.slug] === activeFilter);
+  }, [activeFilter]);
+
   return (
     <div className="max-w-full mx-auto px-4 sm:px-6 pt-6 pb-16">
       <SEO
@@ -81,7 +124,28 @@ export default function FolkStoriesIndexPage() {
       </section>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {folkStories.map((s) => (
+        <div className="sm:col-span-2 lg:col-span-3 mb-1 flex flex-wrap items-center gap-2">
+          {FILTER_TABS.map((tab) => {
+            const active = activeFilter === tab.id;
+            const count = categoryCounts[tab.id] || 0;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveFilter(tab.id)}
+                className={`px-3 py-1.5 rounded-full text-xs sm:text-sm border transition-all ${
+                  active
+                    ? 'bg-amber-500/20 border-amber-400/60 text-amber-100'
+                    : 'bg-white/[0.03] border-white/[0.1] text-white/70 hover:text-white hover:border-white/[0.25]'
+                }`}
+              >
+                {tab.label} ({count})
+              </button>
+            );
+          })}
+        </div>
+
+        {visibleStories.map((s) => (
           <Link
             key={s.slug}
             to={`/folk-story/${s.slug}`}
@@ -100,6 +164,12 @@ export default function FolkStoriesIndexPage() {
             </div>
           </Link>
         ))}
+
+        {visibleStories.length === 0 && (
+          <div className="sm:col-span-2 lg:col-span-3 rounded-xl border border-white/[0.08] bg-white/[0.02] p-6 text-center text-sm text-white/60">
+            इस श्रेणी में अभी कथा उपलब्ध नहीं है।
+          </div>
+        )}
       </div>
 
       {/* District-wise Famous Things from Uttarakhand */}

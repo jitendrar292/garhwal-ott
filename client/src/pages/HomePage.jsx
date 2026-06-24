@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useWatchHistory } from '../hooks/useWatchHistory';
@@ -96,6 +96,32 @@ export default function HomePage() {
   const { history: watchHistory } = useWatchHistory();
   const { favorites } = useFavorites();
 
+  const greeting = useMemo(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'सुप्रभात';
+    if (hour < 17) return 'नमस्कार';
+    return 'शुभ संध्या';
+  }, []);
+
+  const quickActions = [
+    { to: '/music', label: 'Music', emoji: '🎵' },
+    { to: '/folk-stories', label: 'Folk Stories', emoji: '📖' },
+    { to: '/news', label: 'News', emoji: '📰' },
+    { to: '/jobs', label: 'Jobs', emoji: '💼' },
+    { to: '/culture', label: 'Culture Library', emoji: '🏔️' },
+    { to: '/ghughuti-ai', label: 'Ask Ghughuti AI', emoji: '✨' },
+  ];
+
+  const todayPicks = useMemo(() => {
+    const candidates = [
+      { title: 'Trending Pick', video: trending.videos[0], tint: 'from-red-500/20 to-orange-500/10' },
+      { title: 'Movie Pick', video: movies.videos[0], tint: 'from-amber-500/20 to-yellow-500/10' },
+      { title: 'Song Pick', video: songs.videos[0], tint: 'from-primary-500/20 to-cyan-500/10' },
+      { title: 'Comedy Pick', video: comedy.videos[0], tint: 'from-fuchsia-500/20 to-pink-500/10' },
+    ];
+    return candidates.filter((item) => item.video && item.video.id).slice(0, 4);
+  }, [trending.videos, movies.videos, songs.videos, comedy.videos]);
+
   return (
     <div>
       {/* Full-width slider */}
@@ -104,6 +130,68 @@ export default function HomePage() {
       <div className="max-w-full mx-auto px-4 sm:px-6 pt-8 space-y-0">
         {/* Genre cards */}
         <GenreGrid />
+
+        {/* Welcome + quick actions for faster discovery */}
+        <section className="rounded-2xl border border-white/[0.08] bg-gradient-to-r from-surface-1 via-surface-2 to-surface-1 p-4 sm:p-5 mt-2 mb-5">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div>
+              <h2 className="text-lg sm:text-xl font-semibold text-white">
+                {greeting} 👋
+              </h2>
+              <p className="text-sm text-white/60 mt-1">
+                Continue where you left off, discover fresh Pahadi content, and explore stories from Devbhoomi.
+              </p>
+              <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-white/55">
+                <span className="px-2 py-1 rounded-full bg-white/[0.06] border border-white/[0.08]">{watchHistory.length} continue watching</span>
+                <span className="px-2 py-1 rounded-full bg-white/[0.06] border border-white/[0.08]">{favorites.length} saved in my list</span>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {quickActions.map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/[0.12] bg-white/[0.03] hover:bg-white/[0.08] text-xs sm:text-sm text-white/85 hover:text-white transition-colors"
+                >
+                  <span>{item.emoji}</span>
+                  <span>{item.label}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Daily curated picks */}
+        {todayPicks.length > 0 && (
+          <section className="mb-6">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-base sm:text-lg font-semibold text-white">✨ Today&apos;s Picks</h3>
+              <span className="text-xs text-white/50">Handpicked for faster discovery</span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {todayPicks.map((item) => (
+                <Link
+                  key={item.video.id}
+                  to={`/watch/${item.video.id}`}
+                  className={`group rounded-xl border border-white/[0.08] bg-gradient-to-br ${item.tint} p-3 hover:border-white/[0.2] transition-all`}
+                >
+                  <div className="aspect-video rounded-lg overflow-hidden mb-2">
+                    <img
+                      src={item.video.thumbnail}
+                      alt={item.video.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
+                    />
+                  </div>
+                  <p className="text-[11px] text-white/70 mb-1">{item.title}</p>
+                  <p className="text-sm font-medium text-white line-clamp-2">{item.video.title}</p>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Continue Watching — localStorage-persisted watch history */}
         {watchHistory.length > 0 && (

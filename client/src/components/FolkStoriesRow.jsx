@@ -1,11 +1,52 @@
-import { useRef } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { folkStories } from '../data/folkStories';
+
+const STORY_CATEGORIES = {
+  'teelu-rauteli': 'veer',
+  'surja-kunwar': 'veer',
+  'ranu-rout': 'veer',
+  'ranu-rout-2': 'veer',
+  'jagdev-panwar': 'veer',
+  'madhomahesh-gaatha': 'veer',
+
+  'rajula-malushahi': 'prem',
+  'kalu-bhandari': 'prem',
+  'bhana-gangnath': 'prem',
+
+  'garhwali-bhoot-katha': 'bhoot',
+  'khala-ki-chudail': 'bhoot',
+  'devdar-ka-jhyunta': 'bhoot',
+  'masaan-ghat-rahasya': 'bhoot',
+  'pipal-ka-saya': 'bhoot',
+};
+
+const FILTER_TABS = [
+  { id: 'all', label: 'सभी' },
+  { id: 'veer', label: 'वीर' },
+  { id: 'prem', label: 'प्रेम' },
+  { id: 'bhoot', label: 'भूत' },
+];
 
 // Horizontally-scrolling row of Garhwali folk-story cards. Layout intentionally
 // mirrors VideoRow so the homepage stays visually coherent.
 export default function FolkStoriesRow() {
   const scrollRef = useRef(null);
+  const [activeFilter, setActiveFilter] = useState('all');
+
+  const categoryCounts = useMemo(() => {
+    const counts = { all: folkStories.length, veer: 0, prem: 0, bhoot: 0 };
+    for (const story of folkStories) {
+      const cat = STORY_CATEGORIES[story.slug];
+      if (cat && counts[cat] != null) counts[cat] += 1;
+    }
+    return counts;
+  }, []);
+
+  const visibleStories = useMemo(() => {
+    if (activeFilter === 'all') return folkStories;
+    return folkStories.filter((s) => STORY_CATEGORIES[s.slug] === activeFilter);
+  }, [activeFilter]);
 
   const scroll = (direction) => {
     if (!scrollRef.current) return;
@@ -21,10 +62,10 @@ export default function FolkStoriesRow() {
             📖 <span className="gradient-text">गढ़वाली लोक-गाथा</span>
           </h2>
           <p className="text-xs text-gray-500 mt-0.5">
-            Folk tales of Garhwali heroes — Jagdev Panwar, Tilu Rauteli, Jeetu Bagdwal &amp; more
+            Folk tales of Garhwali heroes, romance and bhoot kathayein
           </p>
         </div>
-        {folkStories.length > 3 && (
+        {visibleStories.length > 3 && (
           <div className="hidden sm:flex items-center gap-1 opacity-0 group-hover/section:opacity-100 transition-opacity">
             <button
               onClick={() => scroll('left')}
@@ -48,8 +89,29 @@ export default function FolkStoriesRow() {
         )}
       </div>
 
+      <div className="flex flex-wrap items-center gap-2 mb-3">
+        {FILTER_TABS.map((tab) => {
+          const active = activeFilter === tab.id;
+          const count = categoryCounts[tab.id] || 0;
+          return (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setActiveFilter(tab.id)}
+              className={`px-2.5 py-1 rounded-full text-[11px] sm:text-xs border transition-all ${
+                active
+                  ? 'bg-amber-500/20 border-amber-400/60 text-amber-100'
+                  : 'bg-white/[0.03] border-white/[0.1] text-white/70 hover:text-white hover:border-white/[0.25]'
+              }`}
+            >
+              {tab.label} ({count})
+            </button>
+          );
+        })}
+      </div>
+
       <div ref={scrollRef} className="scroll-row">
-        {folkStories.map((s) => (
+        {visibleStories.map((s) => (
           <Link
             key={s.slug}
             to={`/folk-story/${s.slug}`}
@@ -68,6 +130,12 @@ export default function FolkStoriesRow() {
             </div>
           </Link>
         ))}
+
+        {visibleStories.length === 0 && (
+          <div className="w-full rounded-xl border border-white/[0.08] bg-white/[0.02] p-5 text-center text-sm text-white/60">
+            इस श्रेणी में अभी कथा उपलब्ध नहीं है।
+          </div>
+        )}
       </div>
     </section>
   );

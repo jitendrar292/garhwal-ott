@@ -13,7 +13,7 @@
 
 const TRENDING_CREATORS = [
   {
-    handle: 'pahaditube.323',
+    handle: 'pahaditubeofficial',
     bio: 'Pahadi culture studio',
     tags: ['culture', 'music', 'shorts'],
     verified: true,

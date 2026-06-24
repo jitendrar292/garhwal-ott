@@ -23,7 +23,7 @@ const runnerRoutes = require('./routes/runner');
 const doodleRoutes = require('./routes/doodle');
 const byoRoutes = require('./routes/byo');
 const geoRoutes = require('./routes/geo');
-const { getVisits, incrementVisits, getOpens, incrementOpens, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback } = require('./services/store');
+const { getVisits, incrementVisits, getOpens, incrementOpens, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback, redisGetJSON, redisSetJSON } = require('./services/store');
 const { startTrendingRefresh } = require('./services/youtubeService');
 
 const app = express();
@@ -159,6 +159,9 @@ app.use('/api/doodle', doodleRoutes);
 app.use('/api/byo', byoRoutes);
 app.use('/api/geo', geoRoutes);
 
+const CAPTIONS_CACHE_TTL = 60 * 60 * 24 * 365; // 1 year
+const captionsCacheKey = (videoId) => `captions:${videoId}`;
+
 // Captions endpoint — tries hi, a.hi (auto Hindi), en, a.en in order
 app.get('/api/captions/:videoId', async (req, res) => {
   const { videoId } = req.params;
@@ -166,6 +169,11 @@ app.get('/api/captions/:videoId', async (req, res) => {
     return res.status(400).json({ error: 'Invalid video ID' });
   }
   try {
+    const cached = await redisGetJSON(captionsCacheKey(videoId));
+    if (cached && Array.isArray(cached.captions) && cached.captions.length > 0) {
+      return res.json({ ...cached, cached: true });
+    }
+
     const { getSubtitles } = require('youtube-captions-scraper');
     const langs = ['hi', 'a.hi', 'en', 'a.en'];
     let captions = null;
@@ -182,7 +190,14 @@ app.get('/api/captions/:videoId', async (req, res) => {
     if (!captions || captions.length === 0) {
       return res.status(404).json({ error: 'No captions available' });
     }
-    res.json({ lang: usedLang, captions });
+    const payload = {
+      lang: usedLang,
+      captions,
+      videoId,
+      savedAt: new Date().toISOString(),
+    };
+    await redisSetJSON(captionsCacheKey(videoId), payload, CAPTIONS_CACHE_TTL);
+    res.json({ ...payload, cached: false });
   } catch (err) {
     console.error('Captions error:', err.message);
     res.status(502).json({ error: 'Failed to fetch captions' });

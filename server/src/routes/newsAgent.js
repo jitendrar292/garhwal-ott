@@ -428,9 +428,6 @@ function buildArticleBody(translated) {
       body += ` | [मूल लेख](${translated.sourceUrl})`;
     }
   }
-  if (translated.originalLang) {
-    body += `\n🤖 यू लेख AI द्वारा ${translated.originalLang === 'hi' ? 'हिंदी' : 'अंग्रेजी'} सी गढ़वळि मा अनुवाद कर्युं गयुं छ।`;
-  }
   return body;
 }
 

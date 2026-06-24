@@ -19,27 +19,27 @@
 
 const INSTAGRAM_REELS = [
   {
-    url: 'https://www.instagram.com/pahaditube.323/reel/DYETYRNxW_7/',
+    url: 'https://www.instagram.com/pahaditubeofficial/reel/DYETYRNxW_7/',
     title: 'PahadiTube Official Reel 🏔️',
-    channel: '@pahaditube.323',
+    channel: '@pahaditubeofficial',
     own: true,
   },
   {
-    url: 'https://www.instagram.com/pahaditube.323/reel/DYwtoXHvuJS/',
+    url: 'https://www.instagram.com/pahaditubeofficial/reel/DYwtoXHvuJS/',
     title: 'Pahadi Doodle - Pahad ki Sanskriti digital style',
-    channel: '@pahaditube.323',
+    channel: '@pahaditubeofficial',
     own: true,
   },
   {
-    url: 'https://www.instagram.com/pahaditube.323/reel/DYrfm3EvRgh/',
+    url: 'https://www.instagram.com/pahaditubeofficial/reel/DYrfm3EvRgh/',
     title: 'PahadiTube intro - songs, stories aur Garhwali learning',
-    channel: '@pahaditube.323',
+    channel: '@pahaditubeofficial',
     own: true,
   },
   {
-    url: 'https://www.instagram.com/pahaditube.323/reel/DYfJG0avezZ/',
+    url: 'https://www.instagram.com/pahaditubeofficial/reel/DYfJG0avezZ/',
     title: 'Pahadi Pehnawa - tradition with pride',
-    channel: '@pahaditube.323',
+    channel: '@pahaditubeofficial',
     own: true,
   },
   {
