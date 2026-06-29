@@ -44,6 +44,7 @@ const staticRoutes = [
   { path: '/category/theatre', changefreq: 'weekly', priority: '0.6' },
   { path: '/garhwali-sikha', changefreq: 'weekly', priority: '0.7' },
   { path: '/pahadi-khano', changefreq: 'weekly', priority: '0.7' },
+  { path: '/pahadi-fal', changefreq: 'weekly', priority: '0.7' },
   { path: '/pahadi-store', changefreq: 'weekly', priority: '0.6' },
   { path: '/pahadi-pehnawa', changefreq: 'monthly', priority: '0.6' },
   { path: '/pahadi-heroes', changefreq: 'monthly', priority: '0.7' },

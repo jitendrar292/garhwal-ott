@@ -10,8 +10,8 @@ const QUICK_LINKS = [
   { to: '/music', label: 'गीत-संगीत', emoji: '🎵' },
   { to: '/folk-stories', label: 'लोक कथाएं', emoji: '📖' },
   { to: '/pahadi-khano', label: 'पहाड़ी खाणू', emoji: '🥘' },
+  { to: '/pahadi-fal', label: 'पहाड़ी फल', emoji: '🍑' },
   { to: '/jobs', label: 'रोजगार', emoji: '💼' },
-  { to: '/chardham-yatra', label: 'चार धाम', emoji: '🛕' },
 ];
 
 export default function NotFoundPage() {

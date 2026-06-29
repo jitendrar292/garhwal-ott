@@ -100,6 +100,14 @@ const GENRES = [
     badge: { text: '🆕', cls: 'bg-red-500/85' },
   },
   {
+    name: 'पहाड़ी फल',
+    sub: 'काफल · हिसालू\nआड़ू · पुलम',
+    path: '/pahadi-fal',
+    emoji: '🍑',
+    bg: 'bg-rose-700',
+    badge: { text: '🆕', cls: 'bg-rose-500/85' },
+  },
+  {
     name: 'पहाड़ी पहनावा',
     sub: 'पारंपरिक\nवेशभूषा',
     path: '/pahadi-pehnawa',
