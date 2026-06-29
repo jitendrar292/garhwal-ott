@@ -1,15 +1,21 @@
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useToast } from './ui/Toast';
 
 const containerVariants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.04, delayChildren: 0.05 } },
+  visible: { transition: { staggerChildren: 0.05, delayChildren: 0.05 } },
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, scale: 0.85, y: 16 },
-  visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] } },
+  hidden: { opacity: 0, scale: 0.8, y: 20, rotate: -3 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    rotate: 0,
+    transition: { type: 'spring', stiffness: 260, damping: 20, mass: 0.6 },
+  },
 };
 
 // Card style matches the Ghughuti AI topic tiles: solid colour, centred
@@ -128,6 +134,7 @@ const GENRES = [
 
 export default function GenreGrid() {
   const { toast } = useToast();
+  const reduceMotion = useReducedMotion();
   const handleShareApp = () => {
     const url = window.location.origin;
     const shareData = { title: 'PahadiTube', text: 'PahadiTube – Garhwali & Kumaoni entertainment app 🎬🎵', url };
@@ -164,12 +171,12 @@ export default function GenreGrid() {
         whileInView="visible"
         viewport={{ once: true, amount: 0.1 }}
       >
-        {GENRES.map((g) => (
+        {GENRES.map((g, idx) => (
           <motion.div
             key={g.path}
             variants={cardVariants}
-            whileHover={{ y: -4, scale: 1.04 }}
-            whileTap={{ scale: 0.96 }}
+            whileHover={reduceMotion ? undefined : { y: -6, scale: 1.06, transition: { type: 'spring', stiffness: 400, damping: 18 } }}
+            whileTap={{ scale: 0.94 }}
           >
           <Link
             to={g.path}
@@ -185,19 +192,38 @@ export default function GenreGrid() {
               }}
             />
 
+            {/* Shimmer sweep on hover */}
+            <div
+              className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-[900ms] ease-out pointer-events-none"
+              style={{
+                background:
+                  'linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.18) 50%, transparent 70%)',
+              }}
+            />
+
+            {/* Soft glow on hover */}
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none bg-gradient-to-t from-white/[0.08] via-transparent to-white/[0.04]" />
+
             {/* Badge */}
             {g.badge && (
-              <div
-                className={`absolute top-1.5 right-1.5 z-20 ${g.badge.cls} backdrop-blur-sm text-white text-[10px] font-bold px-1.5 py-0.5 rounded-lg leading-none`}
+              <motion.div
+                className={`absolute top-1.5 right-1.5 z-20 ${g.badge.cls} backdrop-blur-sm text-white text-[10px] font-bold px-1.5 py-0.5 rounded-lg leading-none shadow-lg`}
+                animate={reduceMotion ? undefined : { scale: [1, 1.12, 1], rotate: [0, -4, 4, 0] }}
+                transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut', delay: (idx % 5) * 0.3 }}
               >
                 {g.badge.text}
-              </div>
+              </motion.div>
             )}
 
             <div className="relative flex flex-col items-center justify-center gap-1.5 min-h-[96px]">
-              <div className="text-2xl sm:text-3xl drop-shadow-sm group-hover:scale-110 transition-transform duration-250">
+              <motion.div
+                className="text-2xl sm:text-3xl drop-shadow-sm"
+                animate={reduceMotion ? undefined : { y: [0, -3, 0] }}
+                transition={{ duration: 3 + (idx % 4) * 0.4, repeat: Infinity, ease: 'easeInOut', delay: (idx % 6) * 0.25 }}
+                whileHover={reduceMotion ? undefined : { scale: 1.18, rotate: [0, -8, 8, -4, 0], transition: { duration: 0.6 } }}
+              >
                 {g.icon ? <img src={g.icon} alt={g.name} className="w-8 h-8 sm:w-9 sm:h-9 object-contain inline-block" /> : g.emoji}
-              </div>
+              </motion.div>
               <div className="text-white font-semibold text-[12px] sm:text-[13px] leading-tight drop-shadow-sm">
                 {g.name}
               </div>
