@@ -279,5 +279,138 @@ export const EDUCATIONAL_ARTICLES = [
           'Chipko directly influenced India\'s Forest Conservation Act (1980), which stopped commercial logging in the Himalayas. It inspired the Green Belt Movement in Kenya and environmental justice movements worldwide. Fifty years later, the question it posed remains live: who owns the forest? The cultural answer — the community that lives inside it — has outlasted every policy debate.'
       }
     ]
+  },
+  {
+    slug: 'garhwali-wedding-traditions',
+    title: 'Garhwali Wedding Traditions — A Week of Rituals',
+    readTime: '9 min',
+    level: 'Cultural',
+    excerpt: 'A Garhwali wedding is not a single event but a seven-day arc of rituals, music, and community bonding that encode centuries of social wisdom.',
+    sections: [
+      {
+        heading: 'The engagement: Tel-Haldi',
+        body: 'Before the wedding, a Tel-Haldi ceremony applies turmeric to both bride and groom at their respective homes. Accompanied by women singing mangal geet (auspicious songs), it marks the transition from ordinary time to sacred time. The haldi is prepared with mustard oil sourced from the family\'s own land — a detail that carries economic and spiritual weight.'
+      },
+      {
+        heading: 'Bharat Milan: the groom\'s procession',
+        body: 'The Barat (groom\'s party) walks to the bride\'s village — traditionally on foot through mountain paths. The Dhol-Damau players lead, and villagers line the path. At the bride\'s gate, the Dwaar Puja (door ritual) must be completed before any guest may enter. The lead Dholi (drummer) negotiates entry through a playful tug of rituals — a moment that dissolves social hierarchies in laughter.'
+      },
+      {
+        heading: 'The Kangna ceremony',
+        body: 'Sacred threads are tied around the wrists of bride and groom — the Kangna. These threads carry prayers woven by women of both families and are not removed until the ritual is complete. The symbolism is ancient: wrist threads in Vedic tradition denote a vow witnessed by the cosmos.'
+      },
+      {
+        heading: 'Saptapadi and the seven vows',
+        body: 'The seven steps around the sacred fire are accompanied by Garhwali verses that differ from standard Sanskrit slokas — adapted over centuries to reflect mountain life, mentioning shared labour in the fields, protection from landslides, and care during the harsh winter. The specificity is extraordinary: these are not abstract vows but practical commitments.'
+      },
+      {
+        heading: 'Bidaai: the hardest moment',
+        body: 'When the bride leaves her natal home, the Bidaai songs (Maayke ke geet) are sung by her mother and aunts. The songs catalogue the bride\'s childhood — her favourite tree, the spring she played near, the name of her cow. These songs preserve oral memory: in communities where written records were rare, Bidaai songs served as biography.'
+      }
+    ]
+  },
+  {
+    slug: 'aipan-sacred-art-uttarakhand',
+    title: 'Aipan — The Sacred Floor Art of Kumaon',
+    readTime: '7 min',
+    level: 'Art & Craft',
+    excerpt: 'Aipan is a ritual folk art painted on floors and walls by Kumaoni women during festivals and rites of passage, encoding deities, cosmology and community memory in geometric patterns.',
+    sections: [
+      {
+        heading: 'What is Aipan?',
+        body: 'Aipan (from the Sanskrit arpan, meaning offering) is a white-on-red art form unique to Kumaon in Uttarakhand. A base of red clay (geru) is applied first, then intricate patterns are drawn with a cloth dipped in rice paste (visaalpan). The art is practised exclusively by women and passed mother to daughter over generations. No two households draw exactly the same patterns — variations are family trademarks.'
+      },
+      {
+        heading: 'The ritual context',
+        body: 'Aipan is drawn on auspicious occasions: the birth of a child, a wedding, a death anniversary, Navaratri, and Diwali. Each occasion has its specific pattern (Chauki). The Devi Chauki (for the goddess) differs from the Vivah Chauki (wedding) and the Sohlah Chauki (childbirth). The patterns are not merely decorative — they are considered to activate protective and blessing energy.'
+      },
+      {
+        heading: 'Symbolism in the patterns',
+        body: 'Common motifs include the lotus (spiritual awakening), the swastika (good fortune), footprints of Lakshmi (prosperity), the sun and moon (cosmic balance), and animals like the cow, elephant, and peacock. The border designs called Shankha (conch) and Chakra (wheel) reference the Vishnu iconography central to Kumaoni religious life.'
+      },
+      {
+        heading: 'Aipan in the digital age',
+        body: 'Young Kumaoni artists have begun adapting Aipan to canvas, textiles, and digital media — taking it from the threshold to galleries worldwide. The Uttarakhand government has awarded GI (Geographical Indication) status to protect it. Yet practitioners worry that the ritual context is disappearing: Aipan drawn on canvas in a city apartment carries different energy than Aipan drawn at dawn on the family threshold, offered to the household deity.'
+      }
+    ]
+  },
+  {
+    slug: 'van-gujjar-nomadic-people',
+    title: 'Van Gujjars — Uttarakhand\'s Last Nomadic Pastoralists',
+    readTime: '8 min',
+    level: 'Ethnography',
+    excerpt: 'The Van Gujjars of Uttarakhand migrate with their buffalo herds between alpine meadows and the Terai plains every year, maintaining a way of life that predates the modern state.',
+    sections: [
+      {
+        heading: 'Who are the Van Gujjars?',
+        body: 'Van Gujjars are a Muslim pastoral community living in the Shivalik hills, Doon Valley, and Rajaji National Park. Their economy is built entirely on buffalo herding — they produce and sell desi ghee that commands premium prices at Haridwar and Rishikesh markets. They live in temporary settlements called deras and move with the seasons, following ancient routes that predate modern forest boundaries.'
+      },
+      {
+        heading: 'The annual migration',
+        body: 'Every summer, Van Gujjar families drive their buffalo herds up to the Bugyal (alpine meadows) of the higher Himalayas — some reaching elevations above 3,500 metres. In winter they descend to the Terai. The migration takes 15 to 20 days on foot. Children are born on the trail, elderly people are carried, and the community moves as a single unit — buffaloes, dogs, horses, and people together.'
+      },
+      {
+        heading: 'Conflict with modern conservation',
+        body: 'The creation of Rajaji National Park in 1983 placed the Van Gujjars\' traditional winter grounds inside a protected reserve. Conservation laws prohibit habitation in core park zones. For decades, the community faced eviction orders and their traditional rights went unrecognised. The struggle raises profound questions about who conservation is for and whose history counts as heritage.'
+      },
+      {
+        heading: 'Culture and oral tradition',
+        body: 'Van Gujjars have a rich oral tradition of poetry (called Dhola) celebrating the beauty of forests, the loyalty of buffalo, and the grief of displacement. Their knowledge of medicinal plants, animal behaviour, and weather patterns accumulated over centuries has no written record. As the community shrinks under resettlement pressures, this knowledge faces extinction.'
+      }
+    ]
+  },
+  {
+    slug: 'ringal-bamboo-craft',
+    title: 'Ringal — The Himalayan Bamboo Craft of Uttarakhand',
+    readTime: '6 min',
+    level: 'Craft',
+    excerpt: 'Ringal, a high-altitude Himalayan bamboo, forms the basis of a centuries-old craft tradition in Uttarakhand — producing baskets, furniture, and ritual objects used across the region.',
+    sections: [
+      {
+        heading: 'What is Ringal?',
+        body: 'Ringal (Thamnocalamus spathiflorus) is a dwarf bamboo found at altitudes between 1,800 and 4,000 metres in Uttarakhand and Himachal Pradesh. Unlike tropical bamboo, it grows slowly in dense clumps, yields slender flexible culms, and is exceptionally strong for its weight. Communities have harvested Ringal sustainably for centuries — taking only what regenerates annually.'
+      },
+      {
+        heading: 'Products and uses',
+        body: 'Ringal is woven into Tokris (large carrying baskets), Dauli (grain storage baskets), Chhalni (sieves), Kilta (conical backpack baskets), and Soop (winnowing trays). The Kilta is the most iconic — a conical wicker backpack used by mountain women to carry loads of firewood and fodder, with a tumpline across the forehead. It remains in daily use today.'
+      },
+      {
+        heading: 'The craft communities',
+        body: 'Ringal weaving is practised primarily by the Shilpkar (artisan) castes of Garhwal and Kumaon. Families in districts like Chamoli, Tehri, and Pithoragarh have woven Ringal for generations. The craft declined sharply with plastic substitutes entering the 1980s market, but a revival is underway driven by eco-tourism demand for authentic Pahadi crafts.'
+      },
+      {
+        heading: 'Revival and future',
+        body: 'Several NGOs and the Uttarakhand Bamboo and Fibre Development Board now train artisans in new product designs — lamps, furniture, stationery, and wall panels that appeal to urban buyers. Export markets in Europe and Japan have shown interest in certified handmade Ringal goods. The challenge is connecting remote artisans to these markets without middlemen capturing all the value.'
+      }
+    ]
+  },
+  {
+    slug: 'migration-crisis-uttarakhand',
+    title: 'The Ghost Villages — Understanding Uttarakhand\'s Migration Crisis',
+    readTime: '11 min',
+    level: 'Analysis',
+    excerpt: 'Over 3,000 villages in Uttarakhand are officially classified as ghost villages — abandoned or near-abandoned settlements left behind as generations migrate to plains cities.',
+    sections: [
+      {
+        heading: 'The scale of the problem',
+        body: 'According to the 2011 census, Uttarakhand had 1,053 villages with zero population. By 2021 estimates, over 3,000 settlements had populations below 100 or were functionally abandoned. The mountain districts — Almora, Pithoragarh, Chamoli, Tehri, Pauri Garhwal — show the steepest declines. Pauri Garhwal lost nearly 20% of its population between 2001 and 2011 alone.'
+      },
+      {
+        heading: 'Why people leave',
+        body: 'The reasons are structural, not personal. Hill agriculture is subsistence-level: small terraced fields produce barely enough for a family. There are no processing industries to add value. Roads reach most villages but the last mile to the healthcare centre or school can still be hours away. Young people weigh the arithmetic and leave — not abandoning their culture but pursuing survival.'
+      },
+      {
+        heading: 'The feminisation of villages',
+        body: 'A striking pattern: men migrate for work while women remain behind to farm and maintain homes, often with children and elderly parents. Women in these villages are called "grass widows" — running entire households and farms alone. This has made the hills a matriarchal space in practice. Women\'s self-help groups (Mahila Mangal Dals) have become effective local governance in many remote villages.'
+      },
+      {
+        heading: 'What ghost villages lose',
+        body: 'When a village empties, it loses more than population. Temple maintenance lapses, oral traditions have no audience, traditional seeds are not replanted, terraced fields collapse without annual upkeep, and water springs dry up as forest cover thins. A village is not just its buildings but a maintained relationship between people and land.'
+      },
+      {
+        heading: 'Signs of hope and return',
+        body: 'The COVID-19 pandemic caused a notable reverse migration, with tens of thousands returning to hill villages when city economies collapsed. Several have stayed. Digital nomadism is making remote villages viable for knowledge workers. State government incentives for returning families include land allotment and enterprise support.'
+      }
+    ]
   }
 ];

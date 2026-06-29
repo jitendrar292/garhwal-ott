@@ -13,6 +13,8 @@ export const LEARN_CATEGORIES = [
   { id: 'colors',     label: 'रंग',            emoji: '🎨', labelEn: 'Colors' },
   { id: 'time',       label: 'समय',            emoji: '⏰', labelEn: 'Time & Days' },
   { id: 'muhavare',   label: 'औखाण',          emoji: '💬', labelEn: 'Aaukhaand (Idioms)' },
+  { id: 'diaspora',   label: 'प्रवासी बोलि',   emoji: '🌍', labelEn: 'Diaspora Phrases' },
+  { id: 'proverbs',   label: 'औखाण पाठ',       emoji: '📜', labelEn: 'Proverbs as Lessons' },
 ];
 
 const PHRASES = [
@@ -200,6 +202,36 @@ const PHRASES = [
   { id: 158, category: 'muhavare', garhwali: 'दूरि को ढोल सुहाणो लगणो', hindi: 'दूर का ढोल सुहाना लगता है', english: 'Distant drums sound sweet', pronunciation: 'Doori ko dhol suhaano lagno', meaning: 'दूर की चीज़ हमेशा अच्छी लगती है, पास आने पर असलियत पता चलती है।' },
   { id: 159, category: 'muhavare', garhwali: 'काखड़ि बिणो जंगल नि होंदो', hindi: 'भालू बिना जंगल नहीं होता', english: 'No forest without its bear', pronunciation: 'Kaakhdi bino jangal ni hondo', meaning: 'हर जगह का अपना मुखिया या डर होता है।' },
   { id: 160, category: 'muhavare', garhwali: 'जो डरो, वो परो', hindi: 'जो डरा, वो हारा', english: 'Who fears, loses', pronunciation: 'Jo daro, vo paro', meaning: 'डर से काम नहीं होता, हिम्मत से होता है।' },
+
+  // ── Diaspora Phrases (प्रवासी बोलि) ──
+  { id: 161, category: 'diaspora', garhwali: 'मैं दिल्ली म रौंदू, पर दिल पहाड़ म छ', hindi: 'मैं दिल्ली में रहता हूँ, पर दिल पहाड़ में है', english: 'I live in Delhi, but my heart is in the hills', pronunciation: 'Main Dilli ma raundo, par dil pahaad ma chha' },
+  { id: 162, category: 'diaspora', garhwali: 'घर कब औणो छ?', hindi: 'घर कब आ रहे हो?', english: 'When are you coming back home?', pronunciation: 'Ghar kab auno chha?' },
+  { id: 163, category: 'diaspora', garhwali: 'मैं बारा बरस बटि बाहर छूं', hindi: 'मैं बारह साल से बाहर हूँ', english: 'I have been away for twelve years', pronunciation: 'Main baara baras bati bahar chhoon' },
+  { id: 164, category: 'diaspora', garhwali: 'पहाड़ की हवा याद औंदी', hindi: 'पहाड़ की हवा याद आती है', english: 'I miss the mountain air', pronunciation: 'Pahaad ki hawaa yaad aundi' },
+  { id: 165, category: 'diaspora', garhwali: 'माँ का हाथ का खाणो याद औंदो', hindi: 'माँ के हाथ का खाना याद आता है', english: 'I miss mother\'s home cooking', pronunciation: 'Maa ka haath ka khaano yaad aundo' },
+  { id: 166, category: 'diaspora', garhwali: 'दिवाली घर म मनाणि छ', hindi: 'दिवाली घर पर मनानी है', english: 'I want to celebrate Diwali at home', pronunciation: 'Diwali ghar ma manaani chha' },
+  { id: 167, category: 'diaspora', garhwali: 'विदेश म गढ़वाळी मिल्यो — खुसि भयी', hindi: 'विदेश में गढ़वाली मिले — खुशी हुई', english: 'Met a fellow Garhwali abroad — felt so happy', pronunciation: 'Videsh ma Garhwaali milyo — khusi bhayi' },
+  { id: 168, category: 'diaspora', garhwali: 'शहर म पहाड़ी खाणो नि मिलणो', hindi: 'शहर में पहाड़ी खाना नहीं मिलता', english: 'Can\'t find Pahadi food in the city', pronunciation: 'Shahar ma pahaadi khaano ni milno' },
+  { id: 169, category: 'diaspora', garhwali: 'भुलि नि गयूं गढ़वाळी', hindi: 'गढ़वाली नहीं भूला', english: 'Haven\'t forgotten Garhwali', pronunciation: 'Bhuli ni gayoon Garhwaali' },
+  { id: 170, category: 'diaspora', garhwali: 'बच्चों क गढ़वाळी सिखाणि छ', hindi: 'बच्चों को गढ़वाली सिखानी है', english: 'Want to teach Garhwali to the kids', pronunciation: 'Bachchon ka Garhwaali sikhaani chha' },
+  { id: 171, category: 'diaspora', garhwali: 'बुराँस का फूल देखि, घर याद औ गयो', hindi: 'बुरांश के फूल देखकर घर याद आ गया', english: 'Seeing rhododendrons, I was reminded of home', pronunciation: 'Buraans ka phool dekhi, ghar yaad au gayo' },
+  { id: 172, category: 'diaspora', garhwali: 'रिटायर होणा बाद पहाड़ लौटणू छ', hindi: 'रिटायर होने के बाद पहाड़ लौटना है', english: 'After retirement, I want to return to the hills', pronunciation: 'Retire hona baad pahaad lautno chhoo' },
+  { id: 173, category: 'diaspora', garhwali: 'वीडियो काल म घर देख्यो, आँखि भर आई', hindi: 'वीडियो कॉल में घर देखा, आँखें भर आईं', english: 'Saw home on video call, eyes welled up', pronunciation: 'Video call ma ghar dekhyo, aanki bhar aayi' },
+  { id: 174, category: 'diaspora', garhwali: 'पहाड़ी समाज बड़ो होणो चाईंदो', hindi: 'पहाड़ी समाज को बड़ा होना चाहिए', english: 'The Pahadi community needs to grow together', pronunciation: 'Pahaadi samaaj bado hono chaindo' },
+  { id: 175, category: 'diaspora', garhwali: 'अपणि बोलि नि भुलाणि', hindi: 'अपनी भाषा नहीं भूलनी', english: 'Must not forget our language', pronunciation: 'Apni boli ni bhulaani' },
+
+  // ── Proverbs as Lessons (औखाण पाठ) ──
+  { id: 176, category: 'proverbs', garhwali: 'जड़ कटि त पेड़ नि बचणो', hindi: 'जड़ कटे तो पेड़ नहीं बचता', english: 'Cut the root and the tree cannot survive', pronunciation: 'Jad kati ta ped ni bachno', meaning: 'Lesson: अपनी संस्कृति, भाषा और जड़ों से जुड़े रहो — जो अपनी जड़ भूल जाता है वो टिक नहीं पाता।' },
+  { id: 177, category: 'proverbs', garhwali: 'पाणि अपणो रास्तो आप बणौंदो', hindi: 'पानी अपना रास्ता खुद बनाता है', english: 'Water carves its own path', pronunciation: 'Paani apno raasto aap banundo', meaning: 'Lesson: जो टिके रहते हैं वे अपना रास्ता खुद बना लेते हैं — obstacles को घुमाओ, रोको नहीं।' },
+  { id: 178, category: 'proverbs', garhwali: 'हिमाल तलि बसणो, पर हिमाल से डरणो नि', hindi: 'हिमालय के नीचे बसना है, पर हिमालय से डरना नहीं', english: 'Live under the Himalayas but do not fear them', pronunciation: 'Himaal tali basno, par himaal se darno ni', meaning: 'Lesson: चुनौतियों के बीच रहो, उनसे सीखो — लेकिन घबराओ नहीं।' },
+  { id: 179, category: 'proverbs', garhwali: 'गाँव कि इज्जत, घर की नींव', hindi: 'गाँव की इज्जत, घर की नींव है', english: 'Village honour is the family foundation', pronunciation: 'Gaanv ki izzat, ghar ki neenv', meaning: 'Lesson: समाज में अपनी साख बनाओ — यही आपके परिवार की असली संपत्ति है।' },
+  { id: 180, category: 'proverbs', garhwali: 'पेड़ जितनो ऊंचो, छाया उतनी गहरी', hindi: 'पेड़ जितना ऊंचा, छाया उतनी गहरी', english: 'Taller the tree, deeper the shade', pronunciation: 'Ped jitno ooncho, chhaaya utni gehri', meaning: 'Lesson: जो जितना बड़ा बनता है उसे उतना अधिक दूसरों को देना होता है — ज़िम्मेदारी आती है।' },
+  { id: 181, category: 'proverbs', garhwali: 'बर्फ म पैर धरो, फिसलो नि', hindi: 'बर्फ में पैर रखो, फिसलो मत', english: 'Step on ice carefully and you will not slip', pronunciation: 'Barf ma pair dharo, fhislo ni', meaning: 'Lesson: मुश्किल हालात में सोच-समझकर आगे बढ़ो — जल्दबाज़ी से फिसलन होती है।' },
+  { id: 182, category: 'proverbs', garhwali: 'धरती माँ कु ऋण, जीवन भर नि चुकणो', hindi: 'धरती माँ का कर्ज जीवन भर नहीं चुकाया जा सकता', english: 'Mother earth\'s debt can never be repaid', pronunciation: 'Dharti maa ko rin, jeevan bhar ni chukno', meaning: 'Lesson: प्रकृति ने हमें सब कुछ दिया — उसकी रक्षा करो, शोषण नहीं।' },
+  { id: 183, category: 'proverbs', garhwali: 'सेवा को फल मीठो, अहंकार को कड़वो', hindi: 'सेवा का फल मीठा, अहंकार का कड़वा', english: 'Service yields sweetness, arrogance bitterness', pronunciation: 'Seva ko phal meetho, ahankaar ko kadvo', meaning: 'Lesson: विनम्रता से किया गया काम लंबे समय तक याद रखा जाता है — घमंड का अंत बुरा होता है।' },
+  { id: 184, category: 'proverbs', garhwali: 'नदी को पाणि बिना रुका बहणो', hindi: 'नदी का पानी बिना रुके बहता है', english: 'River water flows without stopping', pronunciation: 'Nadi ko paani bina ruka bahno', meaning: 'Lesson: जीवन में आगे बढ़ते रहो — रुकना पीछे जाना है।' },
+  { id: 185, category: 'proverbs', garhwali: 'बीज बोयो, खाद दियो, पाणि दियो — तब फसल आणी', hindi: 'बीज बोया, खाद दी, पानी दिया — तब फसल आई', english: 'Sow, nurture, water — then harvest comes', pronunciation: 'Beej boyo, khaad diyo, paani diyo — tab fasal aani', meaning: 'Lesson: हर सफलता के पीछे तैयारी, देखभाल और समय लगता है — shortcut नहीं होता।' },
+  { id: 186, category: 'proverbs', garhwali: 'बड़ु बोलणो सरल, बड़ो बणणो कठिण', hindi: 'बड़ा बोलना सरल है, बड़ा बनना कठिन', english: 'Speaking greatly is easy, becoming great is hard', pronunciation: 'Badu bolno saral, bado banno kathin', meaning: 'Lesson: दावे करने में कोई ताकत नहीं, असली ताकत काम में है।' },
 ];
 
 export default PHRASES;

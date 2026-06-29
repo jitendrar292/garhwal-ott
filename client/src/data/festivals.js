@@ -234,6 +234,71 @@ const FESTIVALS = [
     description:
       'गढ़वाळ कि असली दीवाली — भगवान रामजी का दीवाली का ग्यारह दिन बाद घर लौटणा कि खुशी म मनौंदा छन। भैलो नृत्य औ ढोल दमाऊ की धुन।',
   },
+  {
+    id: 'basant-panchami-2028',
+    name: 'Basant Panchami',
+    nameLocal: 'बसन्त पंचमी',
+    date: '2028-02-03',
+    season: 'spring',
+    region: 'All Uttarakhand',
+    emoji: '🌼',
+    bg: 'from-yellow-400 to-amber-600',
+    traditions: ['Worship of Goddess Saraswati', 'Children start learning letters (Vidya Arambha)', 'Yellow clothes worn', 'Kite flying', 'Kesari halwa prasad'],
+    description:
+      'माँ सरस्वती कु पर्व — पीला रंग पहणणो, बच्चों का विद्यारम्भ संस्कार। बसन्त ऋतु का स्वागत औ खेतुं म सरसों का पीला सोना।',
+  },
+  {
+    id: 'hariyali-teej-2028',
+    name: 'Hariyali Teej',
+    nameLocal: 'हरियाली तीज',
+    date: '2028-08-07',
+    season: 'monsoon',
+    region: 'Garhwal · Kumaon',
+    emoji: '🌿',
+    bg: 'from-green-500 to-emerald-700',
+    traditions: ['Married women fast for husbands longevity', 'Swing festivals (Jhulna)', 'Green clothes worn', 'Mehndi (henna) applied', 'Hariyali songs sung'],
+    description:
+      'सावन माह म पहाड़ी महिलाओं कु खास पर्व — पेड़ुं म झूला पड़दो, हरा लिबास पहणीजांद, मेहँदी लगाईजांद। माँ पार्वती कु व्रत औ गीत-संगीत।',
+  },
+  {
+    id: 'nanda-devi-raj-jat-2028',
+    name: 'Nanda Devi Raj Jat Yatra',
+    nameLocal: 'नन्दा देवी राज जात यात्रा',
+    date: '2028-08-27',
+    season: 'monsoon',
+    region: 'Chamoli · Garhwal',
+    emoji: '🏔️',
+    bg: 'from-fuchsia-600 to-violet-900',
+    traditions: ['Once every 12 years', 'Four-horned ram leads the procession', 'Ritual journey of 280 km through Himalayas', 'Devotees in traditional dress', 'Dhol-Damau musical bands'],
+    description:
+      'हर बारा बरस म एक बार निकलणी वाळी भव्य यात्रा — चार सींगुं वाळो भेड़ा आगि-आगि चल्द। 280 किमी का हिमालयी मार्ग पर माँ नन्दा देवी का दर्शन।',
+  },
+  {
+    id: 'kartik-purnima-2028',
+    name: 'Kartik Purnima',
+    nameLocal: 'कार्तिक पूर्णिमा',
+    date: '2028-11-05',
+    season: 'autumn',
+    region: 'All Uttarakhand',
+    emoji: '🕯️',
+    bg: 'from-orange-400 to-amber-600',
+    traditions: ['Holy dip at sunrise (Dev Snan)', 'Deepdaan (lamp floating) on rivers', 'Tulsi Vivah celebrations', 'Satyanarayan Katha recitation'],
+    description:
+      'कार्तिक पूर्णिमा पर गंगा, यमुना, मन्दाकिनी — सब्बि नदियों म पवित्र स्नान। देव सनान औ दीपदान — दीपावली बाद सबसे पवित्र स्नान पर्व।',
+  },
+  {
+    id: 'makar-mela-2028',
+    name: 'Makar Mela',
+    nameLocal: 'मकर मेला',
+    date: '2028-01-15',
+    season: 'winter',
+    region: 'Chamoli · Pauri · Tehri',
+    emoji: '☀️',
+    bg: 'from-sky-500 to-blue-700',
+    traditions: ['New crop tasting ceremony', 'Ceremonial plough (Hali Puja)', 'Til and jaggery distribution', 'Folk dance performances'],
+    description:
+      'मकर संक्रान्ति पर ग्रामीण गढ़वाळ म लगणु मेला — नई फसल तिळ-गुड़ कु प्रसाद। हलि पूजा, ग्रामीण बाज़ार औ लोकनृत्य — सर्दी का त्योहारी समापन।',
+  },
 ];
 
 export default FESTIVALS;
