@@ -170,6 +170,27 @@ const PAHADI_PRODUCTS = [
       { name: 'Honey with Ginger', nameLocal: 'अदरक शहद', description: 'अदरक + शहद — सर्दी-खांसी के लिए।', icon: '🫚', buyUrl: 'https://www.amazon.in/s?k=ginger+honey+pahadi+himalayan' },
     ],
   },
+
+  // ===== GHEE =====
+  {
+    id: 'pahadi-ghee',
+    title: 'पहाड़ी घी',
+    titleEn: 'Pahadi Ghee',
+    category: 'Ghee',
+    emoji: '🧈',
+    bg: 'from-yellow-700 to-amber-900',
+    shopUrl: 'https://www.amazon.in/s?k=pahadi+ghee+uttarakhand+bilona+desi',
+    description:
+      'पहाड़ की गाय अर भैंस के दूध से बिलोणा विधि से बणयूं शुद्ध देसी घी। हाथ से मथयूं मक्खन धीमी आंच मा पकाक — पुरानी पीढ़ियों की रसोई की पहचान।',
+    items: [
+      { name: 'Gai Ghee (A2 Bilona)', nameLocal: 'गाय का घी (A2 बिलोणा)', description: 'A2 देसी गाय के दूध से बिलोणा विधि से बनाया सोने जैसा घी।', icon: '🐄', buyUrl: 'https://www.amazon.in/s?k=a2+cow+ghee+bilona+pahadi+desi' },
+      { name: 'Bhains Ghee', nameLocal: 'भैंस का घी', description: 'भैंस के गाढ़े दूध से बना मलाईदार सफेद घी।', icon: '🐃', buyUrl: 'https://www.amazon.in/s?k=buffalo+ghee+desi+pahadi+pure' },
+      { name: 'Pahadi Gai Ghee', nameLocal: 'पहाड़ी गाय घी', description: 'बद्री गाय (पहाड़ी देशी नस्ल) के दूध से दुर्लभ घी।', icon: '🏔️', buyUrl: 'https://www.amazon.in/s?k=badri+cow+ghee+pahadi+uttarakhand' },
+      { name: 'Jersey Cow Ghee', nameLocal: 'जर्सी गाय घी', description: 'जर्सी गाय के दूध से बना मीठी खुशबू वाला घी।', icon: '🥛', buyUrl: 'https://www.amazon.in/s?k=jersey+cow+ghee+desi+pure' },
+      { name: 'Mixed Bilona Ghee', nameLocal: 'मिश्रित बिलोणा घी', description: 'गाय + भैंस के दूध का बैलेंस्ड बिलोणा घी।', icon: '🫕', buyUrl: 'https://www.amazon.in/s?k=bilona+ghee+mixed+pahadi+desi' },
+      { name: 'Organic Cow Ghee', nameLocal: 'ऑर्गेनिक गाय घी', description: 'घास चराई गई गायों के दूध से ऑर्गेनिक घी।', icon: '🌾', buyUrl: 'https://www.amazon.in/s?k=organic+cow+ghee+grassfed+pahadi' },
+    ],
+  },
 ];
 
 export default PAHADI_PRODUCTS;

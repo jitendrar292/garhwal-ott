@@ -12,6 +12,7 @@ const CATEGORY_COLORS = {
   Murabba: { badge: 'bg-yellow-600', glow: 'shadow-yellow-500/40' },
   Chutney: { badge: 'bg-emerald-600', glow: 'shadow-emerald-500/40' },
   Honey:   { badge: 'bg-yellow-500', glow: 'shadow-yellow-400/40' },
+  Ghee:    { badge: 'bg-yellow-700', glow: 'shadow-yellow-600/40' },
 };
 
 const CARD_GRADIENTS = [
