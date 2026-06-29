@@ -116,6 +116,14 @@ const GENRES = [
     bg: 'bg-purple-700',
     badge: { text: '🆕', cls: 'bg-purple-500/85' },
   },
+  {
+    name: 'पहाड़ी उत्पाद',
+    sub: 'नून · अचार\nस्क्वैश · जैम',
+    path: '/pahadi-products',
+    emoji: '🫙',
+    bg: 'bg-amber-700',
+    badge: { text: '🆕', cls: 'bg-amber-500/85' },
+  },
 ];
 
 export default function GenreGrid() {

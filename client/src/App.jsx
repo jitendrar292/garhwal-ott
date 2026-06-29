@@ -45,6 +45,7 @@ const PahadiKhanoPage = lazy(() => import('./pages/PahadiKhanoPage'));
 const PahadiFalPage = lazy(() => import('./pages/PahadiFalPage'));
 const PahadiStorePage = lazy(() => import('./pages/PahadiStorePage'));
 const PahadiPehnawaPage = lazy(() => import('./pages/PahadiPehnawaPage'));
+const PahadiProductsPage = lazy(() => import('./pages/PahadiProductsPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const ArtGalleryPage = lazy(() => import('./pages/ArtGalleryPage'));
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
@@ -216,6 +217,7 @@ function AnimatedRoutes() {
             <Route path="/pahadi-fal" element={<PahadiFalPage />} />
             <Route path="/pahadi-store" element={<PahadiStorePage />} />
             <Route path="/pahadi-pehnawa" element={<PahadiPehnawaPage />} />
+            <Route path="/pahadi-products" element={<PahadiProductsPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/art-gallery" element={<ArtGalleryPage />} />
             <Route path="/jhumelo" element={<JhumeloPage />} />
