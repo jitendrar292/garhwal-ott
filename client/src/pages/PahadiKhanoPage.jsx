@@ -143,7 +143,76 @@ export default function PahadiKhanoPage() {
               </div>
             </motion.button>
           ))}
+
+          {/* Promotional tile — sits inside the dishes grid so users browsing
+             recipes naturally discover the seasonal fruit guide. Visually
+             matches the dish cards but routes to /pahadi-fal. */}
+          <motion.div
+            layout
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3, delay: visible.length * 0.03 }}
+            whileHover={{ y: -4, scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+          >
+            <Link
+              to="/pahadi-fal"
+              className="relative rounded-2xl overflow-hidden text-left bg-gradient-to-br from-rose-700 via-red-800 to-amber-900
+                shadow-lg shadow-black/30 ring-1 ring-rose-300/30 hover:ring-rose-200/60 transition-all duration-300 block h-full"
+            >
+              <div className="absolute -top-4 -right-4 w-20 h-20 rounded-full bg-white/10" />
+              <div
+                className="absolute inset-0 opacity-15 pointer-events-none"
+                style={{
+                  backgroundImage:
+                    'radial-gradient(circle at 30% 20%, #fff 1px, transparent 1px)',
+                  backgroundSize: '10px 10px',
+                }}
+              />
+              <span className="absolute top-2 right-2 z-10 text-[9px] font-black px-2 py-0.5 rounded-full bg-rose-300 text-black shadow-md">
+                🆕 NEW
+              </span>
+
+              <div className="relative p-3 sm:p-4 min-h-[140px] flex flex-col">
+                <span className="text-3xl sm:text-4xl drop-shadow mb-2">🍑</span>
+                <p className="font-black text-white text-sm leading-tight">पहाड़ी फल</p>
+                <p className="text-[11px] text-rose-200 font-semibold mb-1">Pahadi Fal</p>
+                <p className="text-[10px] text-slate-200 line-clamp-2 mt-auto">
+                  काफल · हिसालू · आड़ू · पुलम · बेडू और 13+ और
+                </p>
+
+                <div className="flex items-center gap-1.5 mt-2 flex-wrap">
+                  <span className="text-[9px] font-bold px-2 py-0.5 rounded-full text-white bg-rose-500">
+                    18 फल
+                  </span>
+                  <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full bg-black/30 text-rose-100">
+                    season guide
+                  </span>
+                </div>
+                <p className="block text-right text-[10px] text-rose-200/90 mt-2 font-bold">
+                  Explore fruits →
+                </p>
+              </div>
+            </Link>
+          </motion.div>
         </div>
+
+        {/* ── PAHADI FAL FULL-WIDTH CTA ── */}
+        <Link
+          to="/pahadi-fal"
+          className="flex items-center gap-4 rounded-2xl border border-rose-500/30 bg-gradient-to-r from-rose-900/30 to-amber-900/20 px-5 py-4 mb-3 hover:border-rose-400/60 transition-all group"
+        >
+          <span className="text-3xl shrink-0">🍑</span>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-black text-rose-200 group-hover:text-rose-100">
+              पहाड़ी फल भी देखो
+            </p>
+            <p className="text-xs text-slate-400 mt-0.5">
+              काफल, हिसालू, बेडू, आड़ू, पुलम, माल्टा — 18 पारंपरिक पहाड़ी फलों की पूरी जानकारी →
+            </p>
+          </div>
+          <span className="text-rose-400 font-black text-lg shrink-0 group-hover:translate-x-1 transition-transform">›</span>
+        </Link>
 
         {/* ── PAHADI SAMAGRI LINK ── */}
         <Link
