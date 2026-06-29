@@ -268,12 +268,12 @@ export default function AboutPage() {
 
       {/* Impact Section */}
       <section className="mb-16 bg-gradient-to-r from-primary-900/20 to-purple-900/20 border border-primary-500/20 rounded-2xl p-8">
-        <h2 className="text-2xl font-bold text-white mb-6">Our Impact (So Far)</h2>
+        <h2 className="text-2xl font-bold text-white mb-6">What We've Built So Far</h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-center mb-8">
           {[
-            { number: '5M+', label: 'Target Audience' },
-            { number: '50+', label: 'Folk Stories' },
-            { number: '500+', label: 'Curated Videos' },
+            { number: '20+', label: 'Folk Stories' },
+            { number: '100+', label: 'Garhwali Phrases' },
+            { number: '28', label: 'Govt. Schemes' },
             { number: '24/7', label: 'Free Access' },
           ].map((stat, idx) => (
             <div key={idx}>
@@ -283,7 +283,7 @@ export default function AboutPage() {
           ))}
         </div>
         <p className="text-gray-400 text-sm leading-relaxed text-center">
-          We're tracking real metrics: daily active users, hours of content preserved, Garhwali phrases taught, and job placements assisted. Our goal is to scale these numbers while maintaining cultural integrity and quality.
+          Every number above maps to original content we've researched, written, or curated — folk-story narratives in Devanagari, structured language-learning phrases, and government-scheme guides with verified portal links. We grow the catalogue every week.
         </p>
       </section>
 

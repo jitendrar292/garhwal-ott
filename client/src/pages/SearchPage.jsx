@@ -5,6 +5,7 @@ import { searchVideos } from '../api/youtube';
 import { folkStories as STORIES } from '../data/folkStories';
 import LYRICS_MAP from '../data/lyrics';
 import { BLOG_POSTS } from '../data/cultureLibrary';
+import SEO from '../components/SEO';
 
 const REEL_WORDS_RE = /\b(shorts?|reels?|instagram|insta)\b/i;
 const CLEAN_TAIL_RE = /\s*\([^)]*\)|\s*\[[^\]]*\]|\s*\|.*$/g;
@@ -111,6 +112,12 @@ export default function SearchPage() {
 
   return (
     <div className="max-w-full mx-auto px-4 sm:px-6 py-10">
+      <SEO
+        title={query ? `Search: ${query}` : 'Search PahadiTube'}
+        description="Search Garhwali and Pahadi videos, folk stories, song lyrics, and cultural articles on PahadiTube."
+        path="/search"
+        noindex
+      />
       {!query ? (
         <div className="text-center py-20">
           <p className="text-gray-500 text-xl">पहाड़ी वीडियो खोजने के लिए कुछ टाइप करें</p>

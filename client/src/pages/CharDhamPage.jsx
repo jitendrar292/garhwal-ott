@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import CHAR_DHAM, {
   YATRA_TIPS,
@@ -55,20 +56,27 @@ export default function CharDhamPage() {
         {/* Dham Selector */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
           {CHAR_DHAM.map((d) => (
-            <button
-              key={d.id}
-              onClick={() => { setActiveDham(d.id); setActiveTab('route'); }}
-              className={`rounded-xl p-4 text-center transition-all border-2 ${
-                activeDham === d.id
-                  ? 'border-primary-500 bg-surface-2 shadow-lg shadow-primary-500/20'
-                  : 'border-white/10 bg-surface-1 hover:border-white/30'
-              }`}
-            >
-              <div className="text-3xl mb-1">{d.emoji}</div>
-              <div className="font-semibold text-sm">{d.name}</div>
-              <div className="text-xs text-gray-400">{d.district}</div>
-              <div className="text-xs text-gray-400 mt-1">{d.altitude}</div>
-            </button>
+            <div key={d.id} className="relative">
+              <button
+                onClick={() => { setActiveDham(d.id); setActiveTab('route'); }}
+                className={`w-full rounded-xl p-4 text-center transition-all border-2 ${
+                  activeDham === d.id
+                    ? 'border-primary-500 bg-surface-2 shadow-lg shadow-primary-500/20'
+                    : 'border-white/10 bg-surface-1 hover:border-white/30'
+                }`}
+              >
+                <div className="text-3xl mb-1">{d.emoji}</div>
+                <div className="font-semibold text-sm">{d.name}</div>
+                <div className="text-xs text-gray-400">{d.district}</div>
+                <div className="text-xs text-gray-400 mt-1">{d.altitude}</div>
+              </button>
+              <Link
+                to={`/chardham-yatra/${d.id}`}
+                className="block text-center text-[11px] text-primary-300 hover:text-primary-200 mt-1 underline"
+              >
+                Full guide →
+              </Link>
+            </div>
           ))}
         </div>
 
@@ -255,7 +263,11 @@ export default function CharDhamPage() {
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {PANCH_KEDAR.map((k) => (
-                <div key={k.id} className="bg-white/5 border border-white/10 rounded-xl p-4">
+                <Link
+                  to={`/chardham-yatra/${k.id}`}
+                  key={k.id}
+                  className="block bg-white/5 border border-white/10 rounded-xl p-4 hover:border-indigo-400/60 transition-colors"
+                >
                   <div className="flex items-center justify-between gap-2">
                     <h3 className="font-bold text-white text-base">{k.name}</h3>
                     <span className="text-[11px] px-2 py-0.5 rounded-full bg-indigo-500/30 text-indigo-200">
@@ -266,7 +278,8 @@ export default function CharDhamPage() {
                   <p className="text-xs text-gray-300 mt-1">🥾 {k.trek}</p>
                   <p className="text-xs text-gray-400 mt-1.5">बेस: {k.bestBase}</p>
                   <p className="text-xs text-indigo-100/90 mt-2 leading-relaxed">{k.note}</p>
-                </div>
+                  <p className="text-[11px] text-indigo-200 mt-2 underline text-right">Full guide →</p>
+                </Link>
               ))}
             </div>
           </div>
@@ -284,13 +297,18 @@ export default function CharDhamPage() {
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {BADRINATH_NEARBY_ATTRACTIONS.map((place) => (
-                <div key={place.id} className="bg-white/5 border border-white/10 rounded-xl p-4">
+                <Link
+                  to={`/chardham-yatra/${place.id}`}
+                  key={place.id}
+                  className="block bg-white/5 border border-white/10 rounded-xl p-4 hover:border-amber-400/60 transition-colors"
+                >
                   <h3 className="font-bold text-white text-base">{place.name}</h3>
                   <p className="text-xs text-amber-200 mt-1">{place.type}</p>
                   <p className="text-xs text-gray-300 mt-2">📍 दूरी: {place.distance}</p>
                   <p className="text-xs text-gray-300 mt-1">⏱️ समय: {place.time}</p>
                   <p className="text-xs text-gray-200 mt-2 leading-relaxed">{place.highlight}</p>
-                </div>
+                  <p className="text-[11px] text-amber-200 mt-2 underline text-right">Full guide →</p>
+                </Link>
               ))}
             </div>
           </div>
@@ -308,13 +326,18 @@ export default function CharDhamPage() {
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {GANGOTRI_NEARBY_ATTRACTIONS.map((place) => (
-                <div key={place.id} className="bg-white/5 border border-white/10 rounded-xl p-4">
+                <Link
+                  to={`/chardham-yatra/${place.id}`}
+                  key={place.id}
+                  className="block bg-white/5 border border-white/10 rounded-xl p-4 hover:border-cyan-400/60 transition-colors"
+                >
                   <h3 className="font-bold text-white text-base">{place.name}</h3>
                   <p className="text-xs text-cyan-200 mt-1">{place.type}</p>
                   <p className="text-xs text-gray-300 mt-2">📍 दूरी: {place.distance}</p>
                   <p className="text-xs text-gray-300 mt-1">⏱️ समय: {place.time}</p>
                   <p className="text-xs text-gray-200 mt-2 leading-relaxed">{place.highlight}</p>
-                </div>
+                  <p className="text-[11px] text-cyan-200 mt-2 underline text-right">Full guide →</p>
+                </Link>
               ))}
             </div>
           </div>
@@ -332,13 +355,18 @@ export default function CharDhamPage() {
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {YAMUNOTRI_NEARBY_ATTRACTIONS.map((place) => (
-                <div key={place.id} className="bg-white/5 border border-white/10 rounded-xl p-4">
+                <Link
+                  to={`/chardham-yatra/${place.id}`}
+                  key={place.id}
+                  className="block bg-white/5 border border-white/10 rounded-xl p-4 hover:border-blue-400/60 transition-colors"
+                >
                   <h3 className="font-bold text-white text-base">{place.name}</h3>
                   <p className="text-xs text-blue-200 mt-1">{place.type}</p>
                   <p className="text-xs text-gray-300 mt-2">📍 दूरी: {place.distance}</p>
                   <p className="text-xs text-gray-300 mt-1">⏱️ समय: {place.time}</p>
                   <p className="text-xs text-gray-200 mt-2 leading-relaxed">{place.highlight}</p>
-                </div>
+                  <p className="text-[11px] text-blue-200 mt-2 underline text-right">Full guide →</p>
+                </Link>
               ))}
             </div>
           </div>

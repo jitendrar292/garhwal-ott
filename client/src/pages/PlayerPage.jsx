@@ -6,6 +6,7 @@ import { useFavorites } from '../hooks/useFavorites';
 import LyricsSection from '../components/LyricsSection';
 import WhatsAppShareBtn from '../components/WhatsAppShareBtn';
 import ScriptSection from '../components/ScriptSection';
+import SEO from '../components/SEO';
 
 export default function PlayerPage() {
   const { videoId } = useParams();
@@ -56,6 +57,25 @@ export default function PlayerPage() {
 
   return (
     <div className="max-w-full mx-auto px-4 sm:px-6 py-6">
+      {/*
+        SEO note: the player page is built around an embedded YouTube iframe
+        whose content lives on youtube.com. To avoid duplicate-content
+        signals and AdSense "low-value content" flags on dynamically
+        generated /watch/:id URLs, we set `noindex` and point the canonical
+        at the original YouTube URL. Search engines will still discover and
+        rank our richer cultural pages (folk stories, recipes, articles).
+      */}
+      <SEO
+        title={videoMeta.title ? `${videoMeta.title} — Watch on PahadiTube` : 'Watch Pahadi Video'}
+        description={
+          videoMeta.title
+            ? `Watch "${videoMeta.title}"${videoMeta.channelTitle ? ` by ${videoMeta.channelTitle}` : ''} on PahadiTube — Garhwali and Pahadi entertainment from Uttarakhand.`
+            : 'Watch curated Garhwali and Pahadi videos on PahadiTube.'
+        }
+        path={`/watch/${videoId}`}
+        image={`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`}
+        noindex
+      />
       {/* Back button */}
       <Link
         to="/"

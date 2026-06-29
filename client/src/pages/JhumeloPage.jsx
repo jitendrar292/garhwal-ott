@@ -85,22 +85,26 @@ const SEED_NOSTALGIA = [
   "Nani's mandua roti.",
 ];
 
+// Illustrative placeholder creators — fictional handles shown only to
+// demo the upcoming Creator Corner layout. No real follower counts.
 const CREATORS = [
-  { icon: '📷', type: 'Photographer', name: 'Ravi Rawat',   handle: '@ravi_hills',   followers: '12.4K' },
-  { icon: '🎶', type: 'Singer',       name: 'Priya Negi',   handle: '@priya_folk',   followers: '8.2K'  },
-  { icon: '🎬', type: 'Reel Creator', name: 'Deepak Bisht', handle: '@deepak_reels', followers: '31K'   },
-  { icon: '📖', type: 'Writer',       name: 'Anita Panwar', handle: '@anita_writes', followers: '5.6K'  },
+  { icon: '📷', type: 'Photographer', name: 'Sample Photographer', handle: '@sample_photo' },
+  { icon: '🎶', type: 'Singer',       name: 'Sample Singer',       handle: '@sample_singer' },
+  { icon: '🎬', type: 'Reel Creator', name: 'Sample Creator',      handle: '@sample_reels'  },
+  { icon: '📖', type: 'Writer',       name: 'Sample Writer',       handle: '@sample_writes' },
 ];
 
+// Cities where the Pahadi diaspora is known to be concentrated (no live
+// member counts are shown — see the rendering block below).
 const PAHADI_CITIES = [
-  { city: 'Delhi',     count: 3240, emoji: '🏙️' },
-  { city: 'Bangalore', count: 1820, emoji: '💻' },
-  { city: 'Pune',      count: 980,  emoji: '🎓' },
-  { city: 'Dubai',     count: 620,  emoji: '✈️' },
-  { city: 'Canada',    count: 540,  emoji: '🍁' },
-  { city: 'Australia', count: 390,  emoji: '🦘' },
-  { city: 'UK',        count: 710,  emoji: '🇬🇧' },
-  { city: 'USA',       count: 890,  emoji: '🗽' },
+  { city: 'Delhi',     emoji: '🏙️' },
+  { city: 'Bangalore', emoji: '💻' },
+  { city: 'Pune',      emoji: '🎓' },
+  { city: 'Dubai',     emoji: '✈️' },
+  { city: 'Canada',    emoji: '🍁' },
+  { city: 'Australia', emoji: '🦘' },
+  { city: 'UK',        emoji: '🇬🇧' },
+  { city: 'USA',       emoji: '🗽' },
 ];
 
 const ICE_BREAKERS = [
@@ -274,7 +278,9 @@ export default function JhumeloPage() {
       <SEO
         title="Jhumelo ❤️ — Find Your Pahadi Tribe | PahadiTube"
         description="Not matrimony. Not dating. Find your pahadi internet tribe — flirting, friendship, creators, culture, music, nostalgia & mountain identity. Coming soon on PahadiTube."
+        path="/jhumelo"
         keywords="jhumelo, pahadi vibe, garhwali connections, kumaoni people, uttarakhand social, pahadi community, pahadi tribe"
+        noindex
       />
       <div className="min-h-screen bg-gradient-to-b from-dark-950 via-dark-900 to-dark-950 px-4 py-16 flex flex-col items-center justify-center">
         {/* Hero */}
@@ -892,7 +898,7 @@ export default function JhumeloPage() {
             <span className="text-lg">⭐</span>
             <p className="text-xs font-semibold text-white/40 uppercase tracking-widest">Creator Corner</p>
           </div>
-          <p className="text-sm text-white/50 mb-4">Trending creators — follow before launch</p>
+          <p className="text-sm text-white/50 mb-4">Preview — creator spotlights coming after launch</p>
           <ul className="space-y-3">
             {CREATORS.map((c) => (
               <li key={c.handle} className="flex items-center gap-3">
@@ -901,7 +907,7 @@ export default function JhumeloPage() {
                 </span>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-white truncate">{c.name}</p>
-                  <p className="text-xs text-white/40">{c.type} · {c.followers}</p>
+                  <p className="text-xs text-white/40">{c.type} · example profile</p>
                 </div>
                 <button
                   onClick={() => toggleFollow(c.handle)}
@@ -929,7 +935,7 @@ export default function JhumeloPage() {
             <span className="text-lg">🌏</span>
             <p className="text-xs font-semibold text-white/40 uppercase tracking-widest">Community Map</p>
           </div>
-          <p className="text-sm text-white/50 mb-4">Where Pahadis live</p>
+          <p className="text-sm text-white/50 mb-4">Cities with active Pahadi diaspora</p>
           <div className="grid grid-cols-2 gap-2">
             {PAHADI_CITIES.map((c, i) => (
               <motion.div
@@ -942,7 +948,7 @@ export default function JhumeloPage() {
                 <span className="text-xl">{c.emoji}</span>
                 <div>
                   <p className="text-sm font-semibold text-white leading-none">{c.city}</p>
-                  <p className="text-xs text-white/40">{c.count.toLocaleString()} Pahadis</p>
+                  <p className="text-xs text-white/40">Pahadi community</p>
                 </div>
               </motion.div>
             ))}

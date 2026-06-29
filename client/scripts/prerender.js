@@ -12,6 +12,16 @@ import { fileURLToPath } from 'node:url';
 import { createServer } from 'node:http';
 import puppeteer from 'puppeteer';
 import { folkStories } from '../src/data/folkStories.js';
+import PAHADI_HEROES from '../src/data/pahadiHeroes.js';
+import GARHWALI_INSTRUMENTS from '../src/data/garhwaliInstruments.js';
+import SACRED_PLACES from '../src/data/sacredPlaces.js';
+import CHAR_DHAM, {
+  PANCH_KEDAR,
+  BADRINATH_NEARBY_ATTRACTIONS,
+  GANGOTRI_NEARBY_ATTRACTIONS,
+  YAMUNOTRI_NEARBY_ATTRACTIONS,
+} from '../src/data/charDham.js';
+import PAHADI_DISHES from '../src/data/pahadiDishes.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DIST = resolve(__dirname, '../dist');
@@ -23,7 +33,6 @@ const STATIC_ROUTES = [
   '/news',
   '/podcast',
   '/folk-stories',
-  '/favorites',
   '/feedback',
   '/jobs',
   '/yojana',
@@ -38,18 +47,46 @@ const STATIC_ROUTES = [
   '/garhwali-sikha',
   '/pahadi-khano',
   '/pahadi-store',
+  '/pahadi-pehnawa',
+  '/pahadi-heroes',
+  '/pahadi-khel',
+  '/pahadi-hastakala',
+  '/pahadi-vichar',
+  '/pahadi-prakriti',
   '/muhavare',
   '/instruments',
   '/sacred-places',
   '/chardham-yatra',
   '/sarkari-dastavej',
   '/tyohar',
+  '/culture',
   '/about',
   '/privacy-policy',
+  '/terms-of-service',
 ];
 
 const FOLK_ROUTES = folkStories.map((s) => `/folk-story/${s.slug}`);
-const ROUTES = [...STATIC_ROUTES, ...FOLK_ROUTES];
+const HERO_ROUTES = PAHADI_HEROES.map((h) => `/pahadi-heroes/${h.id}`);
+const INSTRUMENT_ROUTES = GARHWALI_INSTRUMENTS.map((i) => `/instruments/${i.id}`);
+const SACRED_PLACE_ROUTES = SACRED_PLACES.map((p) => `/sacred-places/${p.id}`);
+const CHAR_DHAM_ROUTES = [
+  ...CHAR_DHAM,
+  ...PANCH_KEDAR,
+  ...BADRINATH_NEARBY_ATTRACTIONS,
+  ...GANGOTRI_NEARBY_ATTRACTIONS,
+  ...YAMUNOTRI_NEARBY_ATTRACTIONS,
+].map((d) => `/chardham-yatra/${d.id}`);
+const RECIPE_ROUTES = PAHADI_DISHES.map((d) => `/pahadi-khano/recipe/${d.id}`);
+
+const ROUTES = [
+  ...STATIC_ROUTES,
+  ...FOLK_ROUTES,
+  ...HERO_ROUTES,
+  ...INSTRUMENT_ROUTES,
+  ...SACRED_PLACE_ROUTES,
+  ...CHAR_DHAM_ROUTES,
+  ...RECIPE_ROUTES,
+];
 
 // Minimal static file server for the dist/ folder.
 function startServer(port) {

@@ -64,6 +64,11 @@ const PahadiPrakritiPage = lazy(() => import('./pages/PahadiPrakritiPage'));
 const TagBrowsePage = lazy(() => import('./pages/TagBrowsePage'));
 const CommunitySubmitPage = lazy(() => import('./pages/CommunitySubmitPage'));
 const AdminUGCPage = lazy(() => import('./pages/AdminUGCPage'));
+const HeroDetailPage = lazy(() => import('./pages/HeroDetailPage'));
+const InstrumentDetailPage = lazy(() => import('./pages/InstrumentDetailPage'));
+const SacredPlaceDetailPage = lazy(() => import('./pages/SacredPlaceDetailPage'));
+const CharDhamDetailPage = lazy(() => import('./pages/CharDhamDetailPage'));
+const RecipeDetailPage = lazy(() => import('./pages/RecipeDetailPage'));
 
 // Protected route wrapper - redirects to login if not authenticated
 function RequireAuth({ children }) {
@@ -205,6 +210,7 @@ function AnimatedRoutes() {
             <Route path="/voice-recording" element={<VoiceRecordingPage />} />
             <Route path="/garhwali-sikha" element={<GarhwaliSikhaPage />} />
             <Route path="/pahadi-khano" element={<PahadiKhanoPage />} />
+            <Route path="/pahadi-khano/recipe/:slug" element={<RecipeDetailPage />} />
             <Route path="/pahadi-store" element={<PahadiStorePage />} />
             <Route path="/pahadi-pehnawa" element={<PahadiPehnawaPage />} />
             <Route path="/about" element={<AboutPage />} />
@@ -212,12 +218,16 @@ function AnimatedRoutes() {
             <Route path="/jhumelo" element={<JhumeloPage />} />
             <Route path="/muhavare" element={<MuhavarePage />} />
             <Route path="/instruments" element={<InstrumentsPage />} />
+            <Route path="/instruments/:slug" element={<InstrumentDetailPage />} />
             <Route path="/sacred-places" element={<SacredPlacesPage />} />
+            <Route path="/sacred-places/:slug" element={<SacredPlaceDetailPage />} />
             <Route path="/chardham-yatra" element={<CharDhamPage />} />
+            <Route path="/chardham-yatra/:slug" element={<CharDhamDetailPage />} />
             <Route path="/sarkari-dastavej" element={<SarkariDastavejPage />} />
             <Route path="/tyohar" element={<TyoharPage />} />
             <Route path="/culture" element={<CultureLibraryPage />} />
             <Route path="/pahadi-heroes" element={<PahadiHeroesPage />} />
+            <Route path="/pahadi-heroes/:slug" element={<HeroDetailPage />} />
             <Route path="/pahadi-khel" element={<PahadiKhelPage />} />
             <Route path="/pahadi-hastakala" element={<PahadiHastakalaPage />} />
             <Route path="/pahadi-vichar" element={<PahadiVicharPage />} />

@@ -29,9 +29,16 @@
 
     <!-- Open Graph / Twitter / canonical defaults are injected per-route by <SEO>; see note above. -->
 
-    <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7371728042133909"
-     crossorigin="anonymous"></script>
+    <!--
+      Google AdSense script is intentionally NOT loaded here while approval
+      is pending. Loading the adsbygoogle.js bundle on an unapproved domain
+      and rendering empty <ins> slots is a frequent cause of "Low value
+      content" review rejections. After approval, uncomment the script tag
+      below and set VITE_ADS_ENABLED=true at build time.
+
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7371728042133909"
+       crossorigin="anonymous"></script>
+    -->
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

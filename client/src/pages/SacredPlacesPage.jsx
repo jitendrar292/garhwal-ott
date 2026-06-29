@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import SACRED_PLACES, { PLACE_TYPES } from '../data/sacredPlaces';
 
@@ -163,6 +164,13 @@ export default function SacredPlacesPage() {
                 <span>📍 {place.district}</span>
                 <span>⛰️ {place.altitude}</span>
               </div>
+              <Link
+                to={`/sacred-places/${place.id}`}
+                onClick={(e) => e.stopPropagation()}
+                className="block text-right text-xs text-teal-300 hover:text-teal-200 mt-2 underline"
+              >
+                Read full article →
+              </Link>
             </motion.div>
           ))}
         </div>

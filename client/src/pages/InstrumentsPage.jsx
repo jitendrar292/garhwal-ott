@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import GARHWALI_INSTRUMENTS, { INSTRUMENT_TYPES } from '../data/garhwaliInstruments';
 
@@ -90,6 +91,13 @@ export default function InstrumentsPage() {
                 <span className="px-2 py-0.5 rounded bg-surface-2 capitalize">{inst.type}</span>
                 <span>{inst.region}</span>
               </div>
+              <Link
+                to={`/instruments/${inst.id}`}
+                onClick={(e) => e.stopPropagation()}
+                className="block text-right text-xs text-purple-300 hover:text-purple-200 mt-2 underline"
+              >
+                Read full article →
+              </Link>
             </motion.div>
           ))}
         </div>

@@ -1,11 +1,20 @@
 // AdUnit — Google AdSense display ad (horizontal / responsive)
 // Usage: <AdUnit />
 // The adsbygoogle script is already loaded globally in index.html.
+//
+// Master kill-switch: ads only render when VITE_ADS_ENABLED === 'true'.
+// While AdSense approval is pending, set VITE_ADS_ENABLED=false (or omit
+// the variable) — empty/placeholder ad slots are a frequent cause of
+// "Low value content" review rejections. Re-enable after approval.
 
 import { useEffect, useRef, useState } from 'react';
 
 const AD_CLIENT = 'ca-pub-7371728042133909';
 const AD_SLOT   = '6273839895';
+
+// Default OFF so production builds without an explicit opt-in never ship
+// live ad slots. Override at build time: VITE_ADS_ENABLED=true npm run build
+const ADS_ENABLED = import.meta.env.VITE_ADS_ENABLED === 'true';
 
 function useAdVisibility(insRef) {
   const [isResolved, setIsResolved] = useState(false);
@@ -51,27 +60,32 @@ function useAdVisibility(insRef) {
 }
 
 export default function AdUnit({ className = '' }) {
+  if (!ADS_ENABLED) return null;
+  return <AdUnitInner className={className} />;
+}
+
+function AdUnitInner({ className = '' }) {
   const ref = useRef(null);
   const pushed = useRef(false);
   const showSlot = useAdVisibility(ref);
 
   useEffect(() => {
-    // Only push once per mount; guard against StrictMode double-invoke
+    // Only push once per mount; guard against StrictMode double-invoke.
+    // The push payload for slot ads must be an empty object — passing
+    // `enable_page_level_ads` here is incorrect (it's an Auto-Ads init flag)
+    // and can cause the slot to never fill, which AdSense flags as wasted
+    // ad requests.
     if (pushed.current) return;
     pushed.current = true;
-    
-    // Wait for adsbygoogle to be available
+
     const timer = setTimeout(() => {
       try {
-        (window.adsbygoogle = window.adsbygoogle || []).push({
-          google_ad_client: AD_CLIENT,
-          enable_page_level_ads: true
-        });
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
       } catch (error) {
         console.warn('AdSense error:', error);
       }
     }, 100);
-    
+
     return () => clearTimeout(timer);
   }, []);
 
@@ -96,6 +110,11 @@ const FLUID_SLOT       = '5995244505';
 const FLUID_LAYOUT_KEY = '-fb+5w+4e-db+86';
 
 export function AdUnitFluid({ className = '' }) {
+  if (!ADS_ENABLED) return null;
+  return <AdUnitFluidInner className={className} />;
+}
+
+function AdUnitFluidInner({ className = '' }) {
   const ref = useRef(null);
   const pushed = useRef(false);
   const showSlot = useAdVisibility(ref);
@@ -103,19 +122,15 @@ export function AdUnitFluid({ className = '' }) {
   useEffect(() => {
     if (pushed.current) return;
     pushed.current = true;
-    
-    // Wait for adsbygoogle to be available
+
     const timer = setTimeout(() => {
       try {
-        (window.adsbygoogle = window.adsbygoogle || []).push({
-          google_ad_client: AD_CLIENT,
-          enable_page_level_ads: true
-        });
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
       } catch (error) {
         console.warn('AdSense error:', error);
       }
     }, 100);
-    
+
     return () => clearTimeout(timer);
   }, []);
 

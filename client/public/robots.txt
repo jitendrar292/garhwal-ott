@@ -10,4 +10,17 @@ Disallow: /admin
 Disallow: /login
 Disallow: /api/
 
+# Block thin / embed-only / utility pages so Google AdSense and Search don't
+# treat them as representative of site content. These pages either wrap
+# third-party iframes (YouTube /watch), display user-specific data
+# (favorites, search), or are novelty pages without substantial original
+# content (jhumelo).
+Disallow: /watch/
+Disallow: /search
+Disallow: /favorites
+Disallow: /jhumelo
+Disallow: /submit
+Disallow: /admin/ugc
+Disallow: /voice-recording
+
 Sitemap: https://pahaditube.in/sitemap.xml

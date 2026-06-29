@@ -133,6 +133,13 @@ export default function PahadiKhanoPage() {
                     ⏱ {dish.time.length > 12 ? dish.time.split(' ')[0] + '+' : dish.time}
                   </span>
                 </div>
+                <Link
+                  to={`/pahadi-khano/recipe/${dish.id}`}
+                  onClick={(e) => e.stopPropagation()}
+                  className="block text-right text-[10px] text-amber-200/90 hover:text-amber-100 mt-2 underline"
+                >
+                  Full recipe →
+                </Link>
               </div>
             </motion.button>
           ))}

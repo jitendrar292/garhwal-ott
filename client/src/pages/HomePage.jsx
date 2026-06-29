@@ -386,9 +386,6 @@ export default function HomePage() {
           categoryLink="/category/songs"
         />
 
-        {/* Ad — after Songs */}
-        <AdUnitFluid />
-
         {/* Comedy */}
         <VideoRow
           title="😂 Comedy"
@@ -424,9 +421,6 @@ export default function HomePage() {
           error={folkdance.error}
           categoryLink="/category/folkdance"
         />
-
-        {/* Ad — after Folk Dances */}
-        <AdUnitFluid />
 
         {/* Jaagar, Devotional & Mela — merged row */}
         <VideoRow

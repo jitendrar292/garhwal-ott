@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import PAHADI_HEROES from '../data/pahadiHeroes';
 
@@ -148,6 +149,13 @@ export default function PahadiHeroesPage() {
               <p className="text-white/40 text-xs mt-3 text-right">
                 {openId === hero.id ? 'Tap to close ▲' : 'Tap to read ▼'}
               </p>
+              <Link
+                to={`/pahadi-heroes/${hero.id}`}
+                onClick={(e) => e.stopPropagation()}
+                className="block text-right text-xs text-white/70 hover:text-white mt-1 underline"
+              >
+                Read full article →
+              </Link>
             </motion.button>
           ))}
         </div>
