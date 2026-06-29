@@ -23,6 +23,7 @@ const runnerRoutes = require('./routes/runner');
 const doodleRoutes = require('./routes/doodle');
 const byoRoutes = require('./routes/byo');
 const geoRoutes = require('./routes/geo');
+const ugcRoutes = require('./routes/ugc');
 const { getVisits, incrementVisits, getOpens, incrementOpens, isNewIp, logVisitor, getVisitors, seedAndDeduplicateVisitors, getFeedback, addFeedback, deleteFeedback, redisGetJSON, redisSetJSON } = require('./services/store');
 const { startTrendingRefresh } = require('./services/youtubeService');
 
@@ -158,6 +159,7 @@ app.use('/api/runner', runnerRoutes);
 app.use('/api/doodle', doodleRoutes);
 app.use('/api/byo', byoRoutes);
 app.use('/api/geo', geoRoutes);
+app.use('/api/ugc', visitLimiter, ugcRoutes);
 
 const CAPTIONS_CACHE_TTL = 60 * 60 * 24 * 365; // 1 year
 const captionsCacheKey = (videoId) => `captions:${videoId}`;

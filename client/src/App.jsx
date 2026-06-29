@@ -61,6 +61,9 @@ const PahadiKhelPage = lazy(() => import('./pages/PahadiKhelPage'));
 const PahadiHastakalaPage = lazy(() => import('./pages/PahadiHastakalaPage'));
 const PahadiVicharPage = lazy(() => import('./pages/PahadiVicharPage'));
 const PahadiPrakritiPage = lazy(() => import('./pages/PahadiPrakritiPage'));
+const TagBrowsePage = lazy(() => import('./pages/TagBrowsePage'));
+const CommunitySubmitPage = lazy(() => import('./pages/CommunitySubmitPage'));
+const AdminUGCPage = lazy(() => import('./pages/AdminUGCPage'));
 
 // Protected route wrapper - redirects to login if not authenticated
 function RequireAuth({ children }) {
@@ -219,6 +222,9 @@ function AnimatedRoutes() {
             <Route path="/pahadi-hastakala" element={<PahadiHastakalaPage />} />
             <Route path="/pahadi-vichar" element={<PahadiVicharPage />} />
             <Route path="/pahadi-prakriti" element={<PahadiPrakritiPage />} />
+            <Route path="/tags/:tag" element={<TagBrowsePage />} />
+            <Route path="/submit" element={<CommunitySubmitPage />} />
+            <Route path="/admin/ugc" element={<AdminUGCPage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="/terms-of-service" element={<TermsOfServicePage />} />
           </Routes>

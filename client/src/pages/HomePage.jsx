@@ -114,6 +114,8 @@ export default function HomePage() {
     { to: '/pahadi-khel', label: 'Pahadi Games', emoji: '🎮' },
     { to: '/sacred-places', label: 'Trekking', emoji: '🥾' },
     { to: '/culture', label: 'Culture Library', emoji: '🏔️' },
+    { to: '/tags/folk', label: 'Browse by Tag', emoji: '🏷️' },
+    { to: '/submit', label: 'Share Recipe/Story', emoji: '✍️' },
     { to: '/ghughuti-ai', label: 'Ask Ghughuti AI', emoji: '✨' },
   ];
 
