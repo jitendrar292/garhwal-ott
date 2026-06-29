@@ -154,5 +154,130 @@ export const EDUCATIONAL_ARTICLES = [
           'The modern goal should not be romantic restoration of the past. It should be intelligent synthesis: combine structural engineering with local spatial logic, and combine regulation with community participation. This approach strengthens both safety and cultural continuity.'
       }
     ]
+  },
+  {
+    slug: 'garhwali-folk-dance-forms',
+    title: 'Garhwali Folk Dance Forms: Movement as Cultural Memory',
+    readTime: '9 min read',
+    level: 'Educational',
+    excerpt:
+      'From the devotional Jhumeilo to the martial Choliya — a guide to the major folk dance traditions of Uttarakhand and what they preserve.',
+    sections: [
+      {
+        heading: 'Dance as social text',
+        body:
+          'Pahadi folk dances were never mere entertainment. They encoded kinship structures, seasonal transitions, religious protocols, and community identity. Decoding a dance tradition means reading its circle formation, gender separation, seasonal timing, and instrumental accompaniment together as a system.'
+      },
+      {
+        heading: 'Major forms and their contexts',
+        body:
+          'Jhumeilo is a monsoon celebration dance, sung in call-and-response between men and women. Thandya is performed in winters. Choliya is a martial sword dance performed at weddings and warrior celebrations, most visible in Kumaon. Jhora and Chanchari are collective ring dances common at village fairs. Each carries a distinct social occasion and cannot be understood without its context.'
+      },
+      {
+        heading: 'Preservation through participation',
+        body:
+          'Dance documentation must include the music, the occasion, the costumes, and the spatial layout — not just the movement itself. Community learning remains the strongest preservation method. Festivals and school programs that teach children the full context of a dance tradition will outlast any archive alone.'
+      }
+    ]
+  },
+  {
+    slug: 'medicinal-plants-of-uttarakhand',
+    title: 'Medicinal Plants of Uttarakhand: A Folk Pharmacopoeia',
+    readTime: '11 min read',
+    level: 'Educational',
+    excerpt:
+      'The Himalayas host over 1,000 plant species used in traditional medicine. Here is what locals actually use and what modern research confirms.',
+    sections: [
+      {
+        heading: 'The mountain pharmacy at our doorstep',
+        body:
+          'Hill communities have used plants like Brahmi, Ashwagandha, Kutki, Atees, Jatamansi, and Salam Panja for generations. This knowledge was not mystical but empirical — refined over centuries of observation. Many remedies have since been validated by pharmacological research, while others are still under study.'
+      },
+      {
+        heading: 'Endangered knowledge and conservation',
+        body:
+          'As younger generations migrate and elders age, this knowledge is disappearing faster than the plants themselves. Documenting plant names in Garhwali and Kumaoni alongside scientific names protects both vocabulary and ecology. Language and biology are more connected than they appear.'
+      },
+      {
+        heading: 'Responsible learning',
+        body:
+          'Folk medicine should be approached with respect for both traditional knowledge and modern pharmacology. Some plants require correct preparation to be safe. The goal of documentation is cultural preservation and informed education, not replacement of medical care.'
+      }
+    ]
+  },
+  {
+    slug: 'river-mythology-garhwal',
+    title: 'Rivers as Living Deities: Water Mythology in Garhwal',
+    readTime: '8 min read',
+    level: 'Educational',
+    excerpt:
+      'Why Ganga, Yamuna, Alaknanda, and Bhagirathi are not just rivers in Garhwal but personalities, protectors, and moral teachers.',
+    sections: [
+      {
+        heading: 'Rivers as relational beings',
+        body:
+          'In Garhwali cosmology, rivers are not resources but relationships. They have moods, memories, and demands. Rituals at river confluences are social negotiations. Communities maintained these relationships through seasonal offerings, purity norms, and designated crossing points — all of which doubled as ecological practice.'
+      },
+      {
+        heading: 'The Panch Prayag system',
+        body:
+          'Uttarakhand holds five sacred river confluences — Vishnu Prayag, Nanda Prayag, Karna Prayag, Rudra Prayag, and Dev Prayag. Each has its own mythos, shrine tradition, and community stewardship. Dev Prayag, where Alaknanda and Bhagirathi join to form the Ganga, is the final and most revered confluence.'
+      },
+      {
+        heading: 'Why this matters in 2026',
+        body:
+          'Climate change is altering glacier patterns and river flows. Understanding rivers as entities with cultural relationships — not just hydrological features — changes how communities advocate for them. Cultural attachment has historically been a stronger driver of river protection than regulatory frameworks alone.'
+      }
+    ]
+  },
+  {
+    slug: 'uttarakhand-statehood-movement',
+    title: 'The Uttarakhand Statehood Movement: Decades of Patience',
+    readTime: '12 min read',
+    level: 'Educational',
+    excerpt:
+      'Why it took 53 years after independence for Uttarakhand to become a separate state, and what the struggle revealed about hill identity.',
+    sections: [
+      {
+        heading: 'Why a separate state was needed',
+        body:
+          'After 1947, Garhwal and Kumaon became part of Uttar Pradesh. Hill communities found that Lucknow-based governance did not prioritize mountain infrastructure, forest rights, or cultural development. Distance was not just geographical; it was administrative, linguistic, and social. The demand for a separate state emerged from this structural neglect.'
+      },
+      {
+        heading: 'Milestones and martyrs',
+        body:
+          'The movement had many milestones: early advocacy by leaders like Sridev Suman and H.N. Bahuguna, the Muzaffarnagar massacre of protesters in 1994, and decades of political negotiation. The 1994 incident, where police fired on marching Pahadi women and students, remains one of the most traumatic events in the statehood movement\'s history.'
+      },
+      {
+        heading: 'November 9, 2000',
+        body:
+          'Uttarakhand became India\'s 27th state on 9 November 2000. The capital was established at Dehradun while Gairsain remains the symbolic legislative seat. The creation of the state was a recognition that administrative identity matters for cultural and economic development. The movement\'s story continues.'
+      }
+    ]
+  },
+  {
+    slug: 'chipko-movement-legacy',
+    title: 'The Chipko Movement: 50 Years Later',
+    readTime: '9 min read',
+    level: 'Educational',
+    excerpt:
+      'How village women in Reni, Chamoli transformed forest protest into global environmental language — and what its legacy looks like today.',
+    sections: [
+      {
+        heading: '26 March 1974',
+        body:
+          'The story begins simply: logging contractors arrived at Reni village while the men were away. Gaura Devi and 26 other women confronted them, hugging the trees. The contractors left. Chipko means "to hug" or "stick to" — this act became the defining image of grassroots environmental resistance worldwide.'
+      },
+      {
+        heading: 'Before Reni, there was Mandal',
+        body:
+          'The 1974 Reni action was not the first Chipko moment. In 1973, activists in Mandal village had already staged tree-hugging protests. Sunderlal Bahuguna\'s long walks and Chandi Prasad Bhatt\'s community organizing laid the ground. Reni became famous because it was led by ordinary village women with no prior political organization.'
+      },
+      {
+        heading: 'Legacy and lessons',
+        body:
+          'Chipko directly influenced India\'s Forest Conservation Act (1980), which stopped commercial logging in the Himalayas. It inspired the Green Belt Movement in Kenya and environmental justice movements worldwide. Fifty years later, the question it posed remains live: who owns the forest? The cultural answer — the community that lives inside it — has outlasted every policy debate.'
+      }
+    ]
   }
 ];

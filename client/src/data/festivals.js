@@ -142,6 +142,98 @@ const FESTIVALS = [
     description:
       'बैसाखी संक्रान्ति — द्वाराहाट (कुमाऊँ) म बिखौती मेला औ जौनसार म तांदी-हारुल नृत्य सँग बिस्सू पर्व मनौंदा छां।',
   },
+
+  // ===== 2027 (continued) =====
+  {
+    id: 'harela-2027',
+    name: 'Harela',
+    nameLocal: 'हरेला',
+    date: '2027-07-17',
+    region: 'Kumaon · Garhwal',
+    emoji: '🌱',
+    bg: 'from-emerald-600 to-green-800',
+    description:
+      'सौंण संक्रान्ति — नौ दिन पहले बोए सात अनाज अब उगकर तैयार छन। परिवार का बड़े बच्चुं के सिर पर हरेला रखके आशीर्वाद दिन्दा छन।',
+  },
+  {
+    id: 'ghee-sankranti-2027',
+    name: 'Ghee Sankranti (Olgia)',
+    nameLocal: 'घी संक्रांति · ओल्गिया',
+    date: '2027-08-17',
+    region: 'Kumaon · Garhwal',
+    emoji: '🧈',
+    bg: 'from-amber-500 to-orange-700',
+    description:
+      'भादौं संक्रान्ति — पैलु दिन घ्यू खाणा कु। दही-घी-रोटी खाण से शरीर तंदुरुस्त रहद छ। किसान अपण काम का बदले भेंट दिन्दा छन।',
+  },
+  {
+    id: 'budi-diwali-2027',
+    name: 'Budi Diwali',
+    nameLocal: 'बूढ़ी दीवाली',
+    date: '2027-11-30',
+    region: 'Uttarkashi · Jaunsar',
+    emoji: '🔥',
+    bg: 'from-orange-600 to-red-800',
+    description:
+      'दीवाली का एक महीना बाद मनौण वाळु "पुराणु" दीवाली — भैलो (आग कि रस्सी) घुमौण, ठोडा नृत्य औ पारम्परिक गीतुं के साथ मनौंदा छन।',
+  },
+  {
+    id: 'khatik-2027',
+    name: 'Kartik Purnima',
+    nameLocal: 'कार्तिक पूर्णिमा',
+    date: '2027-11-23',
+    region: 'All Uttarakhand',
+    emoji: '🌕',
+    bg: 'from-yellow-500 to-amber-700',
+    description:
+      'कार्तिक पूर्णिमा — गंगा नदी म पवित्र स्नान कु पर्व। हरिद्वार, ऋषिकेश औ गंगोत्री म लाखों श्रद्धालु दीपदान करदा छन।',
+  },
+
+  // ===== 2028 =====
+  {
+    id: 'uttarayani-2028',
+    name: 'Uttarayani / Makar Sankranti',
+    nameLocal: 'उत्तरायणी · मकर संक्रांति',
+    date: '2028-01-14',
+    region: 'All Uttarakhand',
+    emoji: '☀️',
+    bg: 'from-amber-400 to-orange-600',
+    description:
+      'सुर्ज उत्तर दिशा म औंद — बागनाथ (बागेश्वर) म पवित्र स्नान, उत्तरायणी मेला औ तिळकुट कु प्रसाद बंट्द छ।',
+  },
+  {
+    id: 'phooldei-2028',
+    name: 'Phool Dei',
+    nameLocal: 'फूल देई',
+    date: '2028-03-14',
+    region: 'Garhwal · Kumaon',
+    emoji: '🌸',
+    bg: 'from-pink-500 to-rose-700',
+    description:
+      'चैत्र संक्रान्ति — बसन्त का पैला दिन। नौनि-नौना घौर-घौर कि देहरी म ताजा फूल चढ़ौंदा छन — परिवार कु सुख-समृद्धि कु आशीर्वाद माँगदा छन।',
+  },
+  {
+    id: 'harela-2028',
+    name: 'Harela',
+    nameLocal: 'हरेला',
+    date: '2028-07-16',
+    region: 'Kumaon · Garhwal',
+    emoji: '🌱',
+    bg: 'from-emerald-600 to-green-800',
+    description:
+      'सौंण संक्रान्ति — हरेला बोणा बटि काटणा तक नौ दिन का पर्व। धरती माँ, अनाज औ नई फसल कु सम्मान करदा छां।',
+  },
+  {
+    id: 'igas-2028',
+    name: 'Igas Bagwal',
+    nameLocal: 'इगास बग्वाल',
+    date: '2028-11-07',
+    region: 'Garhwal',
+    emoji: '🎆',
+    bg: 'from-purple-600 to-fuchsia-800',
+    description:
+      'गढ़वाळ कि असली दीवाली — भगवान रामजी का दीवाली का ग्यारह दिन बाद घर लौटणा कि खुशी म मनौंदा छन। भैलो नृत्य औ ढोल दमाऊ की धुन।',
+  },
 ];
 
 export default FESTIVALS;

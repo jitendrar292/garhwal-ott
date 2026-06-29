@@ -16,6 +16,8 @@ import TrendingInstagramRow from '../components/TrendingInstagramRow';
 import AboutSection from '../components/AboutSection';
 import AdUnit, { AdUnitFluid } from '../components/AdUnit';
 import { getVideosByCategory } from '../api/youtube';
+import PAHADI_HEROES from '../data/pahadiHeroes';
+import PHRASES from '../data/garhwaliLearn';
 
 export default function HomePage() {
   const [movies, setMovies] = useState({ videos: [], loading: true, error: null });
@@ -108,10 +110,20 @@ export default function HomePage() {
     { to: '/folk-stories', label: 'Folk Stories', emoji: '📖' },
     { to: '/news', label: 'News', emoji: '📰' },
     { to: '/jobs', label: 'Jobs', emoji: '💼' },
+    { to: '/pahadi-heroes', label: 'Pahadi Heroes', emoji: '🏅' },
+    { to: '/pahadi-khel', label: 'Pahadi Games', emoji: '🎮' },
     { to: '/sacred-places', label: 'Trekking', emoji: '🥾' },
     { to: '/culture', label: 'Culture Library', emoji: '🏔️' },
     { to: '/ghughuti-ai', label: 'Ask Ghughuti AI', emoji: '✨' },
   ];
+
+  // Did You Know + Word of Day — rotate by day of year
+  const { didYouKnow, wordOfDay } = useMemo(() => {
+    const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+    const hero = PAHADI_HEROES[dayOfYear % PAHADI_HEROES.length];
+    const phrase = PHRASES.filter((p) => p.category === 'greetings' || p.category === 'daily' || p.category === 'nature')[dayOfYear % 20] || PHRASES[0];
+    return { didYouKnow: hero, wordOfDay: phrase };
+  }, []);
 
   const todayPicks = useMemo(() => {
     const candidates = [
@@ -163,7 +175,35 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Daily curated picks */}
+        {/* Did You Know + Word of Day */}
+        <section className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+          {/* Did You Know */}
+          <Link
+            to="/pahadi-heroes"
+            className="rounded-2xl border border-white/[0.08] bg-gradient-to-br from-amber-500/10 to-orange-500/5 p-4 hover:border-white/20 transition-all"
+          >
+            <p className="text-[10px] font-semibold text-amber-400/70 uppercase tracking-widest mb-1">💡 Did You Know?</p>
+            {didYouKnow && (
+              <>
+                <p className="text-sm font-bold text-white">{didYouKnow.name} {didYouKnow.emoji}</p>
+                <p className="text-xs text-white/55 mt-1 line-clamp-2">{didYouKnow.tagline} · {didYouKnow.era}</p>
+                <p className="text-xs text-amber-400/60 mt-2">Read about Pahadi Heroes →</p>
+              </>
+            )}
+          </Link>
+          {/* Word of the Day */}
+          <div className="rounded-2xl border border-white/[0.08] bg-gradient-to-br from-primary-500/10 to-cyan-500/5 p-4">
+            <p className="text-[10px] font-semibold text-primary-400/70 uppercase tracking-widest mb-1">🗣️ Word of the Day</p>
+            {wordOfDay && (
+              <>
+                <p className="text-2xl font-bold text-white">{wordOfDay.garhwali}</p>
+                <p className="text-xs text-white/60 mt-1">{wordOfDay.hindi} · <span className="italic">{wordOfDay.english}</span></p>
+                <p className="text-xs text-white/35 mt-1 font-mono">{wordOfDay.pronunciation}</p>
+                <Link to="/garhwali-sikha" className="text-xs text-primary-400/60 mt-2 block">Learn Garhwali →</Link>
+              </>
+            )}
+          </div>
+        </section>
         {todayPicks.length > 0 && (
           <section className="mb-6">
             <div className="flex items-center justify-between mb-3">
