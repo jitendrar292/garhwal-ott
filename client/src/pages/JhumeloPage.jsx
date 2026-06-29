@@ -66,6 +66,50 @@ const VIBES = [
   { icon: '🏔️', text: 'mountain identity' },
 ];
 
+const DAILY_QUESTION = {
+  question: 'Which pahadi fruit wins?',
+  options: [
+    { id: 'aadu',    emoji: '🍑', label: 'Aadu',    votes: 342 },
+    { id: 'naspati', emoji: '🍐', label: 'Naspati', votes: 189 },
+    { id: 'kafal',   emoji: '🍓', label: 'Kafal',   votes: 567 },
+    { id: 'hisalu',  emoji: '🍒', label: 'Hisalu',  votes: 234 },
+  ],
+};
+
+const WEEKLY_POLL_OPTIONS = ['Chopta', 'Auli', 'Munsiyari', 'Binsar', 'Kanatal'];
+
+const SEED_NOSTALGIA = [
+  'Morning temple bells.',
+  'The smell of pine.',
+  'Walking to school.',
+  "Nani's mandua roti.",
+];
+
+const CREATORS = [
+  { icon: '📷', type: 'Photographer', name: 'Ravi Rawat',   handle: '@ravi_hills',   followers: '12.4K' },
+  { icon: '🎶', type: 'Singer',       name: 'Priya Negi',   handle: '@priya_folk',   followers: '8.2K'  },
+  { icon: '🎬', type: 'Reel Creator', name: 'Deepak Bisht', handle: '@deepak_reels', followers: '31K'   },
+  { icon: '📖', type: 'Writer',       name: 'Anita Panwar', handle: '@anita_writes', followers: '5.6K'  },
+];
+
+const PAHADI_CITIES = [
+  { city: 'Delhi',     count: 3240, emoji: '🏙️' },
+  { city: 'Bangalore', count: 1820, emoji: '💻' },
+  { city: 'Pune',      count: 980,  emoji: '🎓' },
+  { city: 'Dubai',     count: 620,  emoji: '✈️' },
+  { city: 'Canada',    count: 540,  emoji: '🍁' },
+  { city: 'Australia', count: 390,  emoji: '🦘' },
+  { city: 'UK',        count: 710,  emoji: '🇬🇧' },
+  { city: 'USA',       count: 890,  emoji: '🗽' },
+];
+
+const ICE_BREAKERS = [
+  { emoji: '☕',  text: "Let's have chai" },
+  { emoji: '🏔️', text: 'Trek someday?' },
+  { emoji: '🎶', text: 'Share playlist' },
+  { emoji: '😂', text: 'Best pahadi meme?' },
+];
+
 export default function JhumeloPage() {
   const [name, setName] = useState('');
   const [instagram, setInstagram] = useState('');
@@ -88,6 +132,35 @@ export default function JhumeloPage() {
     setInterests((prev) =>
       prev.includes(item) ? prev.filter((x) => x !== item) : [...prev, item]
     );
+
+  // Daily question
+  const [dailyVote, setDailyVote] = useState(null);
+  const dailyTotal = DAILY_QUESTION.options.reduce((s, o) => s + o.votes, 0) + (dailyVote ? 1 : 0);
+
+  // Weekly poll
+  const [weeklyVote, setWeeklyVote] = useState(null);
+
+  // Nostalgia wall
+  const [nostalgiaText, setNostalgiaText] = useState('');
+  const [nostalgiaWall, setNostalgiaWall] = useState(SEED_NOSTALGIA);
+  const postNostalgia = () => {
+    const trimmed = nostalgiaText.trim();
+    if (!trimmed) return;
+    setNostalgiaWall((prev) => [trimmed, ...prev]);
+    setNostalgiaText('');
+  };
+
+  // Creator follow
+  const [followed, setFollowed] = useState(new Set());
+  const toggleFollow = (handle) =>
+    setFollowed((prev) => {
+      const next = new Set(prev);
+      next.has(handle) ? next.delete(handle) : next.add(handle);
+      return next;
+    });
+
+  // Ice breakers
+  const [sentBreaker, setSentBreaker] = useState(null);
 
   // Compatibility checker
   const [compMyName, setCompMyName] = useState('');
@@ -679,6 +752,240 @@ export default function JhumeloPage() {
               </motion.form>
             )}
           </AnimatePresence>
+        </motion.div>
+
+        {/* Daily Question */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.4 }}
+          className="w-full max-w-sm mx-auto mt-8 bg-white/5 border border-white/10 rounded-2xl p-6"
+        >
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-lg">🗳️</span>
+            <p className="text-xs font-semibold text-white/40 uppercase tracking-widest">Today's Question</p>
+          </div>
+          <p className="text-base font-bold text-white mb-4">{DAILY_QUESTION.question}</p>
+          <div className="space-y-2">
+            {DAILY_QUESTION.options.map((opt) => {
+              const votes = opt.votes + (dailyVote === opt.id ? 1 : 0);
+              const pct = dailyVote ? Math.round((votes / dailyTotal) * 100) : null;
+              const isChosen = dailyVote === opt.id;
+              return (
+                <button
+                  key={opt.id}
+                  disabled={!!dailyVote}
+                  onClick={() => setDailyVote(opt.id)}
+                  className={`relative w-full flex items-center justify-between px-4 py-2.5 rounded-xl border text-sm font-medium transition-all overflow-hidden
+                    ${isChosen
+                      ? 'border-pink-500/60 text-white'
+                      : dailyVote
+                      ? 'border-white/10 text-white/50'
+                      : 'border-white/20 hover:border-white/40 text-white'}`}
+                >
+                  {dailyVote && (
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${pct}%` }}
+                      transition={{ duration: 0.8, ease: 'easeOut' }}
+                      className={`absolute inset-y-0 left-0 rounded-xl ${isChosen ? 'bg-pink-500/20' : 'bg-white/5'}`}
+                    />
+                  )}
+                  <span className="relative flex items-center gap-2">
+                    <span>{opt.emoji}</span> {opt.label}
+                  </span>
+                  {dailyVote && <span className="relative font-bold text-white/70">{pct}%</span>}
+                </button>
+              );
+            })}
+          </div>
+          {dailyVote && (
+            <p className="text-xs text-white/30 text-center mt-3">Come back tomorrow for a new question ✨</p>
+          )}
+        </motion.div>
+
+        {/* Weekly Poll */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.5 }}
+          className="w-full max-w-sm mx-auto mt-6 bg-white/5 border border-white/10 rounded-2xl p-6"
+        >
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-lg">📊</span>
+            <p className="text-xs font-semibold text-white/40 uppercase tracking-widest">Weekly Poll</p>
+          </div>
+          <p className="text-base font-bold text-white mb-4">Best Hill Station?</p>
+          <div className="space-y-2">
+            {WEEKLY_POLL_OPTIONS.map((opt) => (
+              <label
+                key={opt}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl border cursor-pointer transition-all text-sm
+                  ${weeklyVote === opt
+                    ? 'bg-pink-500/15 border-pink-500/50 text-pink-300'
+                    : 'bg-white/5 border-white/15 text-white/70 hover:border-white/30'}`}
+              >
+                <input type="radio" name="weekly" className="sr-only" value={opt} checked={weeklyVote === opt} onChange={() => setWeeklyVote(opt)} />
+                <span className={`w-4 h-4 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${weeklyVote === opt ? 'border-pink-500' : 'border-white/30'}`}>
+                  {weeklyVote === opt && <span className="w-2 h-2 rounded-full bg-pink-500 block" />}
+                </span>
+                {opt}
+              </label>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Nostalgia Wall */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.6 }}
+          className="w-full max-w-sm mx-auto mt-6 bg-white/5 border border-white/10 rounded-2xl p-6"
+        >
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-lg">🏔️</span>
+            <p className="text-xs font-semibold text-white/40 uppercase tracking-widest">Nostalgia Wall</p>
+          </div>
+          <p className="text-sm text-white/60 mb-4">What's one thing you miss from your village?</p>
+          <div className="flex gap-2 mb-4">
+            <input
+              type="text"
+              placeholder="Write something..."
+              maxLength={100}
+              value={nostalgiaText}
+              onChange={(e) => setNostalgiaText(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && postNostalgia()}
+              className="flex-1 bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-white placeholder-white/30 text-sm focus:outline-none focus:border-pink-500/50"
+            />
+            <button
+              onClick={postNostalgia}
+              disabled={!nostalgiaText.trim()}
+              className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold px-4 py-2.5 rounded-xl text-sm disabled:opacity-40 transition-all"
+            >
+              Post
+            </button>
+          </div>
+          <ul className="space-y-2">
+            <AnimatePresence>
+              {nostalgiaWall.map((post, i) => (
+                <motion.li
+                  key={post + i}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="text-sm text-white/70 bg-white/5 rounded-xl px-4 py-3 italic border border-white/10"
+                >
+                  "{post}"
+                </motion.li>
+              ))}
+            </AnimatePresence>
+          </ul>
+        </motion.div>
+
+        {/* Creator Corner */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.7 }}
+          className="w-full max-w-sm mx-auto mt-6 bg-white/5 border border-white/10 rounded-2xl p-6"
+        >
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-lg">⭐</span>
+            <p className="text-xs font-semibold text-white/40 uppercase tracking-widest">Creator Corner</p>
+          </div>
+          <p className="text-sm text-white/50 mb-4">Trending creators — follow before launch</p>
+          <ul className="space-y-3">
+            {CREATORS.map((c) => (
+              <li key={c.handle} className="flex items-center gap-3">
+                <span className="text-2xl w-10 h-10 flex items-center justify-center bg-white/10 rounded-full ring-1 ring-white/10 flex-shrink-0">
+                  {c.icon}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-white truncate">{c.name}</p>
+                  <p className="text-xs text-white/40">{c.type} · {c.followers}</p>
+                </div>
+                <button
+                  onClick={() => toggleFollow(c.handle)}
+                  className={`text-xs font-semibold px-3 py-1.5 rounded-lg border transition-all flex-shrink-0 ${
+                    followed.has(c.handle)
+                      ? 'bg-pink-500/20 text-pink-400 border-pink-500/30'
+                      : 'bg-white/10 text-white/70 border-white/20 hover:border-white/40'
+                  }`}
+                >
+                  {followed.has(c.handle) ? '✓ Following' : 'Follow'}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </motion.div>
+
+        {/* Community Map */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.8 }}
+          className="w-full max-w-sm mx-auto mt-6 bg-white/5 border border-white/10 rounded-2xl p-6"
+        >
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-lg">🌏</span>
+            <p className="text-xs font-semibold text-white/40 uppercase tracking-widest">Community Map</p>
+          </div>
+          <p className="text-sm text-white/50 mb-4">Where Pahadis live</p>
+          <div className="grid grid-cols-2 gap-2">
+            {PAHADI_CITIES.map((c, i) => (
+              <motion.div
+                key={c.city}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1.85 + i * 0.05 }}
+                className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl px-3 py-2.5"
+              >
+                <span className="text-xl">{c.emoji}</span>
+                <div>
+                  <p className="text-sm font-semibold text-white leading-none">{c.city}</p>
+                  <p className="text-xs text-white/40">{c.count.toLocaleString()} Pahadis</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+          <p className="text-xs text-white/25 text-center mt-4">Drop your pin when you join</p>
+        </motion.div>
+
+        {/* Ice Breakers */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.9 }}
+          className="w-full max-w-sm mx-auto mt-6 bg-white/5 border border-pink-500/20 rounded-2xl p-6"
+        >
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-lg">💬</span>
+            <p className="text-xs font-semibold text-white/40 uppercase tracking-widest">Ice Breakers</p>
+          </div>
+          <p className="text-sm text-white/50 mb-4">No awkward "hi" — send this instead</p>
+          <div className="grid grid-cols-2 gap-2">
+            {ICE_BREAKERS.map((b) => (
+              <button
+                key={b.text}
+                onClick={() => setSentBreaker(b.text)}
+                className={`flex items-center gap-2 px-3 py-3 rounded-xl border text-sm font-medium transition-all text-left
+                  ${sentBreaker === b.text
+                    ? 'bg-pink-500/20 border-pink-500/50 text-pink-300'
+                    : 'bg-white/5 border-white/15 text-white/70 hover:border-white/30 hover:text-white'}`}
+              >
+                <span className="text-xl">{b.emoji}</span>
+                <span className="leading-tight">{b.text}</span>
+              </button>
+            ))}
+          </div>
+          {sentBreaker && (
+            <motion.p
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-xs text-pink-400/80 text-center mt-3"
+            >
+              ✨ "{sentBreaker}" — saved for when you match!
+            </motion.p>
+          )}
         </motion.div>
 
         {/* Footer note */}
