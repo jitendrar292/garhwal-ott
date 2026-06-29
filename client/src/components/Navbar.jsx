@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, Transition } from '@headlessui/react';
 import { useAuth } from '../context/AuthContext';
+import { useRecentSearches, TRENDING_SEARCHES } from '../hooks/useRecentSearches';
 
 const SnowEffect = lazy(() => import('./SnowEffect'));
 
@@ -45,6 +46,7 @@ const TABS = [
 export default function Navbar() {
   const [query, setQuery] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
+  const [searchFocused, setSearchFocused] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [listening, setListening] = useState(false);
   const [micError, setMicError] = useState('');
@@ -56,6 +58,35 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, isAuthenticated, signOut } = useAuth();
+  const { recent: recentSearches, push: pushRecentSearch } = useRecentSearches();
+
+  // Computed live suggestions for the dropdown — recent first, then trending.
+  const suggestionList = (() => {
+    const q = query.trim().toLowerCase();
+    if (!q) {
+      // Empty query: show recents then fill with trending we don't already have.
+      const seen = new Set(recentSearches.map((s) => s.toLowerCase()));
+      const trending = TRENDING_SEARCHES.filter((s) => !seen.has(s.toLowerCase()));
+      return [
+        ...recentSearches.map((label) => ({ label, kind: 'recent' })),
+        ...trending.map((label) => ({ label, kind: 'trending' })),
+      ].slice(0, 8);
+    }
+    // While typing: filter both lists by substring match.
+    const pool = [
+      ...recentSearches.map((label) => ({ label, kind: 'recent' })),
+      ...TRENDING_SEARCHES.map((label) => ({ label, kind: 'trending' })),
+    ];
+    const seen = new Set();
+    return pool
+      .filter((s) => {
+        const key = s.label.toLowerCase();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return key.includes(q) && key !== q;
+      })
+      .slice(0, 6);
+  })();
 
   // Defer push checks to idle time so first paint is not delayed by SW/network work.
   useEffect(() => {
@@ -133,10 +164,21 @@ export default function Navbar() {
     e.preventDefault();
     const trimmed = query.trim();
     if (trimmed) {
+      pushRecentSearch(trimmed);
       navigate(`/search?q=${encodeURIComponent(trimmed)}`);
       setQuery('');
       setSearchOpen(false);
+      setSearchFocused(false);
     }
+  };
+
+  // Click handler shared by suggestion chips in both desktop and mobile dropdowns.
+  const goToSuggestion = (q) => {
+    pushRecentSearch(q);
+    navigate(`/search?q=${encodeURIComponent(q)}`);
+    setQuery('');
+    setSearchOpen(false);
+    setSearchFocused(false);
   };
 
   const startVoiceSearch = () => {
@@ -225,7 +267,7 @@ export default function Navbar() {
           {/* Center search — desktop */}
           <form
             onSubmit={handleSearch}
-            className="hidden sm:flex items-center flex-1 max-w-lg mx-8"
+            className="hidden sm:flex items-center flex-1 max-w-lg mx-8 relative"
           >
             <div className="relative w-full group">
               <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 group-focus-within:text-primary-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -236,6 +278,8 @@ export default function Navbar() {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
+                onFocus={() => setSearchFocused(true)}
+                onBlur={() => setTimeout(() => setSearchFocused(false), 180)}
                 placeholder={listening ? '🎙️ Listening… बोला' : 'Search videos, music, stories…'}
                 className={`w-full bg-surface-2/80 border rounded-xl pl-10 ${speechSupported ? 'pr-11' : 'pr-4'} py-2.5 text-sm
                            text-white placeholder-white/30 focus:outline-none focus:bg-surface-3/80 focus:ring-2 transition-all duration-200
@@ -259,6 +303,41 @@ export default function Navbar() {
                 </button>
               )}
             </div>
+
+            {/* Suggestion dropdown — desktop */}
+            <AnimatePresence>
+              {searchFocused && suggestionList.length > 0 && (
+                <motion.div
+                  key="search-suggestions"
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute top-full left-0 right-0 mt-2 rounded-xl bg-surface-1/95 backdrop-blur-xl border border-white/10 shadow-elevation-3 overflow-hidden z-50"
+                >
+                  <ul className="py-2 max-h-80 overflow-y-auto">
+                    {suggestionList.map((s) => (
+                      <li key={`${s.kind}-${s.label}`}>
+                        <button
+                          type="button"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => goToSuggestion(s.label)}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-white/80 hover:bg-white/5 hover:text-white transition-colors text-left"
+                        >
+                          <span className="text-white/40 text-xs w-4 shrink-0">
+                            {s.kind === 'recent' ? '⏱' : '🔥'}
+                          </span>
+                          <span className="flex-1 truncate">{s.label}</span>
+                          <span className="text-[10px] text-white/30 uppercase tracking-wider">
+                            {s.kind}
+                          </span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </form>
 
           {/* Right actions */}

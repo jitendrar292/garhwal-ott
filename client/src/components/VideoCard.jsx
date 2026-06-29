@@ -3,12 +3,14 @@ import { motion } from 'framer-motion';
 import { useFavorites } from '../hooks/useFavorites';
 import { useWatchHistory } from '../hooks/useWatchHistory';
 import { useConfetti } from '../hooks/useConfetti';
+import { useToast } from './ui/Toast';
 import WhatsAppShareBtn from './WhatsAppShareBtn';
 
 export default function VideoCard({ video, compact }) {
   const { isFavorite, addFavorite, removeFavorite } = useFavorites();
   const { addToHistory } = useWatchHistory();
   const { fireHeartBurst } = useConfetti();
+  const { toast } = useToast();
   const fav = isFavorite(video.id);
 
   const handleFavorite = (e) => {
@@ -40,8 +42,8 @@ export default function VideoCard({ video, compact }) {
     } else {
       navigator.clipboard
         .writeText(url)
-        .then(() => alert('Link copied!'))
-        .catch(() => {});
+        .then(() => toast.success('Link copied — share with your group!', 2200))
+        .catch(() => toast.error('Could not copy link', 2500));
     }
   };
 

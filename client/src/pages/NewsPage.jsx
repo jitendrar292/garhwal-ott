@@ -4,6 +4,7 @@ import NotifyButton from '../components/NotifyButton';
 import SEO from '../components/SEO';
 import AdUnit, { AdUnitFluid } from '../components/AdUnit';
 import WhatsAppShareBtn from '../components/WhatsAppShareBtn';
+import { useToast } from '../components/ui/Toast';
 
 const CATEGORIES = [
   { id: 'all', label: 'सब / All', emoji: '📰' },
@@ -16,6 +17,7 @@ const CATEGORIES = [
 ];
 
 export default function NewsPage() {
+  const { toast } = useToast();
   const [articles, setArticles] = useState([]);       // today + yesterday
   const [olderArticles, setOlderArticles] = useState([]); // lazy-loaded older ones
   const [loading, setLoading] = useState(true);
@@ -243,7 +245,9 @@ export default function NewsPage() {
                     if (navigator.share) {
                       navigator.share({ title: article.title, text: article.summary || article.title, url }).catch(() => {});
                     } else {
-                      navigator.clipboard.writeText(text).then(() => alert('Link copied!')).catch(() => {});
+                      navigator.clipboard.writeText(text)
+                        .then(() => toast.success('Story copied — share away!', 2200))
+                        .catch(() => toast.error('Could not copy', 2500));
                     }
                   }}
                   className="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-1"

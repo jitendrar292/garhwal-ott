@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { searchVideos } from '../api/youtube';
 import { useMusic } from '../context/MusicContext';
 import SEO from '../components/SEO';
+import { useToast } from '../components/ui/Toast';
 
 // All queries append "-movie -film -trailer -full movie" to keep results
 // limited to songs/audio only and exclude Garhwali movie uploads.
@@ -20,6 +21,7 @@ const MUSIC_QUERIES = [
 ];
 
 export default function MusicPage() {
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState(0);
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -178,8 +180,8 @@ export default function MusicPage() {
               } else {
                 navigator.clipboard
                   .writeText(url)
-                  .then(() => alert('Link copied!'))
-                  .catch(() => {});
+                  .then(() => toast.success('Link copied — share with your group!', 2200))
+                  .catch(() => toast.error('Could not copy link', 2500));
               }
             };
             return (

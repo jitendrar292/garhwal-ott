@@ -69,6 +69,7 @@ const InstrumentDetailPage = lazy(() => import('./pages/InstrumentDetailPage'));
 const SacredPlaceDetailPage = lazy(() => import('./pages/SacredPlaceDetailPage'));
 const CharDhamDetailPage = lazy(() => import('./pages/CharDhamDetailPage'));
 const RecipeDetailPage = lazy(() => import('./pages/RecipeDetailPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 // Protected route wrapper - redirects to login if not authenticated
 function RequireAuth({ children }) {
@@ -237,6 +238,7 @@ function AnimatedRoutes() {
             <Route path="/admin/ugc" element={<AdminUGCPage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="/terms-of-service" element={<TermsOfServicePage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
           </Suspense>
         </motion.div>

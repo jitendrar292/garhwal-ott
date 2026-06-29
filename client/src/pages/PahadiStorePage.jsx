@@ -4,8 +4,10 @@ import SEO from '../components/SEO';
 import PAHADI_INGREDIENTS from '../data/pahadiIngredients';
 import useNearbyStores from '../hooks/useNearbyStores';
 import { withAffiliateTag } from '../utils/affiliateUrl';
+import { useToast } from '../components/ui/Toast';
 
 export default function PahadiStorePage() {
+  const { toast } = useToast();
   const [search, setSearch] = useState('');
   const { status, store, city, distKm, isUttarakhand, coords, detect } = useNearbyStores();
   const isDehradunUser = status === 'found' && /\bdehradun\b|\bdoon\b/i.test(city || '');
@@ -68,7 +70,9 @@ export default function PahadiStorePage() {
                   if (navigator.share) {
                     navigator.share({ title: 'पहाड़ी सामग्री – PahadiTube', text: 'गहत, भट्ट, मंडुवा, जखिया जैसी पहाड़ी सामग्री ऑनलाइन या नज़दीकी बाज़ार से खरीदें।', url });
                   } else {
-                    navigator.clipboard.writeText(url).then(() => alert('Link copied! 📋'));
+                    navigator.clipboard.writeText(url)
+                      .then(() => toast.success('Link copied! 📋', 2200))
+                      .catch(() => toast.error('Could not copy link', 2500));
                   }
                 }}
                 className="flex items-center gap-1.5 text-xs font-bold text-white/70 hover:text-white bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full transition-colors"

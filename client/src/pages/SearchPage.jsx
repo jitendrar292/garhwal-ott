@@ -6,6 +6,7 @@ import { folkStories as STORIES } from '../data/folkStories';
 import LYRICS_MAP from '../data/lyrics';
 import { BLOG_POSTS } from '../data/cultureLibrary';
 import SEO from '../components/SEO';
+import { useRecentSearches, TRENDING_SEARCHES } from '../hooks/useRecentSearches';
 
 const REEL_WORDS_RE = /\b(shorts?|reels?|instagram|insta)\b/i;
 const CLEAN_TAIL_RE = /\s*\([^)]*\)|\s*\[[^\]]*\]|\s*\|.*$/g;
@@ -45,6 +46,12 @@ export default function SearchPage() {
   const [searchParams] = useSearchParams();
   const query = searchParams.get('q') || '';
   const [state, setState] = useState({ videos: [], loading: false, error: null, nextPageToken: null, loadingMore: false });
+  const { recent, push: pushRecent, remove: removeRecent, clear: clearRecent } = useRecentSearches();
+
+  // Record successful searches so they appear in the empty-state suggestion list.
+  useEffect(() => {
+    if (query && query.trim().length >= 2) pushRecent(query);
+  }, [query, pushRecent]);
 
   // Local content search
   const localResults = useMemo(() => {
@@ -119,8 +126,84 @@ export default function SearchPage() {
         noindex
       />
       {!query ? (
-        <div className="text-center py-20">
-          <p className="text-gray-500 text-xl">पहाड़ी वीडियो खोजने के लिए कुछ टाइप करें</p>
+        <div className="max-w-2xl mx-auto py-12 space-y-10">
+          <header className="text-center">
+            <p className="text-4xl mb-3" aria-hidden="true">🔍</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-white">क्या ढूंढन्न छन?</h1>
+            <p className="text-sm text-white/50 mt-2">
+              Search Garhwali videos, songs, folk stories, recipes, jobs and more.
+            </p>
+          </header>
+
+          {recent.length > 0 && (
+            <section>
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-xs font-semibold text-white/60 uppercase tracking-widest">
+                  ⏱ हाल की खोज · Recent
+                </h2>
+                <button
+                  onClick={clearRecent}
+                  className="text-[11px] text-white/40 hover:text-white/80 underline"
+                >
+                  Clear all
+                </button>
+              </div>
+              <ul className="flex flex-wrap gap-2">
+                {recent.map((q) => (
+                  <li key={q} className="group inline-flex items-center bg-white/[0.04] border border-white/10 rounded-full text-sm text-white/80 hover:border-white/30 transition-colors">
+                    <Link
+                      to={`/search?q=${encodeURIComponent(q)}`}
+                      className="pl-3 pr-2 py-1.5 hover:text-white"
+                    >
+                      {q}
+                    </Link>
+                    <button
+                      onClick={() => removeRecent(q)}
+                      aria-label={`Remove ${q}`}
+                      className="pr-2.5 pl-1 text-white/30 hover:text-white/80 text-xs"
+                    >
+                      ×
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          <section>
+            <h2 className="text-xs font-semibold text-white/60 uppercase tracking-widest mb-3">
+              🔥 लोकप्रिय · Trending
+            </h2>
+            <ul className="flex flex-wrap gap-2">
+              {TRENDING_SEARCHES.map((q) => (
+                <li key={q}>
+                  <Link
+                    to={`/search?q=${encodeURIComponent(q)}`}
+                    className="inline-block px-3 py-1.5 rounded-full bg-primary-500/10 border border-primary-500/30 text-sm text-primary-200 hover:bg-primary-500/20 hover:border-primary-400/50 transition-colors"
+                  >
+                    {q}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center text-xs">
+            {[
+              { label: '📖 कहानियां', path: '/folk-stories' },
+              { label: '🎵 संगीत', path: '/music' },
+              { label: '💼 रोजगार', path: '/jobs' },
+              { label: '🥘 रेसिपी', path: '/pahadi-khano' },
+            ].map((s) => (
+              <Link
+                key={s.path}
+                to={s.path}
+                className="rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.07] py-3 transition-colors text-white/80"
+              >
+                {s.label}
+              </Link>
+            ))}
+          </section>
         </div>
       ) : (
         <>

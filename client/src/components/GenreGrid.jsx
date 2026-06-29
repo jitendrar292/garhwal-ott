@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useToast } from './ui/Toast';
 
 const containerVariants = {
   hidden: {},
@@ -110,13 +111,16 @@ const GENRES = [
 ];
 
 export default function GenreGrid() {
+  const { toast } = useToast();
   const handleShareApp = () => {
     const url = window.location.origin;
     const shareData = { title: 'PahadiTube', text: 'PahadiTube – Garhwali & Kumaoni entertainment app 🎬🎵', url };
     if (navigator.share) {
       navigator.share(shareData).catch(() => {});
     } else {
-      navigator.clipboard.writeText(url).then(() => alert('Link copied!'));
+      navigator.clipboard.writeText(url)
+        .then(() => toast.success('Link copied — share with your group!', 2200))
+        .catch(() => toast.error('Could not copy link', 2500));
     }
   };
 

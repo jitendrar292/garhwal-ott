@@ -6,6 +6,7 @@ import { useLocation } from 'react-router-dom';
 import SEO from '../components/SEO';
 import GOVT_JOBS from '../data/govtJobs';
 import WhatsAppShareBtn from '../components/WhatsAppShareBtn';
+import { useToast } from '../components/ui/Toast';
 
 function daysUntil(iso) {
   const today = new Date();
@@ -99,6 +100,7 @@ const MSME_ROJGAR_MODELS = [
 ];
 
 function JobCard({ job, isHighlighted }) {
+  const { toast } = useToast();
   const daysLeft = daysUntil(job.lastDate);
   const isUrgent = daysLeft <= 7 && daysLeft >= 0;
   const isExpired = daysLeft < 0;
@@ -208,7 +210,9 @@ function JobCard({ job, isHighlighted }) {
               if (navigator.share) {
                 navigator.share({ title: job.titleLocal || job.title, text, url }).catch(() => {});
               } else {
-                navigator.clipboard.writeText(text).then(() => alert('Link copied!')).catch(() => {});
+                navigator.clipboard.writeText(text)
+                  .then(() => toast.success('Job details copied — share with your group!', 2400))
+                  .catch(() => toast.error('Could not copy', 2500));
               }
             }}
             className="inline-flex items-center gap-1 text-sm text-white/70 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-2 rounded-lg transition-colors"

@@ -7,6 +7,7 @@ import LyricsSection from '../components/LyricsSection';
 import WhatsAppShareBtn from '../components/WhatsAppShareBtn';
 import ScriptSection from '../components/ScriptSection';
 import SEO from '../components/SEO';
+import { useToast } from '../components/ui/Toast';
 
 export default function PlayerPage() {
   const { videoId } = useParams();
@@ -20,6 +21,7 @@ export default function PlayerPage() {
   // resets the gate so navigating between videos requires another tap.
   const [playerStarted, setPlayerStarted] = useState(false);
   const { isFavorite, addFavorite, removeFavorite } = useFavorites();
+  const { toast } = useToast();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -92,8 +94,15 @@ export default function PlayerPage() {
         <div className="lg:col-span-2">
           <div className="relative aspect-video rounded-2xl overflow-hidden bg-dark-700 shadow-2xl">
             {playerStarted ? (
+              // The `playlist=` query param tells YouTube to queue the next 4
+              // related videos right after the current one finishes — so users
+              // get continuous playback without hunting for a new video.
               <iframe
-                src={`https://www.youtube.com/embed/${encodeURIComponent(videoId)}?autoplay=1&rel=0`}
+                src={`https://www.youtube.com/embed/${encodeURIComponent(videoId)}?autoplay=1&rel=0${
+                  related.length
+                    ? `&playlist=${related.slice(0, 4).map((v) => encodeURIComponent(v.id)).join(',')}`
+                    : ''
+                }`}
                 title="Video Player"
                 className="absolute inset-0 w-full h-full"
                 loading="lazy"
@@ -183,8 +192,8 @@ export default function PlayerPage() {
                 } else {
                   navigator.clipboard
                     .writeText(url)
-                    .then(() => alert('Link copied!'))
-                    .catch(() => {});
+                    .then(() => toast.success('Link copied — share it with your group!', 2200))
+                    .catch(() => toast.error('Could not copy link', 2500));
                 }
               }}
               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-dark-600 text-gray-300 hover:bg-dark-500 transition-colors text-sm font-medium"
@@ -201,6 +210,45 @@ export default function PlayerPage() {
               url={`${window.location.origin}/watch/${videoId}`}
             />
           </div>
+
+          {/* Watch Next — visible link to the top related video so users have
+             a clear path forward when the current video ends. YouTube's own
+             playlist param will auto-advance inside the iframe, but tapping
+             this card also updates our route + watch history. */}
+          {related[0] && (
+            <Link
+              to={`/watch/${related[0].id}`}
+              className="mt-5 flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-2xl bg-gradient-to-r from-primary-500/15 via-primary-500/5 to-transparent border border-primary-500/25 hover:border-primary-400/50 transition-colors group"
+            >
+              <div className="relative w-32 sm:w-44 aspect-video rounded-lg overflow-hidden shrink-0 bg-dark-700">
+                <img
+                  src={related[0].thumbnail}
+                  alt=""
+                  loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                <span className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/10 transition-colors">
+                  <svg className="w-10 h-10 text-white/90" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                  </svg>
+                </span>
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-semibold text-primary-300 uppercase tracking-widest mb-1">
+                  ▶ Up Next
+                </p>
+                <p className="text-sm sm:text-base font-semibold text-white line-clamp-2 group-hover:text-primary-100 transition-colors">
+                  {related[0].title}
+                </p>
+                <p className="text-xs text-white/50 mt-1 line-clamp-1">
+                  {related[0].channelTitle}
+                </p>
+              </div>
+              <svg className="hidden sm:block w-5 h-5 text-primary-300 shrink-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          )}
 
           {/* Song lyrics in Garhwali */}
           <ScriptSection videoId={videoId} />

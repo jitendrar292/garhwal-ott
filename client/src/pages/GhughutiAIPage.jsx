@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import SEO from '../components/SEO';
 import { toGarhwaliSpeech, pickPahadiVoice, PAHADI_RATE, PAHADI_PITCH } from '../utils/garhwaliTone';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../components/ui/Toast';
 
 // Chat history for authenticated users is persisted to Redis and restored on
 // page load via GET /api/chat/history. Anonymous users get an in-memory only
@@ -53,6 +54,7 @@ const CHARACTERS = [
 
 export default function GhughutiAIPage() {
   const { user, isAuthenticated } = useAuth();
+  const { toast } = useToast();
   const [messages, setMessages] = useState([]);
   const [historyLoading, setHistoryLoading] = useState(false);
   const [input, setInput] = useState('');
@@ -495,8 +497,8 @@ export default function GhughutiAIPage() {
               } else {
                 navigator.clipboard
                   .writeText(url)
-                  .then(() => alert('Link copied!'))
-                  .catch(() => {});
+                  .then(() => toast.success('Link copied — share Ghughuti AI!', 2200))
+                  .catch(() => toast.error('Could not copy link', 2500));
               }
             }}
             className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 border border-amber-300/40 shadow-md shadow-orange-900/30 rounded-full px-3.5 py-1.5 transition-colors"

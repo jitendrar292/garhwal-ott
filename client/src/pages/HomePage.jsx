@@ -15,6 +15,7 @@ import CharDhamRow from '../components/CharDhamRow';
 import TrendingInstagramRow from '../components/TrendingInstagramRow';
 import AboutSection from '../components/AboutSection';
 import AdUnit, { AdUnitFluid } from '../components/AdUnit';
+import StreakBadge from '../components/StreakBadge';
 import { getVideosByCategory } from '../api/youtube';
 import PAHADI_HEROES from '../data/pahadiHeroes';
 import PHRASES from '../data/garhwaliLearn';
@@ -157,6 +158,7 @@ export default function HomePage() {
                 Continue where you left off, discover fresh Pahadi content, and explore stories from Devbhoomi.
               </p>
               <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-white/55">
+                <StreakBadge />
                 <span className="px-2 py-1 rounded-full bg-white/[0.06] border border-white/[0.08]">{watchHistory.length} continue watching</span>
                 <span className="px-2 py-1 rounded-full bg-white/[0.06] border border-white/[0.08]">{favorites.length} saved in my list</span>
               </div>
