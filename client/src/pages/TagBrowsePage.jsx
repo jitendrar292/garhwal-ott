@@ -5,7 +5,7 @@ import SEO from '../components/SEO';
 import PAHADI_VICHAR from '../data/pahadiVichar';
 import PAHADI_HASTAKALA from '../data/pahadiHastakala';
 import PAHADI_PRAKRITI from '../data/pahadiPrakriti';
-import STORIES from '../data/folkStories';
+import { folkStories as STORIES } from '../data/folkStories';
 import FESTIVALS from '../data/festivals';
 import { BLOG_POSTS } from '../data/cultureLibrary';
 

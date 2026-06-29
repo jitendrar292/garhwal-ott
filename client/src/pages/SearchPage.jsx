@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import VideoGrid from '../components/VideoGrid';
 import { searchVideos } from '../api/youtube';
-import STORIES from '../data/folkStories';
+import { folkStories as STORIES } from '../data/folkStories';
 import LYRICS_MAP from '../data/lyrics';
 import { BLOG_POSTS } from '../data/cultureLibrary';
 
