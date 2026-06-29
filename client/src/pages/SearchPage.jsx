@@ -113,19 +113,19 @@ export default function SearchPage() {
     <div className="max-w-full mx-auto px-4 sm:px-6 py-10">
       {!query ? (
         <div className="text-center py-20">
-          <p className="text-gray-500 text-xl">Enter a search term to find Pahadi videos</p>
+          <p className="text-gray-500 text-xl">पहाड़ी वीडियो खोजने के लिए कुछ टाइप करें</p>
         </div>
       ) : (
         <>
           {/* Local content results */}
           {(localResults.stories.length > 0 || localResults.lyrics.length > 0 || localResults.articles.length > 0) && (
             <div className="mb-8 space-y-6">
-              <h2 className="text-base font-semibold text-white/60 uppercase tracking-widest">On PahadiTube</h2>
+              <h2 className="text-base font-semibold text-white/60 uppercase tracking-widest">PahadiTube पर</h2>
 
               {/* Folk Stories */}
               {localResults.stories.length > 0 && (
                 <div>
-                  <p className="text-xs font-semibold text-amber-400/70 uppercase tracking-widest mb-3">📖 Folk Stories</p>
+                  <p className="text-xs font-semibold text-amber-400/70 uppercase tracking-widest mb-3">📖 लोक कथाएं</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                     {localResults.stories.map((s) => (
                       <Link
@@ -147,7 +147,7 @@ export default function SearchPage() {
               {/* Lyrics */}
               {localResults.lyrics.length > 0 && (
                 <div>
-                  <p className="text-xs font-semibold text-primary-400/70 uppercase tracking-widest mb-3">🎵 Song Lyrics</p>
+                  <p className="text-xs font-semibold text-primary-400/70 uppercase tracking-widest mb-3">🎵 गाने के बोल</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                     {localResults.lyrics.map((s) => (
                       <Link
@@ -169,7 +169,7 @@ export default function SearchPage() {
               {/* Culture Library */}
               {localResults.articles.length > 0 && (
                 <div>
-                  <p className="text-xs font-semibold text-emerald-400/70 uppercase tracking-widest mb-3">🏔️ Culture Library</p>
+                  <p className="text-xs font-semibold text-emerald-400/70 uppercase tracking-widest mb-3">🏔️ संस्कृति पुस्तकालय</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {localResults.articles.map((p) => (
                       <Link
@@ -192,7 +192,7 @@ export default function SearchPage() {
 
           {/* YouTube videos */}
           <VideoGrid
-            title={`Videos for "${query}"`}
+            title={`"${query}" के वीडियो`}
             videos={state.videos}
             loading={state.loading}
             error={state.error}

@@ -106,17 +106,17 @@ export default function HomePage() {
   }, []);
 
   const quickActions = [
-    { to: '/music', label: 'Music', emoji: '🎵' },
-    { to: '/folk-stories', label: 'Folk Stories', emoji: '📖' },
-    { to: '/news', label: 'News', emoji: '📰' },
-    { to: '/jobs', label: 'Jobs', emoji: '💼' },
-    { to: '/pahadi-heroes', label: 'Pahadi Heroes', emoji: '🏅' },
-    { to: '/pahadi-khel', label: 'Pahadi Games', emoji: '🎮' },
-    { to: '/sacred-places', label: 'Trekking', emoji: '🥾' },
-    { to: '/culture', label: 'Culture Library', emoji: '🏔️' },
-    { to: '/tags/folk', label: 'Browse by Tag', emoji: '🏷️' },
-    { to: '/submit', label: 'Share Recipe/Story', emoji: '✍️' },
-    { to: '/ghughuti-ai', label: 'Ask Ghughuti AI', emoji: '✨' },
+    { to: '/music', label: 'संगीत', emoji: '🎵' },
+    { to: '/folk-stories', label: 'लोक कथाएं', emoji: '📖' },
+    { to: '/news', label: 'समाचार', emoji: '📰' },
+    { to: '/jobs', label: 'रोजगार', emoji: '💼' },
+    { to: '/pahadi-heroes', label: 'पहाड़ी हीरो', emoji: '🏅' },
+    { to: '/pahadi-khel', label: 'पहाड़ी खेल', emoji: '🎮' },
+    { to: '/sacred-places', label: 'तीर्थ यात्रा', emoji: '🥾' },
+    { to: '/culture', label: 'संस्कृति पुस्तकालय', emoji: '🏔️' },
+    { to: '/tags/folk', label: 'टैग से खोजें', emoji: '🏷️' },
+    { to: '/submit', label: 'नुस्खा/कहानी साझा करें', emoji: '✍️' },
+    { to: '/ghughuti-ai', label: 'घुघुती AI से पूछें', emoji: '✨' },
   ];
 
   // Did You Know + Word of Day — rotate by day of year

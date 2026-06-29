@@ -5,311 +5,309 @@
 const PAHADI_VICHAR = [
   {
     id: 'ghar-wapsi-dream',
-    title: 'The House I Keep Promising to Fix',
+    title: 'वह छत जो मैं ठीक करने का वादा करता रहा',
     titleLocal: 'घर जो ठीक करने का वादा है',
-    author: 'Vikram Rawat',
+    author: 'विक्रम रावत',
     age: 38,
     from: 'Lansdowne · Pauri Garhwal',
     nowIn: 'Bengaluru',
     occupation: 'Software Engineer',
     readTime: '4 min',
     excerpt:
-      'Every Diwali I tell my mother I will come home and fix the leaking roof before winter. It has been seven Diwalis.',
+      'हर दीवाली माँ से कहता हूँ कि इस बार आकर छत ठीक कर जाउँगा। सात दीवालियाँ बीत गईं।',
     tags: ['migration', 'home', 'guilt', 'diaspora'],
-    body: `Every Diwali I tell my mother I will come home and fix the leaking roof before winter. It has been seven Diwalis.
+    body: `हर दीवाली माँ से कहता हूँ कि इस बार आकर छत ठीक कर जाउँगा। सात दीवालियाँ बीत गईं।
 
-The house in Lansdowne was built by my grandfather when stone and deodar timber cost nothing but sweat. Three rooms, a kitchen courtyard, and a view that has no price. When it rains now, my mother puts the brass pot under the bedroom crack. She never complains on the phone. I find out from my cousin.
+लैंसडाउन का वह घर नाना जी ने बनाया था — जब पत्थर और देवदार की लकड़ी सिर्फ पसीने की कीमत पर मिलती थी। तीन कमरे, एक चौक, और एक नज़ारा जिसकी कोई कीमत नहीं। अब बारिश होती है तो माँ वो पुराना पीतल का लोटा उस दरार के नीचे रख देती हैं। फोन पर कभी शिकायत नहीं करतीं — मुझे चचेरे भाई से पता चलता है।
 
-Bengaluru has been good to me. My company gave me an RSU grant this year that is worth more than the entire village land. But at 2am on a Wednesday, when the city hum is low enough to think, I scroll through photos of that house on WhatsApp and feel something I cannot name.
+बेंगलुरु ने मुझे बहुत दिया है। इस साल कंपनी ने RSU ग्रांट दिया जो पूरे गाँव की ज़मीन से महंगा है। पर रात के दो बजे, बुधवार को, जब शहर थम्‍-सा जाता है — मैं WhatsApp पर उस घर की तस्वीरें देखता हूँ और एक ऐसी टीस होती है जिसका कोई नाम नहीं।
 
-It is not nostalgia exactly. Nostalgia is sweet. This thing has edges.
+यह नोस्टेल्जिया नहीं है। नोस्टेल्जिया में मिठास होती है। इसमें तीखे किनारे हैं।
 
-I know what I am. I am the leaking roof. I am the thing that was supposed to hold things together and did not come home in time.
+मैं जानता हूँ मैं क्या हूँ। मैं वोही टपकती छत हूँ। जिसे वक्त पर आकर सब थामना था और नहीं आया।
 
-My daughter was born here. She says "pahadi" the way a tourist says it — curious, a little romantic. I correct her pronunciation and then feel like a hypocrite because I have not spoken Garhwali to her in a year.
+मेरी बेटी यहीं पैदा हुई। वो "पहाड़ी" शब्द वैसे बोलती है जैसे कोई पर्यटक — उत्सुकता से, थोड़ा रोमांस। मैं उच्चारण सुधारता हूँ, फिर खुद पर शर्म आती है — क्योंकि पिछले एक साल में मैंने उससे गढ़वाली में एक शब्द नहीं बोला।
 
-Next Diwali I am going. The roof will get fixed. I already have the roofer's number in my contacts, labelled "Lansdowne Roof Guy". It has been there for four years.
+अगली दीवाली जाओंगा। छत ठीक होगी। उस मिस्त्री का नंबर चार साल से "लैंसडाउन रूफ गाय" नाम से फ़ोन में सेव है।
 
-My mother says the mountains wait. She says them mountains don't care if you come in October or March, they will be there. I believe her. I just don't know if the same is true for her.`,
+माँ कहती हैं — पहाड़ इंतज़ार करते हैं। अक्तूबर में आओ या मार्च में, फर्क नहीं। मैं मानता हूँ। बस यह नहीं जानता — उनके बारे में भी यही सच है।`,
   },
   {
     id: 'buransh-in-canada',
-    title: 'Finding Buransh in Canada',
+    title: 'कनाड़ा में बुराँश',
     titleLocal: 'कनाडा में बुराँश',
-    author: 'Naina Bhandari',
+    author: 'नैना भंडारी',
     age: 31,
     from: 'Pithoragarh',
     nowIn: 'Toronto, Canada',
     occupation: 'Nurse',
     readTime: '3 min',
     excerpt:
-      'I found a rhododendron in a Toronto park last April. I sat next to it and cried for twenty minutes.',
+      'पिछले अप्रैल में टोरंटो के एक पार्क में रोडोडेंड्रन दिखा। मैं वहीं बैठकर बीस मिनट तक रोती रही।',
     tags: ['diaspora', 'longing', 'nature', 'Canada'],
-    body: `I found a rhododendron in a Toronto park last April. I sat next to it and cried for twenty minutes.
+    body: `पिछले अप्रैल में टोरंटो के एक पार्क में रोडोडेंड्रन दिखा। मैं वहीं बैठकर बीस मिनट तक रोती रही।
 
-It was not the same. The flowers were pale, almost white — not the deep red of Pithoragarh's hillsides in March. But it was enough.
+वो वैसा नहीं था — फूल हल्के, लगभग सफेद — पिथौरागढ़ की ढलानों वाला गहरा लाल नहीं। पर काफी था।
 
-When I came to Canada four years ago, I brought three things from home: a small brass Ganesha, a packet of garam masala from my mother's hand (she adds something I can never replicate), and a photograph of the Panchachwali peak taken from our rooftop.
+चार साल पहले जब कनाड़ा आई, साथ तीन चीज़ें लाई थी — एक छोटा पीतल का गणेश, माँ के हाथ का गरम मसाला (जिसमें वो कुछ ऐसा डालती हैं जो मैं कभी नहीं पकड़ पाई), और छत से ली गई पंचाचूली की एक तस्वीर।
 
-The Ganesha sits on my dresser. The garam masala lasted six months and I cried when it ran out. The photo is the wallpaper on my laptop.
+गणेश ड्रेसर पर है। गरम मसाला छह महीने में खऺ्म हुआ — ख़त्म होते वक्त रोई थी। तस्वीर लैपटॉप की वॉलपेपर है।
 
-I work twelve-hour night shifts at a hospital. The patients here do not know where Uttarakhand is. Sometimes when I say India they say "oh, like Bollywood?" and I say yes, because it is easier than explaining that the mountains I come from predate Bollywood by several geological epochs.
+यहाँ बारह घंटे की रात की शिफ़्ट करती हूँ। मरीज़ों को नहीं पता उत्तराखंड कहाँ है। जब "इंडिया" कहती हूँ तो कुछ पूछते हैं — "बॉलीवुड वाला?" — मैं हाँ कह देती हूँ, क्योंकि यह समझाना कि मेरे पहाड़ बॉलीवुड से कई भूवैज्ञानिक युग पहले के हैं — थका देता है।
 
-At home, nurses are called sisters and the whole ward is like a family. Here I am efficient and professional and alone in a particular way that has no word in English.
+घर पर नर्सों को "दीदी" या "बहन" कहते हैं, पूरा वार्ड एक परिवार होता है। यहाँ मैं कुशल हूँ, पेशेवर हूँ — और एक ख़ास तरीके से अकेली हूँ जिसका अंग्रेज़ी में कोई शब्द नहीं।
 
-I made buransh juice in my apartment last spring. I found dried Himalayan rhododendron petals at an Indian store run by a man from Dehradun. We talked for an hour. He gave me the petals at half price.
+पिछले बसंत में अपने अपार्टमेंट में बुराँश का शर्बत बनाया। एक देहरादून वाले दुकानदार से सूखी पंखुड़ियाँ मिलीं — हम एक घंटे बात करते रहे, उन्होंने आधी कीमत पर दीं।
 
-The juice was not right — too sweet, not tart enough. But for the ten minutes I was making it, my kitchen smelled like home. I called my mother and described it to her. She laughed and said I added too much sugar, as always.
+शर्बत ठीक नहीं बना — स्वाद सही नहीं उतरा। पर जब तक बनाती रही, रसोई में घर जैसी खुशबू आती रही। माँ को फोन किया और बताया। हँसीं — बोलीं, हमेशा की तरह चीनी ज़्यादा डाल दी।
 
-That call was the best thing that happened to me all month.`,
+वह फोन उस पूरे महीने की सबसे अच्छी बात रही।`,
   },
   {
     id: 'language-in-metro',
-    title: 'The Last Garhwali Speaker in My Delhi Metro',
+    title: 'दिल्ली मेट्रो में अकेला गढ़वाली',
     titleLocal: 'दिल्ली मेट्रो में आखिरी गढ़वाली',
-    author: 'Aditya Semwal',
+    author: 'आदित्य सेमवाल',
     age: 26,
     from: 'Rudraprayag',
     nowIn: 'Delhi',
     occupation: 'Journalist',
     readTime: '3 min',
     excerpt:
-      'I heard someone speaking Garhwali on the Delhi Metro. I turned around too fast and dropped my phone.',
+      'मेट्रो में किसी को गढ़वाली बोलते सुना तो मैंने इतनी तेज़ी से घूमा कि फ़ोन गिर गया।',
     tags: ['language', 'identity', 'Delhi', 'diaspora'],
-    body: `I heard someone speaking Garhwali on the Delhi Metro. I turned around too fast and dropped my phone.
+    body: `मेट्रो में किसी को गढ़वाली बोलते सुना तो मैंने इतनी तेज़ी से घूमा कि फ़ोन गिर गया।
 
-The screen cracked. Worth it.
+स्क्रीन फट गई। पर सुनाई दिया — तो ठीक था।
 
-Two men, construction workers from the look of it, talking about something mundane — the price of onions, I think. But the sound of the dialect, the particular rhythm of Garhwali where sentences fall at the end instead of rising, made something in my chest go quiet in a good way.
+दो आदमी थे — देखने से मज़दूर लगते थे — कुछ साधारण बात कर रहे थे, शायद प्याज़ के भाव के बारे में। पर वो लहजा, गढ़वाली की वो ख़ास लय जहाँ वाक्य ऊपर नहीं, नीचे उतरता है — उसने सीने के अंदर कुछ शांत कर दिया।
 
-I almost spoke to them. I stood close enough that I could hear clearly. They were from Pauri. I could tell from the vowel sounds.
+पौड़ी के थे — स्वर सुनकर पता चला।
 
-I did not speak to them. I am from Rudraprayag, not Pauri, and we are absurdly territorial about such things. Also, I do not know what I would have said. "Hello, I also speak your language, please keep talking so I can remember what home sounds like"?
+बात नहीं की। मैं रुद्रप्रयाग का हूँ, पौड़ी नहीं — और हम इन छोटी-छोटी बातों पर हास्यास्पद रूप से जिद्दी होते हैं।
 
-I work at a national newspaper. My Hindi is clean and my English is better than most. But sometimes on deadline nights, when the editor is shouting and the story keeps changing, the thought that comes to mind is in Garhwali. Pure, simple, usually involving strong language about the situation.
+मैं एक राष्ट्रीय अखबार में काम करता हूँ। हिंदी साफ़ है, अंग्रेज़ी उससे भी अच्छी। पर कभी-कभी डेडलाइन वाली रात जब संपादक चिल्ला रहे हों और ख़बर बदलती रहे — तो दिमाग़ में जो शब्द आता है, वो गढ़वाली में होता है। शुद्ध, सीधा, आमतौर पर हालात के बारे में कड़ी भाषा वाला।
 
-I do not speak Garhwali with my Delhi friends. I am not sure they would understand it as a real language — they would smile politely and call it a "dialect." The word dialect has a way of making things feel small.
+दिल्ली के दोस्तों से गढ़वाली में नहीं बोलता। डर है वो इसे "सच्ची भाषा" नहीं मानेंगे — "बोली" कहेंगे और मुस्कुरा देंगे। "बोली" शब्द में एक तरह की छोटाई है।
 
-I am writing this on the Metro. The two men from Pauri got off at Kashmere Gate. I watched them go.
+मेट्रो में यह लिख रहा हूँ। पौड़ी वाले दोनों कश्मीरी गेट पर उतर गए। मैंने देखा उन्हें जाते हुए।
 
-I should have said something.`,
+कुछ कहना चाहिए था।`,
   },
   {
     id: 'amma-ki-mitti',
-    title: 'A Jar of Soil from Amma\'s Garden',
+    title: 'अम्मा के बगीचे की मिट्टी',
     titleLocal: 'अम्मा के बगीचे की मिट्टी',
-    author: 'Seema Rawat',
+    author: 'सीमा रावत',
     age: 44,
     from: 'Almora',
     nowIn: 'Dubai, UAE',
     occupation: 'Accountant',
     readTime: '4 min',
     excerpt:
-      'When I moved to Dubai, my mother gave me a small jar of soil from her kitchen garden. I still have it.',
+      'दुबई जाते वक्त माँ ने अपने बगीचे की थोड़ी मिट्टी एक शीशी में दे कर विदा किया। आज भी वो मेरे पास है।',
     tags: ['diaspora', 'mother', 'home', 'UAE', 'grief'],
-    body: `When I moved to Dubai, my mother gave me a small jar of soil from her kitchen garden. I still have it.
+    body: `दुबई जाते वक्त माँ ने अपने बगीचे की थोड़ी मिट्टी एक शीशी में दे कर विदा किया। आज भी वो मेरे पास है।
 
-She did not say anything when she handed it to me at the airport. She did not need to. We both knew I was not coming back to live there.
+एयरपोर्ट पर देते वक्त कुछ नहीं बोलीं। कहने की ज़रूरत नहीं थी। हम दोनों जानते थे — रहने के लिए वापस नहीं आऊँगी।
 
-That was eleven years ago. The jar is on my bookshelf between a photo of my wedding and a small Devi idol. The soil is dry now — dark and fine, the kind that grows the best tomatoes I have ever tasted.
+ग्यारह साल हो गए। शीशी किताबों के बीच रखी है — शादी की तस्वीर और देवी की छोटी मूर्त के बीच। मिट्टी अब सूखी है — गहरे रंग की, बारीक — वैसी जिसमें मेरे खाए सबसे अच्छे टमाटर उगते थे।
 
-Dubai is extraordinary in many ways. The infrastructure, the safety, the opportunity. I own a small car and an apartment with three bedrooms. In Almora I would have been lucky to have one room.
+दुबई कई मायनों में अद्भुत है। सुरक्षा है, अवसर है। तीन कमरों का अपार्टमेंट है। अल्मोड़ा में एक कमरा भी मुश्किल से मिलता।
 
-But Almora has something Dubai does not. I cannot name it precisely. It is something to do with the quality of silence there — the way a Sunday morning sounds when the only thing moving is a cow and some prayer bells.
+पर अल्मोड़ा में कुछ है जो दुबई में नहीं। नाम नहीं ले पाती ठीक से। शायद वहाँ की चुप्पी की एक ख़ास किस्म — रविवार की सुबह जब सिर्फ एक गाय और कहीं से आती घंटियों की आवाज़ होती है।
 
-I Skype my mother every Sunday. She shows me the garden on her phone camera. The tomatoes are doing well. She has started growing methi and palak for the first time. My father insists on trying corn every year, though it never does well at that altitude.
+हर रविवार Skype पर माँ से बात होती है। वो फ़ोन कैमरा उठाकर बगीचा दिखाती हैं। टमाटर ठीक हैं। इस बार पहली बार मेथी और पालक लगाई है। पिताजी हर साल मक्का लगाने की ज़िद्द करते हैं — उस ऊँचाई पर उगता नहीं, पर वो मानते नहीं।
 
-She was in hospital last year for a week. I came home for twelve days. It was the first time I had been back in four years.
+पिछले साल माँ एक हफ़्ते अस्पताल में थीं। मैं बारह दिन के लिए आई — चार साल में पहली बार।
 
-I walked through her garden in the early morning and smelled the soil. It smelled exactly like the jar on my bookshelf. The same. After eleven years.
+सुबह-सुबह उनके बगीचे में गई। मिट्टी की खुशबू ली। शीशी वाली मिट्टी जैसी — ग्यारह साल बाद भी एक जैसी।
 
-I cried and told her the soil had been waiting for me. She laughed and said I was being dramatic. She was right. I am.
+रो पड़ी। माँ से कहा — मिट्टी मेरा इंतज़ार कर रही थी। हँसीं — बोलीं, नाटक करना बंद करो। सही कहा। मैं नाटक करती हूँ।
 
-When she passes someday — and I cannot think about this clearly — I will not know what to do with the jar. I think I will plant something in it. Something that will grow.`,
+एक दिन जब वो जाएंगी — इसे सोच नहीं पाती साफ-साफ — तो उस शीशी का क्या करूँगी? शायद उसमें कुछ बोऊंगी। कुछ जो उगे।`,
   },
   {
     id: 'pahadi-food-restaurant',
-    title: 'Why I Started a Pahadi Food Stall in Mumbai',
+    title: 'मुंबई में पहाड़ी खाना खोला',
     titleLocal: 'मुंबई में पहाड़ी खाना',
-    author: 'Deepak Negi',
+    author: 'दीपक नेगी',
     age: 33,
     from: 'Uttarkashi',
     nowIn: 'Mumbai',
     occupation: 'Food entrepreneur',
     readTime: '3 min',
     excerpt:
-      'I was tired of explaining to my Mumbai colleagues what mandua roti was. So I started selling it.',
+      'सबको मंडुवे की रोटी समझाते-समझाते थक गया था। तो बेचना शुरू किया।',
     tags: ['food', 'entrepreneurship', 'culture', 'Mumbai'],
-    body: `I was tired of explaining to my Mumbai colleagues what mandua roti was. So I started selling it.
+    body: `सबको मंडुवे की रोटी समझाते-समझाते थक गया था। तो बेचना शुरू किया।
 
-Every single day for three years at my IT job, my tiffin had something from home — ghat ki dal, jhangora ki kheer, kafal murabba. Every single day someone asked what the brown roti was. Why it had that nutty smell. Whether I had diabetes (no, mandua roti is not a diet food, it is a mountain staple).
+IT की नौकरी के तीन साल — रोज़ टिफ़िन में घर का कुछ न कुछ होता था — घाट की दाल, झंगोरे की खीर, काफल का मुरब्बा। और रोज़ कोई न कोई पूछता — यह भूरी रोटी क्या है? इसमें यह ख़ुशबू क्यों है? क्या डायबिटीज़ है? (नहीं, मंडुवा डाइट फ़ूड नहीं है, यह पहाड़ का मुख्य अनाज है।)
 
-I started the stall on Saturdays. Bandra West, outside a yoga studio. The yoga crowd loved it instantly — mountain food, organic grain, traditional recipe, zero processed ingredients. They were exactly who I was not marketing to but who showed up.
+शनिवार को स्टॉल लगाया — बांद्रा वेस्ट में, एक योगा स्टूडियो के बाहर। योगा वाले तुरंत पसंद किया — पहाड़ी खाना, ऑर्गेनिक अनाज, पारंपरिक नुस्खा, कोई प्रोसेस्ड सामग्री नहीं।
 
-Now I have two stalls and a cloud kitchen. I source mandua flour from a self-help group of women farmers in Uttarkashi. My mother taught me six recipes on video call. My cousin in Dehradun ships me dried bhang seeds and kafal pickle jars.
+अब दो स्टॉल हैं और एक क्लाउड किचन। उत्तरकाशी के एक महिला स्वयं सहायता समूह से मंडुवे का आटा आता है। माँ ने वीडियो कॉल पर छह नुस्खे सिखाए। देहरादून वाला भाई भाँग के दाने और काफल का अचार नियमित भेजता है।
 
-The best thing is not the money. The best thing is when a pahadi comes to my stall and their face changes when they taste something they have not eaten in five years. I have watched grown men go silent for thirty seconds after one bite of aloo ke gutke made the right way.
+पैसों से ज़्यादा अच्छी बात यह है — जब कोई पहाड़ी आता है और वो पहला कौर खाता है और तीस सेकंड के लिए चुप हो जाता है। आलू के गुटके के सही तरीके से बने एक कौर पर मैंने पढ़े-लिखे आदमियों को खो जाते देखा है।
 
-That thirty seconds is worth everything.
+वो तीस सेकंड सब कुछ से ज़्यादा हैं।
 
-I have not solved migration or poverty or the reasons people leave. I have just made it slightly easier to carry home in a tiffin box.`,
+मैंने पलायन या ग़रीबी का कोई हल नहीं निकाला। बस इतना किया है कि टिफ़िन बॉक्स में घर थोड़ा आसान हो जाए।`,
   },
   {
     id: 'pahadi-identity-second-gen',
-    title: 'Being Pahadi When Your Kids Don\'t Understand Garhwali',
+    title: 'जब बच्चे गढ़वाली नहीं समझते',
     titleLocal: 'जब बच्चे गढ़वाली नहीं समझते',
-    author: 'Meena Uniyal',
+    author: 'मीना उनियाल',
     age: 41,
     from: 'Pauri Garhwal',
     nowIn: 'Pune',
     occupation: 'Teacher',
     readTime: '4 min',
     excerpt:
-      'My daughter called Garhwali "old-people language" and I did not speak for the rest of that evening.',
+      'बेटी ने गढ़वाली को "बूढ़ों की भाषा" कहा। उस शाम मैं और कुछ नहीं बोली।',
     tags: ['identity', 'second-generation', 'language', 'family'],
-    body: `My daughter called Garhwali "old-people language" and I did not speak for the rest of that evening.
+    body: `बेटी ने गढ़वाली को "बूढ़ों की भाषा" कहा। उस शाम मैं और कुछ नहीं बोली।
 
-She is fourteen. She did not mean to wound me. But some things wound you precisely because they are true.
+वो चौदह साल की है। उसका इरादा दुखाने का नहीं था। पर कुछ चीज़ें ठीक इसीलिए चोट करती हैं क्योंकि वो सच होती हैं।
 
-I moved to Pune when I was twenty-two. My husband is from Haridwar, which is technically Uttarakhand but practically Delhi-adjacent. We speak Hindi at home. My children speak Marathi at school and English with their friends. Garhwali appears on the phone when I call my mother.
+बाईस साल की उम्र में पुणे आई। पति हरिद्वार के हैं — तकनीकी रूप से उत्तराखंड, व्यावहारिक रूप से दिल्ली जैसा। घर में हिंदी बोलते हैं। बच्चे स्कूल में मराठी, दोस्तों से अंग्रेज़ी। गढ़वाली — सिर्फ तब, जब माँ को फोन करती हूँ।
 
-I have tried. I taught my daughter the numbers — ek, dui, teen, chyaar. She learned them and forgot them. I sang her the lullaby my mother sang me — the one about the moon watching the sleeping child. She said it was nice. She asked if she could listen to BTS instead.
+कोशिश की है। बेटी को गिनती सिखाई — एक, दुई, तीन, च्यार। सीखी, भूल गई। वो लोरी सुनाई जो माँ मुझे सुनाती थीं — चाँद के बारे में, सोते हुए बच्चे को देखते पहरे के बारे में। बोली — अच्छी है। फिर BTS सुनने चली गई।
 
-My son is nine. He has been to Pauri twice. He knows it as the place where the internet is bad and the food is different. He liked the kafal. He wants to go back for the kafal.
+बेटा नौ साल का है। पौड़ी दो बार गया है। उसके लिए वो जगह है जहाँ इंटरनेट कमज़ोर है और खाना अलग। काफल पसंद है — काफल के लिए वापस जाना चाहता है।
 
-I hold on to the kafal.
+मैं काफल को थाम लेती हूँ।
 
-I think the language will not survive in my family beyond me. This is a grief I carry carefully, the way you carry something you cannot put down and cannot keep holding.
+लगता है यह भाषा मेरे बाद मेरे परिवार में नहीं रहेगी। यह एक ऐसा दुख है जिसे मैं धीरे-धीरे उठाए जाती हूँ — न रख सकती हूँ, न पूरी तरह थाम सकती हूँ।
 
-But identity is not only language. My daughter knows she is from the mountains. She knows her grandmother lives at 1500 metres elevation. She knows women in her family have been farming on steep terraces for ten generations. She knows the name Gaura Devi and what she did.
+पर पहचान सिर्फ भाषा नहीं है। बेटी जानती है वो पहाड़ों से है। जानती है उसकी नानी 1500 मीटर की ऊँचाई पर रहती हैं। जानती है इस परिवार की औरतें दस पीढ़ियों से सीढ़ीदार खेतों में काम करती आई हैं। गौरा देवी का नाम और उनका काम जानती है।
 
-Someday she may find her own way back. The mountains will wait.
+एक दिन शायद वो खुद वापस जाए। पहाड़ इंतज़ार करते हैं।
 
-That is what pahadi mothers tell each other. The mountains will wait.`,
+यही तो पहाड़ी माएं एक-दूसरे से कहती हैं। पहाड़ इंतज़ार करते हैं।`,
   },
   {
     id: 'jawan-ghar-wapsi',
-    title: 'Coming Home After 15 Years in the Army',
+    title: 'पंद्रह साल बाद चमोली लौटना',
     titleLocal: '15 साल बाद घर लौटना',
-    author: 'Jaswant Bisht',
+    author: 'जसवंत बिष्ट',
     age: 42,
     from: 'Chamoli',
     nowIn: 'Back in Chamoli (retired)',
     occupation: 'Retired Army soldier, now farmer',
     readTime: '4 min',
     excerpt:
-      'I served in Siachen, Punjab, Manipur, and Rajasthan. None of it prepared me for how quiet Chamoli was.',
+      'सियाचिन, पंजाब, मणिपुर, राजस्थान — सब में रहा। पर चमोली की खामोशी के लिए कोई तैयारी नहीं थी।',
     tags: ['army', 'return', 'peace', 'village-life'],
-    body: `I served in Siachen, Punjab, Manipur, and Rajasthan. None of it prepared me for how quiet Chamoli was.
+    body: `सियाचिन, पंजाब, मणिपुर, राजस्थान — सब में रहा। पर चमोली की खामोशी के लिए कोई तैयारी नहीं थी।
 
-Not a bad quiet. A complete quiet. The kind that has bird calls and wind in it, but underneath all that is silence with actual substance.
+बुरी खामोशी नहीं। पूरी खामोशी। जिसमें पक्षियों की आवाज़ें हैं, हवा है, और उन सबके नीचे एक सच्चा सन्नाटा है जिसका वज़न है।
 
-I retired at forty. Army pension, a service medal, and hands that know how to dig trenches but had forgotten how to plant seeds.
+चालीस में रिटायर हुआ। पेंशन, एक तगमा, और हाथ जो खाई खोदना जानते थे पर बीज बोना भूल गए थे।
 
-The house my father left me needed everything. Roof, walls, the water pipe. I spent the first six months repairing. My neighbours helped the way pahadi neighbours help — silently, showing up with tools, not waiting to be asked.
+पिताजी का छोड़ा घर सब कुछ माँगता था। छत, दीवारें, पानी का पाइप। पहले छह महीने मरम्मत में गए। पड़ोसियों ने वैसे मदद की जैसे पहाड़ी पड़ोसी करते हैं — बिना माँगे, औज़ार लेकर आ गए।
 
-I was used to orders and ranks and the logic of the army. The village runs on older logic. It runs on reciprocity and memory and the unspoken understanding that you show up for people because someday you will need them to show up for you.
+फौज में आदेश और पद की आदत थी। गाँव पुरानी तर्ज़ पर चलता है — देना-लेना और यह समझ कि जब दूसरे को ज़रूरत हो तो आ जाना क्योंकि एक दिन तुम्हें भी ज़रूरत पड़ेगी।
 
-I grow vegetables now. Tomatoes, beans, potatoes, methi. I have two cows. I sell the extra milk in the village. I am not rich by any city measure. I have not been this contented in twenty years.
+अब सब्ज़ियाँ उगाता हूँ। टमाटर, लोबिया, आलू, मेथी। दो गाएं हैं। अतिरिक्त दूध गाँव में बेचता हूँ। शहर के हिसाब से अमीर नहीं हूँ। बीस साल में इतना संतुष्ट नहीं रहा।
 
-My wife said the mountains stitched me back together. She is not being poetic — she means it practically. The routine, the physical work, the closeness of the sky here. The fact that in the evening the light on the peaks turns gold and there is nothing you need to do except look at it.
+पत्नी कहती हैं — पहाड़ ने वापस सिल दिया। कविता नहीं कह रहीं — व्यावहारिक बात है। यह दिनचर्या, शारीरिक काम, आसमान की नज़दीकी। शाम को जब चोटियों पर सोना फैलता है और बस देखना होता है।
 
-I do not miss the army. I miss some people from the army. But the institution — the waking up in Delhi or Rajasthan, the heat, the concrete, the rush — I do not miss it at all.
+फौज मिस नहीं करता। फौज के कुछ लोग मिस करता हूँ। पर वो संस्था — दिल्ली, राजस्थान, वो गर्मी, कंक्रीट, भागमभाग — बिलकुल नहीं।
 
-I am home. I came home. I am saying this plainly because I want other jawans who are planning to go back to know: it is possible. The village is harder than the city in some ways and better in all the ways that count.
+घर आ गया। घर लौट आया। यह सीधे कह रहा हूँ क्योंकि चाहता हूँ जो जवान वापसी सोच रहे हों वो जानें — यह संभव है। गाँव कुछ मामलों में शहर से कठिन है और उन सब मामलों में बेहतर है जो मायने रखते हैं।
 
-Come home. The mountains waited.`,
+घर आ जाइए। पहाड़ इंतज़ार कर रहे थे।`,
   },
   {
     id: 'beti-bahar-ki',
-    title: 'The Daughter Who Stayed',
+    title: 'रहने वाली बेटी',
     titleLocal: 'रहने वाली बेटी',
-    author: 'Kavita Rawat',
+    author: 'कविता रावत',
     age: 34,
     from: 'Tehri Garhwal',
     nowIn: 'Tehri Garhwal',
     occupation: 'ASHA worker and farmer',
     readTime: '3 min',
     excerpt:
-      'All three of my brothers left. I stayed. Most people in the village treat this as a tragedy. I do not.',
+      'तीनों भाई चले गए। मैं रुकी। गाँव में अधिकतर लोग इसे दुर्भाग्य मानते हैं। मैं नहीं मानती।',
     tags: ['village-life', 'woman', 'staying', 'pride'],
-    body: `All three of my brothers left. I stayed. Most people in the village treat this as a tragedy. I do not.
+    body: `तीनों भाई चले गए। मैं रुकी। गाँव में अधिकतर लोग इसे दुर्भाग्य मानते हैं। मैं नहीं मानती।
 
-My eldest brother is in Delhi. Second in Dehradun. Third tried Dubai for two years and came back broken and went to Rishikesh and now works at a hotel. All three have built lives of a kind. But the land here — forty years of my parents' care — was going fallow.
+बड़ा भाई दिल्ली में है, दूसरा देहरादून में। तीसरे ने दुबई में दो साल लगाए, टूटकर वापस आया और अब रिषिकेश में एक होटल में काम करता है। तीनों ने एक तरह की ज़िंदगी बना ली है। पर यह ज़मीन — माँ-पिताजी के चालीस साल की देखभाल — परती होती जा रही थी।
 
-I am an ASHA worker. I know every pregnant woman, every elderly person, every child's vaccination record in a five-village radius. I walk steep paths in all weathers. I earn less than a Delhi domestic worker. I am not complaining.
+मैं ASHA कार्यकर्ता हूँ। पाँच गाँवों के क्षेत्र में हर गर्भवती माँ, हर बुज़ुर्ग, हर बच्चे का टीकाकरण रिकार्ड मेरे पास है। हर मौसम पहाड़ी रास्तों पर चलती हूँ। दिल्ली की घरेलू कामगार से कम कमाती हूँ। शिकायत नहीं।
 
-The migration problem is real and I understand it. The schools here are inadequate, the hospital is far, the opportunity is limited. I understand why people go. I do not judge.
+पलायन की समस्या असली है, मैं समझती हूँ। स्कूल पर्याप्त नहीं, अस्पताल दूर है, मौके कम हैं। लोग क्यों जाते हैं — यह समझती हूँ। दोष नहीं देती।
 
-But I also understand what leaves with them. The terraced fields my grandfather carved from the hillside with a pickaxe over thirty years. The water spring that feeds four families — who will clean its channel? The temple that has been tended by my family for six generations.
+पर यह भी समझती हूँ — उनके साथ क्या जाता है। वो सीढ़ीदार खेत जो तीस साल में पिताजी ने कुदाल से ढलान से निकाले थे। वो पानी का सोता जो चार परिवारों को पानी देता है — उसकी नाली कौन साफ करेगा?
 
-I tend the temple. I clean the spring channel every spring. I plant the terraces that my brothers abandoned.
+मंदिर संभालती हूँ। हर बसंत नाली साफ करती हूँ। भाइयों के छोड़े खेत भी जोतती हूँ।
 
-I am not a martyr. I chose this. I have chosen this every year that I could have gone and did not.
+मैं बलिदानी नहीं हूँ। यह मेरा चुनाव था। हर साल जब जा सकती थी और नहीं गई — वो मेरा चुनाव था।
 
-When people ask if I am sad about staying, I ask them: sad compared to what? Compared to an apartment in Delhi where the sky is brown? Compared to a job that is the same every day in a room with no windows?
+जब लोग पूछते हैं रुकने का दुख नहीं? तो पूछती हूँ — किसकी तुलना में? दिल्ली के उस अपार्टमेंट से जहाँ आसमान भूरा है? उस नौकरी से जो रोज़ एक अंधेरे कमरे में एक जैसी होती है?
 
-Here I wake to the Mandakini valley spread out below me in morning mist. Here I know every person by name and they know mine. Here I am needed.
+यहाँ सुबह मंदाकिनी घाटी कोहरे में फैली होती है। यहाँ हर आदमी नाम से जानता है। यहाँ मेरी ज़रूरत है।
 
-I stayed. I do not need it to be understood. I just needed to say it.`,
+रुकी हूँ। इसे समझाने की ज़रूरत नहीं। बस कहना था।`,
   },
   {
     id: 'diwali-delhi-pahadi',
-    title: 'Celebrating Igas When Your Neighbours Don\'t Know What It Is',
+    title: 'दिल्ली में इगास मनाना',
     titleLocal: 'दिल्ली में इगास मनाना',
-    author: 'Rohit Maithani',
+    author: 'रोहित मैथानी',
     age: 29,
     from: 'Pauri Garhwal',
     nowIn: 'Delhi',
     occupation: 'Graphic designer',
     readTime: '3 min',
     excerpt:
-      'Igas Bagwal falls eleven days after Diwali. In Delhi, nobody knows this. I celebrate alone with diyas on my windowsill.',
+      'इगास बग्वाल दीवाली के ग्यारह दिन बाद होती है। दिल्ली में कोई नहीं जानता। खिड़की की मुंडेर पर दिये जलाता हूँ।',
     tags: ['festival', 'Igas', 'diaspora', 'Delhi', 'identity'],
-    body: `Igas Bagwal falls eleven days after Diwali. In Delhi, nobody knows this. I celebrate alone with diyas on my windowsill.
+    body: `इगास बग्वाल दीवाली के ग्यारह दिन बाद होती है। दिल्ली में कोई नहीं जानता। खिड़की की मुंडेर पर दिये जलाता हूँ।
 
-In Garhwal, Igas is the real Diwali — the day Lord Ram is said to have actually reached the mountains on his return from Lanka. The proper Diwali came eleven days earlier and we observed it, but Igas is when the mountains celebrated. That is our celebration.
+गढ़वाल में इगास असली दीवाली है — कहते हैं राम जी का लंका से लौटना पहाड़ों तक ग्यारह दिन बाद पहुँचा था। मैदानी दीवाली हम भी मनाते थे, पर इगास हमारी थी।
 
-In Delhi my flatmates had already cleaned up the Diwali mess. The extra sweets were finished. The decorations were coming down. I put five diyas on my windowsill facing the city and lit them and thought about my grandmother dancing the Bhailon — the traditional Igas folk dance around a bonfire.
+दिल्ली में फ़्लैटमेट्स ने दीवाली की सफ़ाई कर दी थी। मिठाईयाँ खाची हो गईं। सजावट उतर रही थी। मैंने खिड़की की मुंडेर पर पाँच दिये रखे, जलाए — और शहर की ओर देखते हुए नानी को याद किया जो भैलो में नाचती थीं — अलाव के चारों ओर होने वाली उस लोक-नृत्य परंपरा में।
 
-The year she died, my father did not light a bonfire. The whole village felt it. She had danced Bhailon every year for sixty years.
+जिस साल वो गईं, पिताजी ने अलाव नहीं जलाया। पूरे गाँव ने महसूस किया। साठ साल से हर साल भैलो नाचती थीं।
 
-I make Igas the way I can — diyas, a call home, my mother describing what the bonfire looked like from the roof. This year she said it was good. Forty people came. The young ones stayed till midnight.
+इगास जैसे मना सकता हूँ, मनाता हूँ — दिये, घर फोन, माँ बताती हैं अलाव छत से कैसा दिखा। इस साल बोलीं — अच्छा रहा। चालीस लोग आए। नए लड़के-लड़कियाँ आधी रात तक रुके।
 
-I tell my Delhi friends about Igas and they say "oh, like a pahadi Diwali?" and I say yes, because explaining is exhausting and also because they are not entirely wrong — it is our version. Just better.
+दिल्ली के दोस्तों को इगास के बारे में बताता हूँ तो कहते हैं — "ओह, पहाड़ी दीवाली?" — मैं हाँ कह देता हूँ, क्योंकि समझाना थका देता है — और वो बिलकुल गलत भी नहीं हैं, यह हमारी दीवाली ही है। बस बेहतर।
 
-Someday I will be home for Igas. I have not been there in three years. The diyas on my Delhi windowsill are a place-holder.
+एक दिन इगास पर घर रहूँगा। तीन साल हो गए। दिल्ली की खिड़की के दिये सिर्फ जगह बचाए रखने के लिए हैं।
 
-Ram came home eventually. So will I.`,
+राम आखिरकार घर लौटे थे। मैं भी लौटूँगा।`,
   },
   {
     id: 'pahadi-pride-london',
-    title: 'Explaining Uttarakhand to London',
+    title: 'लंदन में उत्तराखंड समझाना',
     titleLocal: 'लंदन में उत्तराखंड',
-    author: 'Priya Kandpal',
+    author: 'प्रिया कंडपाल',
     age: 35,
     from: 'Almora',
     nowIn: 'London, UK',
     occupation: 'PhD researcher (Himalayan ecology)',
     readTime: '4 min',
     excerpt:
-      'My thesis is on glacial retreat in the Uttarakhand Himalayas. My research is about my home disappearing.',
+      'मेरा शोध हिमालय के पिघलते ग्लेशियरों पर है। मेरा शोध मेरे घर के मिटने की कहानी है।',
     tags: ['diaspora', 'UK', 'climate', 'research', 'grief'],
-    body: `My thesis is on glacial retreat in the Uttarakhand Himalayas. My research is about my home disappearing.
+    body: `मेरा शोध हिमालय के पिघलते ग्लेशियरों पर है। मेरा शोध मेरे घर के मिटने की कहानी है।
 
-I should say that plainly because sometimes academics talk about "systems" and "feedback loops" and forget the human fact underneath: my hometown's water supply comes from glaciers that are losing mass. The springs my grandmother drank from are weakening. The bugyals (alpine meadows) where shepherds took their flocks are shifting upward.
+यह साफ़ कहना ज़रूरी है — क्योंकि कभी-कभी शोधकर्ता "तंत्र" और "फ़ीडबैक लूप" की भाषा में बोलते हैं और नीचे का सच भूल जाते हैं: मेरे शहर का पानी उन ग्लेशियरों से आता है जो हर साल कम हो रहे हैं। नानी जिन सोतों का पानी पीती थीं, वो कमज़ोर पड़ रहे हैं। जिन बुग्यालों पर गड़रिये जाते थे, वो ऊपर खिसक रहे हैं।
 
-I came to London on a scholarship and stayed for the PhD. My supervisor is brilliant and my department is well-funded. The Himalayan glacier data here is better than anything I could access in India. The irony of that — understanding the disappearance of home better from ten thousand kilometres away — does not escape me.
+छात्रवृत्ति पर लंदन आई, PhD के लिए रुकी। मेरा गाइड शानदार है, विभाग समृद्ध है। हिमालय के ग्लेशियरों का डेटा यहाँ से बेहतर मिलता है। उसकी विडंबना — कि घर की तबाही दस हज़ार किलोमीटर दूर से बेहतर दिखती है — मुझे पता है।
 
-My British colleagues are curious and respectful. They ask about Uttarakhand with genuine interest. But there is a level at which they cannot reach the thing I am studying. For them it is a remote mountain system. For me it is where I learned to walk.
+ब्रिटिश सहयोगी जिज्ञासु हैं, सम्मानजनक हैं। उत्तराखंड के बारे में सच में रुचि रखते हैं। पर एक स्तर पर नहीं पहुँच पाते। उनके लिए यह एक दूरस्थ पर्वतीय तंत्र है। मेरे लिए — यहाँ मैंने चलना सीखा था।
 
-When I present my findings — showing the glacier mass loss over four decades, overlaying it with agricultural water stress data — I do not get emotional in the room. I am a scientist. But on the tube home I sometimes think about the Pindar River and whether my niece, who is ten, will be able to say the same things about it that I say.
+जब मैं अपने निष्कर्ष प्रस्तुत करती हूँ — चार दशकों में ग्लेशियर क्षेत्र की हानि दिखाती हूँ — कमरे में भावुक नहीं होती। वैज्ञानिक हूँ। पर ट्यूब में घर लौटते वक्त कभी-कभी पिंडर नदी के बारे में सोचती हूँ — और क्या मेरी दस साल की भतीजी वही बातें कह पाएगी जो मैं कहती हूँ।
 
-I will go back. My plan is to work with the Uttarakhand government on adaptation frameworks. Knowledge built here, applied there. It is the only thing that makes sense to me.
+वापस जाऊँगी। उत्तराखंड सरकार के साथ अनुकूलन ढाँचे पर काम करने की योजना है। ज्ञान यहाँ बने, वहाँ काम आए। यही एकमात्र बात समझ आती है।
 
-I come from Almora. Almora is 1,638 metres above sea level. It still has clean water and cold air and old stone temples and women who can carry the world on their heads.
-
-I am trying to make sure it still has these things when I come home.`,
+मैं अल्मोड़ा से हूँ। अल्मोड़ा समुद्र तल से 1,638 मीटर ऊँचाई पर है। अभी वहाँ साफ़ पानी है, ठंडी हवा है, पुराने पत्थर के मंदिर हैं, और उन औरतों की शक्ल है जो दुनिया सिर पर उठाई चलती हैं।`,
   },
 ];
 

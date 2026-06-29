@@ -65,12 +65,12 @@ export default function PahadiVicharPage() {
           <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <span className="text-5xl block mb-3">✍️</span>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">
-              Pahadi Vichar
+              पहाड़ी विचार
             </h1>
             <p className="text-white/60 text-base sm:text-lg max-w-xl mx-auto">
-              Personal stories from Pahadis living away — from London to Lansdowne, from Dubai to coming home.
+              पहाड़ों से दूर रहने वाले लोगों की आपबीति — लंदन से लैंसडाउन तक, दुबई से वापसी तक।
             </p>
-            <p className="text-white/30 text-sm mt-1">{PAHADI_VICHAR.length} stories</p>
+            <p className="text-white/30 text-sm mt-1">{PAHADI_VICHAR.length} विचार</p>
           </motion.div>
         </div>
 
@@ -86,7 +86,7 @@ export default function PahadiVicharPage() {
                   : 'bg-white/5 border-white/15 text-white/60 hover:border-white/30'
               }`}
             >
-              {tag === 'All' ? 'All Stories' : tag.replace('-', ' ')}
+              {tag === 'All' ? 'सभी विचार' : tag.replace('-', ' ')}
             </button>
           ))}
         </div>

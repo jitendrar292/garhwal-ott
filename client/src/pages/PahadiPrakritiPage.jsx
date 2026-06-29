@@ -49,12 +49,12 @@ export default function PahadiPrakritiPage() {
           <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <span className="text-5xl block mb-3">🏔️</span>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">
-              Pahadi Prakriti
+              पहाड़ी प्रकृति
             </h1>
             <p className="text-white/60 text-base sm:text-lg max-w-xl mx-auto">
-              The living world of Uttarakhand — from Gangotri glaciers to Valley of Flowers, from snow leopards to sacred buransh.
+              उत्तराखंड की जीवंत दुनिया — गंगोत्री हिमनद से फूलों की घाटी तक, हिम तेंदुओं से बुराँश तक।
             </p>
-            <p className="text-white/30 text-sm mt-1">{PAHADI_PRAKRITI.length} species & features</p>
+            <p className="text-white/30 text-sm mt-1">{PAHADI_PRAKRITI.length} प्रजातियाँ व विशेषताएँ</p>
           </motion.div>
         </div>
 
@@ -70,7 +70,7 @@ export default function PahadiPrakritiPage() {
                   : 'bg-white/5 border-white/15 text-white/60 hover:border-white/30'
               }`}
             >
-              {t === 'All' ? 'All' : (TYPE_META[t]?.label || t)}
+              {t === 'All' ? 'सभी' : (TYPE_META[t]?.label || t)}
             </button>
           ))}
         </div>
@@ -145,7 +145,7 @@ export default function PahadiPrakritiPage() {
                         {/* Ecological role */}
                         {entry.ecologicalRole?.length > 0 && (
                           <div>
-                            <p className="text-xs font-semibold text-white/40 uppercase tracking-widest mb-2">Ecological Role</p>
+                            <p className="text-xs font-semibold text-white/40 uppercase tracking-widest mb-2">वानिकी भूमिका</p>
                             <ul className="space-y-1">
                               {entry.ecologicalRole.map((r) => (
                                 <li key={r} className="text-xs text-white/60 flex gap-2">
@@ -160,7 +160,7 @@ export default function PahadiPrakritiPage() {
                         {/* Cultural significance */}
                         {entry.culturalSignificance && (
                           <div>
-                            <p className="text-xs font-semibold text-white/40 uppercase tracking-widest mb-2">Cultural Significance</p>
+                            <p className="text-xs font-semibold text-white/40 uppercase tracking-widest mb-2">सांस्कृतिक महत्व</p>
                             <blockquote className="border-l-2 border-amber-400/40 pl-4 text-sm text-white/60 italic leading-relaxed">
                               {entry.culturalSignificance}
                             </blockquote>
@@ -169,7 +169,7 @@ export default function PahadiPrakritiPage() {
 
                         {/* Conservation status */}
                         <div className={`text-xs px-3 py-2 rounded-lg bg-white/[0.04] ${STATUS_COLOR(entry.conservationStatus)}`}>
-                          <span className="font-semibold">Conservation: </span>
+                          <span className="font-semibold">संरक्षण स्थिति: </span>
                           {entry.conservationStatus}
                         </div>
                       </div>
@@ -186,7 +186,7 @@ export default function PahadiPrakritiPage() {
         )}
 
         <p className="text-center text-white/20 text-xs mt-12 max-w-md mx-auto">
-          Uttarakhand is a biodiversity hotspot — protect its forests, springs, and glaciers.
+          उत्तराखंड एक जैव-विविधता का हॉटस्पॉट है — इसके जंगलों, सोतों और ग्लेशियरों की रक्षा करें।
         </p>
       </div>
     </>

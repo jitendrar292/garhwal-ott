@@ -3,11 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import SEO from '../components/SEO';
 
 const TABS = [
-  { id: 'recipe', label: 'Community Recipe', emoji: '🍲', description: 'Share a traditional pahadi dish with the community.' },
-  { id: 'story', label: 'Village Story', emoji: '🏘️', description: 'Write about your village, your people, or your journey.' },
+  { id: 'recipe', label: 'पहाड़ी नुस्खा', emoji: '🍲', description: 'पारंपरिक पहाड़ी पकवान समुदाय के साथ साझा करें।' },
+  { id: 'story', label: 'गाँव की कहानी', emoji: '🏘️', description: 'अपने गाँव, लोगों, या सफ़र के बारे में लिखें।' },
 ];
 
-const REGIONS = ['Garhwal', 'Kumaon', 'Jaunsar-Bawar', 'Haridwar', 'Dehradun', 'Diaspora / Outside Uttarakhand', 'Other'];
+const REGIONS = ['गढ़वाल', 'कुमाऊँ', 'जौनसार-बावर', 'हरिद्वार', 'देहरादून', 'प्रवासी / उत्तराखंड से बाहर', 'अन्य'];
 
 const INITIAL_RECIPE = { title: '', region: '', district: '', ingredients: '', content: '', submitterName: '', contact: '' };
 const INITIAL_STORY  = { title: '', region: '', content: '', submitterName: '', contact: '' };
@@ -54,16 +54,16 @@ export default function CommunitySubmitPage() {
 
   function validate() {
     const errs = {};
-    if (!form.title?.trim() || form.title.trim().length < 3) errs.title = 'Title is required (min 3 characters)';
+        if (!form.title?.trim() || form.title.trim().length < 3) errs.title = 'शीर्षक अनिवार्य है (कम से कम 3 अक्षर)';
     if (tab === 'recipe' && (!form.ingredients?.trim() || form.ingredients.trim().length < 5)) {
-      errs.ingredients = 'Please list at least the main ingredients';
+      errs.ingredients = 'कृपया मुख्य सामग्री अवश्य लिखें';
     }
     if (!form.content?.trim() || form.content.trim().length < 20) {
-      errs.content = tab === 'recipe' ? 'Method is required (min 20 characters)' : 'Story is required (min 20 characters)';
+      errs.content = tab === 'recipe' ? 'विधि अनिवार्य है (कम से कम 20 अक्षर)' : 'कहानी अनिवार्य है (कम से कम 20 अक्षर)';
     }
-    if (!form.submitterName?.trim() || form.submitterName.trim().length < 2) errs.submitterName = 'Your name is required';
+    if (!form.submitterName?.trim() || form.submitterName.trim().length < 2) errs.submitterName = 'आपका नाम अनिवार्य है';
     if (form.contact && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.contact.trim())) {
-      errs.contact = 'Must be a valid email address';
+      errs.contact = 'मान्य ईमेल पता डालें';
     }
     return errs;
   }
@@ -101,8 +101,8 @@ export default function CommunitySubmitPage() {
   return (
     <>
       <SEO
-        title="Share with the Community — PahadiTube"
-        description="Submit a traditional pahadi recipe or share your village story. Community content reviewed and published on PahadiTube."
+        title="समुदाय के साथ साझा करें — PahadiTube"
+        description="पारंपरिक पहाड़ी नुस्खा या गाँव की कहानी साझा करें। समुदाय की सामग्री समीक्षा के बाद PahadiTube पर प्रकाशित होती है।"
         keywords="pahadi recipe, village story, garhwali food, uttarakhand community, submit recipe"
       />
       <div className="min-h-screen bg-gradient-to-b from-dark-950 via-dark-900 to-dark-950 px-4 py-12">
@@ -111,9 +111,9 @@ export default function CommunitySubmitPage() {
           {/* Header */}
           <motion.div className="text-center mb-10" initial={{ opacity: 0, y: -14 }} animate={{ opacity: 1, y: 0 }}>
             <span className="text-5xl block mb-3">🏔️</span>
-            <h1 className="text-3xl font-extrabold text-white mb-2">Share with the Community</h1>
+            <h1 className="text-3xl font-extrabold text-white mb-2">समुदाय के साथ साझा करें</h1>
             <p className="text-white/55 text-sm max-w-md mx-auto">
-              Your recipes and stories are the living archive of pahadi culture. Approved submissions appear on PahadiTube.
+              आपके नुस्खे और कहानियाँ पहाड़ी संस्कृति का जीवंत पुरालेख हैं। स्वीकृत सामग्री PahadiTube पर प्रकाशित होती है।
             </p>
           </motion.div>
 
@@ -145,15 +145,15 @@ export default function CommunitySubmitPage() {
                 className="rounded-2xl border border-green-500/30 bg-green-500/10 p-8 text-center"
               >
                 <span className="text-5xl block mb-4">🙏</span>
-                <h2 className="text-xl font-bold text-white mb-2">Dhanyavaad! Thank you.</h2>
+                <h2 className="text-xl font-bold text-white mb-2">धन्यवाद! Dhanyavaad.</h2>
                 <p className="text-white/60 text-sm mb-6">
-                  Your {tab === 'recipe' ? 'recipe' : 'story'} has been received and will appear on PahadiTube after review — usually within 48 hours.
+                  आपका {tab === 'recipe' ? 'नुस्खा' : 'कहानी'} मिल गया है और समीक्षा के बाद PahadiTube पर दिखेगा — आमतौर पर 48 घंटों में।
                 </p>
                 <button
                   onClick={resetForm}
                   className="px-5 py-2 rounded-full bg-primary-500 text-white text-sm font-semibold hover:bg-primary-600 transition-colors"
                 >
-                  Submit Another
+                  एक और साझा करें
                 </button>
               </motion.div>
             ) : (
@@ -165,26 +165,26 @@ export default function CommunitySubmitPage() {
                 noValidate
               >
                 {/* Title */}
-                <Field label={tab === 'recipe' ? 'Recipe Name *' : 'Title / Headline *'} hint={<CharCount value={form.title || ''} max={120} />} error={errors.title}>
+                <Field label={tab === 'recipe' ? 'नुस्खे का नाम *' : 'शीर्षक / हेडलाइन *'} hint={<CharCount value={form.title || ''} max={120} />} error={errors.title}>
                   <input
                     type="text"
                     value={form.title || ''}
                     onChange={(e) => set('title', e.target.value)}
                     maxLength={120}
-                    placeholder={tab === 'recipe' ? 'e.g. Kafali ki Sabzi, Bhatt ki Churkani' : 'e.g. The year my village became a ghost town'}
+                    placeholder={tab === 'recipe' ? 'जैसे: काफली की सब्जी, भट्ट की चुरकानी' : 'जैसे: जिस साल मेरा गाँव उजड़ गया'}
                     className={inputCls}
                   />
                 </Field>
 
                 {/* Region */}
-                <Field label="Region / District">
+                <Field label="क्षेत्र / जिला">
                   <div className="flex gap-2">
                     <select
                       value={form.region || ''}
                       onChange={(e) => set('region', e.target.value)}
                       className={`${inputCls} appearance-none`}
                     >
-                      <option value="">Select region…</option>
+                      <option value="">क्षेत्र चुनें…</option>
                       {REGIONS.map((r) => <option key={r} value={r}>{r}</option>)}
                     </select>
                     <input
@@ -192,7 +192,7 @@ export default function CommunitySubmitPage() {
                       value={form.district || ''}
                       onChange={(e) => set('district', e.target.value)}
                       maxLength={80}
-                      placeholder="District (optional)"
+                      placeholder="जिला (वैकल्पिक)"
                       className={`${inputCls} flex-1`}
                     />
                   </div>
@@ -200,13 +200,13 @@ export default function CommunitySubmitPage() {
 
                 {/* Ingredients — recipe only */}
                 {tab === 'recipe' && (
-                  <Field label="Ingredients *" hint={<CharCount value={form.ingredients || ''} max={2000} />} error={errors.ingredients}>
+                  <Field label="सामग्री *" hint={<CharCount value={form.ingredients || ''} max={2000} />} error={errors.ingredients}>
                     <textarea
                       value={form.ingredients || ''}
                       onChange={(e) => set('ingredients', e.target.value)}
                       maxLength={2000}
                       rows={4}
-                      placeholder={'List ingredients, one per line:\n• 200g gahat (horse gram)\n• 2 tbsp ghee\n• 1 tsp jakhiya …'}
+                      placeholder={'सामग्री एक-एक लाइन में लिखें:\n• 200 ग्राम गहत (काला उड़द)\n• 2 चम्मच घी\n• 1 चम्मच जखिया …'}
                       className={inputCls}
                     />
                   </Field>
@@ -214,7 +214,7 @@ export default function CommunitySubmitPage() {
 
                 {/* Content */}
                 <Field
-                  label={tab === 'recipe' ? 'Method / Recipe *' : 'Your Story *'}
+                  label={tab === 'recipe' ? 'विधि / नुस्खा *' : 'आपकी कहानी *'}
                   hint={<CharCount value={form.content || ''} max={8000} />}
                   error={errors.content}
                 >
@@ -225,8 +225,8 @@ export default function CommunitySubmitPage() {
                     rows={tab === 'recipe' ? 6 : 10}
                     placeholder={
                       tab === 'recipe'
-                        ? 'Step-by-step method. Include cooking tips, serving suggestions, and the story behind the dish.'
-                        : 'Write in Hindi, Garhwali, Kumaoni or English. Share your village memory, migration experience, or pahadi life story.'
+                        ? 'चरण-दर-चरण विधि लिखें। पकाने के सुझाव, परोसने का तरीका और पकवान की कहानी भी लिखें।'
+                        : 'हिंदी, गढ़वाली, कुमाऊँनी या अंग्रेज़ी में लिखें। अपनी गाँव की यादें, पलायन का अनुभव या पहाड़ी जीवन की कहानी साझा करें।'
                     }
                     className={inputCls}
                   />
@@ -234,17 +234,17 @@ export default function CommunitySubmitPage() {
 
                 {/* Submitter */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <Field label="Your Name *" error={errors.submitterName}>
+                  <Field label="आपका नाम *" error={errors.submitterName}>
                     <input
                       type="text"
                       value={form.submitterName || ''}
                       onChange={(e) => set('submitterName', e.target.value)}
                       maxLength={80}
-                      placeholder="How should we credit you?"
+                      placeholder="नाम कैसे लिखें?"
                       className={inputCls}
                     />
                   </Field>
-                  <Field label="Email (optional)" hint="for update notifications" error={errors.contact}>
+                  <Field label="ईमेल (वैकल्पिक)" hint="अपडेट सूचना के लिए" error={errors.contact}>
                     <input
                       type="email"
                       value={form.contact || ''}
@@ -262,8 +262,8 @@ export default function CommunitySubmitPage() {
                 )}
 
                 <p className="text-xs text-white/25 text-center leading-relaxed">
-                  All submissions are reviewed before publication. We do not share your email address.
-                  Content must be your own original writing.
+                  सभी प्रविष्टियाँ प्रकाशन से पहले समीक्षा की जाती हैं। आपका ईमेल किसी के साथ साझा नहीं होगा।
+                  सामग्री आपकी अपनी मौलिक लेखनी होनी चाहिए।
                 </p>
 
                 <button
@@ -271,7 +271,7 @@ export default function CommunitySubmitPage() {
                   disabled={status === 'loading'}
                   className="w-full py-3 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white font-semibold text-sm hover:opacity-90 disabled:opacity-50 transition-all"
                 >
-                  {status === 'loading' ? 'Sending…' : `Submit ${tab === 'recipe' ? 'Recipe' : 'Story'} →`}
+                  {status === 'loading' ? 'भेजा जा रहा है…' : `${tab === 'recipe' ? 'नुस्खा' : 'कहानी'} भेजें →`}
                 </button>
               </motion.form>
             )}

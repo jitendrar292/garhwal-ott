@@ -27,19 +27,19 @@ function buildPushAuthHeaders() {
 }
 
 const TABS = [
-  { name: 'Home', path: '/', emoji: '🏠' },
-  { name: 'Movies', path: '/category/movies', emoji: '🎬' },
-  { name: 'Songs', path: '/category/songs', emoji: '🎵' },
-  { name: 'Comedy', path: '/category/comedy', emoji: '😂' },
-  { name: 'Devotional', path: '/category/devotional', emoji: '�' },
-  { name: 'Folk Dance', path: '/category/folkdance', emoji: '💃' },
-  { name: 'Mela', path: '/category/mela', emoji: '🎪' },
-  { name: 'Vlogs', path: '/category/vlogs', emoji: '📹' },
-  { name: 'Reels', path: '/shorts', emoji: '⚡' },
-  { name: 'Podcast', path: '/podcast', emoji: '🎙️' },
-  { name: 'Jobs', path: '/jobs', emoji: '💼' },
-  { name: 'Garhwali Sikha', path: '/garhwali-sikha', emoji: '📖' },
-  { name: 'Ghughuti AI', path: '/ghughuti-ai', emoji: '🤖' },
+  { name: 'होम', path: '/', emoji: '🏠' },
+  { name: 'फ़िल्में', path: '/category/movies', emoji: '🎬' },
+  { name: 'गीत-संगीत', path: '/category/songs', emoji: '🎵' },
+  { name: 'हास्य', path: '/category/comedy', emoji: '😂' },
+  { name: 'भक्ति', path: '/category/devotional', emoji: '🙏' },
+  { name: 'लोकनृत्य', path: '/category/folkdance', emoji: '💃' },
+  { name: 'मेला', path: '/category/mela', emoji: '🎪' },
+  { name: 'व्लॉग्स', path: '/category/vlogs', emoji: '📹' },
+  { name: 'रील्स', path: '/shorts', emoji: '⚡' },
+  { name: 'पॉडकास्ट', path: '/podcast', emoji: '🎙️' },
+  { name: 'रोजगार', path: '/jobs', emoji: '💼' },
+  { name: 'गढ़वाली सीखें', path: '/garhwali-sikha', emoji: '📖' },
+  { name: 'घुघुती AI', path: '/ghughuti-ai', emoji: '🤖' },
 ];
 
 export default function Navbar() {

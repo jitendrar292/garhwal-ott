@@ -63,7 +63,7 @@ export default function PahadiHastakalaPage() {
                   : 'bg-white/5 border-white/15 text-white/60 hover:border-white/30'
               }`}
             >
-              {t === 'All' ? 'All Crafts' : (TYPE_LABELS[t] || t)}
+              {t === 'All' ? 'सभी' : (TYPE_LABELS[t] || t)}
             </button>
           ))}
         </div>
@@ -129,7 +129,7 @@ export default function PahadiHastakalaPage() {
 
                         {/* Materials */}
                         <div>
-                          <p className="text-xs font-semibold text-white/40 uppercase tracking-widest mb-2">Materials</p>
+                          <p className="text-xs font-semibold text-white/40 uppercase tracking-widest mb-2">सामग्री</p>
                           <div className="flex flex-wrap gap-1.5">
                             {craft.materials.map((m) => (
                               <span key={m} className="text-xs px-2 py-0.5 rounded-full bg-white/8 border border-white/10 text-white/60">
@@ -142,7 +142,7 @@ export default function PahadiHastakalaPage() {
                         {/* Uses */}
                         {craft.uses?.length > 0 && (
                           <div>
-                            <p className="text-xs font-semibold text-white/40 uppercase tracking-widest mb-2">Uses</p>
+                            <p className="text-xs font-semibold text-white/40 uppercase tracking-widest mb-2">उपयोग</p>
                             <ul className="space-y-1">
                               {craft.uses.map((u) => (
                                 <li key={u} className="text-xs text-white/60 flex gap-2">

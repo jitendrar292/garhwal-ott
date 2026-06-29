@@ -272,7 +272,7 @@ export default function TagBrowsePage() {
 
               {/* Diaspora stories / Vichar */}
               {results.vichar.length > 0 && (
-                <Section title="✍️ Pahadi Vichar" subtitle="Personal essays" linkTo="/pahadi-vichar">
+                <Section title="✍️ पहाड़ी विचार" subtitle="व्यक्तिगत निबंध" linkTo="/pahadi-vichar">
                   {results.vichar.map((v) => (
                     <Link key={v.id} to="/pahadi-vichar" className="card-item">
                       <p className="text-sm font-semibold text-white line-clamp-1">{v.title}</p>
@@ -290,7 +290,7 @@ export default function TagBrowsePage() {
 
               {/* Folk Stories */}
               {results.stories.length > 0 && (
-                <Section title="📖 Folk Stories" subtitle="Traditional Garhwali tales" linkTo="/folk-stories">
+                <Section title="📖 लोक कथाएं" subtitle="गढ़वाली लोकगाथाएं" linkTo="/folk-stories">
                   {results.stories.map((s) => (
                     <Link key={s.slug} to={`/folk-story/${s.slug}`} className="card-item">
                       <span className="text-2xl block mb-1">{s.emoji}</span>
@@ -303,7 +303,7 @@ export default function TagBrowsePage() {
 
               {/* Hastakala */}
               {results.hastakala.length > 0 && (
-                <Section title="🧺 Traditional Crafts" subtitle="Pahadi Hastakala" linkTo="/pahadi-hastakala">
+                <Section title="🧵 पारंपरिक हस्तशिल्प" subtitle="पहाड़ी हस्तकला" linkTo="/pahadi-hastakala">
                   {results.hastakala.map((h) => (
                     <Link key={h.id} to="/pahadi-hastakala" className="card-item">
                       <span className="text-2xl block mb-1">{h.emoji}</span>
@@ -317,7 +317,7 @@ export default function TagBrowsePage() {
 
               {/* Prakriti */}
               {results.prakriti.length > 0 && (
-                <Section title="🌿 Nature & Ecology" subtitle="Pahadi Prakriti" linkTo="/pahadi-prakriti">
+                <Section title="🌿 प्रकृति और पारिस्थितिकी" subtitle="पहाड़ी प्रकृति" linkTo="/pahadi-prakriti">
                   {results.prakriti.map((p) => (
                     <Link key={p.id} to="/pahadi-prakriti" className="card-item">
                       <span className="text-2xl block mb-1">{p.emoji}</span>
@@ -331,7 +331,7 @@ export default function TagBrowsePage() {
 
               {/* Festivals */}
               {results.festivals.length > 0 && (
-                <Section title="🎉 Festivals" subtitle="Pahadi calendar" linkTo="/tyohar">
+                <Section title="🎉 त्योहार" subtitle="पहाड़ी कैलेंडर" linkTo="/tyohar">
                   {results.festivals.slice(0, 8).map((f) => (
                     <Link key={f.id} to="/tyohar" className="card-item">
                       <span className="text-2xl block mb-1">{f.emoji}</span>
@@ -345,7 +345,7 @@ export default function TagBrowsePage() {
 
               {/* Culture Library */}
               {results.articles.length > 0 && (
-                <Section title="📚 Culture Library" subtitle="Long reads" linkTo="/culture">
+                <Section title="📚 संस्कृति पुस्तकालय" subtitle="सांस्कृतिक लेख" linkTo="/culture">
                   {results.articles.map((b) => (
                     <Link key={b.slug} to={`/culture#${b.slug}`} className="card-item">
                       <p className="text-sm font-semibold text-white line-clamp-2">{b.title}</p>
@@ -359,7 +359,7 @@ export default function TagBrowsePage() {
               {totalResults === 0 && (
                 <div className="text-center py-16 text-white/30">
                   <p className="text-3xl mb-3">🏔️</p>
-                  <p>No content found for this tag yet.</p>
+                  <p>इस टैग में अभी सामग्री उपलब्ध नहीं।</p>
                 </div>
               )}
             </motion.div>
