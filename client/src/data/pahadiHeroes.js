@@ -13,7 +13,7 @@ export const PAHADI_HEROES = [
     bg: 'from-rose-700 to-red-900',
     tagline: 'गढ़वाल की वीरांगना',
     description:
-      'Teelu Rauteli is the most celebrated warrior heroine of Garhwal. She fought in seven battles, was wounded multiple times, and avenged her family's honour. Garhwali folklore preserves her as the counterpart of Rani Lakshmibai — brave, fiercely independent, and born of the mountains.',
+      'Teelu Rauteli is the most celebrated warrior heroine of Garhwal. She fought in seven battles, was wounded multiple times, and avenged her family\'s honour. Garhwali folklore preserves her as the counterpart of Rani Lakshmibai — brave, fiercely independent, and born of the mountains.',
     contributions: [
       'Fought seven major battles on behalf of Garhwal',
       'Defended the Rauteli family after her father\'s death',
