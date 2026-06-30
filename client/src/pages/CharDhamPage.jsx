@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
+import OptimizedImage from '../components/OptimizedImage';
 import CHAR_DHAM, {
   YATRA_TIPS,
   HELICOPTER_SERVICES,
@@ -143,6 +144,20 @@ export default function CharDhamPage() {
                   </a>
                 )}
               </div>
+
+              {dham.image && (
+                <figure className="mb-4">
+                  <OptimizedImage
+                    src={dham.image}
+                    alt={dham.imageAlt || dham.name}
+                    className="w-full h-auto rounded-2xl ring-1 ring-white/10 object-cover max-h-[420px]"
+                    loading="lazy"
+                    width="1024"
+                    height="680"
+                  />
+                  <figcaption className="text-[11px] text-white/40 mt-1.5 text-center">{dham.imageAlt || dham.name} · फोटो: Wikimedia Commons</figcaption>
+                </figure>
+              )}
 
               {/* Tabs */}
               <div className="flex gap-2 mb-4 overflow-x-auto pb-1">
@@ -335,6 +350,16 @@ export default function CharDhamPage() {
                   key={k.id}
                   className="block bg-white/5 border border-white/10 rounded-xl p-4 hover:border-indigo-400/60 transition-colors"
                 >
+                  {k.image && (
+                    <OptimizedImage
+                      src={k.image}
+                      alt={k.imageAlt || k.name}
+                      className="w-full h-32 object-cover rounded-lg mb-3 ring-1 ring-white/10"
+                      loading="lazy"
+                      width="400"
+                      height="160"
+                    />
+                  )}
                   <div className="flex items-center justify-between gap-2">
                     <h3 className="font-bold text-white text-base">{k.name}</h3>
                     <span className="text-[11px] px-2 py-0.5 rounded-full bg-indigo-500/30 text-indigo-200">

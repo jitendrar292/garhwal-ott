@@ -6,6 +6,7 @@
 
 import { useParams, Link, Navigate } from 'react-router-dom';
 import SEO from '../components/SEO';
+import OptimizedImage from '../components/OptimizedImage';
 import CHAR_DHAM, {
   PANCH_KEDAR,
   BADRINATH_NEARBY_ATTRACTIONS,
@@ -69,6 +70,22 @@ export default function CharDhamDetailPage() {
           <span className="px-2 py-0.5 rounded-full bg-white/10">{site.sectionLabel}</span>
         </div>
       </header>
+
+      {site.image && (
+        <figure className="mb-8">
+          <OptimizedImage
+            src={site.image}
+            alt={site.imageAlt || site.name}
+            className="w-full h-auto rounded-2xl ring-1 ring-white/10 object-cover max-h-[460px]"
+            loading="lazy"
+            width="1024"
+            height="680"
+          />
+          {site.imageAlt && (
+            <figcaption className="text-[11px] text-white/40 mt-2 text-center">{site.imageAlt} · फोटो: Wikimedia Commons</figcaption>
+          )}
+        </figure>
+      )}
 
       {site.significance && (
         <section className="mb-8">
