@@ -242,6 +242,13 @@ export default function CharDhamDetailPage() {
         </section>
       )}
 
+      {site.bestTime && (
+        <section className="mb-8 bg-white/[0.03] border border-white/[0.08] rounded-xl p-6">
+          <h2 className="text-xl font-bold text-white mb-3">सबसे अच्छा समय · Best Time to Visit</h2>
+          <p className="text-base text-gray-200 leading-relaxed">{site.bestTime}</p>
+        </section>
+      )}
+
       {site.note && (
         <section className="mb-10">
           <p className="text-base text-gray-200 leading-relaxed italic border-l-2 border-white/20 pl-4">{site.note}</p>

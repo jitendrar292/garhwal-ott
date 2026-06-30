@@ -343,6 +343,12 @@ export default function CharDhamPage() {
                   </div>
                   <p className="text-xs text-gray-300 mt-2">📍 {k.district} • {k.altitude}</p>
                   <p className="text-xs text-gray-300 mt-1">🥾 {k.trek}</p>
+                  {k.trekDifficulty && (
+                    <p className="text-xs text-gray-300 mt-1">⚡ कठिनाई: {k.trekDifficulty}</p>
+                  )}
+                  {(k.openMonth || k.closeMonth) && (
+                    <p className="text-xs text-gray-300 mt-1">🗓️ {k.openMonth}{k.closeMonth && k.closeMonth !== 'कोई कपाट बंद नहीं' ? ` — ${k.closeMonth}` : ''}</p>
+                  )}
                   <p className="text-xs text-gray-400 mt-1.5">बेस: {k.bestBase}</p>
                   <p className="text-xs text-indigo-100/90 mt-2 leading-relaxed">{k.note}</p>
                   <p className="text-[11px] text-indigo-200 mt-2 underline text-right">Full guide →</p>
