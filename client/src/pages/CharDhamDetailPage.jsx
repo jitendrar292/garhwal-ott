@@ -150,6 +150,72 @@ export default function CharDhamDetailPage() {
         <section className="mb-8 bg-white/[0.03] border border-white/[0.08] rounded-xl p-6">
           <h2 className="text-xl font-bold text-white mb-3">आवास व्यवस्था · Accommodation</h2>
           <p className="text-base text-gray-200 leading-relaxed">{site.accommodation}</p>
+
+          {Array.isArray(site.stays) && site.stays.length > 0 && (
+            <div className="mt-5 pt-5 border-t border-white/10">
+              <div className="flex items-center justify-between gap-2 mb-1">
+                <h3 className="text-base font-semibold text-white">🛏️ कहाँ रुकें — MakeMyTrip पर देखें</h3>
+                <span className="text-[10px] uppercase tracking-wider text-white/40">Partner</span>
+              </div>
+              <p className="text-sm text-white/60 mb-4">
+                {site.name} और आसपास के बेस-कैम्प के होटल विकल्प, कीमत और उपलब्धता।
+              </p>
+              <ul className="space-y-3">
+                {site.stays.map((s) => (
+                  <li key={s.url}>
+                    <a
+                      href={s.url}
+                      target="_blank"
+                      rel="noopener noreferrer sponsored"
+                      className="group block bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-primary-500/50 rounded-lg p-4 transition-colors"
+                    >
+                      <div className="flex items-start justify-between gap-3 mb-2">
+                        <div className="min-w-0">
+                          <div className="text-sm sm:text-base font-semibold text-white">{s.name}</div>
+                          {s.note && (
+                            <div className="text-[11px] text-white/50 mt-0.5">{s.note}</div>
+                          )}
+                        </div>
+                        <span className="text-xs text-primary-300 group-hover:text-primary-200 flex-shrink-0 whitespace-nowrap">
+                          होटल देखें ↗
+                        </span>
+                      </div>
+
+                      <div className="grid sm:grid-cols-2 gap-x-4 gap-y-1.5 mt-2 text-[11px] sm:text-xs">
+                        {s.priceRange && (
+                          <div className="flex items-start gap-1.5">
+                            <span className="text-green-400">💰</span>
+                            <span className="text-white/70"><span className="text-white/40">रेट:</span> {s.priceRange}</span>
+                          </div>
+                        )}
+                        {s.distance && (
+                          <div className="flex items-start gap-1.5">
+                            <span className="text-blue-400">📍</span>
+                            <span className="text-white/70"><span className="text-white/40">दूरी:</span> {s.distance}</span>
+                          </div>
+                        )}
+                        {s.popular && (
+                          <div className="flex items-start gap-1.5 sm:col-span-2">
+                            <span className="text-yellow-400">🏨</span>
+                            <span className="text-white/70"><span className="text-white/40">लोकप्रिय:</span> {s.popular}</span>
+                          </div>
+                        )}
+                        {s.tip && (
+                          <div className="flex items-start gap-1.5 sm:col-span-2 pt-1 mt-1 border-t border-white/10">
+                            <span className="text-orange-400">💡</span>
+                            <span className="text-white/70 italic">{s.tip}</span>
+                          </div>
+                        )}
+                      </div>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <p className="text-[11px] text-white/40 mt-3">
+                * लिंक MakeMyTrip की वेबसाइट पर नई टैब में खुलते हैं।
+              </p>
+            </div>
+          )}
         </section>
       )}
 

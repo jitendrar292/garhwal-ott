@@ -237,9 +237,76 @@ export default function CharDhamPage() {
                   )}
 
                   {activeTab === 'stay' && (
-                    <div className="bg-surface-1 rounded-xl p-5 border border-white/5">
-                      <h3 className="font-semibold text-primary-300 mb-2">🏨 रहने की व्यवस्था</h3>
-                      <p className="text-sm leading-relaxed text-gray-200">{dham.accommodation}</p>
+                    <div className="space-y-4">
+                      <div className="bg-surface-1 rounded-xl p-5 border border-white/5">
+                        <h3 className="font-semibold text-primary-300 mb-2">🏨 रहने की व्यवस्था</h3>
+                        <p className="text-sm leading-relaxed text-gray-200">{dham.accommodation}</p>
+                      </div>
+
+                      {Array.isArray(dham.stays) && dham.stays.length > 0 && (
+                        <div className="bg-surface-1 rounded-xl p-5 border border-white/5">
+                          <div className="flex items-center justify-between gap-2 mb-1">
+                            <h3 className="font-semibold text-primary-300">🛏️ MakeMyTrip पर होटल बुक करें</h3>
+                            <span className="text-[10px] uppercase tracking-wider text-gray-500">Partner</span>
+                          </div>
+                          <p className="text-xs text-gray-400 mb-4">
+                            {dham.name} और आसपास के बेस-कैम्प में होटल/गेस्ट हाउस की उपलब्धता और कीमत देखें।
+                          </p>
+                          <div className="space-y-3">
+                            {dham.stays.map((s) => (
+                              <a
+                                key={s.url}
+                                href={s.url}
+                                target="_blank"
+                                rel="noopener noreferrer sponsored"
+                                className="group block bg-surface-2 hover:bg-white/10 rounded-lg p-4 border border-white/5 hover:border-primary-500/50 transition-colors"
+                              >
+                                <div className="flex items-start justify-between gap-3 mb-2">
+                                  <div className="min-w-0">
+                                    <div className="text-sm sm:text-base font-semibold text-white">{s.name}</div>
+                                    {s.note && (
+                                      <div className="text-[11px] text-gray-400 mt-0.5">{s.note}</div>
+                                    )}
+                                  </div>
+                                  <span className="text-xs text-primary-300 group-hover:text-primary-200 flex-shrink-0 whitespace-nowrap">
+                                    होटल देखें ↗
+                                  </span>
+                                </div>
+
+                                <div className="grid sm:grid-cols-2 gap-x-4 gap-y-1.5 mt-2 text-[11px] sm:text-xs">
+                                  {s.priceRange && (
+                                    <div className="flex items-start gap-1.5">
+                                      <span className="text-green-400">💰</span>
+                                      <span className="text-gray-300"><span className="text-gray-500">रेट:</span> {s.priceRange}</span>
+                                    </div>
+                                  )}
+                                  {s.distance && (
+                                    <div className="flex items-start gap-1.5">
+                                      <span className="text-blue-400">📍</span>
+                                      <span className="text-gray-300"><span className="text-gray-500">दूरी:</span> {s.distance}</span>
+                                    </div>
+                                  )}
+                                  {s.popular && (
+                                    <div className="flex items-start gap-1.5 sm:col-span-2">
+                                      <span className="text-yellow-400">🏨</span>
+                                      <span className="text-gray-300"><span className="text-gray-500">लोकप्रिय:</span> {s.popular}</span>
+                                    </div>
+                                  )}
+                                  {s.tip && (
+                                    <div className="flex items-start gap-1.5 sm:col-span-2 pt-1 border-t border-white/5 mt-1">
+                                      <span className="text-orange-400">💡</span>
+                                      <span className="text-gray-300 italic">{s.tip}</span>
+                                    </div>
+                                  )}
+                                </div>
+                              </a>
+                            ))}
+                          </div>
+                          <p className="text-[10px] text-gray-500 mt-3">
+                            * लिंक MakeMyTrip की वेबसाइट पर नई टैब में खुलते हैं। कीमत और उपलब्धता वहीं देखें।
+                          </p>
+                        </div>
+                      )}
                     </div>
                   )}
                 </motion.div>
