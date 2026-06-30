@@ -33,7 +33,7 @@ export default function HomePage() {
   const [theatre, setTheatre] = useState({ videos: [], loading: true, error: null });
 
   // Merged Jaagar + Mela: interleave both arrays so both categories are represented
-  const jagarMelaVideos = (() => {
+  const jagarMelaVideos = useMemo(() => {
     const d = devotional.videos;
     const m = mela.videos;
     const out = [];
@@ -43,7 +43,7 @@ export default function HomePage() {
       if (m[i]) out.push(m[i]);
     }
     return out;
-  })();
+  }, [devotional.videos, mela.videos]);
   const jagarMelaLoading = devotional.loading || mela.loading;
   const jagarMelaError = devotional.error || mela.error;
   const [userLocation, setUserLocation] = useState(null);
@@ -71,19 +71,10 @@ export default function HomePage() {
 
     // Trending: server auto-detects region from IP and pools all users
     // from the same bucket (e.g. Dehradun, Rishikesh → "garhwal") into
-    // one shared cache — no separate /api/geo call needed.
-    load('trending', setTrending).then((data) => {
-      // Use the geo endpoint to get city name for display only
-      if (!data?._bucket) {
-        fetch('/api/geo')
-          .then((r) => r.json())
-          .then((geo) => {
-            if (geo?.city) setUserLocation({ city: geo.city, region: geo.region || '' });
-          })
-          .catch(() => {});
-      }
-    });
-    // Also fetch city for the heading label
+    // one shared cache.
+    load('trending', setTrending);
+
+    // Single /api/geo call — used only for the "Trending near <city>" heading.
     fetch('/api/geo')
       .then((r) => r.json())
       .then((data) => {
