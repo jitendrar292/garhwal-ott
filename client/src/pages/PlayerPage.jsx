@@ -26,13 +26,17 @@ export default function PlayerPage() {
   useEffect(() => {
     window.scrollTo(0, 0);
     setPlayerStarted(false);
+    setRelated([]);
     // Fetch title via YouTube oEmbed (no API key needed)
     fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}&format=json`)
       .then((r) => r.ok ? r.json() : null)
       .then((data) => {
         if (data) setVideoMeta({ title: data.title || '', channelTitle: data.author_name || '' });
+        else setVideoMeta({ title: '', channelTitle: '' });
       })
-      .catch(() => {});
+      .catch(() => {
+        setVideoMeta({ title: '', channelTitle: '' });
+      });
   }, [videoId]);
 
   useEffect(() => {
@@ -40,8 +44,18 @@ export default function PlayerPage() {
     async function loadRelated() {
       setRelatedLoading(true);
       try {
-        // 10 results, then we filter the current video out before rendering.
-        const data = await searchVideos('Garhwali', '', 10);
+        const titleQuery = videoMeta.title.trim();
+        const channelQuery = videoMeta.channelTitle.trim();
+        const query = [titleQuery, channelQuery].filter(Boolean).join(' ');
+
+        if (!query) {
+          if (!cancelled) setRelated([]);
+          return;
+        }
+
+        // Search from the current video's own title/channel so "Up Next"
+        // stays anchored to what the user actually opened.
+        const data = await searchVideos(query, '', 10);
         if (!cancelled) {
           setRelated(data.videos.filter((v) => v.id !== videoId));
         }
@@ -53,7 +67,7 @@ export default function PlayerPage() {
     }
     loadRelated();
     return () => { cancelled = true; };
-  }, [videoId]);
+  }, [videoId, videoMeta.title, videoMeta.channelTitle]);
 
   const fav = isFavorite(videoId);
 
