@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMusic } from '../context/MusicContext';
+import { getPreferredCaptionLang } from '../utils/youtubeEmbed';
 
 /* ── helpers ────────────────────────────────────────── */
 const fmt = (s) => {
@@ -215,6 +216,7 @@ export default function FloatingPlayer() {
       host.innerHTML = '';
       const div = document.createElement('div');
       host.appendChild(div);
+      const captionLang = getPreferredCaptionLang();
 
       const player = new window.YT.Player(div, {
         videoId: currentTrack.id,
@@ -229,6 +231,9 @@ export default function FloatingPlayer() {
           modestbranding: 1,
           playsinline: 1,
           rel: 0,
+          cc_load_policy: 1,
+          cc_lang_pref: captionLang,
+          hl: captionLang,
           origin: window.location.origin,
         },
         events: {

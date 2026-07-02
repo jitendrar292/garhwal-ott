@@ -8,6 +8,7 @@ import WhatsAppShareBtn from '../components/WhatsAppShareBtn';
 import ScriptSection from '../components/ScriptSection';
 import SEO from '../components/SEO';
 import { useToast } from '../components/ui/Toast';
+import { buildYouTubeEmbedUrl } from '../utils/youtubeEmbed';
 
 export default function PlayerPage() {
   const { videoId } = useParams();
@@ -112,11 +113,13 @@ export default function PlayerPage() {
               // related videos right after the current one finishes — so users
               // get continuous playback without hunting for a new video.
               <iframe
-                src={`https://www.youtube.com/embed/${encodeURIComponent(videoId)}?autoplay=1&rel=0${
-                  related.length
-                    ? `&playlist=${related.slice(0, 4).map((v) => encodeURIComponent(v.id)).join(',')}`
-                    : ''
-                }`}
+                src={buildYouTubeEmbedUrl(videoId, {
+                  autoplay: 1,
+                  rel: 0,
+                  playlist: related.length
+                    ? related.slice(0, 4).map((v) => v.id).join(',')
+                    : undefined,
+                })}
                 title="Video Player"
                 className="absolute inset-0 w-full h-full"
                 loading="lazy"

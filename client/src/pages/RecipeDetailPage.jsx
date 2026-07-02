@@ -6,6 +6,7 @@
 import { useParams, Link, Navigate } from 'react-router-dom';
 import SEO from '../components/SEO';
 import PAHADI_DISHES from '../data/pahadiDishes';
+import { buildYouTubeEmbedUrl } from '../utils/youtubeEmbed';
 
 export default function RecipeDetailPage() {
   const { slug } = useParams();
@@ -21,7 +22,7 @@ export default function RecipeDetailPage() {
   const videoEmbed = (() => {
     if (!dish.video) return null;
     const m = dish.video.match(/(?:shorts\/|watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
-    return m ? `https://www.youtube.com/embed/${m[1]}` : null;
+    return m ? buildYouTubeEmbedUrl(m[1]) : null;
   })();
 
   return (

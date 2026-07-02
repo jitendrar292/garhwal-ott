@@ -4,6 +4,7 @@ import { getVideosByCategory } from '../api/youtube';
 import INSTAGRAM_REELS from '../data/instagramReels';
 import SEO from '../components/SEO';
 import NotifyButton from '../components/NotifyButton';
+import { buildYouTubeEmbedUrl } from '../utils/youtubeEmbed';
 
 // Interleave two arrays so the user sees a mix instead of all-shorts-then-all-reels.
 function interleave(a, b) {
@@ -276,7 +277,12 @@ export default function ShortsPage() {
                   style={{ aspectRatio: '9/16', maxHeight: 'calc(100dvh - 225px)' }}>
                   {startedSet.has(i) ? (
                     <iframe
-                      src={`https://www.youtube.com/embed/${encodeURIComponent(video.id)}?rel=0&modestbranding=1&autoplay=1&playsinline=1`}
+                      src={buildYouTubeEmbedUrl(video.id, {
+                        rel: 0,
+                        modestbranding: 1,
+                        autoplay: 1,
+                        playsinline: 1,
+                      })}
                       title={video.title}
                       className="absolute inset-0 w-full h-full"
                       loading="lazy"
