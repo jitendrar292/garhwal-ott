@@ -18,12 +18,42 @@ const SUPPORTED =
   'PushManager' in window &&
   'Notification' in window;
 
+function makeResult(ok, status) {
+  return { ok, status };
+}
+
+export function getPushSubscribeFeedback(result) {
+  switch (result?.status) {
+    case 'subscribed':
+      return { type: 'success', message: 'Notifications enabled. You will get updates.' };
+    case 'already-subscribed':
+      return { type: 'info', message: 'Notifications are already enabled.' };
+    case 'permission-denied':
+      return { type: 'warning', message: 'Notifications are blocked. Enable them from browser settings.' };
+    case 'permission-dismissed':
+      return { type: 'info', message: 'Notification permission not granted.' };
+    case 'not-supported':
+      return { type: 'warning', message: 'Push notifications are not supported on this device/browser.' };
+    case 'vapid-unavailable':
+    case 'subscribe-failed':
+      return { type: 'error', message: 'Notifications are currently unavailable. Please try again later.' };
+    default:
+      return { type: 'error', message: 'Could not enable notifications right now.' };
+  }
+}
+
 // Auto-subscribe to push notifications (called after login)
 // Returns true if subscribed successfully
 export async function autoSubscribeToPush() {
+  const result = await autoSubscribeToPushWithStatus();
+  return result.ok;
+}
+
+// Auto-subscribe with explicit status for UI messaging.
+export async function autoSubscribeToPushWithStatus() {
   if (!SUPPORTED) {
     console.log('[notify] Push not supported');
-    return false;
+    return makeResult(false, 'not-supported');
   }
   
   try {
@@ -32,27 +62,27 @@ export async function autoSubscribeToPush() {
     const existingSub = await reg.pushManager.getSubscription();
     if (existingSub) {
       console.log('[notify] Already subscribed to push');
-      return true;
+      return makeResult(true, 'already-subscribed');
     }
     
     // Check if permission already denied
     if (Notification.permission === 'denied') {
       console.log('[notify] Notification permission denied');
-      return false;
+      return makeResult(false, 'permission-denied');
     }
     
     // Request permission
     const perm = await Notification.requestPermission();
     if (perm !== 'granted') {
       console.log('[notify] Permission not granted:', perm);
-      return false;
+      return makeResult(false, perm === 'denied' ? 'permission-denied' : 'permission-dismissed');
     }
     
     // Get VAPID key
     const keyRes = await fetch('/api/push/vapid-public-key');
     if (!keyRes.ok) {
       console.log('[notify] VAPID key not available');
-      return false;
+      return makeResult(false, 'vapid-unavailable');
     }
     const { publicKey } = await keyRes.json();
     
@@ -71,14 +101,14 @@ export async function autoSubscribeToPush() {
     
     if (!res.ok) {
       console.error('[notify] Subscribe to server failed');
-      return false;
+      return makeResult(false, 'subscribe-failed');
     }
     
     console.log('[notify] Auto-subscribed to push notifications');
-    return true;
+    return makeResult(true, 'subscribed');
   } catch (err) {
     console.error('[notify] Auto-subscribe error:', err);
-    return false;
+    return makeResult(false, 'error');
   }
 }
 

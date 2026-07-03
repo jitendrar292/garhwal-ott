@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { autoSubscribeToPushWithStatus, getPushSubscribeFeedback } from './NotifyButton';
+import { useToast } from './ui/Toast';
 
 // Module-level flag — survives client-side route changes within the same
 // page session, but resets on full reload.
@@ -13,6 +15,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 });
 
 export default function InstallBanner() {
+  const { toast } = useToast();
   const [visible, setVisible] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
   const [canPrompt, setCanPrompt] = useState(!!deferredPrompt);
@@ -47,6 +50,9 @@ export default function InstallBanner() {
     setCanPrompt(false);
     setInstalling(false);
     if (outcome === 'accepted') {
+      const result = await autoSubscribeToPushWithStatus();
+      const feedback = getPushSubscribeFeedback(result);
+      toast[feedback.type](feedback.message);
       dismiss();
     }
   }

@@ -3,7 +3,8 @@ import { useEffect, lazy, Suspense } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Navbar from './components/Navbar';
 import BottomNav from './components/BottomNav';
-import { ToastProvider } from './components/ui/Toast';
+import { autoSubscribeToPushWithStatus, getPushSubscribeFeedback } from './components/NotifyButton';
+import { ToastProvider, useToast } from './components/ui/Toast';
 import { MusicProvider } from './context/MusicContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
@@ -98,6 +99,7 @@ export default function App() {
     <AuthProvider>
       <MusicProvider>
         <ToastProvider>
+          <PwaStandalonePushPrompt />
           <div className="min-h-screen flex flex-col text-white bg-surface-0">
             <Navbar />
             <main className="flex-1 pb-24 sm:pb-8">
@@ -120,6 +122,37 @@ export default function App() {
       </MusicProvider>
     </AuthProvider>
   );
+}
+
+function PwaStandalonePushPrompt() {
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+    if (!isStandalone) return;
+    if (!('Notification' in window)) return;
+    if (Notification.permission !== 'default') return;
+
+    const promptKey = 'pwa_push_prompt_v1';
+    if (localStorage.getItem(promptKey) === '1') return;
+    localStorage.setItem(promptKey, '1');
+
+    const timer = window.setTimeout(async () => {
+      const allow = window.confirm('Allow push notifications from PahadiTube?');
+      if (!allow) {
+        toast.info('Notification setup skipped. You can enable it anytime from the bell button.');
+        return;
+      }
+
+      const result = await autoSubscribeToPushWithStatus();
+      const feedback = getPushSubscribeFeedback(result);
+      toast[feedback.type](feedback.message);
+    }, 900);
+
+    return () => window.clearTimeout(timer);
+  }, [toast]);
+
+  return null;
 }
 
 /** Renders the daily-product + Jhumelo floating icons only on the home page. */
