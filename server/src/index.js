@@ -300,3 +300,6 @@ app.listen(PORT, () => {
   // Pre-warm music tabs + key categories now and every 24h
   startTrendingRefresh();
 });
+
+// Export for Vercel serverless
+module.exports = app;
