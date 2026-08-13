@@ -23,6 +23,13 @@ import CHAR_DHAM, {
 } from '../src/data/charDham.js';
 import PAHADI_DISHES from '../src/data/pahadiDishes.js';
 
+// Vercel's build environment doesn't have Chrome system dependencies.
+// Skip prerendering; the SPA will still work fine.
+if (process.env.VERCEL) {
+  console.log('Skipping prerender on Vercel (no Chrome available).');
+  process.exit(0);
+}
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DIST = resolve(__dirname, '../dist');
 
