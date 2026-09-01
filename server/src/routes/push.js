@@ -25,6 +25,9 @@ const { getSession } = require('./auth');
 const EVENING_PUSH_STATE_KEY = 'pahadi_push_evening_daily_state';
 let memEveningPushState = { lastSentDay: '' };
 
+const MORNING_NEWS_PUSH_STATE_KEY = 'pahadi_push_morning_news_state';
+let memMorningNewsPushState = { lastSentDay: '' };
+
 function readEnvInt(name, fallback) {
   const value = parseInt(process.env[name], 10);
   return Number.isFinite(value) ? value : fallback;
@@ -126,6 +129,105 @@ function startDailyEveningPushJob() {
 }
 
 startDailyEveningPushJob();
+
+// ── Morning 9 AM Garhwali News Push ──
+// Picks the 1 most recent news article and pushes it as a notification.
+// Config via env vars: MORNING_NEWS_PUSH_ENABLED, MORNING_NEWS_PUSH_HOUR,
+// MORNING_NEWS_PUSH_MINUTE, MORNING_NEWS_PUSH_TIMEZONE.
+
+function getMorningNewsPushConfig() {
+  return {
+    enabled: String(process.env.MORNING_NEWS_PUSH_ENABLED || 'true').toLowerCase() !== 'false',
+    hour: readEnvInt('MORNING_NEWS_PUSH_HOUR', 9),
+    minute: readEnvInt('MORNING_NEWS_PUSH_MINUTE', 0),
+    timeZone: process.env.MORNING_NEWS_PUSH_TIMEZONE || 'Asia/Kolkata',
+  };
+}
+
+async function getMorningNewsPushState() {
+  if (isRedisEnabled()) {
+    const data = await redisGetJSON(MORNING_NEWS_PUSH_STATE_KEY);
+    if (data && typeof data.lastSentDay === 'string') return data;
+  }
+  return { ...memMorningNewsPushState };
+}
+
+async function setMorningNewsPushState(nextState) {
+  memMorningNewsPushState = { ...nextState };
+  if (isRedisEnabled()) {
+    await redisSetJSON(MORNING_NEWS_PUSH_STATE_KEY, memMorningNewsPushState, 365 * 24 * 3600);
+  }
+}
+
+async function runMorningNewsPushTick() {
+  const cfg = getMorningNewsPushConfig();
+  if (!cfg.enabled) return;
+  if (!isPushEnabled()) return;
+
+  const now = nowInTimeZoneParts(cfg.timeZone);
+  if (now.hour !== cfg.hour || now.minute !== cfg.minute) return;
+
+  const state = await getMorningNewsPushState();
+  if (state.lastSentDay === now.dayKey) return;
+
+  // Lazy-require to avoid circular dependency (news.js also requires push service)
+  const { loadNews } = require('./news');
+  const articles = await loadNews();
+
+  if (!articles || articles.length === 0) {
+    console.log('[push] morning news: no articles available, skipping');
+    return;
+  }
+
+  // Pick the most recent article (articles are sorted newest-first)
+  const latest = articles[0];
+  const title = (latest.title || 'Subah ki khabar 🌄').slice(0, 80);
+  const body = (latest.summary || latest.body || '').slice(0, 160);
+
+  const result = await sendNotificationToAll({
+    title,
+    body: body || 'Aaj ki taza khabar Garhwali mein padho 📰',
+    url: '/news',
+    tag: `morning-news-${now.dayKey}`,
+    icon: '/icons/icon-192-v2.png',
+  });
+
+  await setMorningNewsPushState({
+    lastSentDay: now.dayKey,
+    lastResult: result,
+    sentAt: Date.now(),
+    articleId: latest.id,
+  });
+  console.log(`[push] morning news push sent for ${now.dayKey} — "${title}" (${cfg.timeZone} ${cfg.hour}:${String(cfg.minute).padStart(2, '0')})`);
+}
+
+let morningNewsPushTimer = null;
+function startMorningNewsPushJob() {
+  if (morningNewsPushTimer) return;
+
+  const cfg = getMorningNewsPushConfig();
+  if (!cfg.enabled) {
+    console.log('[push] morning news push disabled (MORNING_NEWS_PUSH_ENABLED=false)');
+    return;
+  }
+
+  morningNewsPushTimer = setInterval(() => {
+    runMorningNewsPushTick().catch((err) => {
+      console.error('[push] morning news push tick error:', err.message);
+    });
+  }, 60 * 1000);
+
+  // Immediate check at startup
+  runMorningNewsPushTick().catch((err) => {
+    console.error('[push] morning news push startup check error:', err.message);
+  });
+
+  console.log(
+    `[push] morning news push enabled at ${String(cfg.hour).padStart(2, '0')}:${String(cfg.minute).padStart(2, '0')} (${cfg.timeZone})`
+  );
+}
+
+startMorningNewsPushJob();
 
 // Best-effort caller identity for per-user notification clearing.
 // Prefers the logged-in user email (via Bearer session token); otherwise
