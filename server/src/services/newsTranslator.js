@@ -234,7 +234,8 @@ const PROVIDERS = [
   {
     name: 'groq',
     url: 'https://api.groq.com/openai/v1/chat/completions',
-    model: 'llama-3.3-70b-versatile',
+    model: process.env.GROQ_MODEL || 'llama-3.1-70b-versatile',
+    fallbackModel: process.env.GROQ_FALLBACK_MODEL || 'llama-3.1-8b-instant',
     getKey: () => process.env.GROQ_API_KEY,
     buildRequest: (model, messages) => ({
       method: 'POST',
@@ -316,7 +317,7 @@ ${ragContext}
       }
 
       // OpenAI / Groq path
-      const models = [provider.model, provider.fallbackModel].filter(Boolean);
+      const models = [...new Set([provider.model, provider.fallbackModel].filter(Boolean))];
       for (const model of models) {
         const result = await tryOpenAICompatible(provider, model, messages);
         if (result) return result;

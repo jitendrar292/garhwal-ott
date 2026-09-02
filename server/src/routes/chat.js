@@ -154,10 +154,11 @@ const OPENAI = {
 const GROQ = {
   name: 'groq',
   url: 'https://api.groq.com/openai/v1/chat/completions',
-  model: 'llama-3.3-70b-versatile',
+  model: process.env.GROQ_MODEL || 'llama-3.1-70b-versatile',
+  fallbackModel: process.env.GROQ_FALLBACK_MODEL || 'llama-3.1-8b-instant',
   // Trusted primary — its replies may be cached + persisted to long-term memory.
   trusted: true,
-  // Llama-3.3-70B handles the long Devanagari instruction prompt at 0.5.
+  // Keep the prompt temperature moderate for stable Garhwali responses.
   temperature: 0.5,
   getKey: () => process.env.GROQ_API_KEY,
   extraHeaders: () => ({}),
