@@ -168,6 +168,10 @@ router.post('/publish-translated', async (req, res) => {
   try {
     const articles = await loadNews();
     let published = 0;
+    // Collect push sends and await them together after saveNews.
+    // On Vercel serverless, fire-and-forget calls are killed the moment
+    // res.json() responds, so notifications must complete first.
+    const pushPromises = [];
 
     for (const t of translated) {
       const article = {
@@ -186,17 +190,20 @@ router.post('/publish-translated', async (req, res) => {
       articles.unshift(article);
       published++;
 
-      sendNotificationToAll({
-        title: article.title.slice(0, 80),
-        body: (article.summary || article.body).slice(0, 160),
-        url: '/news',
-        tag: `news-${article.id}`,
-        icon: '/icons/icon-192-v2.png',
-      }).catch((e) => console.error('[newsAgent] push error:', e.message));
+      pushPromises.push(
+        sendNotificationToAll({
+          title: article.title.slice(0, 80),
+          body: (article.summary || article.body).slice(0, 160),
+          url: '/news',
+          tag: `news-${article.id}`,
+          icon: '/icons/icon-192-v2.png',
+        }).catch((e) => console.error('[newsAgent] push error:', e.message))
+      );
     }
 
     if (articles.length > MAX_NEWS) articles.length = MAX_NEWS;
     await saveNews(articles);
+    await Promise.allSettled(pushPromises);
 
     console.log(`[newsAgent] publish-translated: published ${published} articles`);
     res.json({ message: `Published ${published} articles`, published });
@@ -236,6 +243,9 @@ async function publishSelected(selected) {
     // Publish
     const articles = await loadNews();
     let published = 0;
+    // Collect push sends and await them together after saveNews so the
+    // notifications actually complete before this background task returns.
+    const pushPromises = [];
 
     for (const t of translated) {
       const article = {
@@ -254,17 +264,20 @@ async function publishSelected(selected) {
       articles.unshift(article);
       published++;
 
-      sendNotificationToAll({
-        title: article.title.slice(0, 80),
-        body: (article.summary || article.body).slice(0, 160),
-        url: '/news',
-        tag: `news-${article.id}`,
-        icon: '/icons/icon-192-v2.png',
-      }).catch((e) => console.error('[newsAgent] push error:', e.message));
+      pushPromises.push(
+        sendNotificationToAll({
+          title: article.title.slice(0, 80),
+          body: (article.summary || article.body).slice(0, 160),
+          url: '/news',
+          tag: `news-${article.id}`,
+          icon: '/icons/icon-192-v2.png',
+        }).catch((e) => console.error('[newsAgent] push error:', e.message))
+      );
     }
 
     if (articles.length > MAX_NEWS) articles.length = MAX_NEWS;
     await saveNews(articles);
+    await Promise.allSettled(pushPromises);
 
     lastRun.articlesPublished = published;
     lastRun.status = 'completed';
@@ -371,6 +384,9 @@ async function runPipeline({ maxPerFeed = 10, maxAge = 48, maxArticles = 20, dry
     console.log(`[newsAgent] Publishing ${translated.length} articles...`);
     const articles = await loadNews();
     let published = 0;
+    // Collect push sends and await them together after saveNews so the
+    // notifications actually complete before this pipeline task returns.
+    const pushPromises = [];
 
     for (const t of translated) {
       const article = {
@@ -390,18 +406,21 @@ async function runPipeline({ maxPerFeed = 10, maxAge = 48, maxArticles = 20, dry
       published++;
 
       // Send push notification for each article
-      sendNotificationToAll({
-        title: article.title.slice(0, 80),
-        body: (article.summary || article.body).slice(0, 160),
-        url: '/news',
-        tag: `news-${article.id}`,
-        icon: '/icons/icon-192-v2.png',
-      }).catch((e) => console.error('[newsAgent] push error:', e.message));
+      pushPromises.push(
+        sendNotificationToAll({
+          title: article.title.slice(0, 80),
+          body: (article.summary || article.body).slice(0, 160),
+          url: '/news',
+          tag: `news-${article.id}`,
+          icon: '/icons/icon-192-v2.png',
+        }).catch((e) => console.error('[newsAgent] push error:', e.message))
+      );
     }
 
     // Trim to max and save
     if (articles.length > MAX_NEWS) articles.length = MAX_NEWS;
     await saveNews(articles);
+    await Promise.allSettled(pushPromises);
 
     lastRun.articlesPublished = published;
     lastRun.status = 'completed';
