@@ -133,12 +133,13 @@ router.get('/', async (req, res) => {
       id,
       title,
       summary,
-      // Always generate the image URL. Articles whose images are stored in a
-      // separate Redis key (pahadi_news_img_{id}) have imageUrl='' or 'has_image'
-      // in the list — both are falsy/truthy edge cases. Generating the URL
-      // unconditionally lets the image endpoint serve the image (or 404 silently).
-      // The client already skips rendering when the img src returns 404.
-      imageUrl: `/api/news/${id}/image?v=${updatedAt || createdAt}`,
+      // Only emit an image URL when the article actually has an image
+      // stored (data URI in the current session, or the 'has_image' marker
+      // written by the loader after streaming from Redis). Auto-generated
+      // articles from the morning-news pipeline have imageUrl='' and no
+      // pahadi_news_img_{id} row — emitting a URL for those causes a 404
+      // storm every time the list loads.
+      imageUrl: imageUrl ? `/api/news/${id}/image?v=${updatedAt || createdAt}` : '',
       category,
       createdAt,
     }));
