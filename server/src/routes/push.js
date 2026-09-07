@@ -33,6 +33,13 @@ function readEnvInt(name, fallback) {
   return Number.isFinite(value) ? value : fallback;
 }
 
+// On Vercel, serverless containers don't persist between invocations, so the
+// setInterval-based scheduler never actually ticks — but the module-load
+// startup check DOES run on every cold start, spamming logs (and, if Redis
+// dedupe is missing, re-sending pushes). Vercel Cron (see vercel.json) is the
+// real schedule there, so we skip the in-process scheduler entirely.
+const IS_VERCEL = Boolean(process.env.VERCEL || process.env.VERCEL_ENV);
+
 function getEveningPushConfig() {
   return {
     enabled: String(process.env.EVENING_PUSH_ENABLED || 'true').toLowerCase() !== 'false',
@@ -41,8 +48,9 @@ function getEveningPushConfig() {
     // Catch-up window (minutes). If the process was asleep (e.g. Render free-
     // tier spin-down) or missed the exact minute due to event-loop drift,
     // we still fire as long as we're within this window past the scheduled
-    // time AND haven't sent for today yet.
-    catchUpMinutes: readEnvInt('EVENING_PUSH_CATCH_UP_MINUTES', 180),
+    // time AND haven't sent for today yet. Only used by the setInterval
+    // fallback on persistent hosts; Vercel Cron ignores it.
+    catchUpMinutes: readEnvInt('EVENING_PUSH_CATCH_UP_MINUTES', 60),
     timeZone: process.env.EVENING_PUSH_TIMEZONE || 'Asia/Kolkata',
     title: process.env.EVENING_PUSH_TITLE || 'Sham ho gayi 🌄',
     body: process.env.EVENING_PUSH_BODY || 'Kuch Pahadi gaana sun lo 🎶',
@@ -103,7 +111,10 @@ async function runDailyEveningPushTick({ ignoreSchedule = false } = {}) {
   }
 
   const state = await getEveningPushState();
-  if (state.lastSentDay === now.dayKey) return { skipped: 'already-sent-today', dayKey: now.dayKey };
+  if (state.lastSentDay === now.dayKey) {
+    console.log(`[push] evening daily dedup: already sent for ${now.dayKey}`);
+    return { skipped: 'already-sent-today', dayKey: now.dayKey };
+  }
 
   const result = await sendNotificationToAll({
     title: cfg.title,
@@ -120,6 +131,11 @@ async function runDailyEveningPushTick({ ignoreSchedule = false } = {}) {
 let eveningPushTimer = null;
 function startDailyEveningPushJob() {
   if (eveningPushTimer) return;
+
+  if (IS_VERCEL) {
+    console.log('[push] evening daily in-process scheduler skipped (Vercel — cron drives schedule)');
+    return;
+  }
 
   const cfg = getEveningPushConfig();
   if (!cfg.enabled) {
@@ -157,9 +173,9 @@ function getMorningNewsPushConfig() {
     enabled: String(process.env.MORNING_NEWS_PUSH_ENABLED || 'true').toLowerCase() !== 'false',
     hour: readEnvInt('MORNING_NEWS_PUSH_HOUR', 9),
     minute: readEnvInt('MORNING_NEWS_PUSH_MINUTE', 0),
-    // See getEveningPushConfig for rationale. 3-hour default window is
-    // wide enough to survive a Render free-tier cold start after the hour.
-    catchUpMinutes: readEnvInt('MORNING_NEWS_PUSH_CATCH_UP_MINUTES', 180),
+    // See getEveningPushConfig for rationale. Only used by the setInterval
+    // fallback on persistent hosts; Vercel Cron ignores it.
+    catchUpMinutes: readEnvInt('MORNING_NEWS_PUSH_CATCH_UP_MINUTES', 60),
     timeZone: process.env.MORNING_NEWS_PUSH_TIMEZONE || 'Asia/Kolkata',
   };
 }
@@ -195,7 +211,10 @@ async function runMorningNewsPushTick({ ignoreSchedule = false } = {}) {
   }
 
   const state = await getMorningNewsPushState();
-  if (state.lastSentDay === now.dayKey) return { skipped: 'already-sent-today', dayKey: now.dayKey };
+  if (state.lastSentDay === now.dayKey) {
+    console.log(`[push] morning news dedup: already sent for ${now.dayKey}`);
+    return { skipped: 'already-sent-today', dayKey: now.dayKey };
+  }
 
   console.log(`[push] morning news: starting auto crawl+translate+publish for ${now.dayKey}...`);
 
@@ -287,6 +306,11 @@ async function runMorningNewsPushTick({ ignoreSchedule = false } = {}) {
 let morningNewsPushTimer = null;
 function startMorningNewsPushJob() {
   if (morningNewsPushTimer) return;
+
+  if (IS_VERCEL) {
+    console.log('[push] morning news in-process scheduler skipped (Vercel — cron drives schedule)');
+    return;
+  }
 
   const cfg = getMorningNewsPushConfig();
   if (!cfg.enabled) {
