@@ -154,8 +154,8 @@ const OPENAI = {
 const GROQ = {
   name: 'groq',
   url: 'https://api.groq.com/openai/v1/chat/completions',
-  model: process.env.GROQ_MODEL || 'llama-3.1-70b-versatile',
-  fallbackModel: process.env.GROQ_FALLBACK_MODEL || 'llama-3.1-8b-instant',
+  model: process.env.GROQ_MODEL || 'openai/gpt-oss-120b',
+  fallbackModel: process.env.GROQ_FALLBACK_MODEL || 'openai/gpt-oss-20b',
   // Trusted primary — its replies may be cached + persisted to long-term memory.
   trusted: true,
   // Keep the prompt temperature moderate for stable Garhwali responses.
@@ -1424,7 +1424,7 @@ router.post('/', optionalAuth, async (req, res) => {
     + (memoryContext ? `\n\n${memoryContext}` : '');
 
   const payload = {
-    model: 'llama-3.3-70b-versatile',
+    model: process.env.GROQ_MODEL || 'openai/gpt-oss-120b',
     messages: [{ role: 'system', content: systemContent }, ...safeMessages],
     temperature: 0.5,
     // Devanagari is token-heavy (~2–3 tokens per character) and the system

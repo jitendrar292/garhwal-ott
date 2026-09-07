@@ -234,8 +234,8 @@ const PROVIDERS = [
   {
     name: 'groq',
     url: 'https://api.groq.com/openai/v1/chat/completions',
-    model: process.env.GROQ_MODEL || 'llama-3.1-70b-versatile',
-    fallbackModel: process.env.GROQ_FALLBACK_MODEL || 'llama-3.1-8b-instant',
+    model: process.env.GROQ_TRANSLATE_MODEL || process.env.GROQ_MODEL || 'qwen/qwen3.8-27b',
+    fallbackModel: process.env.GROQ_FALLBACK_MODEL || 'openai/gpt-oss-20b',
     getKey: () => process.env.GROQ_API_KEY,
     buildRequest: (model, messages) => ({
       method: 'POST',
