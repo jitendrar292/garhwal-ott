@@ -38,6 +38,11 @@ function getEveningPushConfig() {
     enabled: String(process.env.EVENING_PUSH_ENABLED || 'true').toLowerCase() !== 'false',
     hour: readEnvInt('EVENING_PUSH_HOUR', 18),
     minute: readEnvInt('EVENING_PUSH_MINUTE', 0),
+    // Catch-up window (minutes). If the process was asleep (e.g. Render free-
+    // tier spin-down) or missed the exact minute due to event-loop drift,
+    // we still fire as long as we're within this window past the scheduled
+    // time AND haven't sent for today yet.
+    catchUpMinutes: readEnvInt('EVENING_PUSH_CATCH_UP_MINUTES', 180),
     timeZone: process.env.EVENING_PUSH_TIMEZONE || 'Asia/Kolkata',
     title: process.env.EVENING_PUSH_TITLE || 'Sham ho gayi 🌄',
     body: process.env.EVENING_PUSH_BODY || 'Kuch Pahadi gaana sun lo 🎶',
@@ -79,16 +84,26 @@ async function setEveningPushState(nextState) {
   }
 }
 
-async function runDailyEveningPushTick() {
+async function runDailyEveningPushTick({ ignoreSchedule = false } = {}) {
   const cfg = getEveningPushConfig();
-  if (!cfg.enabled) return;
-  if (!isPushEnabled()) return;
+  if (!cfg.enabled) return { skipped: 'disabled' };
+  if (!isPushEnabled()) return { skipped: 'push-not-configured' };
 
   const now = nowInTimeZoneParts(cfg.timeZone);
-  if (now.hour !== cfg.hour || now.minute !== cfg.minute) return;
+
+  // The setInterval loop uses a catch-up window: fire any time between
+  // scheduled time and scheduled + catchUpMinutes, as long as today's push
+  // hasn't gone out yet. Vercel Cron (see /cron/evening below) invokes this
+  // with ignoreSchedule=true because the cron itself IS the schedule.
+  if (!ignoreSchedule) {
+    const nowMinutes = now.hour * 60 + now.minute;
+    const scheduledMinutes = cfg.hour * 60 + cfg.minute;
+    if (nowMinutes < scheduledMinutes) return { skipped: 'before-schedule' };
+    if (nowMinutes > scheduledMinutes + cfg.catchUpMinutes) return { skipped: 'past-window' };
+  }
 
   const state = await getEveningPushState();
-  if (state.lastSentDay === now.dayKey) return;
+  if (state.lastSentDay === now.dayKey) return { skipped: 'already-sent-today', dayKey: now.dayKey };
 
   const result = await sendNotificationToAll({
     title: cfg.title,
@@ -99,6 +114,7 @@ async function runDailyEveningPushTick() {
 
   await setEveningPushState({ lastSentDay: now.dayKey, lastResult: result, sentAt: Date.now() });
   console.log(`[push] evening daily sent for ${now.dayKey} (${cfg.timeZone} ${cfg.hour}:${String(cfg.minute).padStart(2, '0')})`);
+  return { sent: true, dayKey: now.dayKey, result };
 }
 
 let eveningPushTimer = null;
@@ -141,6 +157,9 @@ function getMorningNewsPushConfig() {
     enabled: String(process.env.MORNING_NEWS_PUSH_ENABLED || 'true').toLowerCase() !== 'false',
     hour: readEnvInt('MORNING_NEWS_PUSH_HOUR', 9),
     minute: readEnvInt('MORNING_NEWS_PUSH_MINUTE', 0),
+    // See getEveningPushConfig for rationale. 3-hour default window is
+    // wide enough to survive a Render free-tier cold start after the hour.
+    catchUpMinutes: readEnvInt('MORNING_NEWS_PUSH_CATCH_UP_MINUTES', 180),
     timeZone: process.env.MORNING_NEWS_PUSH_TIMEZONE || 'Asia/Kolkata',
   };
 }
@@ -160,16 +179,23 @@ async function setMorningNewsPushState(nextState) {
   }
 }
 
-async function runMorningNewsPushTick() {
+async function runMorningNewsPushTick({ ignoreSchedule = false } = {}) {
   const cfg = getMorningNewsPushConfig();
-  if (!cfg.enabled) return;
-  if (!isPushEnabled()) return;
+  if (!cfg.enabled) return { skipped: 'disabled' };
+  if (!isPushEnabled()) return { skipped: 'push-not-configured' };
 
   const now = nowInTimeZoneParts(cfg.timeZone);
-  if (now.hour !== cfg.hour || now.minute !== cfg.minute) return;
+
+  // See runDailyEveningPushTick — Vercel Cron passes ignoreSchedule=true.
+  if (!ignoreSchedule) {
+    const nowMinutes = now.hour * 60 + now.minute;
+    const scheduledMinutes = cfg.hour * 60 + cfg.minute;
+    if (nowMinutes < scheduledMinutes) return { skipped: 'before-schedule' };
+    if (nowMinutes > scheduledMinutes + cfg.catchUpMinutes) return { skipped: 'past-window' };
+  }
 
   const state = await getMorningNewsPushState();
-  if (state.lastSentDay === now.dayKey) return;
+  if (state.lastSentDay === now.dayKey) return { skipped: 'already-sent-today', dayKey: now.dayKey };
 
   console.log(`[push] morning news: starting auto crawl+translate+publish for ${now.dayKey}...`);
 
@@ -184,7 +210,7 @@ async function runMorningNewsPushTick() {
     if (!crawled || crawled.length === 0) {
       console.log('[push] morning news: no articles crawled, skipping');
       await setMorningNewsPushState({ lastSentDay: now.dayKey, status: 'no-articles-crawled', sentAt: Date.now() });
-      return;
+      return { skipped: 'no-articles-crawled', dayKey: now.dayKey };
     }
 
     // Step 2: Deduplicate against existing news
@@ -193,7 +219,7 @@ async function runMorningNewsPushTick() {
     if (newArticles.length === 0) {
       console.log('[push] morning news: all articles already exist, skipping');
       await setMorningNewsPushState({ lastSentDay: now.dayKey, status: 'all-duplicates', sentAt: Date.now() });
-      return;
+      return { skipped: 'all-duplicates', dayKey: now.dayKey };
     }
 
     // Step 3: Pick the 1 most relevant (newest) article and translate to Garhwali
@@ -204,7 +230,7 @@ async function runMorningNewsPushTick() {
     if (!translated || translated.length === 0) {
       console.error('[push] morning news: translation failed');
       await setMorningNewsPushState({ lastSentDay: now.dayKey, status: 'translation-failed', sentAt: Date.now() });
-      return;
+      return { skipped: 'translation-failed', dayKey: now.dayKey };
     }
 
     // Step 4: Publish the translated article
@@ -250,9 +276,11 @@ async function runMorningNewsPushTick() {
       status: 'published',
     });
     console.log(`[push] morning news published & pushed for ${now.dayKey} — "${article.title.slice(0, 60)}" (${cfg.timeZone} ${cfg.hour}:${String(cfg.minute).padStart(2, '0')})`);
+    return { sent: true, dayKey: now.dayKey, articleId: article.id, result };
   } catch (err) {
     console.error(`[push] morning news pipeline error for ${now.dayKey}:`, err.message);
     await setMorningNewsPushState({ lastSentDay: now.dayKey, status: 'error', error: err.message, sentAt: Date.now() });
+    return { error: err.message, dayKey: now.dayKey };
   }
 }
 
@@ -423,6 +451,47 @@ router.post('/send', async (req, res) => {
     tag: tag || `custom-${Date.now()}`,
   });
   res.json(result);
+});
+
+// ── Vercel Cron endpoints ──
+// On Vercel, the app runs as serverless functions so setInterval-based
+// scheduling does not survive between invocations. Vercel Cron (declared in
+// vercel.json → "crons") makes an HTTP GET to these paths on schedule and
+// automatically attaches `Authorization: Bearer $CRON_SECRET` when the
+// `CRON_SECRET` env var is set in the Vercel project.
+//
+// Manual override for testing: append ?key=<FEEDBACK_ADMIN_KEY>.
+function isCronAuthorized(req) {
+  const cronSecret = process.env.CRON_SECRET;
+  if (cronSecret) {
+    const auth = req.headers.authorization || '';
+    if (auth === `Bearer ${cronSecret}`) return true;
+  }
+  const adminKey = process.env.FEEDBACK_ADMIN_KEY || 'pahadi2026';
+  if (req.query.key && req.query.key === adminKey) return true;
+  return false;
+}
+
+router.get('/cron/evening', async (req, res) => {
+  if (!isCronAuthorized(req)) return res.status(401).json({ error: 'Unauthorized' });
+  try {
+    const result = await runDailyEveningPushTick({ ignoreSchedule: true });
+    res.json({ ok: true, ...result });
+  } catch (err) {
+    console.error('[push] cron/evening error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.get('/cron/morning-news', async (req, res) => {
+  if (!isCronAuthorized(req)) return res.status(401).json({ error: 'Unauthorized' });
+  try {
+    const result = await runMorningNewsPushTick({ ignoreSchedule: true });
+    res.json({ ok: true, ...result });
+  } catch (err) {
+    console.error('[push] cron/morning-news error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 module.exports = router;
