@@ -5,18 +5,18 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Primary: Warm gold/saffron — culturally resonant for Pahadi identity
+        // Primary: Netflix red — signature brand + CTA
         primary: {
-          50: '#fffbeb',
-          100: '#fef3c7',
-          200: '#fde68a',
-          300: '#fcd34d',
-          400: '#fbbf24',
-          500: '#f59e0b',
-          600: '#d97706',
-          700: '#b45309',
-          800: '#92400e',
-          900: '#78350f',
+          50: '#fef2f2',
+          100: '#fee2e2',
+          200: '#fecaca',
+          300: '#fca5a5',
+          400: '#f6121d',
+          500: '#e50914',   // Netflix red
+          600: '#b81d24',
+          700: '#831010',
+          800: '#5c0c0c',
+          900: '#3e0808',
         },
         // Secondary: Teal/cyan — for interactive elements & links
         secondary: {
@@ -38,24 +38,24 @@ export default {
           500: '#f43f5e',
           600: '#e11d48',
         },
-        // Surface: Elevation system (progressively lighter)
+        // Surface: Netflix-style neutral black elevation system
         surface: {
-          0: '#0a0a12',    // Deepest background
-          1: '#12121e',    // Page background
-          2: '#1a1a2e',    // Card background
-          3: '#22223a',    // Elevated card/hover
-          4: '#2a2a46',    // Popover/dropdown
-          5: '#363652',    // Active/selected
+          0: '#000000',    // Deepest background (nav / bottom bar)
+          1: '#141414',    // Page background — Netflix signature
+          2: '#181818',    // Card background
+          3: '#232323',    // Elevated card / hover
+          4: '#2f2f2f',    // Popover / dropdown
+          5: '#3f3f3f',    // Active / selected
         },
         // Dark palette — backwards compatibility alias
         dark: {
-          950: '#0a0a12',
-          900: '#12121e',
-          800: '#1a1a2e',
-          700: '#22223a',
-          600: '#2a2a46',
-          500: '#363652',
-          400: '#4a4a6a',
+          950: '#000000',
+          900: '#141414',
+          800: '#181818',
+          700: '#232323',
+          600: '#2f2f2f',
+          500: '#3f3f3f',
+          400: '#4a4a4a',
         },
         // Content-type accent colors
         content: {
@@ -94,15 +94,15 @@ export default {
         'container-wide': '1440px',
       },
       boxShadow: {
-        'glow-sm': '0 0 10px rgba(245, 158, 11, 0.12)',
-        'glow': '0 0 20px rgba(245, 158, 11, 0.15)',
-        'glow-lg': '0 0 40px rgba(245, 158, 11, 0.2)',
+        'glow-sm': '0 0 10px rgba(229, 9, 20, 0.18)',
+        'glow': '0 0 20px rgba(229, 9, 20, 0.25)',
+        'glow-lg': '0 0 40px rgba(229, 9, 20, 0.35)',
         'glow-secondary': '0 0 20px rgba(6, 182, 212, 0.15)',
         'inner-glow': 'inset 0 1px 0 rgba(255, 255, 255, 0.06)',
-        'elevation-1': '0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.4)',
-        'elevation-2': '0 4px 6px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.4)',
-        'elevation-3': '0 10px 20px rgba(0, 0, 0, 0.35), 0 6px 6px rgba(0, 0, 0, 0.4)',
-        'elevation-4': '0 20px 40px rgba(0, 0, 0, 0.4), 0 10px 10px rgba(0, 0, 0, 0.35)',
+        'elevation-1': '0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.6)',
+        'elevation-2': '0 4px 6px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.6)',
+        'elevation-3': '0 10px 20px rgba(0, 0, 0, 0.55), 0 6px 6px rgba(0, 0, 0, 0.6)',
+        'elevation-4': '0 20px 40px rgba(0, 0, 0, 0.6), 0 10px 10px rgba(0, 0, 0, 0.55)',
       },
       borderRadius: {
         '2xl': '1rem',
@@ -111,7 +111,8 @@ export default {
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-mesh': 'radial-gradient(at 40% 20%, rgba(245, 158, 11, 0.08) 0%, transparent 50%), radial-gradient(at 80% 80%, rgba(6, 182, 212, 0.06) 0%, transparent 50%)',
+        'gradient-mesh': 'radial-gradient(at 40% 20%, rgba(229, 9, 20, 0.10) 0%, transparent 50%), radial-gradient(at 80% 80%, rgba(0, 0, 0, 0.6) 0%, transparent 50%)',
+        'gradient-hero-fade': 'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 60%, #141414 100%)',
       },
       transitionTimingFunction: {
         'out-expo': 'cubic-bezier(0.16, 1, 0.3, 1)',

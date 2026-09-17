@@ -3,6 +3,7 @@ import { useEffect, lazy, Suspense } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Navbar from './components/Navbar';
 import BottomNav from './components/BottomNav';
+import AppIntroSplash from './components/AppIntroSplash';
 import { autoSubscribeToPushWithStatus, getPushSubscribeFeedback } from './components/NotifyButton';
 import { ToastProvider, useToast } from './components/ui/Toast';
 import { MusicProvider } from './context/MusicContext';
@@ -99,6 +100,7 @@ export default function App() {
     <AuthProvider>
       <MusicProvider>
         <ToastProvider>
+          <AppIntroSplash />
           <PwaStandalonePushPrompt />
           <div className="min-h-screen flex flex-col text-white bg-surface-0">
             <Navbar />

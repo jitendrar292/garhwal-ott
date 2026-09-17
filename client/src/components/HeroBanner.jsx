@@ -64,7 +64,7 @@ export default function HeroBanner() {
             alt="PahadiTube"
             width={112}
             height={112}
-            className="h-20 sm:h-28 w-auto mx-auto drop-shadow-[0_0_30px_rgba(245,158,11,0.2)]"
+            className="h-20 sm:h-28 w-auto mx-auto drop-shadow-[0_0_30px_rgba(229,9,20,0.35)]"
             whileHover={{ scale: 1.05 }}
             transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           />
