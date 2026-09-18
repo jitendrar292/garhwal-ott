@@ -294,9 +294,9 @@ export default function HomePage() {
         <section className="rounded-2xl border border-white/[0.08] bg-gradient-to-r from-amber-900/20 via-primary-900/20 to-surface-2 p-5 sm:p-6 mt-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h2 className="text-lg sm:text-xl font-semibold text-amber-100">New: Garhwali Culture Library</h2>
+              <h2 className="text-lg sm:text-xl font-semibold text-amber-100">नया: गढ़वाली सांस्कृतिक पुस्तकालय</h2>
               <p className="text-sm text-white/65 mt-1 max-w-2xl">
-                Read original blogs and educational articles on Uttarakhand history, traditions, migration, language, and mountain life.
+                उत्तराखंड के इतिहास, परंपराओं, पलायन, भाषा और पहाड़ी जीवन पर मौलिक ब्लॉग और शैक्षणिक लेख पढ़ें।
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -304,13 +304,13 @@ export default function HomePage() {
                 to="/culture"
                 className="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-black text-sm font-semibold transition-colors"
               >
-                Explore Articles
+                लेख देखें
               </Link>
               <Link
                 to="/folk-stories"
                 className="px-4 py-2 rounded-lg border border-white/20 hover:border-white/40 text-white text-sm font-semibold transition-colors"
               >
-                Folk Stories
+                लोक-कथाएँ
               </Link>
             </div>
           </div>

@@ -47,6 +47,14 @@ export default function FloatingPlayer() {
   const endedFiredRef = useRef(false);
   const keepAliveAudioRef = useRef(null);
   const audioCtxRef = useRef(null);
+  // “Does the user want playback right now?” — stays true across background
+  // tabs so we can tell YouTube’s automatic background-pause apart from a
+  // real pause the user asked for. Flipped false only by explicit UI pause,
+  // stop, or a Media Session pause action.
+  const intentPlayingRef = useRef(false);
+  // Rate-limits background-resume attempts so we can’t enter a play/pause
+  // ping-pong if the browser refuses to let us resume.
+  const lastResumeAttemptRef = useRef(0);
 
   // Refs so YT callbacks always see latest values
   const repeatRef = useRef(repeat);
@@ -145,8 +153,14 @@ export default function FloatingPlayer() {
     const setHandler = (action, fn) => {
       try { navigator.mediaSession.setActionHandler(action, fn); } catch {}
     };
-    setHandler('play', () => { playerRef.current?.playVideo?.(); });
-    setHandler('pause', () => { playerRef.current?.pauseVideo?.(); });
+    setHandler('play', () => {
+      intentPlayingRef.current = true;
+      playerRef.current?.playVideo?.();
+    });
+    setHandler('pause', () => {
+      intentPlayingRef.current = false;
+      playerRef.current?.pauseVideo?.();
+    });
     setHandler('previoustrack', () => prevTrackRef.current?.());
     setHandler('nexttrack', () => nextTrackRef.current?.());
     setHandler('seekto', (details) => {
@@ -190,6 +204,8 @@ export default function FloatingPlayer() {
     setCurrentTime(0);
     setDuration(0);
     setIsPlaying(false);
+    // Loading a new track always means “the user wants this to play”.
+    intentPlayingRef.current = true;
     endedFiredRef.current = false;
     clearTimeout(skipTimer.current);
 
@@ -257,7 +273,21 @@ export default function FloatingPlayer() {
               const d = e.target.getDuration();
               if (d > 0) setDuration(d);
             }
-            if (s === window.YT.PlayerState.PAUSED) setIsPlaying(false);
+            if (s === window.YT.PlayerState.PAUSED) {
+              setIsPlaying(false);
+              // YouTube’s embedded player pauses itself when the containing
+              // tab is hidden. If the user hasn’t asked to pause, immediately
+              // resume so audio keeps playing while they’re in another tab.
+              // The AudioContext keepalive (below) prevents mobile browsers
+              // from suspending the audio process.
+              if (document.hidden && intentPlayingRef.current) {
+                const now = Date.now();
+                if (now - lastResumeAttemptRef.current > 1500) {
+                  lastResumeAttemptRef.current = now;
+                  try { e.target.playVideo(); } catch {}
+                }
+              }
+            }
             if (s === window.YT.PlayerState.ENDED) {
               if (endedFiredRef.current) return;
               endedFiredRef.current = true;
@@ -335,7 +365,13 @@ export default function FloatingPlayer() {
     try {
       p.unMute();
       p.setVolume(100);
-      if (isPlaying) { p.pauseVideo(); } else { p.playVideo(); }
+      if (isPlaying) {
+        intentPlayingRef.current = false;
+        p.pauseVideo();
+      } else {
+        intentPlayingRef.current = true;
+        p.playVideo();
+      }
     } catch {}
   }, [isPlaying]);
 

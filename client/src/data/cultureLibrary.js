@@ -1,79 +1,79 @@
 export const BLOG_POSTS = [
   {
     slug: 'buransh-and-seasonal-life',
-    title: 'Buransh, Bichhu Ghaas, and the Mountain Calendar',
-    readTime: '8 min read',
+    title: 'बुरांश, बिच्छू घास और पहाड़ का ऋतु-चक्र',
+    readTime: '8 मिनट पढ़ें',
     publishedOn: '2026-06-17',
-    author: 'PahadiTube Editorial',
+    author: 'पहाड़ीट्यूब सम्पादकीय',
     excerpt:
-      'How food, forests, and festivals in Garhwal follow a seasonal rhythm that still shapes family life from village kitchens to city homes.',
+      'गढ़वाल में भोजन, जंगल और त्योहार एक मौसमी लय में बंधे हैं — यह लय आज भी गाँव की रसोई से लेकर शहर के घरों तक पारिवारिक जीवन को आकार देती है।',
     sections: [
       {
-        heading: 'The mountain year begins in the kitchen',
+        heading: 'पहाड़ का साल रसोई से शुरू होता है',
         body:
-          'In Garhwali households, the idea of season is not abstract. It shows up first in the kitchen and then in language, songs, and work routines. Winter means gahat, bhatt, and warming soups. Spring announces itself through buransh flowers and lighter greens. Monsoon brings both abundance and caution: fresh produce, slippery paths, and stories about living in tune with terrain. This seasonal knowledge was never written as a textbook. It survived through routines: what elders cooked, what children carried to fields, and what people avoided during particular weeks.'
+          'गढ़वाली घरों में मौसम कोई कल्पना नहीं होता — वह सबसे पहले रसोई में उतरता है, फिर भाषा, गीतों और रोज़मर्रा के कामकाज में दिखता है। सर्दियाँ मतलब गहत, भट्ट और गरम रसे वाले सूप। बसंत का ऐलान बुरांश के फूलों और हल्की हरी पत्तियों से होता है। बरसात एक साथ भरपूरता और सावधानी दोनों लाती है — ताज़ी उपज, फिसलती पगडंडियाँ, और अपनी ज़मीन के साथ ताल-मेल बिठाकर जीने की कहानियाँ। यह मौसमी ज्ञान कभी किताबों में नहीं लिखा गया। यह बूढ़ों की रसोई, बच्चों के खेतों तक ले जाए जाने वाले टिफ़िन और खास हफ़्तों में क्या न करने की परंपराओं के ज़रिये ज़िंदा रहा।'
       },
       {
-        heading: 'Buransh as memory, not just a drink',
+        heading: 'बुरांश सिर्फ शरबत नहीं — याद है',
         body:
-          'For many families, buransh is a memory marker. People remember specific hillsides where flowers were collected, specific steel containers used for syrup, and the smell of petals drying near windows. In diaspora homes, one bottle of buransh often acts like a bridge to childhood. It is why documenting regional food traditions matters for culture preservation. Ingredients are not just ingredients; they are social memory encoded in taste.'
+          'बहुत से परिवारों के लिए बुरांश एक स्मृति-चिह्न है। लोग याद रखते हैं कि किस ढलान से फूल तोड़े जाते थे, कौन से स्टील के बर्तनों में शरबत बनता था, और खिड़की के पास सूखती पंखुड़ियों की महक कैसी थी। प्रवासी घरों में बुरांश की एक बोतल अक्सर बचपन तक ले जाने वाला पुल बन जाती है। इसीलिए क्षेत्रीय खान-पान परंपराओं का दस्तावेज़ीकरण सांस्कृतिक संरक्षण के लिए ज़रूरी है। सामग्रियाँ सिर्फ सामग्रियाँ नहीं होतीं — वे स्वाद में गुँथी हुई सामाजिक स्मृति होती हैं।'
       },
       {
-        heading: 'Why documenting seasonal vocabulary matters',
+        heading: 'मौसमी शब्दावली को दर्ज करना क्यों ज़रूरी है',
         body:
-          'Garhwali has rich micro-vocabulary for weather shifts, farming windows, and mountain textures. Losing these words weakens practical ecological knowledge. When a platform stores recipes, stories, and local phrases together, it preserves context. This is also useful for younger readers who understand Hindi and English but want to recover the cultural logic of Garhwali life patterns.'
+          'गढ़वाली में मौसम बदलाव, खेती के समय-चक्र और पहाड़ की बनावट के लिए बहुत सूक्ष्म शब्दावली है। इन शब्दों का खोना असल पारिस्थितिक ज्ञान को कमज़ोर करता है। जब कोई मंच व्यंजन, कहानियाँ और स्थानीय मुहावरे एक साथ रखता है, तो वह संदर्भ को भी बचाता है। यह उन युवा पाठकों के लिए भी उपयोगी है जो हिंदी और अंग्रेज़ी समझते हैं, पर गढ़वाली जीवन-शैली के सांस्कृतिक तर्क को फिर से पाना चाहते हैं।'
       }
     ]
   },
   {
     slug: 'jagar-as-living-archive',
-    title: 'Jagar Is Not a Performance: It Is a Living Archive',
-    readTime: '9 min read',
+    title: 'जागर सिर्फ प्रदर्शन नहीं — यह एक जीवित अभिलेखागार है',
+    readTime: '9 मिनट पढ़ें',
     publishedOn: '2026-06-17',
-    author: 'PahadiTube Editorial',
+    author: 'पहाड़ीट्यूब सम्पादकीय',
     excerpt:
-      'Understanding Jagar as a cultural knowledge system that combines history, spirituality, genealogy, and collective healing.',
+      'जागर को एक सांस्कृतिक ज्ञान-व्यवस्था के रूप में समझना — जिसमें इतिहास, आध्यात्म, वंशावली और सामूहिक चिकित्सा एक साथ बुनी हुई हैं।',
     sections: [
       {
-        heading: 'Beyond stage folklore',
+        heading: 'मंच के लोकनृत्य से आगे',
         body:
-          'Many people outside Uttarakhand see Jagar clips online and assume it is simply a folk performance. Locally, Jagar is far deeper. It is a community process that invokes memory, lineage, moral conflict, and unresolved grief. The singer is not only entertaining; he is carrying a narrative duty. The rhythm, repetition, and call-response structure create a shared emotional field where people reconnect with ancestry and place.'
+          'उत्तराखंड के बाहर बैठे बहुत से लोग ऑनलाइन जागर की कतरनें देखकर मान लेते हैं कि यह बस एक लोक-प्रदर्शन है। स्थानीय स्तर पर जागर इससे बहुत गहरा है। यह एक सामुदायिक प्रक्रिया है जो स्मृति, वंश, नैतिक द्वंद्व और अनसुलझे शोक को जगाती है। जगरिया केवल मनोरंजन नहीं कर रहा होता — वह एक कथा-दायित्व निभा रहा होता है। ताल, दोहराव और प्रश्न-उत्तर की संरचना मिलकर एक साझा भावनात्मक क्षेत्र रचती है, जहाँ लोग अपने पूर्वजों और अपनी ज़मीन से दुबारा जुड़ते हैं।'
       },
       {
-        heading: 'Orality, authority, and responsibility',
+        heading: 'मौखिक परंपरा, अधिकार और ज़िम्मेदारी',
         body:
-          'Because Jagar is primarily oral, its integrity depends on practitioners and listeners. Variations happen from valley to valley, but the ethical core remains: respect for deity traditions, respect for story sequence, and respect for social responsibility. This is why digital recording must be accompanied by documentation. Metadata about village, context, language variant, and performer lineage can prevent cultural flattening and misinformation.'
+          'चूँकि जागर मूलतः मौखिक परंपरा है, इसकी शुद्धता जगरियों और श्रोताओं दोनों पर निर्भर है। घाटी-दर-घाटी बदलाव तो होते हैं, पर नैतिक आधार वही रहता है — देव परंपराओं का सम्मान, कथा-क्रम का सम्मान और सामाजिक ज़िम्मेदारी का सम्मान। इसीलिए डिजिटल रिकॉर्डिंग के साथ दस्तावेज़ीकरण भी ज़रूरी है। गाँव, संदर्भ, भाषा-भेद और गायक की वंश-परंपरा जैसी जानकारी सांस्कृतिक चपटीकरण और ग़लत सूचना को रोकती है।'
       },
       {
-        heading: 'What preservation should look like now',
+        heading: '2026 में संरक्षण कैसा दिखे',
         body:
-          'Preservation in 2026 cannot mean museum-style freezing. It should mean living continuity. Communities need audio archives, bilingual explanations, and youth-friendly learning modules. A strong cultural platform can host both raw performances and contextual essays, allowing older practitioners and younger users to meet in one ecosystem. That is how living traditions remain living.'
+          '2026 में संरक्षण का मतलब संग्रहालय-शैली की जमी हुई हिफ़ाज़त नहीं हो सकता। इसका मतलब है — जीवित निरंतरता। समुदायों को ऑडियो अभिलेखागार, द्विभाषी व्याख्याएँ और युवाओं के लिए सीखने योग्य मॉड्यूल चाहिए। एक मज़बूत सांस्कृतिक मंच कच्चे प्रदर्शन और उनके संदर्भ-निबंधों — दोनों को एक ही तंत्र में रख सकता है, जहाँ बूढ़े कलाकार और नए उपयोगकर्ता मिल सकें। जीवित परंपराएँ इसी तरह जीवित रहती हैं।'
       }
     ]
   },
   {
     slug: 'migration-and-garhwali-identity',
-    title: 'Migration and Garhwali Identity: What Changes, What Stays',
-    readTime: '10 min read',
+    title: 'पलायन और गढ़वाली पहचान — क्या बदलता है, क्या बचता है',
+    readTime: '10 मिनट पढ़ें',
     publishedOn: '2026-06-17',
-    author: 'PahadiTube Editorial',
+    author: 'पहाड़ीट्यूब सम्पादकीय',
     excerpt:
-      'A practical look at how migration reshapes language use, family rituals, and cultural transmission across generations.',
+      'पलायन कैसे भाषा, पारिवारिक रीति और पीढ़ी-दर-पीढ़ी होने वाले सांस्कृतिक हस्तांतरण को बदलता है — एक व्यावहारिक विश्लेषण।',
     sections: [
       {
-        heading: 'From village networks to city schedules',
+        heading: 'गाँव के तंत्र से शहर की समय-सारिणी तक',
         body:
-          'Migration from hill districts to plains and metro cities transformed social time. Earlier, festivals and rituals followed agricultural cycles and village consensus. In cities, families negotiate around school calendars, office shifts, and apartment spaces. Cultural continuity now depends on intentional acts: planning language time, preserving songs, and keeping oral stories active at home.'
+          'पहाड़ी ज़िलों से मैदानों और महानगरों की ओर पलायन ने सामाजिक समय को ही बदल दिया। पहले त्योहार और अनुष्ठान खेती के चक्र और गाँव की सहमति से चलते थे। शहरों में परिवार अब स्कूल कैलेंडर, दफ़्तर की शिफ़्ट और अपार्टमेंट की जगह के हिसाब से चीज़ें तय करते हैं। सांस्कृतिक निरंतरता अब जान-बूझकर किए गए प्रयासों पर टिकी है — भाषा के लिए समय निकालना, गीतों को बचाना और घर में मौखिक कहानियों को ज़िंदा रखना।'
       },
       {
-        heading: 'The language gap is real but reversible',
+        heading: 'भाषा की खाई असली है, पर पाटी जा सकती है',
         body:
-          'Second-generation children often understand Garhwali but hesitate to speak. This is less about disinterest and more about social confidence. If learning tools are respectful and modern, recovery is possible. Short phrase libraries, contextual audio, and story-based exercises make language learning practical. The goal should not be purity policing. The goal should be renewed ownership of identity.'
+          'दूसरी पीढ़ी के बच्चे अक्सर गढ़वाली समझ लेते हैं पर बोलने में झिझकते हैं। यह उदासीनता नहीं, सामाजिक आत्मविश्वास का सवाल है। अगर सीखने के साधन आदरपूर्ण और आधुनिक हों, तो भाषा वापस लौट सकती है। छोटी वाक्यांश-सूचियाँ, संदर्भ के साथ आने वाला ऑडियो, और कहानी आधारित अभ्यास भाषा सीखने को व्यावहारिक बनाते हैं। लक्ष्य “शुद्धता की पहरेदारी” नहीं, बल्कि पहचान का दुबारा अपनापन होना चाहिए।'
       },
       {
-        heading: 'Culture survives through small habits',
+        heading: 'संस्कृति छोटी आदतों से बचती है',
         body:
-          'Not every family can attend village fairs or annual yatras. But culture can survive through weekly habits: one Garhwali meal, one story night, one playlist, one proverb discussion. Consistency beats intensity. Digital platforms should support these small habits with reliable, high-quality, and accurate content that people can trust and revisit.'
+          'हर परिवार गाँव के मेले या हर साल की यात्रा में शामिल नहीं हो पाता। पर संस्कृति साप्ताहिक आदतों से बच सकती है — हफ़्ते में एक गढ़वाली भोजन, एक कहानी-रात, एक प्लेलिस्ट, एक मुहावरे पर बातचीत। तीव्रता से ज़्यादा नियमितता मायने रखती है। डिजिटल मंचों को इन छोटी आदतों को टिकाऊ, गुणवत्तापूर्ण और भरोसेमंद सामग्री से सहारा देना चाहिए, जिसे लोग बार-बार लौटकर पढ़-देख सकें।'
       }
     ]
   }
@@ -82,334 +82,334 @@ export const BLOG_POSTS = [
 export const EDUCATIONAL_ARTICLES = [
   {
     slug: 'history-of-garhwal-state-formation',
-    title: 'A Short History of Garhwal State Formation',
-    readTime: '11 min read',
-    level: 'Educational',
+    title: 'गढ़वाल राज्य के निर्माण का संक्षिप्त इतिहास',
+    readTime: '11 मिनट पढ़ें',
+    level: 'शैक्षणिक',
     excerpt:
-      'How dispersed hill forts gradually evolved into a more unified political structure in Garhwal, and why that history still matters.',
+      'बिखरे हुए पहाड़ी क़िले किस तरह धीरे-धीरे एक अधिक एकीकृत राजनीतिक ढाँचे में बदले, और यह इतिहास आज भी क्यों मायने रखता है।',
     sections: [
       {
-        heading: 'Fort societies and local governance',
+        heading: 'क़िला-आधारित समाज और स्थानीय शासन',
         body:
-          'Early Garhwal political geography was organized around fortified zones and local rulers. Terrain shaped governance: ridges, river valleys, and seasonal routes influenced trade, defense, and taxation. Community memory often preserved these histories through place names and ballads long before modern administrative maps existed.'
+          'शुरुआती गढ़वाल का राजनीतिक भूगोल क़िलों वाले इलाकों और स्थानीय शासकों के इर्द-गिर्द व्यवस्थित था। भूगोल ने शासन को आकार दिया — पहाड़ की रीढ़, नदी घाटियाँ और मौसमी रास्ते व्यापार, रक्षा और कर-प्रणाली को तय करते थे। आधुनिक प्रशासनिक नक्शों के बहुत पहले, सामुदायिक स्मृति इन इतिहासों को स्थान-नामों और लोक-गीतों के ज़रिए बचाए रखती थी।'
       },
       {
-        heading: 'Consolidation and state identity',
+        heading: 'समेकन और राज्य पहचान',
         body:
-          'Over time, alliances, conflict, and strategic marriages helped consolidate scattered powers. The process was uneven but significant because it created a broader shared identity. This is one reason why historical figures from oral narratives continue to hold symbolic power today. They represent more than individuals; they represent political integration in difficult terrain.'
+          'समय के साथ गठजोड़, संघर्ष और रणनीतिक विवाहों ने बिखरी हुई सत्ताओं को समेटने में मदद की। यह प्रक्रिया एकसमान नहीं थी, पर महत्वपूर्ण थी क्योंकि इसने एक व्यापक साझा पहचान गढ़ी। इसीलिए मौखिक कथाओं के ऐतिहासिक पात्र आज भी प्रतीकात्मक शक्ति रखते हैं। वे केवल व्यक्तियों का नहीं, बल्कि कठिन भूभाग में हुए राजनीतिक एकीकरण का प्रतिनिधित्व करते हैं।'
       },
       {
-        heading: 'Why students should study this now',
+        heading: 'विद्यार्थियों को यह अभी क्यों पढ़ना चाहिए',
         body:
-          'Understanding state formation helps explain modern district-level variation in language, architecture, and customary practice. It also helps students critically read both textbooks and folklore. The two are not enemies. Together, they offer a more complete regional history.'
+          'राज्य निर्माण को समझने से आधुनिक ज़िला-स्तरीय भाषा, स्थापत्य और परंपराओं के अंतर की व्याख्या हो पाती है। यह छात्रों को पाठ्यपुस्तक और लोकगाथा दोनों को आलोचनात्मक ढंग से पढ़ना भी सिखाता है। दोनों एक-दूसरे के विरोधी नहीं हैं — मिलकर वे क्षेत्रीय इतिहास की अधिक पूरी तस्वीर देते हैं।'
       }
     ]
   },
   {
     slug: 'uttarakhand-festivals-cultural-logic',
-    title: 'Uttarakhand Festivals and Their Cultural Logic',
-    readTime: '8 min read',
-    level: 'Educational',
+    title: 'उत्तराखंड के त्योहार और उनका सांस्कृतिक तर्क',
+    readTime: '8 मिनट पढ़ें',
+    level: 'शैक्षणिक',
     excerpt:
-      'An educational guide to the social meaning behind local festivals, fairs, and ritual gatherings in mountain communities.',
+      'पहाड़ी समुदायों में स्थानीय त्योहारों, मेलों और अनुष्ठानिक सभाओं के सामाजिक अर्थ को समझने की एक शैक्षणिक मार्गदर्शिका।',
     sections: [
       {
-        heading: 'Festivals as social infrastructure',
+        heading: 'त्योहार सामाजिक अवसंरचना हैं',
         body:
-          'In many hill areas, festivals are not optional entertainment. They are social infrastructure. They renew kinship ties, synchronize economic exchange, and distribute local news. Melas historically functioned as cultural and commercial nodes where people met, traded, and arranged future alliances.'
+          'कई पहाड़ी इलाक़ों में त्योहार वैकल्पिक मनोरंजन नहीं होते — वे सामाजिक अवसंरचना होते हैं। ये रिश्तेदारी को ताज़ा करते हैं, आर्थिक आदान-प्रदान को समकालिक करते हैं और स्थानीय ख़बरें फैलाते हैं। मेले ऐतिहासिक रूप से सांस्कृतिक और व्यापारिक केंद्र बिंदु रहे हैं जहाँ लोग मिलते, सौदा करते और आगे के गठबंधन तय करते थे।'
       },
       {
-        heading: 'Ritual, ecology, and timing',
+        heading: 'अनुष्ठान, पर्यावरण और समय',
         body:
-          'Festival timing is often linked to weather and agricultural windows. Ritual acts also communicate ecological ethics: river respect, forest discipline, and livestock care. These practices should be interpreted as encoded environmental intelligence, not superstition alone.'
+          'त्योहारों का समय अक्सर मौसम और खेती के चक्र से जुड़ा होता है। अनुष्ठान नदी के आदर, जंगल की अनुशासित उपयोग-नीति और पशु-देखभाल जैसी पारिस्थितिक नैतिकता को भी संप्रेषित करते हैं। इन्हें केवल अंधविश्वास नहीं, बल्कि परिवेश-आधारित बुद्धिमत्ता के रूप में समझना चाहिए।'
       },
       {
-        heading: 'How to teach this in schools and homes',
+        heading: 'स्कूल और घर में इसे कैसे पढ़ाया जाए',
         body:
-          'Educational use becomes stronger when festivals are documented with maps, songs, and oral accounts from elders. A child who learns both meaning and method will carry the tradition forward with confidence. That is why digital educational articles must remain clear, non-sensational, and source-aware.'
+          'जब त्योहार बुज़ुर्गों के मौखिक विवरण, नक्शों और गीतों के साथ दर्ज होते हैं, तब उनका शैक्षणिक उपयोग और मज़बूत होता है। जो बच्चा अर्थ और तरीक़ा — दोनों सीखेगा, वह परंपरा को आत्मविश्वास के साथ आगे ले जाएगा। इसीलिए डिजिटल शैक्षिक लेख स्पष्ट, बिना अतिरंजना के और स्रोत-सचेत होने चाहिए।'
       }
     ]
   },
   {
     slug: 'traditional-architecture-and-disaster-wisdom',
-    title: 'Traditional Architecture and Disaster Wisdom in Uttarakhand',
-    readTime: '10 min read',
-    level: 'Educational',
+    title: 'पारंपरिक स्थापत्य और उत्तराखंड की आपदा-बुद्धिमत्ता',
+    readTime: '10 मिनट पढ़ें',
+    level: 'शैक्षणिक',
     excerpt:
-      'What old mountain homes teach us about climate adaptation, seismic safety, and community-centered design in fragile terrain.',
+      'पुराने पहाड़ी घर हमें जलवायु अनुकूलन, भूकंप-सुरक्षा और नाज़ुक भूभाग में समुदाय-केंद्रित डिज़ाइन के बारे में क्या सिखाते हैं।',
     sections: [
       {
-        heading: 'Built form as local intelligence',
+        heading: 'भवन-रूप एक स्थानीय बुद्धिमत्ता है',
         body:
-          'Traditional homes in Uttarakhand were designed for slope stability, material availability, and climate patterns. Stone, timber, and compact layouts were not aesthetic accidents. They represented long-term adaptation under resource constraints.'
+          'उत्तराखंड के पारंपरिक घर ढलान की स्थिरता, सामग्री की उपलब्धता और जलवायु के अनुरूप बनाए जाते थे। पत्थर, लकड़ी और सघन लेआउट कोई सौंदर्यबोधीय संयोग नहीं थे — वे सीमित संसाधनों में लंबे समय तक टिकने का अनुकूलन थे।'
       },
       {
-        heading: 'Risk, resilience, and memory',
+        heading: 'जोखिम, लचीलापन और स्मृति',
         body:
-          'Communities developed practical risk memory: where to build, where not to build, how drainage should flow, and how paths should be maintained before monsoon. Ignoring this accumulated wisdom has often increased vulnerability in newer construction zones.'
+          'समुदायों ने व्यावहारिक जोखिम-स्मृति विकसित की — कहाँ मकान बनाना है, कहाँ नहीं, पानी की निकासी कैसी हो, और बरसात से पहले रास्तों की क्या मरम्मत ज़रूरी है। इस संचित बुद्धिमत्ता की उपेक्षा ने ही नए निर्माण-क्षेत्रों में असुरक्षा बढ़ाई है।'
       },
       {
-        heading: 'Integrating tradition with modern engineering',
+        heading: 'परंपरा और आधुनिक इंजीनियरिंग को साथ लाना',
         body:
-          'The modern goal should not be romantic restoration of the past. It should be intelligent synthesis: combine structural engineering with local spatial logic, and combine regulation with community participation. This approach strengthens both safety and cultural continuity.'
+          'आधुनिक लक्ष्य अतीत की रूमानी बहाली नहीं होना चाहिए — बल्कि बुद्धिमान संश्लेषण होना चाहिए। संरचनात्मक इंजीनियरिंग को स्थानीय स्थान-तर्क से जोड़ें, और नियमन को सामुदायिक भागीदारी से जोड़ें। यह तरीक़ा सुरक्षा और सांस्कृतिक निरंतरता — दोनों को मज़बूत करता है।'
       }
     ]
   },
   {
     slug: 'garhwali-folk-dance-forms',
-    title: 'Garhwali Folk Dance Forms: Movement as Cultural Memory',
-    readTime: '9 min read',
-    level: 'Educational',
+    title: 'गढ़वाली लोकनृत्य — गति में बसी सांस्कृतिक स्मृति',
+    readTime: '9 मिनट पढ़ें',
+    level: 'शैक्षणिक',
     excerpt:
-      'From the devotional Jhumeilo to the martial Choliya — a guide to the major folk dance traditions of Uttarakhand and what they preserve.',
+      'भक्तिपूर्ण झुमैलो से लेकर वीरतापूर्ण छोलिया तक — उत्तराखंड की प्रमुख लोकनृत्य परंपराओं की मार्गदर्शिका और वे किस चीज़ को बचाकर रखती हैं।',
     sections: [
       {
-        heading: 'Dance as social text',
+        heading: 'नृत्य एक सामाजिक पाठ है',
         body:
-          'Pahadi folk dances were never mere entertainment. They encoded kinship structures, seasonal transitions, religious protocols, and community identity. Decoding a dance tradition means reading its circle formation, gender separation, seasonal timing, and instrumental accompaniment together as a system.'
+          'पहाड़ी लोकनृत्य कभी केवल मनोरंजन नहीं रहे। ये रिश्तेदारी के ढाँचे, मौसमी बदलाव, धार्मिक प्रोटोकॉल और सामुदायिक पहचान को कूटबद्ध करते हैं। किसी नृत्य परंपरा को पढ़ने का मतलब उसके गोल-घेरे की बनावट, स्त्री-पुरुष विभाजन, मौसमी समय और वाद्य-संगत को एक तंत्र के रूप में साथ पढ़ना है।'
       },
       {
-        heading: 'Major forms and their contexts',
+        heading: 'मुख्य रूप और उनके संदर्भ',
         body:
-          'Jhumeilo is a monsoon celebration dance, sung in call-and-response between men and women. Thandya is performed in winters. Choliya is a martial sword dance performed at weddings and warrior celebrations, most visible in Kumaon. Jhora and Chanchari are collective ring dances common at village fairs. Each carries a distinct social occasion and cannot be understood without its context.'
+          'झुमैलो बरसात का जश्न मनाने वाला नृत्य है, जिसमें स्त्री-पुरुष सवाल-जवाब के अंदाज़ में गाते हैं। थड़्या शीत ऋतु में किया जाता है। छोलिया कुमाऊँ में शादियों और वीर उत्सवों पर होने वाला तलवार-नृत्य है। झोड़ा और चाँचरी गाँव के मेलों में होने वाले सामूहिक घेरा-नृत्य हैं। हर नृत्य का अपना सामाजिक अवसर है और उसे उसके संदर्भ के बिना समझा नहीं जा सकता।'
       },
       {
-        heading: 'Preservation through participation',
+        heading: 'भागीदारी के ज़रिए संरक्षण',
         body:
-          'Dance documentation must include the music, the occasion, the costumes, and the spatial layout — not just the movement itself. Community learning remains the strongest preservation method. Festivals and school programs that teach children the full context of a dance tradition will outlast any archive alone.'
+          'नृत्य के दस्तावेज़ीकरण में सिर्फ़ चाल नहीं — संगीत, अवसर, वेशभूषा और स्थान की बनावट, सब शामिल होना चाहिए। सामुदायिक अभ्यास आज भी सबसे मज़बूत संरक्षण-तरीक़ा है। जो त्योहार और स्कूल कार्यक्रम बच्चों को नृत्य परंपरा का पूरा संदर्भ सिखाएँगे, वे अकेले किसी अभिलेखागार से ज़्यादा टिकाऊ साबित होंगे।'
       }
     ]
   },
   {
     slug: 'medicinal-plants-of-uttarakhand',
-    title: 'Medicinal Plants of Uttarakhand: A Folk Pharmacopoeia',
-    readTime: '11 min read',
-    level: 'Educational',
+    title: 'उत्तराखंड की औषधीय वनस्पतियाँ — एक लोक-औषधीय संहिता',
+    readTime: '11 मिनट पढ़ें',
+    level: 'शैक्षणिक',
     excerpt:
-      'The Himalayas host over 1,000 plant species used in traditional medicine. Here is what locals actually use and what modern research confirms.',
+      'हिमालय में पारंपरिक चिकित्सा में उपयोग होने वाली एक हज़ार से अधिक वनस्पतियाँ हैं। यहाँ जानें कि स्थानीय लोग वास्तव में क्या उपयोग करते हैं और आधुनिक शोध क्या पुष्टि करता है।',
     sections: [
       {
-        heading: 'The mountain pharmacy at our doorstep',
+        heading: 'हमारे द्वार पर मौजूद पहाड़ की फ़ार्मेसी',
         body:
-          'Hill communities have used plants like Brahmi, Ashwagandha, Kutki, Atees, Jatamansi, and Salam Panja for generations. This knowledge was not mystical but empirical — refined over centuries of observation. Many remedies have since been validated by pharmacological research, while others are still under study.'
+          'पहाड़ी समुदाय पीढ़ियों से ब्राह्मी, अश्वगंधा, कुटकी, अतीस, जटामांसी और सलम पंजा जैसी वनस्पतियों का उपयोग करते आए हैं। यह ज्ञान रहस्यमय नहीं, अनुभवजन्य था — सदियों के अवलोकन से परिष्कृत। कई नुस्खों की पुष्टि अब औषधीय शोध कर चुका है, कुछ पर अध्ययन जारी है।'
       },
       {
-        heading: 'Endangered knowledge and conservation',
+        heading: 'लुप्तप्राय ज्ञान और संरक्षण',
         body:
-          'As younger generations migrate and elders age, this knowledge is disappearing faster than the plants themselves. Documenting plant names in Garhwali and Kumaoni alongside scientific names protects both vocabulary and ecology. Language and biology are more connected than they appear.'
+          'जैसे-जैसे युवा पीढ़ी पलायन करती है और बुज़ुर्ग आयु में बढ़ते हैं, यह ज्ञान वनस्पतियों से भी तेज़ी से लुप्त हो रहा है। वनस्पतियों के नाम गढ़वाली और कुमाऊँनी में उनके वैज्ञानिक नामों के साथ दर्ज करना — शब्दावली और पारिस्थितिकी दोनों को बचाता है। भाषा और जीव-विज्ञान जितना दिखता है, उससे ज़्यादा जुड़े हुए हैं।'
       },
       {
-        heading: 'Responsible learning',
+        heading: 'ज़िम्मेदार सीख',
         body:
-          'Folk medicine should be approached with respect for both traditional knowledge and modern pharmacology. Some plants require correct preparation to be safe. The goal of documentation is cultural preservation and informed education, not replacement of medical care.'
+          'लोक-औषधि की ओर पारंपरिक ज्ञान और आधुनिक औषधि विज्ञान — दोनों के आदर के साथ जाना चाहिए। कुछ वनस्पतियों का सुरक्षित उपयोग सही तैयारी पर निर्भर है। दस्तावेज़ीकरण का उद्देश्य सांस्कृतिक संरक्षण और सूचित शिक्षा है — चिकित्सा देखभाल का प्रतिस्थापन नहीं।'
       }
     ]
   },
   {
     slug: 'river-mythology-garhwal',
-    title: 'Rivers as Living Deities: Water Mythology in Garhwal',
-    readTime: '8 min read',
-    level: 'Educational',
+    title: 'नदियाँ जीवित देवियाँ हैं — गढ़वाल की जल-कथा',
+    readTime: '8 मिनट पढ़ें',
+    level: 'शैक्षणिक',
     excerpt:
-      'Why Ganga, Yamuna, Alaknanda, and Bhagirathi are not just rivers in Garhwal but personalities, protectors, and moral teachers.',
+      'गंगा, यमुना, अलकनंदा और भागीरथी गढ़वाल में केवल नदियाँ नहीं — वे व्यक्तित्व, रक्षक और नैतिक शिक्षिकाएँ भी हैं।',
     sections: [
       {
-        heading: 'Rivers as relational beings',
+        heading: 'नदियाँ रिश्ते हैं, संसाधन नहीं',
         body:
-          'In Garhwali cosmology, rivers are not resources but relationships. They have moods, memories, and demands. Rituals at river confluences are social negotiations. Communities maintained these relationships through seasonal offerings, purity norms, and designated crossing points — all of which doubled as ecological practice.'
+          'गढ़वाली विश्व-दृष्टि में नदियाँ संसाधन नहीं — रिश्ते हैं। उनके मूड होते हैं, उनकी स्मृतियाँ होती हैं, उनकी माँगें होती हैं। संगमों पर होने वाले अनुष्ठान सामाजिक संवाद हैं। समुदायों ने ये रिश्ते मौसमी अर्पण, शुद्धता के नियम और तयशुदा घाटों के ज़रिए बनाए रखे — जो सब मिलकर एक पारिस्थितिक अभ्यास भी थे।'
       },
       {
-        heading: 'The Panch Prayag system',
+        heading: 'पंच प्रयाग व्यवस्था',
         body:
-          'Uttarakhand holds five sacred river confluences — Vishnu Prayag, Nanda Prayag, Karna Prayag, Rudra Prayag, and Dev Prayag. Each has its own mythos, shrine tradition, and community stewardship. Dev Prayag, where Alaknanda and Bhagirathi join to form the Ganga, is the final and most revered confluence.'
+          'उत्तराखंड में पाँच पवित्र संगम हैं — विष्णु प्रयाग, नंद प्रयाग, कर्ण प्रयाग, रुद्र प्रयाग और देव प्रयाग। हर एक की अपनी कथा, तीर्थ परंपरा और सामुदायिक देखरेख है। देव प्रयाग, जहाँ अलकनंदा और भागीरथी मिलकर गंगा बनती हैं, इनमें अंतिम और सबसे पूजनीय संगम है।'
       },
       {
-        heading: 'Why this matters in 2026',
+        heading: 'यह 2026 में क्यों मायने रखता है',
         body:
-          'Climate change is altering glacier patterns and river flows. Understanding rivers as entities with cultural relationships — not just hydrological features — changes how communities advocate for them. Cultural attachment has historically been a stronger driver of river protection than regulatory frameworks alone.'
+          'जलवायु परिवर्तन ग्लेशियरों और नदी-प्रवाहों को बदल रहा है। नदियों को केवल जल-भौगोलिक इकाइयाँ नहीं, बल्कि सांस्कृतिक रिश्तों वाली इकाइयाँ मानना — समुदायों के उनके पक्ष में खड़े होने के तरीक़े को बदल देता है। इतिहास बताता है कि नदी-संरक्षण के लिए सांस्कृतिक जुड़ाव अकेले नियमन से ज़्यादा प्रभावी रहा है।'
       }
     ]
   },
   {
     slug: 'uttarakhand-statehood-movement',
-    title: 'The Uttarakhand Statehood Movement: Decades of Patience',
-    readTime: '12 min read',
-    level: 'Educational',
+    title: 'उत्तराखंड राज्य आंदोलन — दशकों का धैर्य',
+    readTime: '12 मिनट पढ़ें',
+    level: 'शैक्षणिक',
     excerpt:
-      'Why it took 53 years after independence for Uttarakhand to become a separate state, and what the struggle revealed about hill identity.',
+      'आज़ादी के बाद उत्तराखंड को अलग राज्य बनने में 53 साल क्यों लगे, और इस संघर्ष ने पहाड़ी पहचान के बारे में क्या उजागर किया।',
     sections: [
       {
-        heading: 'Why a separate state was needed',
+        heading: 'अलग राज्य की ज़रूरत क्यों पड़ी',
         body:
-          'After 1947, Garhwal and Kumaon became part of Uttar Pradesh. Hill communities found that Lucknow-based governance did not prioritize mountain infrastructure, forest rights, or cultural development. Distance was not just geographical; it was administrative, linguistic, and social. The demand for a separate state emerged from this structural neglect.'
+          '1947 के बाद गढ़वाल और कुमाऊँ उत्तर प्रदेश का हिस्सा बन गए। पहाड़ी समुदायों ने देखा कि लखनऊ-केंद्रित शासन पहाड़ी अवसंरचना, वन-अधिकार और सांस्कृतिक विकास को प्राथमिकता नहीं देता। दूरी केवल भौगोलिक नहीं थी — प्रशासनिक, भाषाई और सामाजिक भी थी। अलग राज्य की माँग इसी संरचनात्मक उपेक्षा से उपजी।'
       },
       {
-        heading: 'Milestones and martyrs',
+        heading: 'पड़ाव और शहीद',
         body:
-          'The movement had many milestones: early advocacy by leaders like Sridev Suman and H.N. Bahuguna, the Muzaffarnagar massacre of protesters in 1994, and decades of political negotiation. The 1994 incident, where police fired on marching Pahadi women and students, remains one of the most traumatic events in the statehood movement\'s history.'
+          'आंदोलन के कई पड़ाव रहे — श्रीदेव सुमन और एच.एन. बहुगुणा जैसे नेताओं की शुरुआती वकालत, 1994 के मुज़फ़्फ़रनगर में प्रदर्शनकारियों पर गोलीबारी, और दशकों की राजनीतिक बातचीत। 1994 की वह घटना, जब पैदल चल रहे पहाड़ी छात्रों और महिलाओं पर पुलिस ने गोली चलाई, आज भी राज्य आंदोलन के इतिहास की सबसे पीड़ादायक कड़ी है।'
       },
       {
-        heading: 'November 9, 2000',
+        heading: '9 नवंबर 2000',
         body:
-          'Uttarakhand became India\'s 27th state on 9 November 2000. The capital was established at Dehradun while Gairsain remains the symbolic legislative seat. The creation of the state was a recognition that administrative identity matters for cultural and economic development. The movement\'s story continues.'
+          'उत्तराखंड 9 नवंबर 2000 को भारत का 27वाँ राज्य बना। राजधानी देहरादून में स्थापित हुई, जबकि गैरसैंण प्रतीकात्मक विधायी केंद्र बना हुआ है। राज्य का बनना इस बात की स्वीकृति थी कि सांस्कृतिक और आर्थिक विकास के लिए प्रशासनिक पहचान मायने रखती है। इस आंदोलन की कहानी अब भी जारी है।'
       }
     ]
   },
   {
     slug: 'chipko-movement-legacy',
-    title: 'The Chipko Movement: 50 Years Later',
-    readTime: '9 min read',
-    level: 'Educational',
+    title: 'चिपको आंदोलन — पचास साल बाद',
+    readTime: '9 मिनट पढ़ें',
+    level: 'शैक्षणिक',
     excerpt:
-      'How village women in Reni, Chamoli transformed forest protest into global environmental language — and what its legacy looks like today.',
+      'चमोली के रैणी गाँव की महिलाओं ने वन-प्रतिरोध को कैसे विश्वव्यापी पर्यावरणीय भाषा में बदला — और आज इसकी विरासत कैसी दिखती है।',
     sections: [
       {
-        heading: '26 March 1974',
+        heading: '26 मार्च 1974',
         body:
-          'The story begins simply: logging contractors arrived at Reni village while the men were away. Gaura Devi and 26 other women confronted them, hugging the trees. The contractors left. Chipko means "to hug" or "stick to" — this act became the defining image of grassroots environmental resistance worldwide.'
+          'कहानी सीधी है — रैणी गाँव में लकड़ी काटने वाले ठेकेदार तब पहुँचे जब पुरुष बाहर थे। गौरा देवी और 26 अन्य महिलाओं ने पेड़ों से लिपटकर उनका सामना किया। ठेकेदार लौट गए। "चिपको" यानी "गले लगाना" — यही कार्रवाई दुनिया भर के ज़मीनी पर्यावरणीय प्रतिरोध की पहचान बन गई।'
       },
       {
-        heading: 'Before Reni, there was Mandal',
+        heading: 'रैणी से पहले, मंडल',
         body:
-          'The 1974 Reni action was not the first Chipko moment. In 1973, activists in Mandal village had already staged tree-hugging protests. Sunderlal Bahuguna\'s long walks and Chandi Prasad Bhatt\'s community organizing laid the ground. Reni became famous because it was led by ordinary village women with no prior political organization.'
+          '1974 की रैणी घटना पहला चिपको-प्रसंग नहीं थी। 1973 में मंडल गाँव के कार्यकर्ता पहले ही पेड़ों से लिपटने का प्रदर्शन कर चुके थे। सुंदरलाल बहुगुणा की लंबी पदयात्राओं और चंडी प्रसाद भट्ट के सामुदायिक संगठन ने ज़मीन तैयार की थी। रैणी इसलिए प्रसिद्ध हुआ क्योंकि इसका नेतृत्व बिना किसी पूर्व राजनीतिक संगठन वाली आम गाँव की महिलाओं ने किया।'
       },
       {
-        heading: 'Legacy and lessons',
+        heading: 'विरासत और सबक़',
         body:
-          'Chipko directly influenced India\'s Forest Conservation Act (1980), which stopped commercial logging in the Himalayas. It inspired the Green Belt Movement in Kenya and environmental justice movements worldwide. Fifty years later, the question it posed remains live: who owns the forest? The cultural answer — the community that lives inside it — has outlasted every policy debate.'
+          'चिपको ने भारत के वन संरक्षण अधिनियम (1980) को सीधे प्रभावित किया, जिसने हिमालय में व्यावसायिक कटाई पर रोक लगाई। इसने केन्या के ग्रीन बेल्ट आंदोलन और दुनिया भर के पर्यावरणीय न्याय आंदोलनों को प्रेरित किया। पचास साल बाद भी इसका सवाल जीवित है — जंगल किसका है? सांस्कृतिक जवाब — उस समुदाय का जो उसके भीतर रहता है — हर नीतिगत बहस से ज़्यादा टिकाऊ साबित हुआ है।'
       }
     ]
   },
   {
     slug: 'garhwali-wedding-traditions',
-    title: 'Garhwali Wedding Traditions — A Week of Rituals',
-    readTime: '9 min',
-    level: 'Cultural',
-    excerpt: 'A Garhwali wedding is not a single event but a seven-day arc of rituals, music, and community bonding that encode centuries of social wisdom.',
+    title: 'गढ़वाली विवाह परंपराएँ — रीति-रिवाज़ों का सात दिन का चक्र',
+    readTime: '9 मिनट',
+    level: 'सांस्कृतिक',
+    excerpt: 'गढ़वाली विवाह एक अकेला आयोजन नहीं — रीति, संगीत और सामुदायिक बंधन के सात दिनों की एक पूरी कड़ी है, जो सदियों की सामाजिक समझ को अपने भीतर समेटे हुए है।',
     sections: [
       {
-        heading: 'The engagement: Tel-Haldi',
-        body: 'Before the wedding, a Tel-Haldi ceremony applies turmeric to both bride and groom at their respective homes. Accompanied by women singing mangal geet (auspicious songs), it marks the transition from ordinary time to sacred time. The haldi is prepared with mustard oil sourced from the family\'s own land — a detail that carries economic and spiritual weight.'
+        heading: 'सगाई — तेल-हल्दी',
+        body: 'विवाह से पहले तेल-हल्दी की रस्म में वर और वधू दोनों के घर उन्हें हल्दी लगाई जाती है। महिलाओं के मंगल गीतों के बीच यह रस्म साधारण समय को पवित्र समय में बदलती है। हल्दी परिवार की अपनी ज़मीन से आए सरसों के तेल में मिलाई जाती है — यह एक ऐसा विवरण है जिसमें आर्थिक और आध्यात्मिक — दोनों भार हैं।'
       },
       {
-        heading: 'Bharat Milan: the groom\'s procession',
-        body: 'The Barat (groom\'s party) walks to the bride\'s village — traditionally on foot through mountain paths. The Dhol-Damau players lead, and villagers line the path. At the bride\'s gate, the Dwaar Puja (door ritual) must be completed before any guest may enter. The lead Dholi (drummer) negotiates entry through a playful tug of rituals — a moment that dissolves social hierarchies in laughter.'
+        heading: 'बरात मिलन — दूल्हे की बरात',
+        body: 'बरात परंपरागत रूप से पहाड़ी रास्तों पर पैदल वधू के गाँव पहुँचती है। ढोल-दमौ बजाने वाले आगे-आगे चलते हैं और गाँव वाले रास्ते के दोनों ओर खड़े रहते हैं। वधू के दरवाज़े पर द्वार पूजा पूरी होने से पहले कोई मेहमान अंदर नहीं जा सकता। मुख्य ढोली प्रवेश का समझौता एक चंचल रस्म-कशाकश के ज़रिए करता है — एक ऐसा क्षण जो हँसी में सामाजिक सीढ़ी को घोल देता है।'
       },
       {
-        heading: 'The Kangna ceremony',
-        body: 'Sacred threads are tied around the wrists of bride and groom — the Kangna. These threads carry prayers woven by women of both families and are not removed until the ritual is complete. The symbolism is ancient: wrist threads in Vedic tradition denote a vow witnessed by the cosmos.'
+        heading: 'कंगना रस्म',
+        body: 'वर और वधू की कलाइयों पर पवित्र सूत्र बाँधे जाते हैं — कंगना। ये सूत्र दोनों परिवारों की महिलाओं की प्रार्थनाओं से बुने जाते हैं और रस्म पूरी होने तक नहीं खुलते। इसका प्रतीक-अर्थ प्राचीन है — कलाई का सूत्र वैदिक परंपरा में ब्रह्मांड-साक्षी संकल्प का चिह्न है।'
       },
       {
-        heading: 'Saptapadi and the seven vows',
-        body: 'The seven steps around the sacred fire are accompanied by Garhwali verses that differ from standard Sanskrit slokas — adapted over centuries to reflect mountain life, mentioning shared labour in the fields, protection from landslides, and care during the harsh winter. The specificity is extraordinary: these are not abstract vows but practical commitments.'
+        heading: 'सप्तपदी और सात वचन',
+        body: 'अग्नि के चारों ओर सात कदम गढ़वाली छंदों के साथ पूरे किए जाते हैं, जो मानक संस्कृत श्लोकों से अलग हैं — सदियों में पहाड़ी जीवन के अनुरूप ढाले गए, जिनमें खेतों में साझा श्रम, भूस्खलन से रक्षा और कठोर सर्दियों में देखभाल का ज़िक्र है। यह विशिष्टता असाधारण है — ये अमूर्त वचन नहीं, व्यावहारिक प्रतिबद्धताएँ हैं।'
       },
       {
-        heading: 'Bidaai: the hardest moment',
-        body: 'When the bride leaves her natal home, the Bidaai songs (Maayke ke geet) are sung by her mother and aunts. The songs catalogue the bride\'s childhood — her favourite tree, the spring she played near, the name of her cow. These songs preserve oral memory: in communities where written records were rare, Bidaai songs served as biography.'
+        heading: 'बिदाई — सबसे कठिन क्षण',
+        body: 'जब वधू अपने मायके से विदा होती है, बिदाई गीत (मायके के गीत) उसकी माँ और चाचियाँ गाती हैं। इन गीतों में वधू का बचपन दर्ज होता है — उसका प्रिय पेड़, जिस झरने के पास वह खेलती थी, उसकी गाय का नाम। इन गीतों में मौखिक स्मृति बची रहती है — उन समुदायों में, जहाँ लिखित अभिलेख कम थे, बिदाई गीत ही जीवनी का काम करते थे।'
       }
     ]
   },
   {
     slug: 'aipan-sacred-art-uttarakhand',
-    title: 'Aipan — The Sacred Floor Art of Kumaon',
-    readTime: '7 min',
-    level: 'Art & Craft',
-    excerpt: 'Aipan is a ritual folk art painted on floors and walls by Kumaoni women during festivals and rites of passage, encoding deities, cosmology and community memory in geometric patterns.',
+    title: 'ऐपण — कुमाऊँ की पवित्र भूमि-कला',
+    readTime: '7 मिनट',
+    level: 'कला और शिल्प',
+    excerpt: 'ऐपण एक अनुष्ठानिक लोक-कला है जिसे कुमाऊँ की महिलाएँ त्योहारों और संस्कारों पर फ़र्श और दीवारों पर बनाती हैं — ज्यामितीय रूपों में देवताओं, ब्रह्मांड-दृष्टि और सामुदायिक स्मृति को कूटकर।',
     sections: [
       {
-        heading: 'What is Aipan?',
-        body: 'Aipan (from the Sanskrit arpan, meaning offering) is a white-on-red art form unique to Kumaon in Uttarakhand. A base of red clay (geru) is applied first, then intricate patterns are drawn with a cloth dipped in rice paste (visaalpan). The art is practised exclusively by women and passed mother to daughter over generations. No two households draw exactly the same patterns — variations are family trademarks.'
+        heading: 'ऐपण क्या है?',
+        body: 'ऐपण (संस्कृत के "अर्पण" से) कुमाऊँ की एक अनूठी लाल-पर-सफ़ेद कला-शैली है। पहले लाल मिट्टी (गेरू) की परत लगाई जाती है, फिर चावल के घोल में डूबे कपड़े से महीन डिज़ाइन बनाए जाते हैं (बिसालपण)। यह कला केवल महिलाएँ अभ्यास करती हैं, माँ से बेटी को पीढ़ी-दर-पीढ़ी सौंपी जाती है। कोई भी दो घर एक जैसे डिज़ाइन नहीं बनाते — भिन्नताएँ पारिवारिक पहचान बन जाती हैं।'
       },
       {
-        heading: 'The ritual context',
-        body: 'Aipan is drawn on auspicious occasions: the birth of a child, a wedding, a death anniversary, Navaratri, and Diwali. Each occasion has its specific pattern (Chauki). The Devi Chauki (for the goddess) differs from the Vivah Chauki (wedding) and the Sohlah Chauki (childbirth). The patterns are not merely decorative — they are considered to activate protective and blessing energy.'
+        heading: 'अनुष्ठानिक संदर्भ',
+        body: 'ऐपण शुभ अवसरों पर बनाया जाता है — बच्चे का जन्म, विवाह, पुण्यतिथि, नवरात्रि और दीपावली। हर अवसर के लिए अपना विशेष डिज़ाइन (चौकी) होता है। देवी चौकी विवाह चौकी से अलग होती है, और दोनों सोलह चौकी (जन्म-संस्कार) से अलग। ये डिज़ाइन केवल सजावटी नहीं — इन्हें रक्षक और आशीर्वादक ऊर्जा को सक्रिय करने वाला माना जाता है।'
       },
       {
-        heading: 'Symbolism in the patterns',
-        body: 'Common motifs include the lotus (spiritual awakening), the swastika (good fortune), footprints of Lakshmi (prosperity), the sun and moon (cosmic balance), and animals like the cow, elephant, and peacock. The border designs called Shankha (conch) and Chakra (wheel) reference the Vishnu iconography central to Kumaoni religious life.'
+        heading: 'डिज़ाइन में प्रतीक',
+        body: 'सामान्य आकृतियाँ हैं — कमल (आध्यात्मिक जागरण), स्वस्तिक (शुभता), लक्ष्मी के पद-चिह्न (समृद्धि), सूर्य और चंद्रमा (ब्रह्मांडीय संतुलन), और गाय, हाथी, मोर जैसे पशु-पक्षी। शंख और चक्र नामक बॉर्डर-डिज़ाइन कुमाऊँ के धार्मिक जीवन में केंद्रीय विष्णु-चिह्न का संदर्भ हैं।'
       },
       {
-        heading: 'Aipan in the digital age',
-        body: 'Young Kumaoni artists have begun adapting Aipan to canvas, textiles, and digital media — taking it from the threshold to galleries worldwide. The Uttarakhand government has awarded GI (Geographical Indication) status to protect it. Yet practitioners worry that the ritual context is disappearing: Aipan drawn on canvas in a city apartment carries different energy than Aipan drawn at dawn on the family threshold, offered to the household deity.'
+        heading: 'डिजिटल युग में ऐपण',
+        body: 'युवा कुमाऊँनी कलाकारों ने ऐपण को कैनवास, वस्त्रों और डिजिटल माध्यमों तक पहुँचाया है — देहरी से लेकर दुनिया भर की दीर्घाओं तक। उत्तराखंड सरकार ने इसे भौगोलिक संकेत (जीआई) का दर्जा दिया है। पर अभ्यासकर्ताओं की चिंता है कि अनुष्ठानिक संदर्भ मिट रहा है — शहर के अपार्टमेंट में कैनवास पर बना ऐपण उस ऐपण से अलग ऊर्जा रखता है जो सुबह-सुबह घर की देहरी पर, कुल-देवता को अर्पित करते हुए बनाया जाता है।'
       }
     ]
   },
   {
     slug: 'van-gujjar-nomadic-people',
-    title: 'Van Gujjars — Uttarakhand\'s Last Nomadic Pastoralists',
-    readTime: '8 min',
-    level: 'Ethnography',
-    excerpt: 'The Van Gujjars of Uttarakhand migrate with their buffalo herds between alpine meadows and the Terai plains every year, maintaining a way of life that predates the modern state.',
+    title: 'वन गुज्जर — उत्तराखंड के अंतिम खानाबदोश पशुपालक',
+    readTime: '8 मिनट',
+    level: 'नृवंश-विज्ञान',
+    excerpt: 'उत्तराखंड के वन गुज्जर हर साल अपनी भैंसों के साथ ऊँचे बुग्यालों और तराई के मैदानों के बीच पलायन करते हैं — एक ऐसा जीवन जो आधुनिक राज्य से भी पुराना है।',
     sections: [
       {
-        heading: 'Who are the Van Gujjars?',
-        body: 'Van Gujjars are a Muslim pastoral community living in the Shivalik hills, Doon Valley, and Rajaji National Park. Their economy is built entirely on buffalo herding — they produce and sell desi ghee that commands premium prices at Haridwar and Rishikesh markets. They live in temporary settlements called deras and move with the seasons, following ancient routes that predate modern forest boundaries.'
+        heading: 'वन गुज्जर कौन हैं?',
+        body: 'वन गुज्जर एक मुस्लिम पशुपालक समुदाय है जो शिवालिक की पहाड़ियों, दून घाटी और राजाजी राष्ट्रीय उद्यान के इलाक़ों में रहता है। उनकी अर्थव्यवस्था पूरी तरह भैंस-पालन पर टिकी है — वे देसी घी बनाकर बेचते हैं जो हरिद्वार और ऋषिकेश के बाज़ारों में बढ़िया दाम पाता है। वे "डेरा" नामक अस्थायी बस्तियों में रहते हैं और मौसमों के अनुसार आधुनिक वन-सीमाओं से भी पुराने रास्तों पर चलते रहते हैं।'
       },
       {
-        heading: 'The annual migration',
-        body: 'Every summer, Van Gujjar families drive their buffalo herds up to the Bugyal (alpine meadows) of the higher Himalayas — some reaching elevations above 3,500 metres. In winter they descend to the Terai. The migration takes 15 to 20 days on foot. Children are born on the trail, elderly people are carried, and the community moves as a single unit — buffaloes, dogs, horses, and people together.'
+        heading: 'सालाना पलायन',
+        body: 'हर गर्मी में वन गुज्जर परिवार अपने भैंस-झुंडों को ऊँचे हिमालयी बुग्यालों तक ले जाते हैं — कुछ 3,500 मीटर से भी ऊपर। सर्दियों में वे तराई की ओर उतरते हैं। यह पलायन पैदल 15 से 20 दिन का होता है। बच्चे रास्ते में जन्म लेते हैं, बुज़ुर्ग गोद में लाए जाते हैं, और समुदाय एक इकाई की तरह चलता है — भैंस, कुत्ते, घोड़े और लोग एक साथ।'
       },
       {
-        heading: 'Conflict with modern conservation',
-        body: 'The creation of Rajaji National Park in 1983 placed the Van Gujjars\' traditional winter grounds inside a protected reserve. Conservation laws prohibit habitation in core park zones. For decades, the community faced eviction orders and their traditional rights went unrecognised. The struggle raises profound questions about who conservation is for and whose history counts as heritage.'
+        heading: 'आधुनिक संरक्षण से टकराव',
+        body: '1983 में राजाजी राष्ट्रीय उद्यान की स्थापना ने वन गुज्जरों की पारंपरिक शीत-कालीन ज़मीन को एक संरक्षित क्षेत्र के भीतर डाल दिया। संरक्षण क़ानून कोर पार्क क्षेत्रों में निवास पर रोक लगाते हैं। दशकों तक इस समुदाय ने बेदख़ली आदेश झेले और इनके पारंपरिक अधिकार अनदेखे रहे। यह संघर्ष यह गहरे सवाल उठाता है — संरक्षण किसके लिए है, और किसका इतिहास "विरासत" कहलाने का अधिकार रखता है।'
       },
       {
-        heading: 'Culture and oral tradition',
-        body: 'Van Gujjars have a rich oral tradition of poetry (called Dhola) celebrating the beauty of forests, the loyalty of buffalo, and the grief of displacement. Their knowledge of medicinal plants, animal behaviour, and weather patterns accumulated over centuries has no written record. As the community shrinks under resettlement pressures, this knowledge faces extinction.'
+        heading: 'संस्कृति और मौखिक परंपरा',
+        body: 'वन गुज्जरों की एक समृद्ध काव्य परंपरा है — "ढोला" — जिसमें जंगलों की सुंदरता, भैंसों की वफ़ादारी और विस्थापन के दुख के गीत हैं। औषधीय वनस्पतियों, पशु-व्यवहार और मौसमी बदलावों का उनका सदियों पुराना ज्ञान लिखित रूप में मौजूद नहीं है। जैसे-जैसे पुनर्वास-दबाव में समुदाय सिकुड़ रहा है, यह ज्ञान लुप्त होने के कगार पर है।'
       }
     ]
   },
   {
     slug: 'ringal-bamboo-craft',
-    title: 'Ringal — The Himalayan Bamboo Craft of Uttarakhand',
-    readTime: '6 min',
-    level: 'Craft',
-    excerpt: 'Ringal, a high-altitude Himalayan bamboo, forms the basis of a centuries-old craft tradition in Uttarakhand — producing baskets, furniture, and ritual objects used across the region.',
+    title: 'रिंगाल — उत्तराखंड की हिमालयी बाँस-कला',
+    readTime: '6 मिनट',
+    level: 'शिल्प',
+    excerpt: 'रिंगाल एक ऊँचाई पर उगने वाला हिमालयी बाँस है जो सदियों से उत्तराखंड की शिल्प-परंपरा का आधार रहा है — जिससे पूरे क्षेत्र में इस्तेमाल होने वाली टोकरियाँ, फ़र्नीचर और अनुष्ठान-वस्तुएँ बनती हैं।',
     sections: [
       {
-        heading: 'What is Ringal?',
-        body: 'Ringal (Thamnocalamus spathiflorus) is a dwarf bamboo found at altitudes between 1,800 and 4,000 metres in Uttarakhand and Himachal Pradesh. Unlike tropical bamboo, it grows slowly in dense clumps, yields slender flexible culms, and is exceptionally strong for its weight. Communities have harvested Ringal sustainably for centuries — taking only what regenerates annually.'
+        heading: 'रिंगाल क्या है?',
+        body: 'रिंगाल (Thamnocalamus spathiflorus) एक बौना बाँस है जो उत्तराखंड और हिमाचल प्रदेश में 1,800 से 4,000 मीटर की ऊँचाई पर मिलता है। उष्ण-कटिबंधीय बाँस के उलट यह धीमी गति से घने झुंडों में उगता है, पतली लचीली छड़ें देता है और अपने वज़न के हिसाब से असामान्य रूप से मज़बूत होता है। समुदायों ने सदियों से इसे टिकाऊ ढंग से काटा है — केवल उतना ही जितना हर साल फिर से उग आता है।'
       },
       {
-        heading: 'Products and uses',
-        body: 'Ringal is woven into Tokris (large carrying baskets), Dauli (grain storage baskets), Chhalni (sieves), Kilta (conical backpack baskets), and Soop (winnowing trays). The Kilta is the most iconic — a conical wicker backpack used by mountain women to carry loads of firewood and fodder, with a tumpline across the forehead. It remains in daily use today.'
+        heading: 'उत्पाद और उपयोग',
+        body: 'रिंगाल से टोकरियाँ (टोकरी), अनाज रखने की टोकरियाँ (डौली), छलनी, कोणीय पीठ-टोकरी (किल्टा) और सूप बुने जाते हैं। किल्टा सबसे पहचानी जाने वाली वस्तु है — पहाड़ी महिलाएँ इसे लकड़ी और चारे के भार को ढोने के लिए पीठ पर लादती हैं और माथे पर पट्टी से बाँधती हैं। यह आज भी रोज़मर्रा उपयोग में है।'
       },
       {
-        heading: 'The craft communities',
-        body: 'Ringal weaving is practised primarily by the Shilpkar (artisan) castes of Garhwal and Kumaon. Families in districts like Chamoli, Tehri, and Pithoragarh have woven Ringal for generations. The craft declined sharply with plastic substitutes entering the 1980s market, but a revival is underway driven by eco-tourism demand for authentic Pahadi crafts.'
+        heading: 'शिल्प-समुदाय',
+        body: 'रिंगाल बुनाई मुख्य रूप से गढ़वाल और कुमाऊँ की शिल्पकार जातियों द्वारा की जाती है। चमोली, टिहरी और पिथौरागढ़ ज़िलों के परिवार पीढ़ियों से रिंगाल बुनते आए हैं। 1980 के दशक में प्लास्टिक विकल्पों के आते ही यह शिल्प तेज़ी से घटा, पर पहाड़ी शिल्प के प्रति ईको-टूरिज़्म की बढ़ती माँग से अब पुनरुद्धार शुरू हो रहा है।'
       },
       {
-        heading: 'Revival and future',
-        body: 'Several NGOs and the Uttarakhand Bamboo and Fibre Development Board now train artisans in new product designs — lamps, furniture, stationery, and wall panels that appeal to urban buyers. Export markets in Europe and Japan have shown interest in certified handmade Ringal goods. The challenge is connecting remote artisans to these markets without middlemen capturing all the value.'
+        heading: 'पुनरुद्धार और भविष्य',
+        body: 'कई गैर-सरकारी संगठन और उत्तराखंड बाँस एवं रेशा विकास बोर्ड अब कारीगरों को नए उत्पाद-डिज़ाइन सिखा रहे हैं — लैंप, फ़र्नीचर, स्टेशनरी और दीवार के पैनल जो शहरी ग्राहकों को आकर्षित करते हैं। यूरोप और जापान के निर्यात बाज़ारों ने प्रमाणित हस्त-निर्मित रिंगाल उत्पादों में रुचि दिखाई है। चुनौती यह है कि दूर बैठे कारीगरों को इन बाज़ारों तक ऐसे पहुँचाया जाए कि बीच के बिचौलिये पूरी क़ीमत न ले उड़ें।'
       }
     ]
   },
   {
     slug: 'migration-crisis-uttarakhand',
-    title: 'The Ghost Villages — Understanding Uttarakhand\'s Migration Crisis',
-    readTime: '11 min',
-    level: 'Analysis',
-    excerpt: 'Over 3,000 villages in Uttarakhand are officially classified as ghost villages — abandoned or near-abandoned settlements left behind as generations migrate to plains cities.',
+    title: 'भूतहा गाँव — उत्तराखंड के पलायन संकट को समझना',
+    readTime: '11 मिनट',
+    level: 'विश्लेषण',
+    excerpt: 'उत्तराखंड के 3,000 से अधिक गाँव आधिकारिक रूप से भूतहा गाँव घोषित हैं — छूटी हुई या लगभग ख़ाली बस्तियाँ, जिन्हें पीढ़ियाँ मैदानी शहरों की ओर पलायन करते हुए पीछे छोड़ आईं।',
     sections: [
       {
-        heading: 'The scale of the problem',
-        body: 'According to the 2011 census, Uttarakhand had 1,053 villages with zero population. By 2021 estimates, over 3,000 settlements had populations below 100 or were functionally abandoned. The mountain districts — Almora, Pithoragarh, Chamoli, Tehri, Pauri Garhwal — show the steepest declines. Pauri Garhwal lost nearly 20% of its population between 2001 and 2011 alone.'
+        heading: 'समस्या का पैमाना',
+        body: '2011 की जनगणना के अनुसार, उत्तराखंड में 1,053 गाँव ऐसे थे जहाँ आबादी शून्य थी। 2021 के अनुमानों तक 3,000 से अधिक बस्तियों की आबादी 100 से कम हो चुकी थी या वे व्यावहारिक रूप से ख़ाली हो चुकी थीं। पहाड़ी ज़िले — अल्मोड़ा, पिथौरागढ़, चमोली, टिहरी, पौड़ी गढ़वाल — सबसे तेज़ गिरावट दिखाते हैं। अकेले पौड़ी गढ़वाल ने 2001 से 2011 के बीच लगभग 20% आबादी खोई।'
       },
       {
-        heading: 'Why people leave',
-        body: 'The reasons are structural, not personal. Hill agriculture is subsistence-level: small terraced fields produce barely enough for a family. There are no processing industries to add value. Roads reach most villages but the last mile to the healthcare centre or school can still be hours away. Young people weigh the arithmetic and leave — not abandoning their culture but pursuing survival.'
+        heading: 'लोग क्यों जाते हैं',
+        body: 'कारण संरचनात्मक हैं, व्यक्तिगत नहीं। पहाड़ी खेती जीविका-स्तर की है — छोटे सीढ़ीदार खेत बस एक परिवार के लिए इतना अनाज पैदा कर पाते हैं। मूल्य जोड़ने वाले प्रसंस्करण उद्योग नहीं हैं। सड़कें अधिकांश गाँवों तक पहुँचती हैं पर स्वास्थ्य केंद्र या स्कूल तक की अंतिम मील अब भी घंटों की हो सकती है। युवा गणित करते हैं और चले जाते हैं — अपनी संस्कृति छोड़ने के लिए नहीं, अपने जीवन-रक्षा के लिए।'
       },
       {
-        heading: 'The feminisation of villages',
-        body: 'A striking pattern: men migrate for work while women remain behind to farm and maintain homes, often with children and elderly parents. Women in these villages are called "grass widows" — running entire households and farms alone. This has made the hills a matriarchal space in practice. Women\'s self-help groups (Mahila Mangal Dals) have become effective local governance in many remote villages.'
+        heading: 'गाँवों का स्त्रीकरण',
+        body: 'एक स्पष्ट पैटर्न है — पुरुष काम के लिए पलायन करते हैं और महिलाएँ खेती और घर संभालने के लिए पीछे रुक जाती हैं, अक्सर बच्चों और बुज़ुर्ग माता-पिता के साथ। इन गाँवों की महिलाओं को कभी "घास की विधवाएँ" कहा गया — अकेले पूरा घर और खेत चलाती हुई। इसने पहाड़ को व्यवहार में एक मातृ-प्रधान समाज बना दिया है। महिला मंगल दलों जैसी स्वयं-सहायता समूह कई दूर-दराज़ के गाँवों में असली स्थानीय शासन बन गए हैं।'
       },
       {
-        heading: 'What ghost villages lose',
-        body: 'When a village empties, it loses more than population. Temple maintenance lapses, oral traditions have no audience, traditional seeds are not replanted, terraced fields collapse without annual upkeep, and water springs dry up as forest cover thins. A village is not just its buildings but a maintained relationship between people and land.'
+        heading: 'भूतहा गाँव क्या-क्या खोते हैं',
+        body: 'जब कोई गाँव ख़ाली होता है, तो वह सिर्फ़ आबादी नहीं खोता। मंदिरों की देखरेख रुक जाती है, मौखिक परंपराओं का कोई श्रोता नहीं बचता, पारंपरिक बीज दुबारा नहीं बोए जाते, सीढ़ीदार खेत बिना सालाना मरम्मत के ढह जाते हैं, और जंगल पतले होने से पानी के स्रोत सूख जाते हैं। गाँव सिर्फ़ भवन नहीं होते — वे ज़मीन और लोगों के बीच लगातार बनाए-रखे गए एक रिश्ते होते हैं।'
       },
       {
-        heading: 'Signs of hope and return',
-        body: 'The COVID-19 pandemic caused a notable reverse migration, with tens of thousands returning to hill villages when city economies collapsed. Several have stayed. Digital nomadism is making remote villages viable for knowledge workers. State government incentives for returning families include land allotment and enterprise support.'
+        heading: 'उम्मीद और वापसी के संकेत',
+        body: 'कोविड-19 महामारी के दौरान बड़ी संख्या में उलटा पलायन देखा गया — हज़ारों लोग पहाड़ी गाँवों की ओर लौटे जब शहरी अर्थव्यवस्थाएँ ठप हुईं। कई लोग रुक भी गए हैं। डिजिटल घुमक्कड़ी दूर-दराज़ के गाँवों को ज्ञान-कर्मियों के लिए संभव बना रही है। लौटने वाले परिवारों के लिए राज्य सरकार की योजनाओं में भूमि-आवंटन और उद्यम-सहायता शामिल हैं।'
       }
     ]
   }
