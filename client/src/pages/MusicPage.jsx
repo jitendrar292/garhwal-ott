@@ -4,20 +4,25 @@ import { useMusic } from '../context/MusicContext';
 import SEO from '../components/SEO';
 import { useToast } from '../components/ui/Toast';
 
-// All queries append "-movie -film -trailer -full movie" to keep results
-// limited to songs/audio only and exclude Garhwali movie uploads.
+// Every query appends "-movie -film -trailer -full movie" so movie uploads
+// don't sneak into the songs list. Anything more aggressive (excluding
+// -shorts, -reels, -instagram, etc.) narrows the YouTube API result set so
+// hard that artist-specific tabs like NSN come back completely empty.
 const EXCLUDE = '-movie -film -trailer -"full movie"';
-const EXCLUDE_REELS = `${EXCLUDE} -reels -reel -shorts -short -#shorts -#reels -instagram`;
+// Per-tab search config. `order: 'relevance'` is used for artist/legacy
+// catalogues (NSN, Classic, Female Voices) whose "best" songs are decades
+// old — sorting by upload date would surface teasers and interviews instead
+// of the real hits. Trending / genre tabs stay on `date` for freshness.
 const MUSIC_QUERIES = [
-  { label: '🔥 Trending', query: `garhwali trending hit songs 2026 ${EXCLUDE}` },
-  { label: '🎙️ NSN', query: `Narendra Singh Negi best songs garhwali hit ${EXCLUDE_REELS}` },
-  { label: '🎶 Classic', query: `old garhwali evergreen songs ${EXCLUDE}` },
-  { label: '🏔️ Kumaoni', query: `kumaoni hit songs uttarakhand ${EXCLUDE}` },
-  { label: '🎧 DJ Mix', query: `garhwali DJ remix nonstop dance ${EXCLUDE}` },
-  { label: '🙏 Bhajan', query: `garhwali bhajan devotional aarti ${EXCLUDE}` },
-  { label: '🪘 Jaagar', query: `garhwali jaagar Pritam Bhartwan ritual ${EXCLUDE}` },
-  { label: '💃 Folk Dance', query: `garhwali folk dance chaunphula thadya ${EXCLUDE}` },
-  { label: '👩 Female Voices', query: `garhwali female singer Meena Rana Priyanka Meher ${EXCLUDE}` },
+  { label: '🔥 Trending', query: `garhwali trending hit songs 2026 ${EXCLUDE}`, order: 'date' },
+  { label: '🎙️ NSN', query: `Narendra Singh Negi garhwali songs ${EXCLUDE}`, order: 'relevance' },
+  { label: '🎶 Classic', query: `old garhwali evergreen songs ${EXCLUDE}`, order: 'relevance' },
+  { label: '🏔️ Kumaoni', query: `kumaoni hit songs uttarakhand ${EXCLUDE}`, order: 'date' },
+  { label: '🎧 DJ Mix', query: `garhwali DJ remix nonstop dance ${EXCLUDE}`, order: 'date' },
+  { label: '🙏 Bhajan', query: `garhwali bhajan devotional aarti ${EXCLUDE}`, order: 'date' },
+  { label: '🪘 Jaagar', query: `garhwali jaagar Pritam Bhartwan ritual ${EXCLUDE}`, order: 'date' },
+  { label: '💃 Folk Dance', query: `garhwali folk dance chaunphula thadya ${EXCLUDE}`, order: 'date' },
+  { label: '👩 Female Voices', query: `garhwali female singer Meena Rana Priyanka Meher ${EXCLUDE}`, order: 'relevance' },
 ];
 
 export default function MusicPage() {
@@ -41,11 +46,16 @@ export default function MusicPage() {
       .replace(/\s+/g, ' ')
       .trim();
 
-  const filterSongLikeVideos = (items = []) =>
-    items.filter((t) => {
-      const hay = `${t?.title || ''} ${t?.channelTitle || ''}`;
-      return !REEL_WORDS_RE.test(hay);
-    });
+  // Only inspect the video title — many legit uploaders (esp. for artists
+  // like NSN) have "Shorts" or "Reels" in their channel name for branding,
+  // and we don't want that to drop their full-length song uploads. If the
+  // filter would leave us with nothing, fall back to the raw list so the
+  // tab never appears empty when the API actually returned results.
+  const filterSongLikeVideos = (items = []) => {
+    if (!items.length) return items;
+    const filtered = items.filter((t) => !REEL_WORDS_RE.test(t?.title || ''));
+    return filtered.length ? filtered : items;
+  };
 
   // Dedupe by video id first, then by normalized title to avoid repeat songs.
   const mergeUnique = (existing, incoming) => {
@@ -69,11 +79,12 @@ export default function MusicPage() {
     setLoading(true);
     setTracks([]);
     setNextPageToken(null);
-    // First page: latest uploads first (order=date), 10 per fetch.
+    // Each tab picks its own YouTube sort order (see MUSIC_QUERIES).
     // videoCategoryId omitted — category 10 (Music) is rarely set by regional
-    // Garhwali/Pahadi uploaders, so it causes zero results for NSN and other tabs.
+    // Garhwali/Pahadi uploaders, so it causes zero results for artist tabs.
     // The query's -movie/-film exclusions already filter non-music content.
-    searchVideos(MUSIC_QUERIES[activeTab].query, '', 10, 'date')
+    const tab = MUSIC_QUERIES[activeTab];
+    searchVideos(tab.query, '', 10, tab.order || 'date')
       .then((data) => {
         if (!cancelled) {
           setTracks(mergeUnique([], filterSongLikeVideos(data.videos || [])));
@@ -90,7 +101,8 @@ export default function MusicPage() {
   const handleLoadMore = () => {
     if (!nextPageToken || loadingMore) return;
     setLoadingMore(true);
-    searchVideos(MUSIC_QUERIES[activeTab].query, nextPageToken, 10, 'date')
+    const tab = MUSIC_QUERIES[activeTab];
+    searchVideos(tab.query, nextPageToken, 10, tab.order || 'date')
       .then((data) => {
         // Append older results after the latest ones already shown.
         setTracks((prev) => mergeUnique(prev, filterSongLikeVideos(data.videos || [])));

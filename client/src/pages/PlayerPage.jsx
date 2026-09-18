@@ -109,15 +109,22 @@ export default function PlayerPage() {
         <div className="lg:col-span-2">
           <div className="relative aspect-video rounded-2xl overflow-hidden bg-dark-700 shadow-2xl">
             {playerStarted ? (
-              // The `playlist=` query param tells YouTube to queue the next 4
-              // related videos right after the current one finishes — so users
-              // get continuous playback without hunting for a new video.
+              // The `playlist=` query param tells YouTube to queue the next few
+              // videos right after the current one finishes — so users get
+              // continuous playback without hunting for a new video.
+              //
+              // Quirk: With `autoplay=1`, YouTube sometimes starts the iframe
+              // with the FIRST playlist ID instead of the URL-path video
+              // (contradicting its own docs). The reliable workaround is to
+              // prepend the current videoId to the playlist — the queue then
+              // reads `current, next1, next2, …` so playback starts with the
+              // opened video regardless of which order YouTube honours.
               <iframe
                 src={buildYouTubeEmbedUrl(videoId, {
                   autoplay: 1,
                   rel: 0,
                   playlist: related.length
-                    ? related.slice(0, 4).map((v) => v.id).join(',')
+                    ? [videoId, ...related.slice(0, 4).map((v) => v.id)].join(',')
                     : undefined,
                 })}
                 title="Video Player"
