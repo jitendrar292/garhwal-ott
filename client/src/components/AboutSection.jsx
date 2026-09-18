@@ -48,15 +48,15 @@ export default function AboutSection() {
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
             {[
-              { icon: '⚡', label: 'Fast video streaming' },
-              { icon: '🆕', label: 'Daily new content' },
-              { icon: '🔍', label: 'Easy search & categories' },
-              { icon: '💨', label: 'Lightweight & smooth' },
+              { icon: '⚡', label: 'तेज़ वीडियो स्ट्रीमिंग' },
+              { icon: '🆕', label: 'दैनिक नया कंटेंट' },
+              { icon: '🔍', label: 'आसानी से खोज और श्रेणियाँ' },
+              { icon: '💨', label: 'हल्का और स्मूथ' },
               { icon: '🚫', label: 'बिल्कुल Ad-Free अनुभव', highlight: true },
-              { icon: '📱', label: 'Mobile friendly' },
-              { icon: '🤖', label: 'Ghughuti AI Chat' },
-              { icon: '📰', label: 'पहाड़ी News in Garhwali' },
-              { icon: '💼', label: 'Govt Jobs & Alerts' },
+              { icon: '📱', label: 'मोबाइल अनुकूल' },
+              { icon: '🤖', label: 'घुघुती AI चैट' },
+              { icon: '📰', label: 'गढ़वाली में पहाड़ी समाचार' },
+              { icon: '💼', label: 'सरकारी नौकरी और अलर्ट' },
             ].map((feat, i) => (
               <motion.div
                 key={i}

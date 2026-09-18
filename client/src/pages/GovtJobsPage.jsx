@@ -36,66 +36,66 @@ const MSME_ROJGAR_MODELS = [
   {
     id: 'kiwi-plantation',
     emoji: '🥝',
-    title: 'Kiwi Plantation (Orchard) Unit',
-    detail: 'कीवी बागवानी मॉडल: T-bar/pergola training के साथ 4m x 5-6m spacing, फलन 4-5 साल में शुरू और 7-8 साल में commercial production; औसत ~25 टन/हेक्टेयर तक yield संभव।',
-    investment: '1 acre orchard (trellis + drip + fencing + planting) के लिए NHB one-acre model में बेस लागत ~₹2.5 लाख बताई गई है; मौजूदा लागत स्थान और सामग्री के अनुसार अधिक हो सकती है।',
-    support: 'Horticulture dept + NHB/MIDH linkage, drip irrigation subsidy, quality planting material और trellis/orchard establishment के लिए bankable project support।',
+    title: 'कीवी बागवानी (औद्यान) यूनिट',
+    detail: 'कीवी बागवानी मॉडल: T-bar/pergola training के साथ 4m x 5-6m spacing, फलन 4-5 साल में शुरू और 7-8 साल में व्यावसायिक उत्पादन; औसत ~25 टन/हेक्टेयर तक उपज संभव है।',
+    investment: '1 एकड़ बागवानी (ट्रेलिस + ड्रिप + बाड़ + रोपण) के लिए NHB one-acre model में आधार लागत लगभग ₹2.5 लाख बताई गई है; वास्तविक लागत स्थान और सामग्री के अनुसार अधिक भी हो सकती है।',
+    support: 'बागवानी विभाग + NHB/MIDH लिंकिंग, ड्रिप सिंचाई सब्सिडी, गुणवत्ता वाले रोपण सामग्री और ट्रेलिस/बाग स्थापना के लिए बैंक योग्य परियोजना सहायता।',
   },
   {
     id: 'matsya-palan',
     emoji: '🐟',
-    title: 'Matsya Palan (Fish Farming)',
-    detail: 'टैंक/तालाब आधारित मत्स्य पालन से ग्रामीण परिवारों को नियमित आय और SHG आधारित रोजगार अवसर।',
+    title: 'मत्स्य पालन (मछली पालन)',
+    detail: 'टैंक/तालाब आधारित मत्स्य पालन से ग्रामीण परिवारों को नियमित आय और SHG आधारित रोजगार अवसर मिलते हैं।',
     investment: 'स्टार्टर मॉडल: लगभग ₹2-8 लाख',
-    support: 'Fisheries dept training, pond development assistance, feed guidance',
+    support: 'मत्स्य विभाग का प्रशिक्षण, तालाब विकास सहायता, फ़ीड मार्गदर्शन।',
   },
   {
     id: 'dairy-unit',
     emoji: '🥛',
-    title: 'Dairy & Milk Collection Micro Unit',
-    detail: 'डेयरी पशुपालन, दूध संग्रह, दही/घी जैसी वैल्यू-एडेड यूनिट से गांव स्तर पर रोजगार।',
+    title: 'डेयरी और दूध संग्रह माइक्रो यूनिट',
+    detail: 'डेयरी पशुपालन, दूध संग्रह, दही/घी जैसी मूल्य-वर्धित इकाई से गाँव स्तर पर रोजगार मिलता है।',
     investment: 'माइक्रो डेयरी: लगभग ₹4-12 लाख',
-    support: 'Animal Husbandry linkage, veterinary support, chilling/collection network',
+    support: 'पशुपालन लिंकिंग, पशुचिकित्सा सहायता, कूलिंग/संग्रह नेटवर्क।',
   },
   {
     id: 'mushroom-beekeeping',
     emoji: '🍄',
-    title: 'Mushroom & Beekeeping Allied Model',
-    detail: 'कम जगह में मशरूम उत्पादन और मधुमक्खी पालन के साथ ड्यूल इनकम मॉडल, महिलाओं/युवाओं के लिए उपयुक्त।',
+    title: 'मशरूम + मधुमक्खी पालन सहायक मॉडल',
+    detail: 'कम जगह में मशरूम उत्पादन और मधुमक्खी पालन के साथ ड्यूल इनकम मॉडल, महिलाओं/युवाओं के लिए उपयुक्त है।',
     investment: 'प्रारंभिक सेटअप: लगभग ₹1-5 लाख',
-    support: 'Skill training, cluster-based marketing, cooperative procurement',
+    support: 'कौशल प्रशिक्षण, क्लस्टर आधारित विपणन, सहकारी खरीद।',
   },
   {
     id: 'pmegp',
     emoji: '🏭',
-    title: 'PMEGP (Prime Minister Employment Generation Programme)',
-    detail: 'नया micro-enterprise शुरू करने के लिए KVIC/KVIB/DIC route से manufacturing और service units को support। ग्रामीण/पहाड़ी युवाओं के लिए popular self-employment yojana।',
-    investment: 'Project cost: Manufacturing up to ₹50 lakh, Service up to ₹20 lakh (latest PMEGP norms के अनुसार)।',
-    support: 'Margin money subsidy (category/location आधारित), EDP training, bank-linked loan facilitation।',
+    title: 'पीएमईजीपी (प्रधानमंत्री रोजगार निर्माण कार्यक्रम)',
+    detail: 'नए माइक्रो उद्यम शुरू करने के लिए KVIC/KVIB/DIC मार्ग से विनिर्माण और सेवा इकाइयों को सहायता दी जाती है। ग्रामीण/पहाड़ी युवाओं के लिए लोकप्रिय स्वरोजगार योजना है।',
+    investment: 'परियोजना लागत: विनिर्माण तक ₹50 लाख, सेवा तक ₹20 लाख (नवीनतम PMEGP नियमों के अनुसार)।',
+    support: 'मार्जिन मनी सब्सिडी (श्रेणी/स्थान के आधार पर), EDP प्रशिक्षण, बैंक-लिंक्ड लोन सुविधा।',
   },
   {
     id: 'pmfme-odop',
     emoji: '🍯',
-    title: 'PMFME (ODOP Food Processing Support)',
-    detail: 'One District One Product model के तहत pickle, mandua, pahadi masala, honey, fruit processing जैसी micro food units को formalize और scale करने के लिए योजना।',
-    investment: 'Eligible micro food enterprises के लिए project-linked support; सामान्यतः credit-linked capital subsidy component उपलब्ध।',
-    support: '35% तक credit-linked capital subsidy (scheme norms), branding/packaging, FSSAI support, SHG/FPO handholding।',
+    title: 'पीएमएफएमई (ODOP खाद्य प्रसंस्करण सहायता)',
+    detail: 'One District One Product मॉडल के तहत आचार, मंडुआ, पहाड़ी मसाला, शहद, फलों के प्रसंस्करण जैसी माइक्रो फूड इकाइयों को व्यवस्थित और बढ़ाने के लिए योजना।',
+    investment: 'योग्य माइक्रो फूड उद्यमों के लिए परियोजना-लिंक्ड सहायता; सामान्यतः क्रेडिट-लिंक्ड कैपिटल सब्सिडी उपलब्ध होती है।',
+    support: '35% तक क्रेडिट-लिंक्ड कैपिटल सब्सिडी (योजना नियम), ब्रांडिंग/पैकेजिंग, FSSAI सहायता, SHG/FPO हैंडहोल्डिंग।',
   },
   {
     id: 'mudra-loan',
     emoji: '💳',
-    title: 'Pradhan Mantri MUDRA Yojana (PMMY)',
-    detail: 'छोटे व्यवसायों के लिए collateral-light working capital/term loan support। किराना, tailoring, repair, transport, dairy, food carts जैसे छोटे उद्यमों के लिए उपयोगी।',
-    investment: 'Shishu, Kishor, Tarun categories में business stage के अनुसार loan slabs; revised upper slab के लिए bank norms apply।',
-    support: 'Bank/NBFC route financing, low-ticket enterprise onboarding, women and first-time entrepreneurs के लिए better access।',
+    title: 'प्रधानमंत्री मुद्रा योजना (PMMY)',
+    detail: 'छोटे व्यवसायों के लिए collateral-light कार्यशील पूंजी/टर्म लोन सहायता। किराना, सिलाई, मरम्मत, परिवहन, डेयरी, फूड कार्ट जैसे छोटे उद्यमों के लिए उपयोगी।',
+    investment: 'शिशु, किशोर, तरुण श्रेणियों में व्यवसाय स्तर के अनुसार लोन स्लैब; संशोधित उच्च स्लैब के लिए बैंक नियम लागू होते हैं।',
+    support: 'बैंक/NBFC मार्ग से वित्तपोषण, कम-लागत उद्यम शुरू करने की सहायता, महिलाओं और पहली बार उद्यमियों के लिए बेहतर पहुँच।',
   },
   {
     id: 'standup-india',
     emoji: '📈',
-    title: 'Stand-Up India (Women/SC/ST Entrepreneurs)',
-    detail: 'Greenfield enterprise शुरू करने के लिए women और SC/ST entrepreneurs को institutional credit push; manufacturing, trading, services sectors में उपयोगी।',
-    investment: 'Loan range सामान्यतः ₹10 lakh से ₹1 crore (bank appraisal और viability के आधार पर)।',
-    support: 'Handholding support, project preparation guidance, bank loan facilitation under Stand-Up India framework।',
+    title: 'स्टैंड-अप इंडिया (महिला/SC/ST उद्यमी)',
+    detail: 'ग्रीनफील्ड उद्यम शुरू करने के लिए महिलाओं और SC/ST उद्यमियों को संस्थागत क्रेडिट प्रदान करने का प्रयास; विनिर्माण, व्यापार और सेवा क्षेत्रों में उपयोगी।',
+    investment: 'लोन रेंज सामान्यतः ₹10 लाख से ₹1 करोड़ (बैंक मूल्यांकन और व्यवहार्यता के आधार पर)।',
+    support: 'हैंडहोल्डिंग सहायता, परियोजना तैयार करने की मार्गदर्शिका, स्टैंड-अप इंडिया ढांचे के तहत बैंक लोन सुविधा।',
   },
 ];
 
@@ -152,7 +152,7 @@ function JobCard({ job, isHighlighted }) {
             </span>
             {job.featured && (
               <span className="text-[10px] font-semibold text-amber-400 bg-amber-400/20 px-2 py-0.5 rounded">
-                ⭐ Featured
+                ⭐ विशेष
               </span>
             )}
           </div>
@@ -211,17 +211,17 @@ function JobCard({ job, isHighlighted }) {
                 navigator.share({ title: job.titleLocal || job.title, text, url }).catch(() => {});
               } else {
                 navigator.clipboard.writeText(text)
-                  .then(() => toast.success('Job details copied — share with your group!', 2400))
-                  .catch(() => toast.error('Could not copy', 2500));
+                  .then(() => toast.success('विवरण कॉपी हो गया — अपने समूह में साझा करें!', 2400))
+                  .catch(() => toast.error('कॉपी नहीं हो सका', 2500));
               }
             }}
             className="inline-flex items-center gap-1 text-sm text-white/70 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-2 rounded-lg transition-colors"
-            title="Share"
+            title="साझा करें"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
             </svg>
-            Share
+            साझा करें
           </button>
           <WhatsAppShareBtn
             title={job.titleLocal || job.title}
@@ -321,10 +321,10 @@ export default function GovtJobsPage() {
   return (
     <div className="min-h-screen bg-[#0a1228] text-white">
       <SEO
-        title="सरकारी नौकरी · Govt Jobs in Uttarakhand | PahadiTube"
-        description="उत्तराखंड मा नौकरी का मौका — UKPSC, UKSSSC, Police, Forest, Teaching अर होर सरकारी भर्ती कि जानकारी।"
+        title="सरकारी नौकरी · उत्तराखंड की सरकारी नौकरियाँ | PahadiTube"
+        description="उत्तराखंड और देशभर की सरकारी नौकरियों की जानकारी — UKPSC, UKSSSC, पुलिस, वन, शिक्षा और अन्य भर्ती पदों की ताज़ा सूची।"
         path="/jobs"
-        keywords="govt jobs uttarakhand, sarkari naukri, UKPSC, UKSSSC, uttarakhand police recruitment, forest ranger jobs"
+        keywords="सरकारी नौकरी उत्तराखंड, sarkari naukri, UKPSC, UKSSSC, uttarakhand police recruitment, forest ranger jobs"
       />
 
       <div className="max-w-full mx-auto px-4 sm:px-6 py-8">
@@ -332,10 +332,9 @@ export default function GovtJobsPage() {
         <div className="text-center mb-8">
           <h1 className="page-header mb-2 flex items-center justify-center gap-3">
             <img src="/art/naukri-chakri.png" alt="Jobs" className="w-8 h-8 object-contain" /> <span className="gradient-text">सरकारी नौकरी</span>
-            <span className="text-lg sm:text-xl font-normal text-white/60">Govt Jobs</span>
           </h1>
           <p className="text-white/60 text-sm">
-            उत्तराखंड अर केंद्र सरकार कि नौकरी कु मौका · Latest Sarkari Naukri
+            उत्तराखंड और केंद्र सरकार की नौकरी के मौके · ताज़ा सरकारी नौकरी
           </p>
         </div>
 
@@ -343,11 +342,11 @@ export default function GovtJobsPage() {
         <div className="flex items-center justify-center gap-6 mb-6 text-sm">
           <div className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-center">
             <div className="text-2xl font-bold text-amber-400">{activeJobs.length}</div>
-            <div className="text-white/60 text-xs">Active Jobs</div>
+            <div className="text-white/60 text-xs">सक्रिय नौकरियाँ</div>
           </div>
           <div className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-center">
             <div className="text-2xl font-bold text-green-400">{totalVacancies.toLocaleString()}</div>
-            <div className="text-white/60 text-xs">Total Vacancies</div>
+            <div className="text-white/60 text-xs">कुल पद</div>
           </div>
         </div>
 
@@ -355,16 +354,16 @@ export default function GovtJobsPage() {
         <div className="mb-8 rounded-2xl border border-blue-500/30 bg-blue-900/15 p-5 sm:p-6">
           <div className="flex items-start justify-between gap-3 mb-4">
             <div>
-              <h2 className="text-lg sm:text-xl font-semibold text-blue-100">MSME रोजगार विकल्प</h2>
+              <h2 className="text-lg sm:text-xl font-semibold text-blue-100">एमएसएमई रोजगार विकल्प</h2>
               <p className="text-xs sm:text-sm text-white/70 mt-1">
-                सिर्फ सरकारी भर्ती ही नहीं, स्वरोजगार मा भी मौके छन - Kiwi Juice, Matsya Palan, Dairy अर allied models.
+                सिर्फ सरकारी भर्ती ही नहीं, स्वरोजगार में भी मौके हैं — कीवी जूस, मत्स्य पालन, डेयरी और सहायक मॉडल।
               </p>
             </div>
             <a
               href="/yojana"
               className="shrink-0 text-xs sm:text-sm px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white transition-colors"
             >
-              योजनाएं देखो
+              योजनाएँ देखें
             </a>
           </div>
 
@@ -376,14 +375,14 @@ export default function GovtJobsPage() {
                   <span>{item.title}</span>
                 </h3>
                 <p className="text-xs sm:text-sm text-white/70 leading-relaxed mb-2">{item.detail}</p>
-                <p className="text-xs text-amber-300 mb-1"><strong>Investment:</strong> {item.investment}</p>
-                <p className="text-xs text-white/60"><strong>Support:</strong> {item.support}</p>
+                <p className="text-xs text-amber-300 mb-1"><strong>निवेश:</strong> {item.investment}</p>
+                <p className="text-xs text-white/60"><strong>सहायता:</strong> {item.support}</p>
               </article>
             ))}
           </div>
 
           <p className="text-[11px] text-white/50 mt-4">
-            Note: Investment/support figures are indicative and may vary by district, eligibility, and current policy notification.
+            नोट: निवेश/सहायता के आंकड़े संकेतात्मक हैं और जिले, पात्रता और वर्तमान नीति अधिसूचना के अनुसार बदल सकते हैं।
           </p>
         </div>
 

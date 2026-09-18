@@ -13,7 +13,7 @@ const CATEGORIES = [
   { id: 'education', label: 'शिक्षा', emoji: '🎓' },
   { id: 'agriculture', label: 'कृषि', emoji: '🌾' },
   { id: 'employment', label: 'रोजगार', emoji: '💼' },
-  { id: 'msme', label: 'MSME / स्वरोजगार', emoji: '🏭' },
+  { id: 'msme', label: 'एमएसएमई / स्वरोजगार', emoji: '🏭' },
   { id: 'youth', label: 'युवा', emoji: '🧑' },
   { id: 'housing', label: 'आवास', emoji: '🏡' },
   { id: 'infrastructure', label: 'अवसंरचना', emoji: '⛑️' },
@@ -74,24 +74,24 @@ const statusConfig = {
 
 const TOP_MSME_IDEAS = [
   {
-    title: 'Kiwi Juice Processing',
+    title: 'कीवी जूस प्रसंस्करण',
     emoji: '🥝',
-    blurb: 'कीवी पल्प, जूस, स्क्वैश और लोकल ब्रांडिंग से वैल्यू एडिशन आय।',
+    blurb: 'कीवी पल्प, जूस, स्क्वैश और लोकल ब्रांडिंग से मूल्य-वर्धित आय।',
   },
   {
-    title: 'Matsya Palan',
+    title: 'मत्स्य पालन',
     emoji: '🐟',
     blurb: 'तालाब/टैंक आधारित मत्स्य पालन से नियमित ग्रामीण रोजगार।',
   },
   {
-    title: 'Dairy Micro Unit',
+    title: 'डेयरी माइक्रो यूनिट',
     emoji: '🥛',
     blurb: 'दूध संग्रह और दही/घी/पनीर जैसे उत्पादों से स्थानीय उद्यम।',
   },
   {
-    title: 'Mushroom + Beekeeping',
+    title: 'मशरूम + मधुमक्खी पालन',
     emoji: '🍄',
-    blurb: 'कम निवेश में ड्यूल इनकम मॉडल, SHG और युवाओं के लिए उपयुक्त।',
+    blurb: 'कम निवेश में डबल इनकम मॉडल, SHG और युवाओं के लिए उपयुक्त।',
   },
 ];
 
@@ -380,16 +380,16 @@ export default function SarkaariYojanaPage() {
       <section className="mb-6 rounded-2xl border border-blue-500/30 bg-blue-900/15 p-4 sm:p-5">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
           <div>
-            <h2 className="text-base sm:text-lg font-semibold text-blue-100">Top MSME Ideas (रोजगार)</h2>
+            <h2 className="text-base sm:text-lg font-semibold text-blue-100">शीर्ष MSME विचार (रोजगार)</h2>
             <p className="text-xs sm:text-sm text-white/70 mt-1">
-              Kiwi juice, matsya palan, dairy अर allied models के लिए relevant योजनाएं इसी page मा उपलब्ध छन।
+              कीवी जूस, मत्स्य पालन, डेयरी और सहायक मॉडल के लिए Relevant योजनाएँ इसी पेज में उपलब्ध हैं।
             </p>
           </div>
           <button
             onClick={() => setActiveCategory('msme')}
             className="shrink-0 px-3 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-black text-xs sm:text-sm font-semibold transition-colors"
           >
-            MSME योजनाएं देखो
+            एमएसएमई योजनाएँ देखें
           </button>
         </div>
 

@@ -185,7 +185,7 @@ export default function GovtJobsRow() {
     <section className="mt-10">
       <div className="flex items-center justify-between mb-4">
         <h2 className="section-header">
-          <img src="/art/naukri-chakri.png" alt="Jobs" className="inline w-7 h-7 object-contain" /> <span className="gradient-text">सरकारी नौकरी · Govt Jobs</span>
+          <img src="/art/naukri-chakri.png" alt="Jobs" className="inline w-7 h-7 object-contain" /> <span className="gradient-text">सरकारी नौकरी</span>
         </h2>
         <Link
           to="/jobs"

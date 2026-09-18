@@ -24,8 +24,8 @@ const FEATURES = [
   },
   {
     icon: '💼',
-    title: 'Government Jobs',
-    desc: 'Curated Sarkari Naukri listings for Uttarakhand — state, central, police, defence, teaching, and PSU vacancies with regular updates.',
+    title: 'सरकारी नौकरी',
+    desc: 'उत्तराखंड की चयनित सरकारी नौकरी सूचियाँ — राज्य, केंद्र, पुलिस, रक्षा, शिक्षा और PSU पदों की नियमित अपडेट जानकारी।',
   },
   {
     icon: '🍲',
